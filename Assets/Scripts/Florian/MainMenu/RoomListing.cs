@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -6,82 +5,81 @@ using Photon.Realtime;
 
 public class RoomListing : MonoBehaviourPunCallbacks
 {
-    [Header("Room UI")]
+    [Header("References")]
     [Tooltip("Referencing here the prefab to fill the roomList")]
     [SerializeField] private Room roomPrefab;
     [Tooltip("Referencing here the parent for the list")]
     [SerializeField] private Transform content;
 
-    //Current list of open rooms
+    /// <summary>
+    /// Current list of available rooms
+    /// </summary>
     private List<Room> _rooms = new List<Room>();
 
-
-    #region Join Methods 
+    #region Listing Methods
+    /// <summary>
+    /// Updating the room list when the UpdateRoomList Callback is called
+    /// </summary>
+    /// <param name="roomList">Room List from callback</param>
     private void UpdatingRoomList(List<RoomInfo> roomList)
     {
+        //For each available room in the callback roomList
         foreach (RoomInfo roomInfo in roomList)
         {
-            //Removed from the list
+            //If this room has been removed from the list
             if (roomInfo.RemovedFromList)
             {
-                //Find the room index
-                int index = FindRoomIndex(roomInfo);
-                //Remove it from the list
-                if (index != -1)
+                //Find removed room index 
+                int index = _rooms.FindIndex(x => x.RoomInfo.Name == roomInfo.Name);
+                //Remove it from the room list
+                if(index != -1)
                 {
                     Destroy(_rooms[index].gameObject);
                     _rooms.RemoveAt(index);
                 }
             }
-            //Added to the list
+            //If this room has been added to the list
             else
             {
-                //Create a new room GameObject
-                Room room = Instantiate(roomPrefab, content);
-
-                //Checking if not null
-                if (room != null)
+                //Checking if the local roomList already contains this one
+                //If it contains this room, continue looping
+                if (ContainsRoom(roomInfo))
+                    continue;
+                //If not, add it to the list the local list
+                else
                 {
-                    //Set his text
+                    Room room = Instantiate(roomPrefab, content);
                     room.SetRoomInfo(roomInfo);
-                    //Add it to the list
+
                     _rooms.Add(room);
                 }
             }
         }
     }
-    private int FindRoomIndex(RoomInfo roomInfo)
-    {
-        int roomIndex = 0;
 
+    /// <summary>
+    /// Checking by roomName if the local roomList has a certain room
+    /// </summary>
+    /// <param name="roomInfo">Room to check infos</param>
+    private bool ContainsRoom(RoomInfo roomInfo)
+    {
         for (int i = 0; i < _rooms.Count; i++)
         {
             if (_rooms[i].RoomInfo.Name != roomInfo.Name)
                 continue;
             else
-            {
-                roomIndex = i;
-                break;
-            }
+                return true;
         }
-        return roomIndex;
+
+        return false;
     }
     #endregion
 
     #region Callbacks
+    //Called chen the roomList server is updated
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         UpdatingRoomList(roomList);
-    }
-
-    public override void OnJoinedRoom()
-    {
-        Debug.Log("Room successfully joined ! Room Name : " + PhotonNetwork.CurrentRoom.Name);
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.Log($"Error during room creation, reason : {message}");
     }
     #endregion
 }
