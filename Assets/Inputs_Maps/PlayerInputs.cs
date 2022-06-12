@@ -44,7 +44,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-<<<<<<< HEAD
                 },
                 {
                     ""name"": ""Dodge"",
@@ -54,8 +53,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
                 }
             ],
             ""bindings"": [
@@ -124,7 +121,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-<<<<<<< HEAD
                 },
                 {
                     ""name"": """",
@@ -136,8 +132,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
                 }
             ]
         }
@@ -165,10 +159,7 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
         m_Controls_Motion = m_Controls.FindAction("Motion", throwIfNotFound: true);
         m_Controls_Run = m_Controls.FindAction("Run", throwIfNotFound: true);
-<<<<<<< HEAD
         m_Controls_Dodge = m_Controls.FindAction("Dodge", throwIfNotFound: true);
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
     }
 
     public void Dispose()
@@ -230,20 +221,14 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     private IControlsActions m_ControlsActionsCallbackInterface;
     private readonly InputAction m_Controls_Motion;
     private readonly InputAction m_Controls_Run;
-<<<<<<< HEAD
     private readonly InputAction m_Controls_Dodge;
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
     public struct ControlsActions
     {
         private @PlayerInputs m_Wrapper;
         public ControlsActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Motion => m_Wrapper.m_Controls_Motion;
         public InputAction @Run => m_Wrapper.m_Controls_Run;
-<<<<<<< HEAD
         public InputAction @Dodge => m_Wrapper.m_Controls_Dodge;
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -259,12 +244,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Run.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
-<<<<<<< HEAD
                 @Dodge.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
                 @Dodge.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
                 @Dodge.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -275,12 +257,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
-<<<<<<< HEAD
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
             }
         }
     }
@@ -298,9 +277,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     {
         void OnMotion(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
-<<<<<<< HEAD
         void OnDodge(InputAction.CallbackContext context);
-=======
->>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
     }
 }
