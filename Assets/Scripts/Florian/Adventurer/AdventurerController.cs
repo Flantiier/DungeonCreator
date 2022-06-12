@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+using System.Collections;
+using System.Collections.Generic;
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,11 +30,15 @@ namespace Adventurer
         /// <summary>
         /// Inputs Vector
         /// </summary>
+<<<<<<< HEAD
         public Vector2 DirectionInputs { get; private set; }
         /// <summary>
         /// Direction Vector
         /// </summary>
         private Vector3 _movement;
+=======
+        private Vector2 _directionInputs;
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         /// <summary>
         /// Current Motion Speed
         /// </summary>
@@ -37,11 +46,15 @@ namespace Adventurer
         /// <summary>
         /// Target Motion Speed
         /// </summary>
+<<<<<<< HEAD
         private float _targetVel;
         /// <summary>
         /// Vertical Velocity of the player
         /// </summary>
         private float _verticalVel;
+=======
+        private float _targetSpeed;
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
 
         [Header("Mesh Rotation")]
         [Range(0f, 1f)]
@@ -49,6 +62,7 @@ namespace Adventurer
         [SerializeField] private float lerpRotation = 0.1f;
         private float _rotationVelRef;
 
+<<<<<<< HEAD
         [Header("Gravity")]
         [Tooltip("Gravity applied on the player")]
         [SerializeField] private float gravityValue = 9.81f;
@@ -62,12 +76,17 @@ namespace Adventurer
         private bool _isDodging;
         private float _dodgingTimer;
 
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         public enum MotionStates
         {
             Standing,
             Walking,
             Running,
+<<<<<<< HEAD
             Dodging
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
         /// <summary>
         /// Current State of the player
@@ -87,28 +106,39 @@ namespace Adventurer
         private void OnEnable()
         {
             _inputs.Enable();
+<<<<<<< HEAD
             _inputs.Controls.Dodge.started += Dodge;
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
 
         private void OnDisable()
         {
             _inputs.Disable();
+<<<<<<< HEAD
             _inputs.Controls.Dodge.started -= Dodge;
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
 
         private void Update()
         {
             StateMachine();
+<<<<<<< HEAD
             SpeedControl();
 
             ChoseMotion();
 
             DodgeTime();
+=======
+            Motion();
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
         #endregion
 
         #region Motion Methods
         /// <summary>
+<<<<<<< HEAD
         /// Switching between the Dodging Method and the Motion Method
         /// </summary>
         private void ChoseMotion()
@@ -120,6 +150,8 @@ namespace Adventurer
         }
 
         /// <summary>
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         /// Moving and Rotatinf the player based on Inputs and Camera Rotation
         /// </summary>
         private void Motion()
@@ -129,7 +161,12 @@ namespace Adventurer
                 return;
 
             //Movement Vector
+<<<<<<< HEAD
             Vector3 direction = new Vector3(DirectionInputs.x, 0f, DirectionInputs.y).normalized;
+=======
+            Vector3 direction = new Vector3(_directionInputs.x, 0f, _directionInputs.y).normalized;
+            Vector3 movement = new Vector3();
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
 
             //Player Rotation
             if (direction.magnitude >= 0.05f)
@@ -140,6 +177,7 @@ namespace Adventurer
                 transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
 
                 //Setting movementVector
+<<<<<<< HEAD
                 _movement = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
             }
 
@@ -148,6 +186,16 @@ namespace Adventurer
             _movement.y = ApplyGravity();
 
             _cc.Move(_movement);
+=======
+                movement = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
+            }
+
+            //Get player speed
+            SpeedControl();
+
+            //Moving Player
+            _cc.Move(movement * MoveSpeed * Time.deltaTime);
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
 
         /// <summary>
@@ -155,6 +203,7 @@ namespace Adventurer
         /// </summary>
         private void SpeedControl()
         {
+<<<<<<< HEAD
             if (State == MotionStates.Dodging)
                 _targetVel = dodgingCurve.Evaluate(_dodgingTimer);
             //Standing Vel => 0
@@ -169,6 +218,20 @@ namespace Adventurer
 
             //Interpolates the motionSpeed
             MoveSpeed = Mathf.Lerp(MoveSpeed, _targetVel, lerpMotion);
+=======
+            //Standing Vel => 0
+            if (State == MotionStates.Standing)
+                _targetSpeed = 0f;
+            //Running Vel
+            else if (State == MotionStates.Running)
+                _targetSpeed = runningSpeed;
+            //Walking Vel
+            else if (State == MotionStates.Walking)
+                _targetSpeed = walkSpeed;
+
+            //Interpolates the motionSpeed
+            MoveSpeed = Mathf.Lerp(MoveSpeed, _targetSpeed, lerpMotion);
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         }
 
         /// <summary>
@@ -181,12 +244,19 @@ namespace Adventurer
                 return;
 
             //Get Inputs
+<<<<<<< HEAD
             DirectionInputs = _inputs.Controls.Motion.ReadValue<Vector2>();
 
             if (_isDodging)
                 State = MotionStates.Dodging;
             //Standing => no Inputs
             else if (_inputs.Controls.Motion.ReadValue<Vector2>() == Vector2.zero)
+=======
+            _directionInputs = _inputs.Controls.Motion.ReadValue<Vector2>();
+
+            //Standing => no Inputs
+            if (_inputs.Controls.Motion.ReadValue<Vector2>() == Vector2.zero)
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
                 State = MotionStates.Standing;
             //Running => Shift
             else if (_inputs.Controls.Run.IsPressed())
@@ -195,6 +265,7 @@ namespace Adventurer
             else
                 State = MotionStates.Walking;
         }
+<<<<<<< HEAD
 
         /// <summary>
         /// Applying Gravity on the player
@@ -274,6 +345,8 @@ namespace Adventurer
                     animator.SetDodgeAnimation();
             }
         }
+=======
+>>>>>>> 53aa6ee1060ebc88bfba714c58e751aca592e44d
         #endregion
     }
 }
