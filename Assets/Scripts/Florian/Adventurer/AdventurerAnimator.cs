@@ -5,25 +5,29 @@ namespace Adventurer
     public class AdventurerAnimator : MonoBehaviour
     {
         [Header("References")]
-        [Tooltip("Referencing the Animator Component")]
-        [SerializeField] protected Animator animator;
-        [Tooltip("Refrencing the AnimatorController")]
-        [SerializeField] protected RuntimeAnimatorController animatorController;
+        [SerializeField, Tooltip("Referencing the Animator Component")]
+        protected Animator animator;
+
+        [SerializeField, Tooltip("Refrencing the AnimatorController")]
+        protected RuntimeAnimatorController animatorController;
+
+        //
 
         [Header("Animator Parameters")]
-        [Tooltip("Speed Parameter Name in the Animator => Indicates the motion speed")]
-        [SerializeField] protected string SPEED_PARAM = "MotionSpeed";
-        [Tooltip("Input Parameter Name in the Animator => Indicates if the player is moving")]
-        [SerializeField] protected string INPUTS_PARAM = "Inputs";
-        [Tooltip("Running Parameter Name in the Animator => Indicates of the player is running")]
-        [SerializeField] protected string RUN_PARAM = "Running";
-        [Tooltip("Dodge Parameter Name in the Animator => Indicates when the player is dodging")]
-        [SerializeField] protected string DODGE_PARAM = "Dodge";
+        [SerializeField, Tooltip("Speed Parameter Name in the Animator => Indicates the motion speed")]
+        protected string SPEED_PARAM = "MotionSpeed";
 
-        /// <summary>
-        /// Reference to the adventurerController
-        /// </summary>
+        [SerializeField, Tooltip("Input Parameter Name in the Animator => Indicates if the player is moving")]
+        protected string INPUTS_PARAM = "Inputs";
+
+        [SerializeField, Tooltip("Dodge Parameter Name in the Animator => Indicates when the player is dodging")]
+        protected string DODGE_PARAM = "Dodge";
+
+        [Space, SerializeField, Range(0f, 1f), Tooltip("Lerping value to the motionBlendTree")]
+        protected float lerpingMoveState = 0.1f;
+
         private AdventurerController _adventurer;
+        private float _motionSpeed;
 
         /// <summary>
         /// Setting up the Animator
@@ -56,12 +60,16 @@ namespace Adventurer
 
             //Set Run Bool
             if (_adventurer.State == AdventurerController.MotionStates.Running)
-                animator.SetBool(RUN_PARAM, true);
-            else
-                animator.SetBool(RUN_PARAM, false);
+                _motionSpeed = Mathf.Lerp(_motionSpeed, 2f, lerpingMoveState);
+            else if (_adventurer.State == AdventurerController.MotionStates.Walking)
+                _motionSpeed = Mathf.Lerp(_motionSpeed, _adventurer.DirectionInputs.magnitude, lerpingMoveState);
+            if(_adventurer.State == AdventurerController.MotionStates.Standing)
+                _motionSpeed = Mathf.Lerp(_motionSpeed, 0f, lerpingMoveState);
 
-            //Set Motion Speed
-            animator.SetFloat(SPEED_PARAM, _adventurer.MoveSpeed);
+            if (_motionSpeed < 0.1f)
+                _motionSpeed = 0f;
+
+            animator.SetFloat(SPEED_PARAM, _motionSpeed);
         }
 
         /// <summary>

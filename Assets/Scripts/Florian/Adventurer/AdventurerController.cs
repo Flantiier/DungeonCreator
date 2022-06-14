@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,58 +9,68 @@ namespace Adventurer
     {
         #region Variables
         [Header("References")]
-        [Tooltip("Referencing the player camera")]
-        [SerializeField] private Transform playerCam;
+        [SerializeField, Tooltip("Referencing the player camera")]
+        private Transform playerCam;
+
         private CharacterController _cc;
-        private PlayerInputs _inputs;
+        private PlayerInput _inputs;
+
+        //
 
         [Header("Motion Parameters")]
-        [Tooltip("Walking speed value")]
-        [SerializeField] private float walkSpeed = 7f;
-        [Tooltip("Running speed value")]
-        [SerializeField] private float runningSpeed = 10f;
-        [Range(0f, 1f)]
-        [Tooltip("Lerping value to smooth the current speed of the player")]
-        [SerializeField] private float lerpMotion = 0.1f;
+        [SerializeField, Tooltip("Walking speed value")]
+        private float walkSpeed = 7f;
 
-        /// <summary>
-        /// Inputs Vector
-        /// </summary>
-        public Vector2 DirectionInputs { get; private set; }
-        /// <summary>
-        /// Direction Vector
-        /// </summary>
+        [SerializeField, Tooltip("Running speed value")]
+        private float runningSpeed = 10f;
+
+        [SerializeField, Range(0.5f, 1f), Tooltip("Lerping value to smooth the current speed of the player")]
+        private float minRunValue = 0.8f;
+        
+        [SerializeField, Range(0f, 1f), Tooltip("Lerping value to smooth the current speed of the player")]
+        private float lerpMotion = 0.1f;
+
         private Vector3 _movement;
-        /// <summary>
-        /// Current Motion Speed
-        /// </summary>
-        public float MoveSpeed { get; private set; }
-        /// <summary>
-        /// Target Motion Speed
-        /// </summary>
         private float _targetVel;
-        /// <summary>
-        /// Vertical Velocity of the player
-        /// </summary>
         private float _verticalVel;
 
-        [Header("Mesh Rotation")]
-        [Range(0f, 1f)]
-        [Tooltip("Smoothing value for the player rotation")]
-        [SerializeField] private float lerpRotation = 0.1f;
+        [Header("Player Rotation")]
+        [SerializeField, Range(0f, 1f), Tooltip("Smoothing value for the player rotation")] 
+        private float lerpRotation = 0.1f;
+
         private float _rotationVelRef;
+
+        // 
+
         [Header("Gravity")]
-        [Tooltip("Gravity applied on the player")]
-        [SerializeField] private float gravityValue = 9.81f;
-        [Tooltip("TimeReset when the player touch the ground")]
-        [SerializeField] private float timeInAirReset = 1f;
+        [SerializeField, Tooltip("Gravity applied on the player")] 
+        private float gravityValue = 9.81f;
+
+        [SerializeField, Tooltip("Maximum velocity on the Vertical Axis")]
+        private float maxVerticalVelocity = 10f;
+
+        [SerializeField, Tooltip("Maximum value for the InAir timer")]
+        private float maxTimeInAir = 4f;
+
+        [SerializeField, Tooltip("TimeReset when the player touch the ground")]
+        private float timeInAirReset = 1f;
+
         private float _timeInAir = 1f;
 
+        //
+
         [Header("Dodge")]
-        [Tooltip("Dodging Parameters")]
-        [SerializeField] private AnimationCurve dodgingCurve;
-        private bool _isDodging;
+        [SerializeField, Tooltip("Dodging Curve => Takes the speed during the dodge based on a timer")]
+        private AnimationCurve dodgingCurve;
+
+        [SerializeField, Tooltip("Deadzone after the last Curve Key")]
+        private float endTime = 0.5f;
+
         private float _dodgingTimer;
+        private bool _isDodging;
+
+        //
+
         public enum MotionStates
         {
             Standing,
@@ -67,31 +78,42 @@ namespace Adventurer
             Running,
             Dodging
         }
-        /// <summary>
-        /// Current State of the player
-        /// </summary>
+        #endregion
+
+        #region Properties
         public MotionStates State { get; private set; }
+
+        public Vector2 DirectionInputs { get; private set; }
+
+        public float MoveSpeed { get; private set; }
+
+        public bool CanMove { get; private set; }
+
+        public bool CanDodge { get; private set; }
+
+        public PlayerInput _PlayerInput => _inputs;
         #endregion
 
         #region Builts-In
         private void Awake()
         {
-            PlayerInputs playerInputs = new PlayerInputs();
-            _inputs = playerInputs;
-
-            _cc = GetComponent<CharacterController>();
+            InitMethod();
         }
 
         private void OnEnable()
         {
-            _inputs.Enable();
-            _inputs.Controls.Dodge.started += Dodge;
+            _inputs.ActivateInput();
+            _inputs.actions["Dodge"].started += Dodge;
+            _inputs.actions["Motion"].performed += ctx => DirectionInputs = ctx.ReadValue<Vector2>();
+            _inputs.actions["Motion"].canceled += ctx => DirectionInputs = ctx.ReadValue<Vector2>();
         }
 
         private void OnDisable()
         {
-            _inputs.Disable();
-            _inputs.Controls.Dodge.started -= Dodge;
+            _inputs.DeactivateInput();
+            _inputs.actions["Dodge"].started -= Dodge;
+            _inputs.actions["Motion"].performed -= ctx => DirectionInputs = ctx.ReadValue<Vector2>();
+            _inputs.actions["Motion"].canceled -= ctx => DirectionInputs = ctx.ReadValue<Vector2>();
         }
 
         private void Update()
@@ -104,16 +126,43 @@ namespace Adventurer
         }
         #endregion
 
+        #region Helpers
+        private void InitMethod()
+        {
+            _cc = GetComponent<CharacterController>();
+            _inputs = GetComponent<PlayerInput>();
+
+            CanMove = true;
+            CanDodge = true;
+            _timeInAir = timeInAirReset;
+        }
+
+        private bool CheckState(MotionStates targetState)
+        {
+            if (State != targetState)
+                return false;
+
+            return true;
+        }
+        #endregion
+
         #region Motion Methods
         /// <summary>
         /// Switching between the Dodging Method and the Motion Method
         /// </summary>
         private void ChoseMotion()
         {
-            if (!_isDodging)
-                Motion();
-            else
+            if (_inputs == null)
+                return;
+
+            if (_isDodging)
                 DodgeMovement();
+            else
+            {
+                SpeedControl();
+                Motion();
+                Movement();
+            }
         }
 
         /// <summary>
@@ -121,11 +170,9 @@ namespace Adventurer
         /// </summary>
         private void Motion()
         {
-            //Check if there's no inputs
-            if (_inputs == null)
+            if (!_cc.isGrounded || !CanMove)
                 return;
 
-            //Movement Vector
             Vector3 direction = new Vector3(DirectionInputs.x, 0f, DirectionInputs.y).normalized;
 
             //Player Rotation
@@ -140,66 +187,14 @@ namespace Adventurer
                 _movement = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
             }
 
-            //Get the player speed
-            SpeedControl();
-
             _movement *= _targetVel * Time.deltaTime;
-            //Apply Gravity
-            _movement.y = ApplyGravity();
-
-            _cc.Move(_movement);
         }
 
         /// <summary>
-        /// Changing motion speed according to Inputs
+        /// Final Movement
         /// </summary>
-        private void SpeedControl()
+        private void Movement()
         {
-            //Standing Vel => 0
-            if (State == MotionStates.Standing)
-                _targetVel = 0f;
-            //Running Vel
-            else if (State == MotionStates.Running)
-                _targetVel = runningSpeed;
-            //Walking Vel
-            else if (State == MotionStates.Walking)
-                _targetVel = walkSpeed;
-
-            //Interpolates the motionSpeed
-            MoveSpeed = Mathf.Lerp(MoveSpeed, _targetVel, lerpMotion);
-        }
-
-        /// <summary>
-        /// Indicates the current Motion State
-        /// </summary>
-        private void StateMachine()
-        {
-            //Inputs not referenced
-            if (_inputs == null)
-                return;
-
-            //Get Inputs
-            DirectionInputs = _inputs.Controls.Motion.ReadValue<Vector2>();
-
-            if (_isDodging)
-                State = MotionStates.Dodging;
-            //Standing => no Inputs
-            if (_inputs.Controls.Motion.ReadValue<Vector2>() == Vector2.zero)
-                State = MotionStates.Standing;
-            //Running => Shift
-            else if (_inputs.Controls.Run.IsPressed())
-                State = MotionStates.Running;
-            //Walking
-            else
-                State = MotionStates.Walking;
-        }
-
-        /// <summary>
-        /// Applying Gravity on the player
-        /// </summary>
-        private float ApplyGravity()
-        {
-            //On the ground
             if (_cc.isGrounded)
             {
                 //Apply a tiny gravity
@@ -212,28 +207,103 @@ namespace Adventurer
             //In Air
             else
             {
-                //Increase the timeInAir timer
-                _timeInAir += Time.deltaTime;
+                if(_timeInAir < maxTimeInAir)
+                    //Increase the timeInAir timer
+                    _timeInAir += Time.deltaTime;
 
-                //Apply Gravity with time spent in air
-                _verticalVel -= gravityValue * Time.deltaTime * _timeInAir;
+                if(_verticalVel > -maxVerticalVelocity)
+                    //Apply Gravity with time spent in air
+                    _verticalVel -= gravityValue * Time.deltaTime * _timeInAir;
             }
 
+            if (!_isDodging && !_cc.isGrounded)
+                _movement = new Vector3(0f, _verticalVel, 0f);
+
             //Apply on the Movement Vector Vertical Axis 
-            return _verticalVel * Time.deltaTime;
+            _movement.y = _verticalVel * Time.deltaTime;
+
+            _cc.Move(_movement);
         }
 
         /// <summary>
-        /// Dodging Movement Method
+        /// Interpolates the moving Speed
         /// </summary>
-        private void DodgeMovement()
+        private void SpeedControl()
         {
-            //Check if there's no inputs
+            //Standing Vel => 0
+            if (CheckState(MotionStates.Standing))
+                _targetVel = 0f;
+            //Running Vel
+            else if (CheckState(MotionStates.Running))
+                _targetVel = runningSpeed;
+            //Walking Vel
+            else if (CheckState(MotionStates.Walking))
+                _targetVel = walkSpeed * DirectionInputs.magnitude;
+
+            //Interpolates the motionSpeed
+            MoveSpeed = Mathf.Lerp(MoveSpeed, _targetVel, lerpMotion);
+
+            if (MoveSpeed < 0.1f)
+                MoveSpeed = 0f;
+        }
+        #endregion
+
+        #region StateMachine
+        /// <summary>
+        /// Indicates the current Motion State
+        /// </summary>
+        private void StateMachine()
+        {
+            //Inputs not referenced
             if (_inputs == null)
                 return;
 
-            //Moving player
+            if (_isDodging)
+                State = MotionStates.Dodging;
+            //Standing => no Inputs
+            else if (DirectionInputs == Vector2.zero)
+                State = MotionStates.Standing;
+            //Running => Shift
+            else if (_inputs.actions["Running"].IsPressed() && DirectionInputs.magnitude >= minRunValue)
+                State = MotionStates.Running;
+            //Walking
+            else
+                State = MotionStates.Walking;
+        }
+        #endregion
+
+        #region Dodge
+        /// <summary>
+        /// Dodging Method
+        /// </summary>
+        private void Dodge(InputAction.CallbackContext ctx)
+        {
+            //Ground check
+            if (!_cc.isGrounded || !CanDodge)
+                return;
+
+            DodgeState(true);
+
+            _movement = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up);
+            transform.rotation = Quaternion.Euler(0f, playerCam.eulerAngles.y, 0f);
+
+            if (TryGetComponent(out AdventurerAnimator animator))
+                animator.SetDodgeAnimation();
+        }
+
+        private void DodgeMovement()
+        {
+            if (!_cc.isGrounded)
+                _movement.y += _verticalVel * Time.deltaTime;
+
             _cc.Move(_movement * dodgingCurve.Evaluate(_dodgingTimer) * Time.deltaTime);
+        }
+
+        private void DodgeState(bool state)
+        {
+            _isDodging = state;
+            CanMove = !state;
+            CanDodge = !state;
         }
 
         /// <summary>
@@ -246,30 +316,14 @@ namespace Adventurer
                 return;
 
             //The timer is less or equal the ending time
-            if (_dodgingTimer <= dodgingCurve.keys[dodgingCurve.keys.Length - 1].time)
+            if (_dodgingTimer <= dodgingCurve.keys[dodgingCurve.keys.Length - 1].time + endTime)
                 _dodgingTimer += Time.deltaTime;
             //Reset dodge
             else
             {
-                _isDodging = false;
+                //Reset to Motion
+                DodgeState(false);
                 _dodgingTimer = 0f;
-            }
-        }
-
-        /// <summary>
-        /// Dodging Method
-        /// </summary>
-        private void Dodge(InputAction.CallbackContext ctx)
-        {
-            //Ground check
-            if (_cc.isGrounded)
-            {
-                _isDodging = true;
-                _movement = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up);
-                transform.rotation = Quaternion.Euler(0f, playerCam.eulerAngles.y, 0f);
-
-                if (TryGetComponent(out AdventurerAnimator animator))
-                    animator.SetDodgeAnimation();
             }
         }
         #endregion

@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4564972774640739844}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -53,9 +53,12 @@ MonoBehaviour:
   playerCam: {fileID: 0}
   walkSpeed: 7
   runningSpeed: 10
+  minRunValue: 0.8
   lerpMotion: 0.1
   lerpRotation: 0.1
   gravityValue: 9.81
+  maxVerticalVelocity: 10
+  maxTimeInAir: 4
   timeInAirReset: 1
   dodgingCurve:
     serializedVersion: 2
@@ -81,6 +84,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  endTime: 0.5
 --- !u!114 &4564972774640739855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,14 +98,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freelookCam: {fileID: 0}
-  xSensitivity: 1
-  xAccelSpeed: 0.2
-  xDecelSpeed: 0.2
-  invertXAxis: 0
-  ySensitivity: 0.1
-  yAccelSpeed: 0.2
-  yDecelSpeed: 0.1
-  invertYAxis: 1
+  mouseParameters:
+    schemeName: 
+    invertXAxis: 0
+    xSensitivity: 0.1
+    xAccelSpeed: 0.1
+    xDecelSpeed: 0.1
+    ySensitivity: 0.005
+    yAccelSpeed: 0.1
+    yDecelSpeed: 0.1
+    invertYAxis: 1
+  gamePadParameters:
+    schemeName: 
+    invertXAxis: 0
+    xSensitivity: 0
+    xAccelSpeed: 0
+    xDecelSpeed: 0
+    ySensitivity: 0
+    yAccelSpeed: 0
+    yDecelSpeed: 0
+    invertYAxis: 0
 --- !u!114 &4564972774640739842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: d271b0a6e9cf9aa499bd4b7467d4cbba,
+  m_Actions: {fileID: -944628639613478452, guid: 8d3f7b8821b6d5447becbb735a42fc1b,
     type: 3}
   m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
@@ -133,8 +149,8 @@ MonoBehaviour:
     m_ActionId: 9a8af630-ea04-4340-9138-154449187413
     m_ActionName: GameInputs/Motion[/Keyboard/q,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: KeyboardMouse
-  m_DefaultActionMap: Controls
+  m_DefaultControlScheme: KandM
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!143 &4564972774640739841
@@ -171,8 +187,8 @@ MonoBehaviour:
   animatorController: {fileID: 9100000, guid: 579dd35267aac55479c8e4f5a6e4c240, type: 2}
   SPEED_PARAM: MotionSpeed
   INPUTS_PARAM: Inputs
-  RUN_PARAM: Running
   DODGE_PARAM: Dodge
+  lerpingMoveState: 0.1
 --- !u!1 &4564972774926758157
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,7 +308,7 @@ Animator:
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 namespace Adventurer
 {
@@ -7,60 +8,49 @@ namespace Adventurer
     {
         #region Variables
         [Header("References")]
-        [Tooltip("Referencing here the freelook camera of the player")]
-        [SerializeField] private CinemachineFreeLook freelookCam;
+        [SerializeField, Tooltip("Referencing here the freelook camera of the player")]
+        private CinemachineFreeLook freelookCam;
 
-        [Header("Camera Parameters")]
-        [Header("Horizontal Axis")]
-        [Tooltip("X Sensitivity")]
-        [SerializeField] private float xSensitivity = 10f;
-        [Tooltip("X Acceleration speed")]
-        [SerializeField] private float xAccelSpeed = 0.2f;
-        [Tooltip("X Deceleration speed")]
-        [SerializeField] private float xDecelSpeed = 0.1f;
-        [Tooltip("Invert value of the horizontal axis")]
-        [SerializeField] private bool invertXAxis = false;
+        [SerializeField, Tooltip("Parameters whilst using Mouse And Keyboard")]
+        private CameraParameters mouseParameters;
 
-        [Space]
-
-        [Header("Vertical Axis")]
-        [Tooltip("Camera max speed value on the Y axis")]
-        [SerializeField] private float ySensitivity = 10f;
-        [Tooltip("Y Acceleration speed")]
-        [SerializeField] private float yAccelSpeed = 0.1f;
-        [Tooltip("Y Deceleration speed")]
-        [SerializeField] private float yDecelSpeed = 0.1f;
-        [Tooltip("Ivert value of the vertical axis")]
-        [SerializeField] private bool invertYAxis = true;
+        [SerializeField, Tooltip("Parameters whilst using a Gamepad")]
+        private CameraParameters gamePadParameters;
+        private PlayerInput _inputs;
         #endregion
 
         private void Awake()
         {
-            SetCameraParameters();
-        }
+            _inputs = GetComponent<PlayerInput>();
 
-        private void OnValidate()
-        {
-            SetCameraParameters();
+            SetCameraParameters(_inputs);
+            _inputs.onDeviceLost += SetCameraParameters;
         }
 
         [ContextMenu("Reset Camera")]
-        private void SetCameraParameters()
+        private void SetCameraParameters(PlayerInput input)
         {
             if (freelookCam == null)
                 return;
 
-            //X Axis
-            freelookCam.m_XAxis.m_MaxSpeed = xSensitivity;
-            freelookCam.m_XAxis.m_InvertInput = invertXAxis;
-            freelookCam.m_XAxis.m_AccelTime = xAccelSpeed;
-            freelookCam.m_XAxis.m_DecelTime = xDecelSpeed;
+            if(_inputs.currentControlScheme == gamePadParameters.schemeName)
+                AffectParameters(gamePadParameters);
+            else
+                AffectParameters(mouseParameters);
+        }
+
+        private void AffectParameters(CameraParameters parameters)
+        {
+            freelookCam.m_XAxis.m_MaxSpeed = parameters.xSensitivity;
+            freelookCam.m_XAxis.m_AccelTime = parameters.xAccelSpeed;
+            freelookCam.m_XAxis.m_DecelTime = parameters.xDecelSpeed;
+            freelookCam.m_XAxis.m_InvertInput = parameters.invertXAxis;
 
             //Y Axis
-            freelookCam.m_YAxis.m_MaxSpeed = ySensitivity;
-            freelookCam.m_YAxis.m_InvertInput = invertYAxis;
-            freelookCam.m_YAxis.m_AccelTime = yAccelSpeed;
-            freelookCam.m_YAxis.m_DecelTime = yDecelSpeed;
+            freelookCam.m_YAxis.m_MaxSpeed = parameters.ySensitivity;
+            freelookCam.m_YAxis.m_AccelTime = parameters.yAccelSpeed;
+            freelookCam.m_YAxis.m_DecelTime = parameters.yDecelSpeed;
+            freelookCam.m_YAxis.m_InvertInput = parameters.invertYAxis;
         }
     }
 }
