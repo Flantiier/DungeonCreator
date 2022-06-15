@@ -23,6 +23,9 @@ namespace Adventurer
         [SerializeField, Tooltip("Dodge Parameter Name in the Animator => Indicates when the player is dodging")]
         protected string DODGE_PARAM = "Dodge";
 
+        [SerializeField, Tooltip("Dodge Cooldown Parameter in the Animator => Timer during a dodge")]
+        protected string COOLDOWN_DODGE_PARAM = "Cooldown_Dodge";
+
         [Space, SerializeField, Range(0f, 1f), Tooltip("Lerping value to the motionBlendTree")]
         protected float lerpingMoveState = 0.1f;
 
@@ -70,14 +73,12 @@ namespace Adventurer
                 _motionSpeed = 0f;
 
             animator.SetFloat(SPEED_PARAM, _motionSpeed);
-        }
 
-        /// <summary>
-        /// Trigger the Dodge Animation
-        /// </summary>
-        public void SetDodgeAnimation()
-        {
-            animator.SetTrigger(DODGE_PARAM);
+            //Dodge
+            if (_adventurer.State == AdventurerController.MotionStates.Dodging)
+                animator.SetTrigger(DODGE_PARAM);
+            else
+                animator.ResetTrigger(DODGE_PARAM);
         }
     }
 }

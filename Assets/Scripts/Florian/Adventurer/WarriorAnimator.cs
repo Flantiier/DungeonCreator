@@ -4,6 +4,8 @@ namespace Adventurer
 {
 	public class WarriorAnimator : AdventurerAnimator
 	{
+        private float _attackTimer;
+
         private void Awake()
         {
             base.SetUpAnimator();

@@ -81,15 +81,17 @@ namespace Adventurer
         #endregion
 
         #region Properties
-        public MotionStates State { get; private set; }
+        public MotionStates State { get; set; }
 
         public Vector2 DirectionInputs { get; private set; }
 
         public float MoveSpeed { get; private set; }
 
-        public bool CanMove { get; private set; }
+        public bool CanMove { get; set; }
 
-        public bool CanDodge { get; private set; }
+        public bool CanDodge { get; set; }
+
+        public bool CanAttack { get; set; }
 
         public PlayerInput _PlayerInput => _inputs;
         #endregion
@@ -284,11 +286,8 @@ namespace Adventurer
 
             DodgeState(true);
 
-            _movement = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up);
-            transform.rotation = Quaternion.Euler(0f, playerCam.eulerAngles.y, 0f);
-
-            if (TryGetComponent(out AdventurerAnimator animator))
-                animator.SetDodgeAnimation();
+            _movement = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         }
 
         private void DodgeMovement()

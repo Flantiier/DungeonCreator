@@ -33,7 +33,7 @@ namespace Adventurer
             if (freelookCam == null)
                 return;
 
-            if(_inputs.currentControlScheme == gamePadParameters.schemeName)
+            if (_inputs.currentControlScheme == gamePadParameters.schemeName)
                 AffectParameters(gamePadParameters);
             else
                 AffectParameters(mouseParameters);
