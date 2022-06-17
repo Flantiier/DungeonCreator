@@ -19,7 +19,7 @@ namespace Adventurer
 
         public bool isAttacking { get; private set; }
 
-        public bool isAiming { get; private set; }
+        public bool IsHoldingWeapon { get; private set; }
 
         public bool usingAbility01 { get; private set; }
 
@@ -113,7 +113,7 @@ namespace Adventurer
 
         private void HandleAim(InputAction.CallbackContext ctx)
         {
-            isAiming = ctx.ReadValueAsButton();
+            IsHoldingWeapon = ctx.ReadValueAsButton();
         }
 
         private void HandleAbility01(InputAction.CallbackContext ctx)

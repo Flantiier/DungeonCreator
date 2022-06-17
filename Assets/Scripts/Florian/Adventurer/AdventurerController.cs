@@ -184,7 +184,7 @@ namespace Adventurer
             else
             {
                 if (CanMove)
-                    if (!_inputs.isAiming)
+                    if (!_inputs.IsHoldingWeapon)
                         BasicMotion();
                     else
                         AimingMethod();

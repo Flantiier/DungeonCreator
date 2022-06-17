@@ -11,11 +11,20 @@ namespace Adventurer
         [SerializeField, Tooltip("Refrencing the AnimatorController")]
         private RuntimeAnimatorController animatorController;
 
+        [SerializeField, Tooltip("Index of the lower layer in the Animator")]
+        private int lowerLayerIndex = 1;
+
         //
 
         [Header("Animator Parameters")]
         [SerializeField, Tooltip("Input Parameter Name in the Animator => Indicates if the player is moving")]
         private string INPUTS_PARAM = "Inputs";
+
+        [SerializeField, Tooltip("Name of the DirX Parameter in the Animator")]
+        private string DIR_X_PARAM = "DirX";
+
+        [SerializeField, Tooltip("Name of the DirY Parameter in the Animator")]
+        private string DIR_Y_PARAM = "DirY";
 
         [SerializeField, Tooltip("Grounded Parameter Name in the Animator => Indicates if the player is grounded")]
         private string GROUNDED_PARAM = "Grounded";
@@ -29,11 +38,14 @@ namespace Adventurer
         [Space, SerializeField, Range(0f, 1f), Tooltip("Lerping value to the motionBlendTree")]
         private float lerpingMoveState = 0.1f;
 
-        [SerializeField, Tooltip("Nmae of the Attack Parameter in the Animator")]
+        [SerializeField, Tooltip("Name of the Attack Parameter in the Animator")]
         private string ATTACK_PARAM = "Attack";
 
-        [SerializeField, Tooltip("Nmae of the Holding Attack Parameter in the Animator")]
+        [SerializeField, Tooltip("Name of the Holding Attack Parameter in the Animator")]
         private string HOLD_ATTACK_PARAM = "HoldAttack";
+
+        [SerializeField, Tooltip("Nmae of the Holding Weapon Parameter in the Animator")]
+        private string HOLD_WEAPON_PARAM = "HoldWeapon";
 
         private AdventurerController _adventurer;
         private AdventurerFighting _fighting;
@@ -80,6 +92,8 @@ namespace Adventurer
             HandleDodgeAnim();
 
             HandleAttackAnim();
+
+            HandleHoldWeapon();
         }
 
         private void HandleIdleAnim()
@@ -94,6 +108,9 @@ namespace Adventurer
                 return;
 
             animator.SetBool(GROUNDED_PARAM, _adventurer.IsGrounded);
+
+            animator.SetFloat(DIR_X_PARAM, _adventurer.Input.DirectionInputs.x);
+            animator.SetFloat(DIR_Y_PARAM, _adventurer.Input.DirectionInputs.y);
         }
 
         private void HandleMotionAnim()
@@ -126,7 +143,6 @@ namespace Adventurer
 
         private void HandleAttackAnim()
         {
-            //Attack Time
             if (_fighting.HoldAttack > 0)
             {
                 animator.SetTrigger(ATTACK_PARAM);
@@ -137,6 +153,11 @@ namespace Adventurer
                 animator.ResetTrigger(ATTACK_PARAM);
                 animator.SetBool(HOLD_ATTACK_PARAM, false);
             }
+        }
+
+        private void HandleHoldWeapon()
+        {
+            animator.SetBool(HOLD_WEAPON_PARAM, _adventurer.Input.IsHoldingWeapon);
         }
     }
 }
