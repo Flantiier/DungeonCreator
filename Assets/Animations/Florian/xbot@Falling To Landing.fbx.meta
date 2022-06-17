@@ -1,11 +1,17 @@
 fileFormatVersion: 2
-guid: 985c1bb478a352f43a32fec593739bdd
+guid: 845d328d00e221c46b2098e04ff55b86
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Standing Dive Forward
+    second: Falling
+  - first:
+      74: 6480610267109901665
+    second: LandingStart
+  - first:
+      74: -2184633342363881174
+    second: LandingEnd
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -36,11 +42,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Standing Dive Forward
+      name: Falling
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 49
+      lastFrame: 3
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -61,21 +67,72 @@ ModelImporter:
       curves: []
       events:
       - time: 0
-        functionName: RaiseStartDodge
+        functionName: RaiseOnFall
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7453703
-        functionName: RaiseMiddleDodge
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.9952192
-        functionName: RaiseEndDodge
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: LandingStart
+      takeName: mixamo.com
+      internalID: 0
+      firstFrame: 4
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: LandingEnd
+      takeName: mixamo.com
+      internalID: 0
+      firstFrame: 25
+      lastFrame: 32
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0
+        functionName: RaiseOnLand
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

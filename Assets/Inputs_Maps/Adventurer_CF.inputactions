@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Running",
+                    "name": "Run",
                     "type": "Button",
                     "id": "c98692a2-665e-4a23-bff8-4f3a8e4e00ad",
                     "expectedControlType": "Button",
@@ -49,13 +49,40 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Button",
+                    "id": "606ec07f-76e9-459b-977b-d6c6944ab663",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ability01",
+                    "type": "Button",
+                    "id": "9037a8aa-d905-4cd0-9ea8-8d38b0ae0f4c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ability02",
+                    "type": "Button",
+                    "id": "2c44b585-f936-4a90-8350-5d367605532f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "2D Vector",
                     "id": "bb4a0d25-1cf9-42e6-9f73-63aba108fbf7",
-                    "path": "2DVector",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -132,7 +159,7 @@
                 {
                     "name": "",
                     "id": "45c38717-bb16-4168-a232-d8cda7d93e48",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -147,7 +174,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KandM",
-                    "action": "Running",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -158,7 +185,7 @@
                     "interactions": "Hold",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Running",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -198,11 +225,77 @@
                 {
                     "name": "",
                     "id": "36004955-a712-4e65-a5d3-6940d350a256",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d55f3e5e-e23a-46f5-b2b6-25879a6e02ef",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KandM",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3c8e4b7b-9651-4063-962b-940f3bc0a698",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ee1586fd-00de-4fab-b05c-e0c0019b71bf",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KandM",
+                    "action": "Ability01",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e880421a-72c9-474b-9b1e-45b13b624fbf",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Ability01",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f6409f0c-2d10-4291-82bf-54ac9c373486",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability02",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd5a7af3-4278-4ee1-bbb3-ca33575de009",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability02",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

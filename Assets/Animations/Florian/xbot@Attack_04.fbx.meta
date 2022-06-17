@@ -1,11 +1,17 @@
 fileFormatVersion: 2
-guid: 985c1bb478a352f43a32fec593739bdd
+guid: 5741939ff60228149a566fc89047a8c8
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Standing Dive Forward
+    second: Attack_04_Start
+  - first:
+      74: 3431618985897327715
+    second: Attack_04_Middle
+  - first:
+      74: 2694502509826489847
+    second: Attack_04_End
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -36,11 +42,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Standing Dive Forward
+      name: Attack_04_Start
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 49
+      lastFrame: 6
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -61,21 +67,79 @@ ModelImporter:
       curves: []
       events:
       - time: 0
-        functionName: RaiseStartDodge
+        functionName: RaiseStartAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7453703
-        functionName: RaiseMiddleDodge
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Attack_04_Middle
+      takeName: mixamo.com
+      internalID: 0
+      firstFrame: 7
+      lastFrame: 8
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Attack_04_End
+      takeName: mixamo.com
+      internalID: 0
+      firstFrame: 9
+      lastFrame: 75
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.56363636
+        functionName: RaiseMiddleAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9952192
-        functionName: RaiseEndDodge
+      - time: 0.99545455
+        functionName: RaiseEndAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
