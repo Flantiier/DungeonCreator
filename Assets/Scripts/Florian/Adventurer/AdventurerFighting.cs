@@ -8,6 +8,7 @@ public class AdventurerFighting : MonoBehaviour
 
     [SerializeField] private float maxHoldingTime = 3f;
     public float HoldAttack { get; private set; }
+    public bool CanAttack { get; private set; }
     private bool _isAttacking;
 
     private void Awake()
@@ -22,7 +23,7 @@ public class AdventurerFighting : MonoBehaviour
 
     private void AttackHolding()
     {
-        if (!_adventurer.CanAttack || !_adventurer.IsGrounded)
+        if (CanAttack || !_adventurer.IsGrounded)
             return;
 
         _isAttacking = _adventurer.Input.isAttacking;

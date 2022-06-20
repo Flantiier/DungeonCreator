@@ -15,6 +15,9 @@ namespace Adventurer
         [SerializeField] private CinemachineVirtualCamera tpsCam;
         [SerializeField] private CinemachineVirtualCamera aimCam;
 
+        public bool CanAim { get; private set; }
+        public bool IsAiming { get; private set; }
+
         private void Awake()
         {
             _inputs = GetComponent<PlayerInput>();

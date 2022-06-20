@@ -82,7 +82,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Ability01"",
+                    ""name"": ""FirstAbility"",
                     ""type"": ""Button"",
                     ""id"": ""9037a8aa-d905-4cd0-9ea8-8d38b0ae0f4c"",
                     ""expectedControlType"": ""Button"",
@@ -91,7 +91,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Ability02"",
+                    ""name"": ""SecondAbility"",
                     ""type"": ""Button"",
                     ""id"": ""2c44b585-f936-4a90-8350-5d367605532f"",
                     ""expectedControlType"": ""Button"",
@@ -284,7 +284,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KandM"",
-                    ""action"": ""Ability01"",
+                    ""action"": ""FirstAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -295,7 +295,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Ability01"",
+                    ""action"": ""FirstAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -306,7 +306,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Ability02"",
+                    ""action"": ""SecondAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -317,7 +317,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Ability02"",
+                    ""action"": ""SecondAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -362,8 +362,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
         m_Player_Mouse = m_Player.FindAction("Mouse", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
-        m_Player_Ability01 = m_Player.FindAction("Ability01", throwIfNotFound: true);
-        m_Player_Ability02 = m_Player.FindAction("Ability02", throwIfNotFound: true);
+        m_Player_FirstAbility = m_Player.FindAction("FirstAbility", throwIfNotFound: true);
+        m_Player_SecondAbility = m_Player.FindAction("SecondAbility", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -429,8 +429,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Mouse;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Aim;
-    private readonly InputAction m_Player_Ability01;
-    private readonly InputAction m_Player_Ability02;
+    private readonly InputAction m_Player_FirstAbility;
+    private readonly InputAction m_Player_SecondAbility;
     public struct PlayerActions
     {
         private @Adventurer_CF m_Wrapper;
@@ -441,8 +441,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
         public InputAction @Mouse => m_Wrapper.m_Player_Mouse;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
-        public InputAction @Ability01 => m_Wrapper.m_Player_Ability01;
-        public InputAction @Ability02 => m_Wrapper.m_Player_Ability02;
+        public InputAction @FirstAbility => m_Wrapper.m_Player_FirstAbility;
+        public InputAction @SecondAbility => m_Wrapper.m_Player_SecondAbility;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,12 +470,12 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                 @Aim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Ability01.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility01;
-                @Ability01.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility01;
-                @Ability01.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility01;
-                @Ability02.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility02;
-                @Ability02.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility02;
-                @Ability02.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAbility02;
+                @FirstAbility.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFirstAbility;
+                @FirstAbility.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFirstAbility;
+                @FirstAbility.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFirstAbility;
+                @SecondAbility.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondAbility;
+                @SecondAbility.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondAbility;
+                @SecondAbility.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSecondAbility;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -498,12 +498,12 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
-                @Ability01.started += instance.OnAbility01;
-                @Ability01.performed += instance.OnAbility01;
-                @Ability01.canceled += instance.OnAbility01;
-                @Ability02.started += instance.OnAbility02;
-                @Ability02.performed += instance.OnAbility02;
-                @Ability02.canceled += instance.OnAbility02;
+                @FirstAbility.started += instance.OnFirstAbility;
+                @FirstAbility.performed += instance.OnFirstAbility;
+                @FirstAbility.canceled += instance.OnFirstAbility;
+                @SecondAbility.started += instance.OnSecondAbility;
+                @SecondAbility.performed += instance.OnSecondAbility;
+                @SecondAbility.canceled += instance.OnSecondAbility;
             }
         }
     }
@@ -534,7 +534,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
         void OnMouse(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
-        void OnAbility01(InputAction.CallbackContext context);
-        void OnAbility02(InputAction.CallbackContext context);
+        void OnFirstAbility(InputAction.CallbackContext context);
+        void OnSecondAbility(InputAction.CallbackContext context);
     }
 }

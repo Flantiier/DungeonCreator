@@ -17,7 +17,6 @@ namespace Adventurer
 
         private CharacterController _cc;
         private AdventurerInputManager _inputs;
-        private AdventurerAnimEvents _animEvents;
         #endregion
 
         #region Motion Variables
@@ -30,6 +29,9 @@ namespace Adventurer
 
         [SerializeField, Range(0.5f, 1f), Tooltip("Lerping value to smooth the current speed of the player")]
         private float minRunValue = 0.8f;
+
+        [SerializeField, Tooltip("Speed during aiming")]
+        private float aimSpeed = 5f;
 
         [SerializeField, Range(0f, 1f), Tooltip("Lerping value to smooth the current speed of the player")]
         private float lerpMotion = 0.1f;
@@ -89,26 +91,12 @@ namespace Adventurer
 
         public bool IsDodging { get; private set; }
 
-        public bool CanAttack { get; private set; }
-
-        public bool CanAim { get; private set; }
-
         #endregion
 
         #region Builts-In
         private void Awake()
         {
             InitMethod();
-        }
-
-        private void OnEnable()
-        {
-            SubscribingToAnimEvent();
-        }
-
-        private void OnDisable()
-        {
-            UnsubscribingToAnimEvent();
         }
 
         private void Update()
@@ -131,11 +119,7 @@ namespace Adventurer
             //Get scripts
             _cc = GetComponent<CharacterController>();
             _inputs = GetComponent<AdventurerInputManager>();
-            _animEvents = playerMesh.GetComponent<AdventurerAnimEvents>();
 
-            EnableMovement();
-            EnableDodge();
-            EnableAttack();
             _timeInAir = timeInAirReset;
         }
 
@@ -146,13 +130,6 @@ namespace Adventurer
             else
                 IsGrounded = false;
         }
-
-        private void EnableMovement() { CanMove = true;}
-        private void DisableMovement() { CanMove = false;}
-        private void EnableDodge() { CanDodge = true;}
-        private void DisableDodge() { CanDodge = false;}
-        private void EnableAttack() { CanAttack = true;}
-        private void DisableAttack() { CanAttack = false;}
 
         #region Motion Methods
         /// <summary>
@@ -305,79 +282,5 @@ namespace Adventurer
             _dodgingTimer = 0f;
         }
         #endregion
-
-        #region Events
-        private void SubscribingToAnimEvent()
-        {
-            //Start Attack
-            _animEvents.onStartAttack += DisableMovement;
-            _animEvents.onStartAttack += DisableDodge;
-            _animEvents.onStartAttack += ResetDodge;
-
-            //Middle Attack
-            _animEvents.onMiddleAttack += EnableDodge;
-
-            //End Attack
-            _animEvents.onEndAttack += EnableMovement;
-
-            //Start Dodge
-            _animEvents.onStartDodge += DisableMovement;
-            _animEvents.onStartDodge += DisableDodge;
-            _animEvents.onStartDodge += DisableAttack;
-
-            //Middle Dodge
-            _animEvents.onMiddleDodge += EnableAttack;
-
-            //EndDodge
-            _animEvents.onEndDodge += EnableMovement;
-            _animEvents.onEndDodge += EnableDodge;
-
-            //OnFall
-            _animEvents.OnFall += DisableMovement;
-            _animEvents.OnFall += DisableDodge;
-            _animEvents.OnFall += DisableAttack;
-
-            //OnLand
-            _animEvents.OnLand += EnableMovement;
-            _animEvents.OnLand += EnableDodge;
-            _animEvents.OnLand += EnableAttack;
-        }
-        private void UnsubscribingToAnimEvent()
-        {
-            //Start Attack
-            _animEvents.onStartAttack -= DisableMovement;
-            _animEvents.onStartAttack -= DisableDodge;
-            _animEvents.onStartAttack -= ResetDodge;
-
-            //Middle Attack
-            _animEvents.onMiddleAttack -= EnableDodge;
-
-            //End Attack
-            _animEvents.onEndAttack -= EnableMovement;
-
-            //Start Dodge
-            _animEvents.onStartDodge -= DisableMovement;
-            _animEvents.onStartDodge -= DisableDodge;
-            _animEvents.onStartDodge -= DisableAttack;
-
-            //Middle Dodge
-            _animEvents.onMiddleDodge -= EnableAttack;
-
-            //EndDodge
-            _animEvents.onEndDodge -= EnableMovement;
-            _animEvents.onEndDodge -= EnableDodge;
-
-            //OnFall
-            _animEvents.OnFall -= DisableMovement;
-            _animEvents.OnFall -= DisableDodge;
-            _animEvents.OnFall -= DisableAttack;
-
-            //OnLand-
-            _animEvents.OnLand -= EnableMovement;
-            _animEvents.OnLand -= EnableDodge;
-            _animEvents.OnLand -= EnableAttack;
-        }
-        #endregion
-
     }
 }

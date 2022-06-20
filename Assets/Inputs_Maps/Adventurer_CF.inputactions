@@ -1,5 +1,5 @@
 {
-    "name": "Warrior_Controls",
+    "name": "Adventurer_CF",
     "maps": [
         {
             "name": "Player",
@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Ability01",
+                    "name": "FirstAbility",
                     "type": "Button",
                     "id": "9037a8aa-d905-4cd0-9ea8-8d38b0ae0f4c",
                     "expectedControlType": "Button",
@@ -69,7 +69,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Ability02",
+                    "name": "SecondAbility",
                     "type": "Button",
                     "id": "2c44b585-f936-4a90-8350-5d367605532f",
                     "expectedControlType": "Button",
@@ -262,7 +262,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KandM",
-                    "action": "Ability01",
+                    "action": "FirstAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -273,7 +273,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Ability01",
+                    "action": "FirstAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -284,7 +284,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ability02",
+                    "action": "SecondAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -295,7 +295,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ability02",
+                    "action": "SecondAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
