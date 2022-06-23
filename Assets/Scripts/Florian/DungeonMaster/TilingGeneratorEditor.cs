@@ -10,18 +10,12 @@ namespace Tiling
         {
             DrawDefaultInspector();
 
-            GUILayout.Space(20);
             TilingGenerator generator = (TilingGenerator)target;
 
-            if(GUILayout.Button("Create Tiles", GUILayout.Height(40)))
+            GUILayout.Space(20);
+            if (GUILayout.Button("CreateTiling", GUILayout.Height(40)))
             {
                 generator.CreateTiling();
-            }
-
-            GUILayout.Space(20);
-            if (GUILayout.Button("Reset Tiles",GUILayout.Height(40)))
-            {
-                generator.ResetTiling();
             }
         }
     }
