@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Photon.Pun;
 
 namespace Adventurer
 {
@@ -7,157 +8,295 @@ namespace Adventurer
     {
         #region References
         [Header("References")]
-        [SerializeField] private Transform playerCam;
-        [SerializeField] private Transform playerMesh;
-        [SerializeField] private Transform orientation;
+        [SerializeField, Tooltip("Transform of the playerCamera")]
+        private Transform playerCam;
+        [SerializeField, Tooltip("Transform of the playerMesh")]
+        private Transform playerMesh;
+        [SerializeField, Tooltip("Orientation Transform")]
+        private Transform orientation;
+
+        //Photon view component
+        private PhotonView _view;
+        //Player inputs component
         private PlayerInput _inputs;
+        //Rigidbody of the player
         private Rigidbody _rb;
+        //Animator component on the mesh
         private Animator _animator;
-        private EventsListener _events;
+        /// <summary>
+        /// Character Fighting component on the player
+        /// </summary>
         private CharacterFighting _fighting;
         #endregion
 
         #region Motion Variables
         [Header("Moton Variables")]
-        [SerializeField] private float walkSpeed = 5f;
-        [SerializeField] private float aimSpeed = 3f;
-        [SerializeField] private float runSpeed = 7f;
-        [SerializeField, Range(0f, 1f)] private float minRunValue = 0.75f;
-        [SerializeField, Range(0f, 1f)] private float lerpMotion = 0.1f;
+        [SerializeField, Tooltip("Speed while the player is walking")]
+        private float walkSpeed = 5f;
+
+        [SerializeField, Tooltip("Speed while the player is aiming")]
+        private float aimSpeed = 3f;
+
+        [SerializeField, Tooltip("Speed while the player is running")]
+        private float runSpeed = 7f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Inputs minimum value to run")]
+        private float minRunValue = 0.75f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Lerping value to calculates the motion speed")]
+        private float lerpMotion = 0.1f;
+
+        /// <summary>
+        /// Movement vector
+        /// </summary>
         private Vector3 _movement;
+        //Smooth input vector
         private Vector3 _smoothInputs;
+        /// <summary>
+        /// Movement multiplier applied on the motion speed
+        /// </summary>
         private float _movementMultiplier = 1f;
+        /// <summary>
+        /// Current target velocity
+        /// </summary>
         private float _targetVel;
         #endregion
 
         #region Rotation Variables
         [Header("Rotation Variables")]
-        [SerializeField, Range(0f, 1f)] private float lerpRotation = 0.1f;
+        [SerializeField, Range(0f, 1f), Tooltip("Lerping Value to calculates the rotation")]
+        private float lerpRotation = 0.1f;
+
+        //Ref to turn the player
         private float _turnVel;
         #endregion
 
         #region Ground Variables
         [Header("Ground Check Variables")]
-        [SerializeField] private Transform checkPosition;
-        [SerializeField, Range(0f, 1f)] private float checkRadius = 0.1f;
-        [SerializeField] private LayerMask groundMask;
+        [SerializeField, Tooltip("Transform position of the groundCheck")]
+        private Transform checkPosition;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Radius to check if the player is on ground")] 
+        private float checkRadius = 0.1f;
+
+        [SerializeField, Tooltip("Layer to detect the ground")]
+        private LayerMask groundMask;
         #endregion
 
         #region Slope Variables
         [Header("Slope Check Variables")]
-        [SerializeField, Range(0f, 1f)] private float slopeDistance = 0.5f;
-        [SerializeField] private LayerMask slopeMask;
+        [SerializeField, Tooltip("Slope detect Position")]
+        private Transform slopeCheckPosition;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Max slope detect distance")]
+        private float slopeDistance = 0.5f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Slope check radius")]
+        private float slopeRadius = 0.1f;
+
+        [SerializeField, Tooltip("Layer to detect slopes")] private LayerMask slopeMask;
         private RaycastHit _slopeHit;
         #endregion
 
         #region Gravity Variables
         [Header("Gravity Variables")]
-        [SerializeField] private float extraGravity = 3f;
-        [SerializeField] private float maxVerticalVel = 30f;
-        [SerializeField] private float minTimeInAir = 1f;
-        [SerializeField] private float maxTimeInAir = 3f;
+        [SerializeField, Tooltip("Extra gravity value applied on player")]
+        private float extraGravity = 3f;
+
+        [SerializeField, Tooltip("Maximum velocity on the World Y Axis")]
+        private float maxVerticalVel = 30f;
+
+        [SerializeField, Tooltip("Minimum value to the timeInAir timer")] 
+        private float minTimeInAir = 1f;
+
+        [SerializeField, Tooltip("Maximum time in air")] private float maxTimeInAir = 3f;
         private float _timeInAir;
         #endregion
 
         #region Dodge Variables
         [Header("Dodge Variables")]
-        [SerializeField] private float dodgeForce = 3f;
+        [SerializeField, Tooltip("Dodging force add towards the player")] private float dodgeForce = 3f;
         #endregion
 
         #region Animations Variables
         [Header("Animations Variables")]
-        [SerializeField, Range(0f, 1f)] private float lerpAnimInputs = 0.05f;
-        [SerializeField, Range(0f, 1f)] private float lerpAnimMotion = 0.05f;
+        [SerializeField, Range(0f, 1f), Tooltip("Lerping value to lerp inputs vector")]
+        private float lerpAnimInputs = 0.05f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Lerping value to lerp animation motion")] private float lerpAnimMotion = 0.05f;
         private float _animMotionSpeed;
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Direction inputs vector
+        /// </summary>
         public Vector2 DirectionInputs { get; private set; }
+        /// <summary>
+        /// Current Moving speed of the player
+        /// </summary>
         public float MoveSpeed { get; private set; }
+        /// <summary>
+        /// Current Movement Multiplier applied on Motion Speed
+        /// </summary>
         public float MovementMultiplier
         {
             get { return _movementMultiplier; }
             set { _movementMultiplier = value; }
         }
+        /// <summary>
+        /// Indicates if the player is grounded or not
+        /// </summary>
         public bool IsGrounded { get; private set; }
+        /// <summary>
+        /// Indicates if the player is on a slope
+        /// </summary>
         public bool IsOnSlope { get; private set; }
+        /// <summary>
+        /// Indicates if the player can move
+        /// </summary>
         public bool CanMove { get; private set; }
+        /// <summary>
+        /// Indicates if the player can run
+        /// </summary>
         public bool CanRun { get; private set; }
+        /// <summary>
+        /// Indicates if the player is currenlty running (read inputs)
+        /// </summary>
         public bool IsRunning { get; private set; }
+        /// <summary>
+        /// Indicates of the player can dodge
+        /// </summary>
         public bool CanDodge { get; private set; }
+        /// <summary>
+        /// indicates if the player is dodging (read inputs)
+        /// </summary>
         public bool IsDodging { get; private set; }
         #endregion
 
         #region Builts-In
         private void Awake()
         {
+            //Get the viewComponent
+            _view = GetComponent<PhotonView>();
+            //If this player is not local, don't execute
+            if (!_view.IsMine)
+                return;
+
+            //Local player
+            //Get inputs
             _inputs = GetComponent<PlayerInput>();
+            //Get rb
             _rb = GetComponent<Rigidbody>();
+            //Get Animator
             _animator = playerMesh.GetComponent<Animator>();
-            _events = GetComponent<EventsListener>();
+            //Get Fighting Comp
             _fighting = GetComponent<CharacterFighting>();
 
-
+            //Player can move
             EnableMovement();
+            //Player can run
             EnableRun();
+            //Player can dodge
             EnableDodge();
         }
 
         private void OnEnable()
         {
-            _inputs.ActivateInput();
+            //Not local player
+            if (!_view.IsMine)
+                return;
 
+            //Local
+            //Activates inputs
+            _inputs.ActivateInput();
+            //Subscribing to inputs events
             SubscribeToInputs();
         }
 
         private void OnDisable()
         {
-            _inputs.DeactivateInput();
+            //Not local
+            if (!_view.IsMine)
+                return;
 
+            //Local
+            //Deactivate Inputs
+            _inputs.DeactivateInput();
+            //Unsubscribe to inputs
             UnsubscribeToInputs();
         }
 
         private void Update()
         {
+            //Not local player
+            if (!_view.IsMine)
+                return;
+
+            //Local
+            //Set player orientation
             SetOrientation();
+            //Checking ground and slopes
             GroundCheck();
             SlopeCheck();
 
+            //Add extra gravity
             AdditionnalGravity();
+            //InAirTiming (Not grounded/Not onSlopes)
             InAirTime();
+            //Moving player
             HandleMotion();
+            //Moving player (Dodging)
             DodgeMovement(playerMesh.forward * dodgeForce);
 
+            //Updating animations
             UpdateAnimations();
         }
         #endregion
 
         #region Motion Methods
+        /// <summary>
+        /// Calculating player motion
+        /// </summary>
         private void HandleMotion()
         {
+            //Can't move
             if (!IsGrounded || !CanMove)
                 return;
 
+            //Get Motion speed
             MotionSpeed();
 
+            //Calculate direction Vector
             _movement = orientation.forward * DirectionInputs.y + orientation.right * DirectionInputs.x;
 
+            //Checking if the player is aiming
+            //Looking in the same direction as the camera
             if (_fighting.CanAim && _fighting.IsAiming)
                 AimRotate();
+            //Free tps view
             else
                 StandardRotate();
 
+            //Calculating on slope movement
+            //Project the direction vector on the normal of the slope 
             if (IsOnSlope)
                 _rb.velocity = Vector3.ProjectOnPlane(_movement, _slopeHit.normal) * MoveSpeed;
             else
                 _rb.velocity = _movement * MoveSpeed;
         }
 
+        /// <summary>
+        /// Player looking in the same direction as the camera
+        /// </summary>
         private void AimRotate()
         {
             playerMesh.rotation = Quaternion.Euler(0f, orientation.eulerAngles.y, 0f);
         }
 
+        /// <summary>
+        /// Free movement, free rotation, free life
+        /// </summary>
         private void StandardRotate()
         {
             if (DirectionInputs.magnitude >= 0.1f)
@@ -168,8 +307,12 @@ namespace Adventurer
             }
         }
 
+        /// <summary>
+        /// Calculate the motion speed
+        /// </summary>
         private void MotionSpeed()
         {
+            //Check all differents speeds
             if (IsIdled())
                 _targetVel = 0f;
             else if (_fighting.CanAim && _fighting.IsAiming)
@@ -179,8 +322,10 @@ namespace Adventurer
             else
                 _targetVel = walkSpeed;
 
+            //Apply the movement multiplier on the speed
             _targetVel *= _movementMultiplier;
 
+            //Lerping the currentSpeed Value with targetSpeed Value
             if (!Mathf.Approximately(MoveSpeed, _targetVel))
                 MoveSpeed = Mathf.Lerp(MoveSpeed, _targetVel, lerpMotion);
             else
@@ -190,39 +335,63 @@ namespace Adventurer
                 MoveSpeed = 0f;
         }
 
-        public void ImpulsePlayer(Vector3 movement)
+        /// <summary>
+        /// Impulsing the player in the direction
+        /// </summary>
+        /// <param name="direction">Impulse direction</param>
+        public void ImpulsePlayer(Vector3 direction)
         {
             _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
 
             if (IsOnSlope)
-                _rb.AddForce(Vector3.ProjectOnPlane(movement, _slopeHit.normal), ForceMode.VelocityChange);
+                _rb.AddForce(Vector3.ProjectOnPlane(direction, _slopeHit.normal), ForceMode.VelocityChange);
             else
-                _rb.AddForce(movement, ForceMode.VelocityChange);
+                _rb.AddForce(direction, ForceMode.VelocityChange);
         }
         #endregion
 
         #region Dodge Methods
+        /// <summary>
+        /// Trigger Dodge Method
+        /// </summary>
         private void Dodge(InputAction.CallbackContext ctx)
         {
+            //Can't Dodge
             if (!CanDodge || !IsGrounded || IsDodging)
                 return;
 
+            DodgeAnimationRPC();
+        }
+
+        [PunRPC]
+        private void DodgeAnimationRPC()
+        {
+            //Can Dodge
             _animator.SetTrigger("Dodge");
         }
 
-        private void DodgeMovement(Vector3 movement)
+        /// <summary>
+        /// Dodging Movement Method
+        /// </summary>
+        /// <param name="direction">Direction of the dodge</param>
+        private void DodgeMovement(Vector3 direction)
         {
+            //Not grounded
             if (!IsDodging || !IsGrounded)
                 return;
 
+            //Apply on slopes
             if (IsOnSlope)
-                _rb.velocity = Vector3.ProjectOnPlane(movement, _slopeHit.normal);
+                _rb.velocity = Vector3.ProjectOnPlane(direction, _slopeHit.normal);
             else
-                _rb.velocity = movement;
+                _rb.velocity = direction;
         }
         #endregion
 
         #region Gravity Methods
+        /// <summary>
+        /// Applying extra gravity on the player
+        /// </summary>
         private void AdditionnalGravity()
         {
             //Add extra gravity to the player in air
@@ -230,51 +399,71 @@ namespace Adventurer
                 _rb.AddForce(-transform.up * extraGravity * _timeInAir, ForceMode.Force);
         }
 
+        /// <summary>
+        /// Increasing gravity by the time the player stay inAir
+        /// </summary>
         private void InAirTime()
         {
+            //Grounded => Reset timer
             if (IsGrounded)
-            {
                 if (_timeInAir < maxTimeInAir)
                     _timeInAir += Time.deltaTime;
-            }
+            //Not grounded => Increase timer
             else
-            {
                 if (_timeInAir != minTimeInAir)
                     _timeInAir = minTimeInAir;
-            }
         }
         #endregion
 
         #region Checking Methods
+        /// <summary>
+        /// Setting player orientation
+        /// </summary>
         private void SetOrientation()
         {
             orientation.rotation = Quaternion.Euler(0f, playerCam.eulerAngles.y, 0f);
         }
 
+        /// <summary>
+        /// Checking if the player touches the ground
+        /// </summary>
         private void GroundCheck()
         {
+            //Casting a sphere on the ground
+            //Grounded
             if (Physics.CheckSphere(checkPosition.position, checkRadius, groundMask))
                 IsGrounded = true;
+            //Nor grounded
             else
                 IsGrounded = false;
         }
 
+        /// <summary>
+        /// Checking if the player touches the ground
+        /// </summary>
         private void SlopeCheck()
         {
-            if (Physics.Raycast(checkPosition.position, Vector3.down, out _slopeHit, slopeDistance, slopeMask) && _slopeHit.normal == Vector3.up)
-            {
-                IsOnSlope = false;
-                _rb.useGravity = true;
-            }
-            else
+            //Casting a sphere on the ground
+            //OnSlope
+            if (Physics.SphereCast(slopeCheckPosition.position, slopeRadius, Vector3.down, out _slopeHit, slopeDistance, slopeMask) && _slopeHit.normal != Vector3.zero)
             {
                 IsOnSlope = true;
                 _rb.useGravity = false;
             }
+            //Nor onSlope
+            else
+            {
+                IsOnSlope = false;
+                _rb.useGravity = true;
+            }
         }
 
+        /// <summary>
+        /// Indicates if the player is not moving
+        /// </summary>
         private bool IsIdled()
         {
+            
             if (DirectionInputs == Vector2.zero)
                 return true;
 
@@ -283,9 +472,14 @@ namespace Adventurer
         #endregion
 
         #region Animations Methods
+        /// <summary>
+        /// Updating player animations
+        /// </summary>
         private void UpdateAnimations()
         {
+            //Grounded
             _animator.SetBool("IsGrounded", IsGrounded);
+
 
             if (IsIdled())
                 _animator.SetBool("Inputs", true);
@@ -329,25 +523,37 @@ namespace Adventurer
         #endregion
 
         #region Events Listening
+        /// <summary>
+        /// Subscribe to inputs events
+        /// </summary>
         private void SubscribeToInputs()
         {
+            //Motion
             _inputs.actions["Motion"].performed += ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
             _inputs.actions["Motion"].canceled += ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
 
+            //Run
             _inputs.actions["Run"].started += ctx => IsRunning = ctx.ReadValueAsButton();
             _inputs.actions["Run"].canceled += ctx => IsRunning = ctx.ReadValueAsButton();
 
+            //Dodge
             _inputs.actions["Dodge"].started += Dodge;
         }
 
+        /// <summary>
+        /// Unsubscribe to inputs events
+        /// </summary>
         private void UnsubscribeToInputs()
         {
+            //Motion
             _inputs.actions["Motion"].performed -= ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
             _inputs.actions["Motion"].canceled -= ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
 
+            //Run
             _inputs.actions["Run"].started -= ctx => IsRunning = ctx.ReadValueAsButton();
             _inputs.actions["Run"].canceled -= ctx => IsRunning = ctx.ReadValueAsButton();
 
+            //Dodge
             _inputs.actions["Dodge"].started -= Dodge;
         }
         #endregion
@@ -355,8 +561,7 @@ namespace Adventurer
         private void OnDrawGizmosSelected()
         {
             Gizmos.DrawSphere(checkPosition.position, checkRadius);
-
-            Debug.DrawRay(checkPosition.position, Vector3.down * slopeDistance, Color.red);
+            Gizmos.DrawSphere(slopeCheckPosition.position, slopeRadius);
         }
     }
 }
