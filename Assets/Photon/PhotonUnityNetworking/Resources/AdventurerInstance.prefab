@@ -235,7 +235,7 @@ PrefabInstance:
     - target: {fileID: 2274973521700770326, guid: ed5b68d252d59de4cb34c0d717af028b,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[3].SynchronizeType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2274973521700770326, guid: ed5b68d252d59de4cb34c0d717af028b,
         type: 3}
@@ -265,12 +265,12 @@ PrefabInstance:
     - target: {fileID: 2274973521700770326, guid: ed5b68d252d59de4cb34c0d717af028b,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[9].SynchronizeType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2274973521700770326, guid: ed5b68d252d59de4cb34c0d717af028b,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[10].SynchronizeType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2287040587796309463, guid: ed5b68d252d59de4cb34c0d717af028b,
         type: 3}
@@ -663,8 +663,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 671396343, guid: 039e90acb0b992345b3d5f770f2a82e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 671396343, guid: 039e90acb0b992345b3d5f770f2a82e3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.6399999
+      value: -1.64
       objectReference: {fileID: 0}
     - target: {fileID: 671396344, guid: 039e90acb0b992345b3d5f770f2a82e3, type: 3}
       propertyPath: m_Follow
@@ -686,9 +690,23 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 3369058354996481084}
+    - target: {fileID: 1187677027, guid: 039e90acb0b992345b3d5f770f2a82e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 1981278700, guid: 039e90acb0b992345b3d5f770f2a82e3, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319716038214588062, guid: 039e90acb0b992345b3d5f770f2a82e3,
+        type: 3}
+      propertyPath: m_CollideAgainst.m_Bits
+      value: 2684354561
+      objectReference: {fileID: 0}
+    - target: {fileID: 3710134000557211060, guid: 039e90acb0b992345b3d5f770f2a82e3,
+        type: 3}
+      propertyPath: m_CollideAgainst.m_Bits
+      value: 2684354561
       objectReference: {fileID: 0}
     - target: {fileID: 6836602376029816001, guid: 039e90acb0b992345b3d5f770f2a82e3,
         type: 3}

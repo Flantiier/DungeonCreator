@@ -397,6 +397,9 @@ namespace Adventurer
             //Add extra gravity to the player in air
             if (!IsGrounded && _rb.velocity.y > -maxVerticalVel)
                 _rb.AddForce(-transform.up * extraGravity * _timeInAir, ForceMode.Force);
+
+            if (IsOnSlope && (_fighting.IsAttacking && _fighting.CanAttack))
+                _rb.AddForce(-transform.up * extraGravity * 0.1f, ForceMode.Force);
         }
 
         /// <summary>
@@ -446,16 +449,10 @@ namespace Adventurer
             //Casting a sphere on the ground
             //OnSlope
             if (Physics.SphereCast(slopeCheckPosition.position, slopeRadius, Vector3.down, out _slopeHit, slopeDistance, slopeMask) && _slopeHit.normal != Vector3.zero)
-            {
                 IsOnSlope = true;
-                _rb.useGravity = false;
-            }
-            //Nor onSlope
+            //Not onSlope
             else
-            {
                 IsOnSlope = false;
-                _rb.useGravity = true;
-            }
         }
 
         /// <summary>
@@ -510,16 +507,6 @@ namespace Adventurer
 
             _animator.SetFloat("MotionSpeed", _animMotionSpeed);
         }
-
-        public void EnableMovement() { CanMove = true;}
-        public void DisableMovement() { CanMove = false; }
-        public void SpeedReset() { _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f); }
-        public void EnableRun() { CanRun = true; }
-        public void DisableRun() { CanRun = false; }
-        public void EnableDodge() { CanDodge = true; }
-        public void StartDodgeAction() { IsDodging = true; }
-        public void DisableDodge() { CanDodge = false; }
-        public void EndDodgeAction() { IsDodging = false; }
         #endregion
 
         #region Events Listening
@@ -556,6 +543,15 @@ namespace Adventurer
             //Dodge
             _inputs.actions["Dodge"].started -= Dodge;
         }
+        public void EnableMovement() { CanMove = true; }
+        public void DisableMovement() { CanMove = false; }
+        public void SpeedReset() { _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f); }
+        public void EnableRun() { CanRun = true; }
+        public void DisableRun() { CanRun = false; }
+        public void EnableDodge() { CanDodge = true; }
+        public void StartDodgeAction() { IsDodging = true; }
+        public void DisableDodge() { CanDodge = false; }
+        public void EndDodgeAction() { IsDodging = false; }
         #endregion
 
         private void OnDrawGizmosSelected()

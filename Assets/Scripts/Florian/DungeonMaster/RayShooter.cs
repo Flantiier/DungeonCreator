@@ -33,13 +33,13 @@ public class RayShooter : MonoBehaviour
     //Last Tile hitted
     private Transform _lastTileHit;
     //Pivot to check tiles
-    public Vector3 _pivot;
+    private Vector3 _pivot;
     //Trap position
-    public Vector3 _trapPosition;
+    private Vector3 _trapPosition;
     //Offset Tiling Vector
-    public Vector2 _offsetVector;
+    private Vector2 _offsetVector;
     //Indicates if the ray touches something
-    public bool IsHitting;
+    private bool IsHitting;
     //Shooted ray on tiles
     private Ray _ray;
     private RaycastHit _rayHitting;
@@ -53,15 +53,25 @@ public class RayShooter : MonoBehaviour
     [SerializeField, Tooltip("Tiling Informations")]
     private TilingSO tilingInfos;
 
-    [SerializeField, Tooltip("Selected Trap")]
-    private Trap trap;
+    //SelectedTrap
+    public TrapSO trap { get; private set; }
 
     //Selected TrapTransform
-    public Transform trapTransform;
+    private Transform trapTransform;
     //Trap Angle
-    public float _trapAngle;
+    private float _trapAngle;
     //Indicates if the player can place a trap
-    public bool _canPlaceTrap;
+    private bool _canPlaceTrap;
+
+    public void SelectingTrap(TrapSO selectedTrap)
+    {
+        trap = selectedTrap;
+
+        if (trapTransform != null)
+            Destroy(trapTransform.gameObject);
+
+        trapTransform = Instantiate(selectedTrap.trapInstance.trapPrefab, Vector3.down * 20f, Quaternion.identity).transform;
+    }
     #endregion
 
     #region Builts-In Methods
@@ -179,8 +189,8 @@ public class RayShooter : MonoBehaviour
     public void GetPivotPosition()
     {
         //Get the bounds of the required tiling
-        float pivotX = Mathf.FloorToInt(trap.xAmount / 2) * _offsetVector.x;
-        float pivotZ = Mathf.FloorToInt(trap.yAmount / 2) * _offsetVector.y;
+        float pivotX = Mathf.FloorToInt(trap.trapInstance.xAmount / 2) * _offsetVector.x;
+        float pivotZ = Mathf.FloorToInt(trap.trapInstance.yAmount / 2) * _offsetVector.y;
 
         //Projecting the vector on the hitted surface
         projectedTransform.position = _rayHitting.transform.position;
@@ -208,7 +218,7 @@ public class RayShooter : MonoBehaviour
     /// </summary>
     public void SetTrapPosition()
     {
-        _trapPosition = _pivot - projectedTransform.right * ((trap.xAmount - 1f) * _offsetVector.x * 0.5f) - projectedTransform.forward * ((trap.yAmount - 1f) * _offsetVector.y * 0.5f);
+        _trapPosition = _pivot - projectedTransform.right * ((trap.trapInstance.xAmount - 1f) * _offsetVector.x * 0.5f) - projectedTransform.forward * ((trap.trapInstance.yAmount - 1f) * _offsetVector.y * 0.5f);
         trapTransform.position = _trapPosition;
     }
 
@@ -222,9 +232,9 @@ public class RayShooter : MonoBehaviour
         bool placeTrap = true;
 
         //For trap xAmount and yAmount of tiles, Displaying the tile like selected
-        for (int i = 0; i < trap.xAmount; i++)
+        for (int i = 0; i < trap.trapInstance.xAmount; i++)
         {
-            for (int j = 0; j < trap.yAmount; j++)
+            for (int j = 0; j < trap.trapInstance.yAmount; j++)
             {
                 //Defining a Vector to check the tile position
                 Vector3 castOrigin = _pivot - projectedTransform.right * _offsetVector.x * i - projectedTransform.forward * _offsetVector.y * j + trapTransform.up;
@@ -288,11 +298,11 @@ public class RayShooter : MonoBehaviour
     //Instantiate a trap at the calculated trapPostion
     private void InstantiateTrap(InputAction.CallbackContext ctx)
     {
-        if (!_canPlaceTrap)
+        if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             return;
 
         //Instantiate the trap
-        Instantiate(trap.trapPrefab, _trapPosition, projectedTransform.rotation);
+        Instantiate(trap.trapInstance.trapPrefab, _trapPosition, projectedTransform.rotation);
         //Changing the state of the used tiles for this trap
         ChangeTilesStates(Tile.TileState.Used);
 

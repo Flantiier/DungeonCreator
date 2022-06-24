@@ -18,7 +18,7 @@ namespace Adventurer
         [Header("Fighting Variables")]
         [SerializeField, Tooltip("Current player Abilities selected")]
         protected PlayerAbilities abilities;
-        
+
         [SerializeField, Tooltip("Maximum holding attacks value")]
         protected float maxHoldValue = 3f;
 
@@ -30,6 +30,9 @@ namespace Adventurer
 
         #region Animations References
         [Header("Animations Variables")]
+        [SerializeField, Tooltip("Animator component")]
+        protected bool overrideAnim;
+
         [SerializeField, Tooltip("Animator component")]
         protected Animator animator;
 
@@ -82,8 +85,11 @@ namespace Adventurer
             _events = GetComponent<EventsListener>();
 
             //Override abilities animations 
-            animatorOverrider.GetOverrideClips();
-            animatorOverrider.OverrideAnimations(abilities.currentAbilities[0].clip, abilities.currentAbilities[1].clip);
+            if (overrideAnim)
+            {
+                animatorOverrider.GetOverrideClips();
+                animatorOverrider.OverrideAnimations(abilities.currentAbilities[0].clip, abilities.currentAbilities[1].clip);
+            }
 
             //Player can attack
             EnableAttack();

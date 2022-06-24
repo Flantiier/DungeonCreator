@@ -9,6 +9,9 @@ namespace Tiling
         [SerializeField, Tooltip("Tiling Informations")]
         private TilingSO tiling;
 
+        [SerializeField, Tooltip("Resetting or not the position at 0")]
+        private bool resetAt0;
+
         [SerializeField, Tooltip("Tiles amount on X Axis")]
         private int xAmount;
 
@@ -25,8 +28,10 @@ namespace Tiling
         /// </summary>
         public void CreateTiling()
         {
-            //Resetting parent position
-            transform.position = Vector3.zero;
+            if(resetAt0)
+                //Resetting parent position
+                transform.position = Vector3.zero;
+
             //Resetting tiling
             Transform[] childs = transform.GetComponentsInChildren<Transform>();
 
@@ -41,24 +46,11 @@ namespace Tiling
                 for (int j = 0; j < yAmount; j++)
                 {
                     GameObject newTile = Instantiate(tiling.tilePrefab, transform);
-                    newTile.transform.position = new Vector3((tiling.tilePrefab.transform.localScale.x + tiling.xOffset) * i, yOffset,
+                    newTile.transform.position = transform.position + new Vector3((tiling.tilePrefab.transform.localScale.x + tiling.xOffset) * i, yOffset,
                                                         (tiling.tilePrefab.transform.localScale.y + tiling.yOffset) * j);
                 }
             }
         }
         #endregion
     }
-}
-
-[System.Serializable]
-public struct Trap
-{
-    [Tooltip("Trap prefab to instantiate")]
-    public GameObject trapPrefab;
-
-    [Range(1, 10), Tooltip("XAmount of required tiles")]
-    public int xAmount;
-
-    [Range(1, 10), Tooltip("YAmount of required tiles")]
-    public int yAmount;
 }
