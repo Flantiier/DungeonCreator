@@ -28,7 +28,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
             ""id"": ""3782464c-a55f-41a2-97e4-0c2e4ca56061"",
             ""actions"": [
                 {
-                    ""name"": ""Motion"",
+                    ""name"": ""Move"",
                     ""type"": ""Value"",
                     ""id"": ""8deae71b-928b-426f-b673-66e2264873d3"",
                     ""expectedControlType"": ""Vector2"",
@@ -102,13 +102,13 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": ""2D Vector"",
+                    ""name"": ""WASD/ZQSD"",
                     ""id"": ""173da773-4384-4a5b-9614-a36c51b758cf"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Motion"",
+                    ""action"": ""Move"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -118,8 +118,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -129,8 +129,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -140,8 +140,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -151,8 +151,8 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -162,7 +162,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""MK"",
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -173,7 +173,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""MK"",
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -236,11 +236,28 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""MK"",
+            ""bindingGroup"": ""MK"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
         // Controls
         m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
-        m_Controls_Motion = m_Controls.FindAction("Motion", throwIfNotFound: true);
+        m_Controls_Move = m_Controls.FindAction("Move", throwIfNotFound: true);
         m_Controls_Dodge = m_Controls.FindAction("Dodge", throwIfNotFound: true);
         m_Controls_Run = m_Controls.FindAction("Run", throwIfNotFound: true);
         m_Controls_Attack = m_Controls.FindAction("Attack", throwIfNotFound: true);
@@ -307,7 +324,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
     // Controls
     private readonly InputActionMap m_Controls;
     private IControlsActions m_ControlsActionsCallbackInterface;
-    private readonly InputAction m_Controls_Motion;
+    private readonly InputAction m_Controls_Move;
     private readonly InputAction m_Controls_Dodge;
     private readonly InputAction m_Controls_Run;
     private readonly InputAction m_Controls_Attack;
@@ -319,7 +336,7 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
     {
         private @Adventurer_CF m_Wrapper;
         public ControlsActions(@Adventurer_CF wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Motion => m_Wrapper.m_Controls_Motion;
+        public InputAction @Move => m_Wrapper.m_Controls_Move;
         public InputAction @Dodge => m_Wrapper.m_Controls_Dodge;
         public InputAction @Run => m_Wrapper.m_Controls_Run;
         public InputAction @Attack => m_Wrapper.m_Controls_Attack;
@@ -336,9 +353,9 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_ControlsActionsCallbackInterface != null)
             {
-                @Motion.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
-                @Motion.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
-                @Motion.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
+                @Move.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
                 @Dodge.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
                 @Dodge.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
                 @Dodge.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
@@ -364,9 +381,9 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Motion.started += instance.OnMotion;
-                @Motion.performed += instance.OnMotion;
-                @Motion.canceled += instance.OnMotion;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
@@ -392,9 +409,18 @@ public partial class @Adventurer_CF : IInputActionCollection2, IDisposable
         }
     }
     public ControlsActions @Controls => new ControlsActions(this);
+    private int m_MKSchemeIndex = -1;
+    public InputControlScheme MKScheme
+    {
+        get
+        {
+            if (m_MKSchemeIndex == -1) m_MKSchemeIndex = asset.FindControlSchemeIndex("MK");
+            return asset.controlSchemes[m_MKSchemeIndex];
+        }
+    }
     public interface IControlsActions
     {
-        void OnMotion(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);

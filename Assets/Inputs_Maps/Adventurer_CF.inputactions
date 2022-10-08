@@ -6,7 +6,7 @@
             "id": "3782464c-a55f-41a2-97e4-0c2e4ca56061",
             "actions": [
                 {
-                    "name": "Motion",
+                    "name": "Move",
                     "type": "Value",
                     "id": "8deae71b-928b-426f-b673-66e2264873d3",
                     "expectedControlType": "Vector2",
@@ -80,13 +80,13 @@
             ],
             "bindings": [
                 {
-                    "name": "2D Vector",
+                    "name": "WASD/ZQSD",
                     "id": "173da773-4384-4a5b-9614-a36c51b758cf",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Motion",
+                    "action": "Move",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -96,8 +96,8 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Motion",
+                    "groups": "MK",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -107,8 +107,8 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Motion",
+                    "groups": "MK",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -118,8 +118,8 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Motion",
+                    "groups": "MK",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -129,8 +129,8 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Motion",
+                    "groups": "MK",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -140,7 +140,7 @@
                     "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "MK",
                     "action": "Dodge",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -151,7 +151,7 @@
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "MK",
                     "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -214,5 +214,22 @@
             ]
         }
     ],
-    "controlSchemes": []
+    "controlSchemes": [
+        {
+            "name": "MK",
+            "bindingGroup": "MK",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
 }

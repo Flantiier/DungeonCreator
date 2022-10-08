@@ -27,9 +27,9 @@ namespace Adventurer
         private void Awake()
         {
             //Not local
-            _view = GetComponent<PhotonView>();
+            /*_view = GetComponent<PhotonView>();
             if (!_view.IsMine)
-                return;
+                return;*/
 
             //Local
             //Get Inputs 
@@ -39,8 +39,8 @@ namespace Adventurer
         private void FixedUpdate()
         {
             //Local
-            if (!_view.IsMine)
-                return;
+            /*if (!_view.IsMine)
+                return;*/
 
             //Not local
             //Rotate camera
