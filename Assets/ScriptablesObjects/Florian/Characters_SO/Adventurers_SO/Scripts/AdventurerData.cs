@@ -4,6 +4,6 @@ using UnityEngine;
 public class AdventurerData : ScriptableObject
 {
     [Header("Movements Info")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 5f;
     public float runSpeed = 8f;
 }
