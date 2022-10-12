@@ -10,3 +10,13 @@ public class PlayerAnimator : MonoBehaviour
         _controller = GetComponentInParent<PlayerController>();
     }
 }
+
+#region AdventurerStatic
+public static class AdvStaticAnim
+{
+    public static PlayerController GetPlayer(Animator animator)
+    {
+        return animator.GetComponent<PlayerAnimator>().Controller;
+    }
+}
+#endregion

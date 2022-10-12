@@ -9,6 +9,7 @@ public class FallingBehaviour : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        AdvStaticAnim.GetPlayer(animator).ResetAirTime();
         animator.SetBool("IsFalling", false);
     }
 }

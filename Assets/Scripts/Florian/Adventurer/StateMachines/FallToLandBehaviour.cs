@@ -4,19 +4,23 @@ public class FallToLandBehaviour : StateMachineBehaviour
 {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        PlayerController player = GetPlayer(animator);
+        //Reset player velocity when touch the ground
+        PlayerController player = AdvStaticAnim.GetPlayer(animator);
 
-        player.IsLanding = true;
-        player.ResetVelocity();
+        //Player is falling a long time
+        if (player.AirTime >= player.TimeToLand)
+        {
+            //Trigger landing animation
+            player.IsLanding = true;
+            animator.SetBool("Landing", true);
+            player.ResetVelocity();
+        }
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GetPlayer(animator).IsLanding = false;
-    }
-
-    private PlayerController GetPlayer(Animator animator)
-    {
-        return animator.GetComponent<PlayerAnimator>().Controller;
+        //Reset landing
+        AdvStaticAnim.GetPlayer(animator).IsLanding = false;
+        animator.SetBool("Landing", false);
     }
 }

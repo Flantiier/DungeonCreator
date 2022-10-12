@@ -820,10 +820,48 @@ MonoBehaviour:
   playerMesh: {fileID: 867563071}
   _inputs: {fileID: 975486513}
   inputsSmoothing: 0.1
+  groundDistance: 1
+  walkableMask:
+    serializedVersion: 2
+    m_Bits: 2147483648
   adventurerDatas: {fileID: 11400000, guid: 393ca4f807d5ede4fa3d72137e351063, type: 2}
   speedSmoothing: 0.15
   animationSmoothing: 0.075
   rotationSmoothing: 0.075
+  dodgeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.5166535
+      outSlope: 2.5166535
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.3269115
+    - serializedVersion: 3
+      time: 0.42803398
+      value: 4.8109655
+      inSlope: 0.5231118
+      outSlope: 0.5231118
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9
+      value: 0
+      inSlope: -2.717417
+      outSlope: -2.717417
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.15980542
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dodgeSpeed: 5
   camPrefab: {fileID: 6584256278214754568, guid: 039e90acb0b992345b3d5f770f2a82e3,
     type: 3}
   lookAt: {fileID: 854200122}
@@ -865,7 +903,8 @@ MonoBehaviour:
         m_LegacyHeadingDefinition: 0
         m_LegacyVelocityFilterStrength: 0
   gravityValue: 5
-  fallSmoothing: 0.09
+  fallSmoothing: 0.045
+  airTimeToLand: 1
 --- !u!4 &975486512
 Transform:
   m_ObjectHideFlags: 0

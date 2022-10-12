@@ -39,18 +39,18 @@ namespace AdventurerInputs
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Dodge"",
+                    ""name"": ""Run"",
                     ""type"": ""Button"",
-                    ""id"": ""41d8770c-6a73-457f-ae21-b23bc3296d2c"",
+                    ""id"": ""ab886c4d-e460-4bb8-9cfc-374bad69a1ea"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Run"",
+                    ""name"": ""Roll"",
                     ""type"": ""Button"",
-                    ""id"": ""ab886c4d-e460-4bb8-9cfc-374bad69a1ea"",
+                    ""id"": ""41d8770c-6a73-457f-ae21-b23bc3296d2c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -176,29 +176,18 @@ namespace AdventurerInputs
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MK"",
-                    ""action"": ""Dodge"",
+                    ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2bc036f5-05f5-473a-81d2-f14da2f8dfe6"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""id"": ""f26f9cfd-810b-4d06-afbf-b9f4a9e10436"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""MK"",
-                    ""action"": ""Run"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b146bd69-9627-4dcc-a84f-403220533f73"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""GamePad"",
-                    ""action"": ""Run"",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -267,6 +256,28 @@ namespace AdventurerInputs
                     ""action"": ""SecondAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2bc036f5-05f5-473a-81d2-f14da2f8dfe6"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b146bd69-9627-4dcc-a84f-403220533f73"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""GamePad"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -304,8 +315,8 @@ namespace AdventurerInputs
             // Controls
             m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
             m_Controls_Move = m_Controls.FindAction("Move", throwIfNotFound: true);
-            m_Controls_Dodge = m_Controls.FindAction("Dodge", throwIfNotFound: true);
             m_Controls_Run = m_Controls.FindAction("Run", throwIfNotFound: true);
+            m_Controls_Roll = m_Controls.FindAction("Roll", throwIfNotFound: true);
             m_Controls_Attack = m_Controls.FindAction("Attack", throwIfNotFound: true);
             m_Controls_Aim = m_Controls.FindAction("Aim", throwIfNotFound: true);
             m_Controls_Mouse = m_Controls.FindAction("Mouse", throwIfNotFound: true);
@@ -371,8 +382,8 @@ namespace AdventurerInputs
         private readonly InputActionMap m_Controls;
         private IControlsActions m_ControlsActionsCallbackInterface;
         private readonly InputAction m_Controls_Move;
-        private readonly InputAction m_Controls_Dodge;
         private readonly InputAction m_Controls_Run;
+        private readonly InputAction m_Controls_Roll;
         private readonly InputAction m_Controls_Attack;
         private readonly InputAction m_Controls_Aim;
         private readonly InputAction m_Controls_Mouse;
@@ -383,8 +394,8 @@ namespace AdventurerInputs
             private @Adventurer m_Wrapper;
             public ControlsActions(@Adventurer wrapper) { m_Wrapper = wrapper; }
             public InputAction @Move => m_Wrapper.m_Controls_Move;
-            public InputAction @Dodge => m_Wrapper.m_Controls_Dodge;
             public InputAction @Run => m_Wrapper.m_Controls_Run;
+            public InputAction @Roll => m_Wrapper.m_Controls_Roll;
             public InputAction @Attack => m_Wrapper.m_Controls_Attack;
             public InputAction @Aim => m_Wrapper.m_Controls_Aim;
             public InputAction @Mouse => m_Wrapper.m_Controls_Mouse;
@@ -402,12 +413,12 @@ namespace AdventurerInputs
                     @Move.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
                     @Move.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
                     @Move.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
-                    @Dodge.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
-                    @Dodge.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
-                    @Dodge.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnDodge;
                     @Run.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
                     @Run.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
                     @Run.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
+                    @Roll.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
+                    @Roll.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
+                    @Roll.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
                     @Attack.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
                     @Attack.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
                     @Attack.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
@@ -430,12 +441,12 @@ namespace AdventurerInputs
                     @Move.started += instance.OnMove;
                     @Move.performed += instance.OnMove;
                     @Move.canceled += instance.OnMove;
-                    @Dodge.started += instance.OnDodge;
-                    @Dodge.performed += instance.OnDodge;
-                    @Dodge.canceled += instance.OnDodge;
                     @Run.started += instance.OnRun;
                     @Run.performed += instance.OnRun;
                     @Run.canceled += instance.OnRun;
+                    @Roll.started += instance.OnRoll;
+                    @Roll.performed += instance.OnRoll;
+                    @Roll.canceled += instance.OnRoll;
                     @Attack.started += instance.OnAttack;
                     @Attack.performed += instance.OnAttack;
                     @Attack.canceled += instance.OnAttack;
@@ -476,8 +487,8 @@ namespace AdventurerInputs
         public interface IControlsActions
         {
             void OnMove(InputAction.CallbackContext context);
-            void OnDodge(InputAction.CallbackContext context);
             void OnRun(InputAction.CallbackContext context);
+            void OnRoll(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnAim(InputAction.CallbackContext context);
             void OnMouse(InputAction.CallbackContext context);

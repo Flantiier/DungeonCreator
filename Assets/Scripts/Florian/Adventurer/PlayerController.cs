@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor.ShaderGraph.Internal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -48,6 +50,27 @@ public class PlayerController : MonoBehaviour
     private float _turnVelocity;
     #endregion
 
+    #region Ground
+    [Header("Ground")]
+    /// <summary>
+    /// Ground detection distance
+    /// </summary>
+    [SerializeField] private float groundDistance = 1f;
+    // Walkable layer
+    [SerializeField] private LayerMask walkableMask;
+
+    #region GroundStateMachine
+    /// <summary>
+    /// Differents ground statements
+    /// </summary>
+    public enum GroundStates { Grounded, Falling }
+    //Current ground state
+    protected GroundStates _currentGroundState;
+    public bool IsLanding { get; set; }
+    #endregion
+
+    #endregion
+
     #region Character
     [Header("Character")]
     /// <summary>
@@ -59,7 +82,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Smoothing inputs value
     /// </summary>
-    [SerializeField, Range(0f, 0.3f)] private float speedSmoothing = 0.15f;
+    [SerializeField, Range(0f, 0.2f)] private float speedSmoothing = 0.15f;
     /// <summary>
     /// Smooth inputs value
     /// </summary>
@@ -68,6 +91,14 @@ public class PlayerController : MonoBehaviour
     /// Smooth inputs value
     /// </summary>
     [SerializeField, Range(0f, 0.2f)] private float rotationSmoothing = 0.75f;
+
+    [Space]
+
+    [SerializeField] private AnimationCurve dodgeCurve;
+    public AnimationCurve DodgeCurve => dodgeCurve;
+    public float dodgeSpeed = 5f;
+    //Dodge direction
+    private Vector2 _dodgeDir;
 
     [Header("Camera")]
     /// <summary>
@@ -84,8 +115,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CameraAxis cameraControls;
 
     //Current movement speed
-    private float _currentSpeed;
+    public float CurrentSpeed { get; private set; }
     private float _speedRef;
+    private bool _lowGround;
+
+    /// <summary>
+    /// Player StateMachine
+    /// </summary>
+    private PlayerStateMachine _playerStateMachine;
+    public PlayerStateMachine PlayerStateMachine => _playerStateMachine;
     #endregion
 
     #region Gravity
@@ -99,25 +137,22 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField, Range(0f, 0.2f)] private float fallSmoothing = 0.15f;
     /// <summary>
+    /// Air time max to trigger the landing animation
+    /// </summary>
+    [SerializeField] private float airTimeToLand = 1f;
+    public float TimeToLand => airTimeToLand;
+    /// <summary>
     /// Current air time ifnot grounded
     /// </summary>
     private float _airTime = 0.2f;
+    public float AirTime => _airTime;
 
     //Movement vector
     private Vector3 _movement;
     #endregion
 
-    #region GroundStateMachine
-    /// <summary>
-    /// Differents ground statements
-    /// </summary>
-    public enum GroundStates { Grounded, Falling }
-    //Current ground state
-    protected GroundStates _currentGroundState;
-    public bool IsLanding { get; set; }
     #endregion
 
-    #endregion
     #endregion
 
     #region Builts_In
@@ -129,6 +164,8 @@ public class PlayerController : MonoBehaviour
         _inputs = GetComponent<PlayerInput>();
         //Get the animator
         _animator = GetComponentInChildren<Animator>();
+        //New SM
+        _playerStateMachine = new PlayerStateMachine();
 
         //Create a camera
         InstantiateCamera();
@@ -154,6 +191,14 @@ public class PlayerController : MonoBehaviour
         HandleMotionMachine();
         UpdateAnimations();
     }
+
+    private void OnDrawGizmos()
+    {
+        if (LowGroundDetect())
+            Gizmos.color = Color.cyan;
+        else
+            Gizmos.color = Color.red;
+    }
     #endregion
 
     #region Methods
@@ -171,8 +216,12 @@ public class PlayerController : MonoBehaviour
         //Activate inputs map
         _inputs.ActivateInput();
 
+        //Inputs
+        _inputs.actions["Move"].performed += ctx => _inputsVector = ctx.ReadValue<Vector2>();
+        _inputs.actions["Move"].canceled += ctx => _inputsVector = Vector2.zero;
+
         //Dodge
-        //_inputs.actions["Dodge"].started += Dodge;
+        _inputs.actions["Roll"].started += StartDodge;
     }
 
     /// <summary>
@@ -187,8 +236,13 @@ public class PlayerController : MonoBehaviour
         //Deactivate inputs map
         _inputs.DeactivateInput();
 
+        //Inputs
+        _inputs.actions["Move"].performed -= ctx => _inputsVector = ctx.ReadValue<Vector2>();
+        _inputs.actions["Move"].canceled -= ctx => _inputsVector = Vector2.zero;
+
+
         //Dodge
-        //_inputs.actions["Dodge"].started -= Dodge;
+        _inputs.actions["Roll"].started -= StartDodge;
     }
     #endregion
 
@@ -215,25 +269,41 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleMotionMachine()
     {
-        _currentGroundState = _cc.isGrounded ? GroundStates.Grounded : GroundStates.Falling;
+        _currentGroundState = _cc.isGrounded || _lowGround ? GroundStates.Grounded : GroundStates.Falling;
 
         switch (_currentGroundState)
         {
             case GroundStates.Grounded:
-                if (!IsLanding)
-                {
-                    Debug.Log("Grounded");
-                    HandleMotion();
-                }
+
+                HandlePlayerSM();
                 break;
 
             case GroundStates.Falling:
-                Debug.Log("Falling");
+
+                //Debug.Log("Falling");
                 HandleFall();
                 break;
         }
 
         _cc.Move(_movement * Time.deltaTime);
+    }
+
+    private void HandlePlayerSM()
+    {
+        switch (_playerStateMachine.CurrentState)
+        {
+            case PlayerStateMachine.PlayerStates.Walk:
+
+                //Detecting low ground
+                _lowGround = LowGroundDetect();
+
+                if (!IsLanding)
+                {
+                    //Debug.Log("Grounded");
+                    HandleMotion();
+                }
+                break;
+        }
     }
 
     /// <summary>
@@ -245,7 +315,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         //Grounded
-        _animator.SetBool("IsGrounded", _currentGroundState == GroundStates.Grounded);
+        _animator.SetBool("IsGrounded", _currentGroundState == GroundStates.Grounded || _lowGround);
         //Inputs
         _animator.SetFloat("Inputs", _inputsVector.magnitude);
 
@@ -253,7 +323,7 @@ public class PlayerController : MonoBehaviour
         //current value
         float current = _animator.GetFloat("Motion");
         //Target value
-        float target = RunCondition() ? 2f : _currentSpeed >= adventurerDatas.walkSpeed ? 1f : _inputsVector.magnitude >= 0.1f ? _inputsVector.magnitude : 0f;
+        float target = RunCondition() ? 2f : CurrentSpeed >= adventurerDatas.walkSpeed ? 1f : _inputsVector.magnitude >= 0.1f ? _inputsVector.magnitude : 0f;
         //Lerp current
         float value = Mathf.Lerp(current, target, animationSmoothing);
         //Set value
@@ -273,12 +343,11 @@ public class PlayerController : MonoBehaviour
         GetMovementSpeed();
 
         //Calculate direction Vector
-        _inputsVector = _inputs.actions["Move"].ReadValue<Vector2>();
         _currentInputs = Vector2.SmoothDamp(_currentInputs, _inputsVector, ref _smoothInputs, inputsSmoothing);
 
         //Movement
         _movement = orientation.forward * _currentInputs.y + orientation.right * _currentInputs.x;
-        _movement *= _currentSpeed;
+        _movement *= CurrentSpeed;
         //Gravity
         _movement.y = -gravityValue;
 
@@ -298,7 +367,7 @@ public class PlayerController : MonoBehaviour
         else if (_inputsVector.magnitude >= 0.1f)
             target = adventurerDatas.walkSpeed;
 
-        _currentSpeed = Mathf.SmoothDamp(_currentSpeed, target, ref _speedRef, speedSmoothing);
+        CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, target, ref _speedRef, speedSmoothing);
     }
 
     /// <summary>
@@ -360,23 +429,64 @@ public class PlayerController : MonoBehaviour
     public void ResetVelocity()
     {
         _currentInputs = Vector2.zero;
-        _currentSpeed = 0f;
-        _airTime = 0f;
+        CurrentSpeed = 0f;
         _movement = new Vector3(0f, _movement.y, 0f);
     }
 
+    //Reset player airTime
+    public void ResetAirTime()
+    {
+        _airTime = 0f;
+    }
+
+    /// <summary>
+    /// Secondary check to ground
+    /// </summary>
+    public bool LowGroundDetect()
+    {
+        Ray ray = new Ray(transform.position + new Vector3(0f, 0.25f, 0f), -transform.up);
+        Debug.DrawRay(ray.origin, ray.direction * groundDistance);
+
+        if (Physics.Raycast(ray, groundDistance, walkableMask))
+            return true;
+
+        return false;
+    }
+
+    #endregion
+
+    #region Dodge
+    private void StartDodge(InputAction.CallbackContext ctx)
+    {
+        if (ctx.ReadValueAsButton() && !DodgeCondition())
+            return;
+
+        _dodgeDir = new Vector2(playerMesh.forward.x, playerMesh.forward.z);
+        _animator.SetTrigger("Dodging");
+    }
+
+    public void HandleDodgeMovement(float speed)
+    {
+        _movement = new Vector3(_dodgeDir.x, -gravityValue, _dodgeDir.y) * speed;
+    }
+
+    private bool DodgeCondition()
+    {
+        return _playerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll && _currentGroundState == GroundStates.Grounded;
+    }
     #endregion
 
     #endregion
 }
 
 #region PlayerStateMachine
-public class AdventurerSM
+[System.Serializable]
+public class PlayerStateMachine
 {
     /// <summary>
     /// Differents player states
     /// </summary>
-    public enum PlayerStates { Walk, Dodge, Attack }
+    public enum PlayerStates { Walk, Roll, Attack }
     /// <summary>
     /// Current player state
     /// </summary>

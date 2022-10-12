@@ -15,18 +15,18 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Dodge",
+                    "name": "Run",
                     "type": "Button",
-                    "id": "41d8770c-6a73-457f-ae21-b23bc3296d2c",
+                    "id": "ab886c4d-e460-4bb8-9cfc-374bad69a1ea",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Run",
+                    "name": "Roll",
                     "type": "Button",
-                    "id": "ab886c4d-e460-4bb8-9cfc-374bad69a1ea",
+                    "id": "41d8770c-6a73-457f-ae21-b23bc3296d2c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -152,29 +152,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "MK",
-                    "action": "Dodge",
+                    "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "2bc036f5-05f5-473a-81d2-f14da2f8dfe6",
-                    "path": "<Keyboard>/leftShift",
+                    "id": "f26f9cfd-810b-4d06-afbf-b9f4a9e10436",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "MK",
-                    "action": "Run",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b146bd69-9627-4dcc-a84f-403220533f73",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "GamePad",
-                    "action": "Run",
+                    "groups": "",
+                    "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -241,6 +230,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "SecondAbility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2bc036f5-05f5-473a-81d2-f14da2f8dfe6",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MK",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b146bd69-9627-4dcc-a84f-403220533f73",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
