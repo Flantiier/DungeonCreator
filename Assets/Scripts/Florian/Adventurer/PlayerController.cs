@@ -113,25 +113,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public enum GroundStates { Grounded, Falling }
     //Current ground state
-    private GroundStates _currentGroundState;
-    public GroundStates CurrentGroundState
-    {
-        get => _currentGroundState;
-        set
-        {
-            if (_currentGroundState != value)
-            {
-                _currentGroundState = value;
-
-                if (_currentGroundState == GroundStates.Grounded)
-                {
-                    _currentInputs = Vector3.zero;
-                    _currentSpeed = 0f;
-                    _airTime = 0.2f;
-                }
-            }
-        }
-    }
+    protected GroundStates _currentGroundState;
+    public bool IsLanding { get; set; }
     #endregion
 
     #endregion
@@ -232,13 +215,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleMotionMachine()
     {
-        CurrentGroundState = _cc.isGrounded ? GroundStates.Grounded : GroundStates.Falling;
+        _currentGroundState = _cc.isGrounded ? GroundStates.Grounded : GroundStates.Falling;
 
-        switch (CurrentGroundState)
+        switch (_currentGroundState)
         {
             case GroundStates.Grounded:
-                Debug.Log("Grounded");
-                HandleMotion();
+                if (!IsLanding)
+                {
+                    Debug.Log("Grounded");
+                    HandleMotion();
+                }
                 break;
 
             case GroundStates.Falling:
@@ -273,6 +259,7 @@ public class PlayerController : MonoBehaviour
         //Set value
         _animator.SetFloat("Motion", value);
     }
+
     #endregion
 
     #region Movements Methods
@@ -323,7 +310,7 @@ public class PlayerController : MonoBehaviour
         _airTime += Time.deltaTime;
 
         //Inputs
-        _movement = Vector3.Slerp(_movement, Vector3.zero, (fallSmoothing / 10f) * Time.deltaTime);
+        _movement = Vector3.Slerp(_movement, Vector3.zero, fallSmoothing / 10f);
         _movement.y = -gravityValue * _airTime;
 
     }
@@ -367,13 +354,24 @@ public class PlayerController : MonoBehaviour
         return _inputsVector.magnitude >= 0.8f && _inputs.actions["Run"].IsPressed();
     }
 
+    /// <summary>
+    /// Reset player momentum
+    /// </summary>
+    public void ResetVelocity()
+    {
+        _currentInputs = Vector2.zero;
+        _currentSpeed = 0f;
+        _airTime = 0f;
+        _movement = new Vector3(0f, _movement.y, 0f);
+    }
+
     #endregion
 
     #endregion
 }
 
 #region PlayerStateMachine
-public class PlayerStateMachine
+public class AdventurerSM
 {
     /// <summary>
     /// Differents player states

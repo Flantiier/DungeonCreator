@@ -317,6 +317,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &428908765 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e2ee342101394f0488d2266e97bef86e,
+    type: 3}
+  m_PrefabInstance: {fileID: 867563070}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &757076335
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +599,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e2ee342101394f0488d2266e97bef86e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e2ee342101394f0488d2266e97bef86e,
         type: 3}
@@ -670,6 +676,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 867563070}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &867563073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428908765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f037a7403261f7142b71657bd1f09e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &973897646
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +865,7 @@ MonoBehaviour:
         m_LegacyHeadingDefinition: 0
         m_LegacyVelocityFilterStrength: 0
   gravityValue: 5
-  fallSmoothing: 0.15
+  fallSmoothing: 0.09
 --- !u!4 &975486512
 Transform:
   m_ObjectHideFlags: 0
