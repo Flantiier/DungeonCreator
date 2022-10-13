@@ -28,7 +28,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7410422523886489363}
+  m_Father: {fileID: 8955808979263458784}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7410422523738750490
@@ -59,7 +59,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7410422523886489363}
+  m_Father: {fileID: 8955808979263458784}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7410422523886489359
@@ -70,7 +70,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7410422523886489363}
+  - component: {fileID: 8955808979263458784}
   - component: {fileID: 7410422523886489356}
   - component: {fileID: 7410422523886489362}
   - component: {fileID: 7410422523886489360}
@@ -83,8 +83,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7410422523886489363
-Transform:
+--- !u!224 &8955808979263458784
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -101,6 +101,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 636.5, y: 262.5}
+  m_SizeDelta: {x: 1273, y: 525}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7410422523886489356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +204,7 @@ MonoBehaviour:
         m_RecenteringTime: 0
         m_LegacyHeadingDefinition: 0
         m_LegacyVelocityFilterStrength: 0
+  trapManager: {fileID: 0}
   gravityValue: 5
   fallSmoothing: 0.045
   airTimeToLand: 1
@@ -295,7 +301,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 7410422523886489363}
+    m_TransformParent: {fileID: 8955808979263458784}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e2ee342101394f0488d2266e97bef86e,
         type: 3}

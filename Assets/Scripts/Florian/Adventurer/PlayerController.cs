@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     protected CharacterController _cc;
     //Player animator
     protected Animator _animator;
+    private float _health;
+
     #endregion
 
     #region Motion Variables
@@ -104,7 +106,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField] private AdventurerCameraSetup camPrefab;
     /// <summary>
-    ///¨Camera LookAt target
+    ///ï¿½Camera LookAt target
     /// </summary>
     [SerializeField] private Transform lookAt;
     /// <summary>
@@ -122,6 +124,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private PlayerStateMachine _playerStateMachine;
     public PlayerStateMachine PlayerStateMachine => _playerStateMachine;
+
+    //Trap Manager
+    private TrapManager _trapManager;
     #endregion
 
     #region Gravity
@@ -155,7 +160,11 @@ public class PlayerController : MonoBehaviour
 
     #region Builts_In
     public virtual void Awake()
-    {
+    {            
+        //add the tag Player for gameobject in awake
+        gameObject.tag = "Player";
+        //create health for the party
+        _health = adventurerDatas.health;
         //Get RB Component
         _cc = GetComponent<CharacterController>();
         //Get Inputs Component
@@ -474,6 +483,34 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    #region
+    //Trigger with Traps
+    private void OnTriggerEnter(Collider other)
+    {
+        //if the trap have the tag Trap
+        if(other.gameObject.tag == "Trap")
+        {
+            _trapManager = other.gameObject.GetComponentInChildren<TrapManager>();
+            //take damage if player touch trap no destructible
+            if(_trapManager.trapSO)
+            {
+                _health -= _trapManager.trapSO.damage;
+            }
+            //take damage if player touch trap destructible
+            else if(_trapManager.trapDestructibleSO)
+            {
+                _health -= _trapManager.trapDestructibleSO.damage;            
+            }
+
+            //if player have ni life, he's dead
+            if(_health <=0)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+    #endregion
+
     #endregion
 }
 
@@ -521,4 +558,3 @@ public class CameraAxis
     }
 }
 #endregion
-
