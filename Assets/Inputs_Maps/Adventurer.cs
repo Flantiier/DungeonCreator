@@ -75,7 +75,7 @@ namespace AdventurerInputs
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Mouse"",
+                    ""name"": ""Look"",
                     ""type"": ""Value"",
                     ""id"": ""d4d36912-9446-4df3-a300-108a92479d3f"",
                     ""expectedControlType"": """",
@@ -172,7 +172,7 @@ namespace AdventurerInputs
                 {
                     ""name"": """",
                     ""id"": ""bf3ec748-4280-425c-95b8-89f6f252f7e6"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MK"",
@@ -219,8 +219,8 @@ namespace AdventurerInputs
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Mouse"",
+                    ""groups"": ""MK"",
+                    ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -231,7 +231,7 @@ namespace AdventurerInputs
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
-                    ""action"": ""Mouse"",
+                    ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -271,7 +271,7 @@ namespace AdventurerInputs
                 {
                     ""name"": """",
                     ""id"": ""b146bd69-9627-4dcc-a84f-403220533f73"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
@@ -319,7 +319,7 @@ namespace AdventurerInputs
             m_Controls_Roll = m_Controls.FindAction("Roll", throwIfNotFound: true);
             m_Controls_Attack = m_Controls.FindAction("Attack", throwIfNotFound: true);
             m_Controls_Aim = m_Controls.FindAction("Aim", throwIfNotFound: true);
-            m_Controls_Mouse = m_Controls.FindAction("Mouse", throwIfNotFound: true);
+            m_Controls_Look = m_Controls.FindAction("Look", throwIfNotFound: true);
             m_Controls_FirstAbility = m_Controls.FindAction("FirstAbility", throwIfNotFound: true);
             m_Controls_SecondAbility = m_Controls.FindAction("SecondAbility", throwIfNotFound: true);
         }
@@ -386,7 +386,7 @@ namespace AdventurerInputs
         private readonly InputAction m_Controls_Roll;
         private readonly InputAction m_Controls_Attack;
         private readonly InputAction m_Controls_Aim;
-        private readonly InputAction m_Controls_Mouse;
+        private readonly InputAction m_Controls_Look;
         private readonly InputAction m_Controls_FirstAbility;
         private readonly InputAction m_Controls_SecondAbility;
         public struct ControlsActions
@@ -398,7 +398,7 @@ namespace AdventurerInputs
             public InputAction @Roll => m_Wrapper.m_Controls_Roll;
             public InputAction @Attack => m_Wrapper.m_Controls_Attack;
             public InputAction @Aim => m_Wrapper.m_Controls_Aim;
-            public InputAction @Mouse => m_Wrapper.m_Controls_Mouse;
+            public InputAction @Look => m_Wrapper.m_Controls_Look;
             public InputAction @FirstAbility => m_Wrapper.m_Controls_FirstAbility;
             public InputAction @SecondAbility => m_Wrapper.m_Controls_SecondAbility;
             public InputActionMap Get() { return m_Wrapper.m_Controls; }
@@ -425,9 +425,9 @@ namespace AdventurerInputs
                     @Aim.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
                     @Aim.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
                     @Aim.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
-                    @Mouse.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
-                    @Mouse.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
-                    @Mouse.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
+                    @Look.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
+                    @Look.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
+                    @Look.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
                     @FirstAbility.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnFirstAbility;
                     @FirstAbility.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnFirstAbility;
                     @FirstAbility.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnFirstAbility;
@@ -453,9 +453,9 @@ namespace AdventurerInputs
                     @Aim.started += instance.OnAim;
                     @Aim.performed += instance.OnAim;
                     @Aim.canceled += instance.OnAim;
-                    @Mouse.started += instance.OnMouse;
-                    @Mouse.performed += instance.OnMouse;
-                    @Mouse.canceled += instance.OnMouse;
+                    @Look.started += instance.OnLook;
+                    @Look.performed += instance.OnLook;
+                    @Look.canceled += instance.OnLook;
                     @FirstAbility.started += instance.OnFirstAbility;
                     @FirstAbility.performed += instance.OnFirstAbility;
                     @FirstAbility.canceled += instance.OnFirstAbility;
@@ -491,7 +491,7 @@ namespace AdventurerInputs
             void OnRoll(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnAim(InputAction.CallbackContext context);
-            void OnMouse(InputAction.CallbackContext context);
+            void OnLook(InputAction.CallbackContext context);
             void OnFirstAbility(InputAction.CallbackContext context);
             void OnSecondAbility(InputAction.CallbackContext context);
         }

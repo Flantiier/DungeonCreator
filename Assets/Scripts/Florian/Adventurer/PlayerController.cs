@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField, Range(0f, 0.3f)] private float inputsSmoothing = 0.1f;
 
-    private Vector2 _inputsVector;
+    public Vector2 InputsVector { get; private set; }
     /// <summary>
     /// Current input vector
     /// </summary>
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
     public AnimationCurve DodgeCurve => dodgeCurve;
     public float dodgeSpeed = 5f;
     //Dodge direction
-    private Vector2 _dodgeDir;
+    private Vector2 _overrideDir;
 
     [Header("Camera")]
     /// <summary>
@@ -107,6 +108,14 @@ public class PlayerController : MonoBehaviour
     ///¨Camera LookAt target
     /// </summary>
     [SerializeField] private Transform lookAt;
+    /// <summary>
+    /// Minimum camera FOV
+    /// </summary>
+    [SerializeField] private float minFov = 60f;
+    /// <summary>
+    /// Maximum camera FOV
+    /// </summary>
+    [SerializeField] private float maxFov = 90f;
     /// <summary>
     /// Camera control overall
     /// </summary>
@@ -182,12 +191,17 @@ public class PlayerController : MonoBehaviour
     public virtual void Update()
     {
         //Camera and player orientation
-        cameraControls.RotateCamera(lookAt, _inputs);
+        //cameraControls.RotateCamera(lookAt, _inputs);
         SetOrientation();
 
         //Movements
         HandleMotionMachine();
         UpdateAnimations();
+    }
+
+    public virtual void LateUpdate()
+    {
+        //DynamicFOV();
     }
 
     private void OnDrawGizmos()
@@ -215,11 +229,11 @@ public class PlayerController : MonoBehaviour
         _inputs.ActivateInput();
 
         //Inputs
-        _inputs.actions["Move"].performed += ctx => _inputsVector = ctx.ReadValue<Vector2>();
-        _inputs.actions["Move"].canceled += ctx => _inputsVector = Vector2.zero;
+        _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
+        _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
 
         //Dodge
-        _inputs.actions["Roll"].started += StartDodge;
+        _inputs.actions["Roll"].started += TriggerDodge;
     }
 
     /// <summary>
@@ -235,12 +249,12 @@ public class PlayerController : MonoBehaviour
         _inputs.DeactivateInput();
 
         //Inputs
-        _inputs.actions["Move"].performed -= ctx => _inputsVector = ctx.ReadValue<Vector2>();
-        _inputs.actions["Move"].canceled -= ctx => _inputsVector = Vector2.zero;
+        _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
+        _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
 
 
         //Dodge
-        _inputs.actions["Roll"].started -= StartDodge;
+        _inputs.actions["Roll"].started -= TriggerDodge;
     }
     #endregion
 
@@ -258,6 +272,12 @@ public class PlayerController : MonoBehaviour
         instance.SetLookAt(lookAt);
         //Set player camera
         _playerCam = instance.mainCam.transform;
+    }
+
+    private void DynamicFOV()
+    {
+        float fov = minFov + ((maxFov - minFov) * (CurrentSpeed / adventurerDatas.runSpeed));
+        fov = Mathf.Clamp(fov, minFov, maxFov);
     }
     #endregion
 
@@ -315,13 +335,13 @@ public class PlayerController : MonoBehaviour
         //Grounded
         _animator.SetBool("IsGrounded", _currentGroundState == GroundStates.Grounded || _lowGround);
         //Inputs
-        _animator.SetFloat("Inputs", _inputsVector.magnitude);
+        _animator.SetFloat("Inputs", InputsVector.magnitude);
 
         //Motion speed
         //current value
         float current = _animator.GetFloat("Motion");
         //Target value
-        float target = RunCondition() ? 2f : CurrentSpeed >= adventurerDatas.walkSpeed ? 1f : _inputsVector.magnitude >= 0.1f ? _inputsVector.magnitude : 0f;
+        float target = RunCondition() ? 2f : CurrentSpeed >= adventurerDatas.walkSpeed ? 1f : InputsVector.magnitude >= 0.1f ? InputsVector.magnitude : 0f;
         //Lerp current
         float value = Mathf.Lerp(current, target, animationSmoothing);
         //Set value
@@ -337,11 +357,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleMotion()
     {
-        //Set speed
-        GetMovementSpeed();
-
         //Calculate direction Vector
-        _currentInputs = Vector2.SmoothDamp(_currentInputs, _inputsVector, ref _smoothInputs, inputsSmoothing);
+        _currentInputs = Vector2.SmoothDamp(_currentInputs, InputsVector, ref _smoothInputs, inputsSmoothing);
+
+        //Set speed
+        UpdateSpeed(GetMovementSpeed());
 
         //Movement
         _movement = orientation.forward * _currentInputs.y + orientation.right * _currentInputs.x;
@@ -354,34 +374,59 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Set the current speed of the player
+    /// Method to update the motion speed
     /// </summary>
-    private void GetMovementSpeed()
+    private void UpdateSpeed(float targetSpeed)
     {
-        float target = 0f;
-
-        if (RunCondition())
-            target = adventurerDatas.runSpeed;
-        else if (_inputsVector.magnitude >= 0.1f)
-            target = adventurerDatas.walkSpeed;
-
-        CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, target, ref _speedRef, speedSmoothing);
+        //Set speed
+        CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, targetSpeed, ref _speedRef, speedSmoothing);
     }
 
     /// <summary>
-    /// Handle fall movement
+    /// Set the current speed of the player
     /// </summary>
-    private void HandleFall()
+    public float GetMovementSpeed()
     {
-        //Increase air time
-        _airTime += Time.deltaTime;
+        if (RunCondition())
+            return adventurerDatas.runSpeed;
+        else if (InputsVector.magnitude >= 0.1f)
+            return adventurerDatas.walkSpeed;
 
-        //Inputs
-        _movement = Vector3.Slerp(_movement, Vector3.zero, fallSmoothing / 10f);
-        _movement.y = -gravityValue * _airTime;
-
+        return 0f;
     }
 
+    /// <summary>
+    /// Return a speed between motion speed bounds
+    /// </summary>
+    /// <returns></returns>
+    public float DodgeSpeed()
+    {
+        if (RunCondition())
+            return adventurerDatas.runSpeed;
+
+        return adventurerDatas.walkSpeed;
+    }
+
+    /// <summary>
+    /// Return if the player can run
+    /// </summary>
+    /// <returns></returns>
+    private bool RunCondition()
+    {
+        return InputsVector.magnitude >= 0.8f && _inputs.actions["Run"].IsPressed();
+    }
+
+    /// <summary>
+    /// Reset player momentum
+    /// </summary>
+    public void ResetVelocity()
+    {
+        _currentInputs = Vector2.zero;
+        CurrentSpeed = 0f;
+        _movement = new Vector3(0f, _movement.y, 0f);
+    }
+
+    #region Rotations
     /// <summary>
     /// Setting player orientation
     /// </summary>
@@ -404,31 +449,27 @@ public class PlayerController : MonoBehaviour
         if (!playerMesh)
             return;
 
-        if (_inputsVector.magnitude >= 0.1f)
+        if (InputsVector.magnitude >= 0.1f)
         {
-            float angle = Mathf.Atan2(_inputsVector.x, _inputsVector.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
+            float angle = Mathf.Atan2(InputsVector.x, InputsVector.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
             float smoothAngle = Mathf.SmoothDampAngle(playerMesh.eulerAngles.y, angle, ref _turnVelocity, rotationSmoothing);
             playerMesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
         }
     }
+    #endregion
 
+    #region Fall
     /// <summary>
-    /// Return if the player can run
+    /// Handle fall movement
     /// </summary>
-    /// <returns></returns>
-    private bool RunCondition()
+    private void HandleFall()
     {
-        return _inputsVector.magnitude >= 0.8f && _inputs.actions["Run"].IsPressed();
-    }
+        //Increase air time
+        _airTime += Time.deltaTime;
 
-    /// <summary>
-    /// Reset player momentum
-    /// </summary>
-    public void ResetVelocity()
-    {
-        _currentInputs = Vector2.zero;
-        CurrentSpeed = 0f;
-        _movement = new Vector3(0f, _movement.y, 0f);
+        //Inputs
+        _movement = Vector3.Slerp(_movement, Vector3.zero, fallSmoothing / 10f);
+        _movement.y = -gravityValue * _airTime;
     }
 
     //Reset player airTime
@@ -450,24 +491,40 @@ public class PlayerController : MonoBehaviour
 
         return false;
     }
+    #endregion
 
     #endregion
 
     #region Dodge
-    private void StartDodge(InputAction.CallbackContext ctx)
+    /// <summary>
+    /// Method to start the dodge
+    /// </summary>
+    private void TriggerDodge(InputAction.CallbackContext ctx)
     {
-        if (ctx.ReadValueAsButton() && !DodgeCondition())
+        //Dan't dodge
+        if (!DodgeCondition())
             return;
 
-        _dodgeDir = new Vector2(playerMesh.forward.x, playerMesh.forward.z);
+        //Override direction
+        _overrideDir = new Vector2(playerMesh.forward.x, playerMesh.forward.z);
+        //Set animation
         _animator.SetTrigger("Dodging");
     }
 
+    /// <summary>
+    /// Handle the dodge movement
+    /// </summary>
     public void HandleDodgeMovement(float speed)
     {
-        _movement = new Vector3(_dodgeDir.x, -gravityValue, _dodgeDir.y) * speed;
+        //Update the current speed
+        UpdateSpeed(speed);
+        //Set the player movement
+        _movement = new Vector3(_overrideDir.x, -gravityValue, _overrideDir.y) * CurrentSpeed;
     }
 
+    /// <summary>
+    /// Dodge condition
+    /// </summary>
     private bool DodgeCondition()
     {
         return _playerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll && _currentGroundState == GroundStates.Grounded;

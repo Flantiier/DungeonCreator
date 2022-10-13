@@ -10,24 +10,24 @@ public class RollBehaviour : StateMachineBehaviour
 
         //Set the player state
         player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Roll;
+
         //Create a new curve
         _curve = new AnimationCurve(player.DodgeCurve.keys);
         //Set the first key value to curretn speed value
-        _curve.MoveKey(0, new Keyframe(_curve.keys[0].time, player.CurrentSpeed));
+        player.DodgeCurve.MoveKey(0, new Keyframe(_curve.keys[0].time, player.CurrentSpeed));
 
-        player.ResetVelocity() ;
+        //Set the speed at the end of the dodge
+        float endSpeed = player.DodgeSpeed();
+        player.DodgeCurve.MoveKey(2, new Keyframe(_curve.keys[2].time, endSpeed));
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         PlayerController player = AdvStaticAnim.GetPlayer(animator);
 
-        float speed = _curve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
-        player.HandleDodgeMovement(speed);
-    }
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        AdvStaticAnim.GetPlayer(animator).PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+        //Determines the player speed by reading a curve
+        float dodgeSpeed = player.DodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
+        //Apply the readed speed to the player movement
+        player.HandleDodgeMovement(dodgeSpeed);
     }
 }
