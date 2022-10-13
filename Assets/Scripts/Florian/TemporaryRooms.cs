@@ -18,14 +18,14 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        if (PhotonNetwork.MasterClient.IsLocal)
+        /*if (PhotonNetwork.MasterClient.IsLocal)
         {
             InstantiateMasterRPC();
         }
         else
-        {
+        {*/
             InstantiateAdventurerRPC();
-        }
+        //}
     }
     public void InstantiateMasterRPC()
     {

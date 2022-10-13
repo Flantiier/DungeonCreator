@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.ShaderGraph.Internal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -275,6 +273,9 @@ public class PlayerController : MonoBehaviour
         {
             case GroundStates.Grounded:
 
+                //Detecting low ground
+                _lowGround = LowGroundDetect();
+                //Handle player motion
                 HandlePlayerSM();
                 break;
 
@@ -293,9 +294,6 @@ public class PlayerController : MonoBehaviour
         switch (_playerStateMachine.CurrentState)
         {
             case PlayerStateMachine.PlayerStates.Walk:
-
-                //Detecting low ground
-                _lowGround = LowGroundDetect();
 
                 if (!IsLanding)
                 {
