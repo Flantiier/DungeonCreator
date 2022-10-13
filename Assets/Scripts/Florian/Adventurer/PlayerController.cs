@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 public class PlayerController : MonoBehaviour
 {
     #region Variables
+
     #region Global
     [Header("References")]
     /// <summary>
@@ -93,9 +94,10 @@ public class PlayerController : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private AnimationCurve dodgeCurve;
-    public AnimationCurve DodgeCurve => dodgeCurve;
-    public float dodgeSpeed = 5f;
+    /// <summary>
+    /// Dodge bounce speed
+    /// </summary>    
+    public float dodgeSpeed = 10f;
     //Dodge direction
     private Vector2 _overrideDir;
 
@@ -108,14 +110,6 @@ public class PlayerController : MonoBehaviour
     ///¨Camera LookAt target
     /// </summary>
     [SerializeField] private Transform lookAt;
-    /// <summary>
-    /// Minimum camera FOV
-    /// </summary>
-    [SerializeField] private float minFov = 60f;
-    /// <summary>
-    /// Maximum camera FOV
-    /// </summary>
-    [SerializeField] private float maxFov = 90f;
     /// <summary>
     /// Camera control overall
     /// </summary>
@@ -199,11 +193,6 @@ public class PlayerController : MonoBehaviour
         UpdateAnimations();
     }
 
-    public virtual void LateUpdate()
-    {
-        //DynamicFOV();
-    }
-
     private void OnDrawGizmos()
     {
         if (LowGroundDetect())
@@ -272,12 +261,6 @@ public class PlayerController : MonoBehaviour
         instance.SetLookAt(lookAt);
         //Set player camera
         _playerCam = instance.mainCam.transform;
-    }
-
-    private void DynamicFOV()
-    {
-        float fov = minFov + ((maxFov - minFov) * (CurrentSpeed / adventurerDatas.runSpeed));
-        fov = Mathf.Clamp(fov, minFov, maxFov);
     }
     #endregion
 

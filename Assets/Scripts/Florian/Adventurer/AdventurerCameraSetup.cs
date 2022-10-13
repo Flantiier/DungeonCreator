@@ -13,7 +13,7 @@ public class AdventurerCameraSetup : MonoBehaviour
         mainVCam.Follow = target;
         mainVCam.LookAt = target;
         //Aim
-        //aimVCam.Follow = target;
-        //aimVCam.LookAt = target;
+        aimVCam.Follow = target;
+        aimVCam.LookAt = target;
     }
 }

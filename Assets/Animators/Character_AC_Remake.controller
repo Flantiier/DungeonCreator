@@ -405,6 +405,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cdfe4a81c9ffb4d94b8f009d0db43e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 7.0651464
+      outSlope: 7.0651464
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.25480393
+    - serializedVersion: 3
+      time: 0.5
+      value: 5
+      inSlope: 0.18658884
+      outSlope: 0.18658884
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.39512897
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -14.101769
+      outSlope: -14.101769
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.107146144
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1101 &829779524879313075
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -772,7 +805,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Roll
-  m_Speed: 1.5
+  m_Speed: 1.75
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 829779524879313075}
