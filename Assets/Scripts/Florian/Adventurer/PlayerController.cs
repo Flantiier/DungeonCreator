@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using Unity.VisualScripting;
+using _Scripts.Characters.StateMachines;
 
 public class PlayerController : MonoBehaviour
 {
@@ -76,8 +77,8 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Move speed value
     /// </summary>
-    [SerializeField] private AdventurerData adventurerDatas;
-    public AdventurerData AdventurerDatas => adventurerDatas;
+    [SerializeField] private AdventurerDatas adventurerDatas;
+    public AdventurerDatas AdventurerDatas => adventurerDatas;
 
     /// <summary>
     /// Smoothing inputs value
@@ -258,9 +259,9 @@ public class PlayerController : MonoBehaviour
 
         //Create a new Camera
         AdventurerCameraSetup instance = Instantiate(camPrefab);
-        instance.SetLookAt(lookAt);
+        //instance.SetCameraInfo(this, lookAt);
         //Set player camera
-        _playerCam = instance.mainCam.transform;
+        _playerCam = instance.MainCam.transform;
     }
     #endregion
 
@@ -516,21 +517,6 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 }
-
-#region PlayerStateMachine
-[System.Serializable]
-public class PlayerStateMachine
-{
-    /// <summary>
-    /// Differents player states
-    /// </summary>
-    public enum PlayerStates { Walk, Roll, Attack }
-    /// <summary>
-    /// Current player state
-    /// </summary>
-    public PlayerStates CurrentState { get; set; }
-}
-#endregion
 
 #region CameraAxisValues
 [System.Serializable]

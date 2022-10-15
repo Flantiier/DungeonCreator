@@ -172,7 +172,7 @@ namespace PlayerInputs
                 {
                     ""name"": """",
                     ""id"": ""bf3ec748-4280-425c-95b8-89f6f252f7e6"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MK"",
@@ -186,7 +186,7 @@ namespace PlayerInputs
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""GamePad"",
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

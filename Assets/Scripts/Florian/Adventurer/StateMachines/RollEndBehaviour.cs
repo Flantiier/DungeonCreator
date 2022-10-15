@@ -1,9 +1,13 @@
 using UnityEngine;
+using _Scripts.Characters.StateMachines;
 
-public class RollEndBehaviour : StateMachineBehaviour
+namespace _Scripts.Characters.Animations.StateMachines
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class RollEndBehaviour : NetworkStateMachine
     {
-        AdvStaticAnim.GetPlayer(animator).PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            CharacterAnimation.GetPlayer(animator).PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+        }
     }
 }

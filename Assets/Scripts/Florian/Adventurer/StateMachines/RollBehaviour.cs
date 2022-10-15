@@ -1,33 +1,32 @@
 using UnityEngine;
+using _Scripts.Characters.StateMachines;
 
-public class RollBehaviour : StateMachineBehaviour
+namespace _Scripts.Characters.Animations.StateMachines
 {
-    //Curv to read dodge vel
-    [SerializeField] private AnimationCurve curve;
-
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class RollBehaviour : NetworkStateMachine
     {
-        PlayerController player = AdvStaticAnim.GetPlayer(animator);
+        [SerializeField] private AnimationCurve dodgeCurve;
 
-        //Set the player state
-        player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Roll;
+        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            Character player = CharacterAnimation.GetPlayer(animator);
 
-        //Create a new curve
-        float startVel = player.CurrentSpeed;
-        //Set the momentum curve
-        curve = new AnimationCurve(curve.keys);
-        curve.MoveKey(0, new Keyframe(curve.keys[0].time, startVel));
-        curve.MoveKey(1, new Keyframe(curve.keys[1].time, player.dodgeSpeed));
-        curve.MoveKey(2, new Keyframe(curve.keys[2].time, startVel));
-    }
+            player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Roll;
 
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        PlayerController player = AdvStaticAnim.GetPlayer(animator);
+            float startVel = player.CurrentSpeed;
 
-        //Determines the player speed by reading a curve
-        float dodgeSpeed = curve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
-        //Apply the readed speed to the player movement
-        player.HandleDodgeMovement(dodgeSpeed);
+            dodgeCurve = new AnimationCurve(dodgeCurve.keys);
+            dodgeCurve.MoveKey(0, new Keyframe(dodgeCurve.keys[0].time, startVel));
+            dodgeCurve.MoveKey(1, new Keyframe(dodgeCurve.keys[1].time, player.DodgeSpeed));
+            dodgeCurve.MoveKey(2, new Keyframe(dodgeCurve.keys[2].time, startVel));
+        }
+
+        protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            Character player = CharacterAnimation.GetPlayer(animator);
+
+            float dodgeSpeed = dodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
+            player.HandleDodgeMovement(dodgeSpeed);
+        }
     }
 }

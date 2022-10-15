@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class FallingBehaviour : StateMachineBehaviour
+namespace _Scripts.Characters.Animations.StateMachines
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class FallingBehaviour : NetworkStateMachine
     {
-        animator.SetBool("IsFalling", true);
-    }
+        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            animator.SetBool("IsFalling", true);
+        }
 
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        AdvStaticAnim.GetPlayer(animator).ResetAirTime();
-        animator.SetBool("IsFalling", false);
+        protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            CharacterAnimation.GetPlayer(animator).ResetAirTime();
+            animator.SetBool("IsFalling", false);
+        }
     }
 }

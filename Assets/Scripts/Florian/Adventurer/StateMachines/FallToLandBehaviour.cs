@@ -1,26 +1,25 @@
 using UnityEngine;
 
-public class FallToLandBehaviour : StateMachineBehaviour
+namespace _Scripts.Characters.Animations.StateMachines
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class FallToLandBehaviour : NetworkStateMachine
     {
-        //Reset player velocity when touch the ground
-        PlayerController player = AdvStaticAnim.GetPlayer(animator);
-
-        //Player is falling a long time
-        if (player.AirTime >= player.TimeToLand)
+        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            //Trigger landing animation
-            player.IsLanding = true;
-            animator.SetBool("Landing", true);
-            player.ResetVelocity();
-        }
-    }
+            Character player = CharacterAnimation.GetPlayer(animator);
 
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        //Reset landing
-        AdvStaticAnim.GetPlayer(animator).IsLanding = false;
-        animator.SetBool("Landing", false);
+            if (player.AirTime >= 1f)
+            {
+                player.GroundStateMachine.IsLanding = true;
+                animator.SetBool("Landing", true);
+                player.ResetVelocity();
+            }
+        }
+
+        protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            CharacterAnimation.GetPlayer(animator).GroundStateMachine.IsLanding = false;
+            animator.SetBool("Landing", false);
+        }
     }
 }
