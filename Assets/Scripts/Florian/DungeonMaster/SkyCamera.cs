@@ -1,191 +1,389 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using Photon.Pun;
+using _Scripts.Characters.Cameras;
+using _Scripts.TrapSystem;
+using UnityEngine.Rendering;
+using System;
 
-public class SkyCamera : MonoBehaviour
+namespace _Scripts.Character.Cameras
 {
-    #region References Variables
-    [Header("Camera References")]
-    [SerializeField, Tooltip("Referencing the virtualCam of the player")]
-    private CinemachineVirtualCamera vCam;
-
-    [SerializeField, Tooltip("Referencing the orientation transform")]
-    private Transform orientation;
-
-    //PView Comp
-    private PhotonView _view;
-    //ThirdPersonFollow Comp on vCam
-    private Cinemachine3rdPersonFollow _thirdPerson;
-    //Player Inputs Comp
-    private PlayerInput _inputs;
-    #endregion
-
-    #region Camera Motion Variables
-    [Header("Camera Movements")]
-    [SerializeField, Tooltip("Camera Moving speed")]
-    private float movingSpeed = 10f;
-
-    [SerializeField, Tooltip("Rotate speed value")]
-    private float rotateSpeed = 75f;
-
-    [Header("Camera Repositionning")]
-    [SerializeField, Range(1f, 2f), Tooltip("Speed Scroll multiplier")]
-    private float scrollingMultilier = 1.25f;
-
-    [SerializeField, Tooltip("Maximum distance on the Y Axis")]
-    private float maxUpDistance = 40f;
-
-    [SerializeField, Tooltip("Minimum zoom angle (90 - value)")]
-    private float minZoomValue = 10f;
-
-    [SerializeField, Tooltip("Maximum zoom angle (90 - value)")]
-    private float maxZoomValue = 50f;
-
-    /// <summary>
-    /// Indicates the direction of the rotation on inputs
-    /// </summary>
-    private Vector2 _inputsRotation;
-    #endregion
-
-    #region Properties
-    /// <summary>
-    /// Direction Inputs vector
-    /// </summary>
-    public Vector2 DirectionInputs { get; private set; }
-    #endregion
-
-    #region Builts-In Methods
-    private void Awake()
+    public class SkyCamera : MonoBehaviour
     {
-        //Get View
-        _view = transform.root.GetComponent<PhotonView>();
+        #region Variables
+        [Header("References")]
+        [SerializeField] private DMSkyCamera cameraPrefab;
+        [SerializeField] private Transform orientation;
+        [SerializeField] private Transform projectedTransform;
 
-        //Not local
-        if (!_view.IsMine)
-            return;
+        private PlayerInput _inputs;
+        private DMSkyCamera _myCamera;
+        private CinemachineTransposer _transposer;
 
-        //Local
-        //Get Inputs
-        _inputs = GetComponent<PlayerInput>();
-        //Get ThirdPersonFollow Comp on the vCam
-        _thirdPerson = vCam.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        #region Motion
+        [Header("Inputs")]
+        [SerializeField] private float moveSpeed = 20f;
+        [SerializeField] private float rotateSpeed = 75f;
+
+        private Vector2 _rotationInputs;
+        private Vector3 _targetAngle;
+        private float _scrollStep;
+
+        [Header("Camera angle")]
+        [SerializeField] private float scrollSteps = 10f;
+        [SerializeField, Range(0f, 0.1f)] private float scrollSmoothing = 0.05f;
+        [SerializeField] private Vector3 zoomRatio = new Vector3(20f, 35f, 50f);
+        [SerializeField] private Vector3 distanceRatio = new Vector3(5f, 10f, 20f);
+        #endregion
+
+        #region RayCasting Variables
+        [Header("Tiling Infos")]
+        [SerializeField] private TilingSO tilingInfos;
+        [SerializeField] private float checkRadius = 0.25f;
+        [SerializeField] private float maxCheckDistance = 2f;
+        [SerializeField] private LayerMask tilesMask;
+
+        public static TrapSO _selectedTrap;
+        public static Transform _selectedTrapInstance;
+        private Transform _lastTileHitted;
+        private List<Tile> _reachedTiles = new List<Tile>();
+        private RaycastHit _rayHit;
+        private float _selectedTrapRotation;
+        private bool _isHitting;
+        private bool _canPlaceTrap;
+        #endregion
+
+        #endregion
+
+        #region Properties
+        public Vector2 InputsVector { get; private set; }
+        #endregion
+
+        #region Builts_In
+        private void Awake()
+        {
+            _inputs = GetComponent<PlayerInput>();
+
+            _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<DMSkyCamera>();
+            _myCamera.SetCamera(orientation);
+            _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
+        }
+
+        private void OnEnable()
+        {
+            SubscribeToInputs();
+        }
+
+        private void OnDisable()
+        {
+            UnsubscribeToInputs();
+        }
+
+        private void Update()
+        {
+            HandleCameraMovements();
+            ShootTileRay();
+            UpdateCameraAngle();
+        }
+        #endregion
+
+        #region Methods
+
+        #region Inputs
+        /// <summary>
+        /// Subscribe to inputs actions
+        /// </summary>
+        private void SubscribeToInputs()
+        {
+            _inputs.ActivateInput();
+
+            _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
+
+            _inputs.actions["RotateCamCW"].started += ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamCW"].canceled += ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamACW"].started += ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamACW"].canceled += ctx => _rotationInputs.y = ctx.ReadValue<float>();
+
+            _inputs.actions["VerticalAngle"].started += SetScrollValue;
+
+            _inputs.actions["Interact"].performed += InstantiateTrap;
+            _inputs.actions["RotateCW"].performed += RotateClockwise;
+            _inputs.actions["RotateACW"].performed += RotateAntiClockwise;
+        }
+
+        /// <summary>
+        /// Unsubscribe to inputs actions
+        /// </summary>
+        private void UnsubscribeToInputs()
+        {
+            _inputs.DeactivateInput();
+
+            _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
+
+            _inputs.actions["RotateCamCW"].started -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamCW"].canceled -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamACW"].started -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.actions["RotateCamACW"].canceled -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
+
+            _inputs.actions["VerticalAngle"].started -= SetScrollValue;
+
+            _inputs.actions["Interact"].performed -= InstantiateTrap;
+            _inputs.actions["RotateCW"].performed -= RotateClockwise;
+            _inputs.actions["RotateACW"].performed -= RotateAntiClockwise;
+        }
+
+        /// <summary>
+        /// Set the scrolling step
+        /// </summary>
+        private void SetScrollValue(InputAction.CallbackContext ctx)
+        {
+            _scrollStep += ctx.ReadValue<Vector2>().y / 120f;
+            _scrollStep = Mathf.Clamp(_scrollStep, -scrollSteps, scrollSteps);
+        }
+        #endregion
+
+        #region Motion
+        /// <summary>
+        /// Moving the orientation point of the camera (Camera follows orientation movements and rotations)
+        /// </summary>
+        private void HandleCameraMovements()
+        {
+            orientation.rotation = Quaternion.Euler(0f, orientation.eulerAngles.y + (-_rotationInputs.y + _rotationInputs.x) * rotateSpeed * Time.deltaTime, 0f);
+
+            Vector3 direction = Quaternion.Euler(0f, -orientation.eulerAngles.y, 0f) * (orientation.forward * InputsVector.y + orientation.right * InputsVector.x);
+            orientation.Translate((direction.normalized) * moveSpeed * Time.deltaTime);
+        }
+
+        /// <summary>
+        /// Update camera YZ position based on scroll steps
+        /// </summary>
+        private void UpdateCameraAngle()
+        {
+            float stepPerc = _scrollStep / scrollSteps;
+            float minAngle = zoomRatio.y - zoomRatio.x;
+            float maxAngle = zoomRatio.z - zoomRatio.y;
+            float _minDistance = distanceRatio.z - distanceRatio.y;
+            float _maxDistance = distanceRatio.y - distanceRatio.x;
+
+            _targetAngle.y = _scrollStep >= 0 ? stepPerc * maxAngle : stepPerc * minAngle;
+            _targetAngle.y += zoomRatio.y;
+
+            _targetAngle.z = -distanceRatio.y;
+            _targetAngle.z += _scrollStep >= 0 ? -stepPerc * _maxDistance : stepPerc * _minDistance;
+
+            _transposer.m_FollowOffset = Vector3.Slerp(_transposer.m_FollowOffset, _targetAngle, scrollSmoothing);
+        }
+        #endregion
+
+        #region TrapCreation
+        /// <summary>
+        /// Selecting a new trap
+        /// </summary>
+        /// <param name="targetTrap"></param>
+        public static void SelectingTrap(TrapSO targetTrap)
+        {
+            _selectedTrap = targetTrap;
+
+            if (_selectedTrapInstance != null)
+                Destroy(_selectedTrapInstance.gameObject);
+
+            _selectedTrapInstance = Instantiate(_selectedTrap.trapInstance.trapPrefab, Vector3.up * 20f, Quaternion.identity).transform;
+        }
+
+        #region RayShooting
+        /// <summary>
+        /// Shooting a ray to place the selected trap
+        /// </summary>
+        private void ShootTileRay()
+        {
+            Ray ray = _myCamera.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+            Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
+
+            if (_selectedTrap == null)
+                return;
+
+            if (Physics.Raycast(ray, out _rayHit, Mathf.Infinity, tilesMask))
+            {
+                _isHitting = true;
+                Transform hittedTile = !_lastTileHitted ? _rayHit.transform : _lastTileHitted == _rayHit.transform ? _lastTileHitted : _rayHit.transform;
+
+                if (hittedTile == _lastTileHitted)
+                    return;
+
+                Debug.Log("Touched a new tile");
+                _lastTileHitted = hittedTile;
+                UpdateTiling();
+            }
+            else
+            {
+                _isHitting = false;
+            }
+        }
+        #endregion
+
+        #region Tiling Logics Methods
+        /// <summary>
+        /// Differents steps to place a trap
+        /// </summary>
+        public void UpdateTiling()
+        {
+            //Step 1, Définir la position du piege
+            GetPivotPosition(_rayHit.transform.position, _rayHit.normal);
+        }
+
+        /// <summary>
+        /// Calculating the pivotPosition
+        /// </summary>
+        public void GetPivotPosition(Vector3 hitPosition, Vector3 hitNormal)
+        {
+            Quaternion targetRotation;
+
+            if (hitNormal == Vector3.up)
+                targetRotation = Quaternion.Euler(0f, _selectedTrapRotation, 0f);
+            else if (hitNormal == -Vector3.forward)
+                targetRotation = Quaternion.Euler(_selectedTrapRotation, -90f, 90f);
+            else if (hitNormal == Vector3.forward)
+                targetRotation = Quaternion.Euler(_selectedTrapRotation, 90f, 90f);
+            else if (hitNormal == Vector3.right)
+                targetRotation = Quaternion.Euler(_selectedTrapRotation, 0f, -90f);
+            else
+                targetRotation = Quaternion.Euler(_selectedTrapRotation, 0f, 90f);
+
+            float pivotX = Mathf.FloorToInt(_selectedTrap.trapInstance.xAmount / 2) * tilingInfos.lengthX;
+            float pivotZ = Mathf.FloorToInt(_selectedTrap.trapInstance.yAmount / 2) * tilingInfos.lengthY;
+
+            projectedTransform.position = hitPosition;
+            Vector3 pivotPosition = projectedTransform.position + projectedTransform.right * pivotX + projectedTransform.forward * pivotZ;
+
+            projectedTransform.rotation = targetRotation;
+            _selectedTrapInstance.rotation = projectedTransform.rotation;
+
+            //Step 2, PreVisualisation du piege a sa position
+            SetTrapPosition(pivotPosition);
+        }
+
+        /// <summary>
+        /// Place the Trap at the calculated pivot position
+        /// </summary>
+        public void SetTrapPosition(Vector3 pivotPosition)
+        {
+            Vector3 trapPosition = pivotPosition - projectedTransform.right * ((_selectedTrap.trapInstance.xAmount - 1) * tilingInfos.lengthX * 0.5f) -
+                                        projectedTransform.forward * ((_selectedTrap.trapInstance.yAmount - 1) * tilingInfos.lengthY * 0.5f);
+
+            _selectedTrapInstance.position = trapPosition;
+
+            //Step 3, Mettre en couleur les tiles utilisees
+            ShowRangedTiles(pivotPosition);
+        }
+
+        /// <summary>
+        /// Showing Trap Tiling
+        /// </summary>
+        private void ShowRangedTiles(Vector3 pivotPosition)
+        {
+            ResetTilesList();
+            bool placeTrap = true;
+
+            for (int i = 0; i < _selectedTrap.trapInstance.xAmount; i++)
+            {
+                for (int j = 0; j < _selectedTrap.trapInstance.yAmount; j++)
+                {
+                    Vector3 castOrigin = pivotPosition - projectedTransform.right * (i * tilingInfos.lengthX) - projectedTransform.forward * (j * tilingInfos.lengthY) + _selectedTrapInstance.up;
+
+                    if (Physics.SphereCast(castOrigin, checkRadius, -_selectedTrapInstance.up, out RaycastHit hit, maxCheckDistance, tilesMask))
+                    {
+                        if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed)
+                            _reachedTiles.Add(tile);
+                        else
+                            placeTrap = false;
+                    }
+                    else
+                        placeTrap = false;
+                }
+            }
+
+            _canPlaceTrap = placeTrap;
+
+            if (!placeTrap)
+            {
+                ChangeTilesStates(Tile.TileState.Waiting);
+                return;
+            }
+
+            ChangeTilesStates(Tile.TileState.Selected);
+
+        }
+        #endregion
+
+        #region Tiles Selection
+        /// <summary>
+        /// Changing the state of each tile in the reached tiles List
+        /// </summary>
+        /// <param name="newState"> Tile's new state </param>
+        private void ChangeTilesStates(Tile.TileState newState)
+        {
+            foreach (Tile tile in _reachedTiles)
+                tile.NewTileState(newState);
+        }
+
+        /// <summary>
+        /// Clearing the hitted tiles List
+        /// </summary>
+        private void ResetTilesList()
+        {
+            ChangeTilesStates(Tile.TileState.Deselected);
+
+            _reachedTiles.Clear();
+        }
+        #endregion
+
+        #region Trap Methods
+        /// <summary>
+        /// Instantiate a trap
+        /// </summary>
+        private void InstantiateTrap(InputAction.CallbackContext _)
+        {
+            if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                return;
+
+            Instantiate(_selectedTrap.trapInstance.trapPrefab, _selectedTrapInstance.position, projectedTransform.rotation);
+            ChangeTilesStates(Tile.TileState.Used);
+
+            _selectedTrapRotation = 0f;
+            _reachedTiles.Clear();
+        }
+
+        /// <summary>
+        /// Rotating the trap clockwise (angle between 0 and 360)
+        /// </summary>
+        public void RotateClockwise(InputAction.CallbackContext _)
+        {
+            if (!_isHitting)
+                return;
+
+            _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation + 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
+            UpdateTiling();
+        }
+
+        /// <summary>
+        /// Rotating the trap antiClockwise (angle between -360 and 0)
+        /// </summary>
+        public void RotateAntiClockwise(InputAction.CallbackContext _)
+        {
+            if (!_isHitting)
+                return;
+
+            _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation - 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
+            UpdateTiling();
+        }
+        #endregion
+
+        #endregion
+
+        #endregion
     }
-
-    private void OnEnable()
-    {
-        //Not local
-        if (!_view.IsMine)
-            return;
-
-        //Local
-        SubscribeToInputs();
-    }
-
-    private void OnDisable()
-    {
-        //Not local
-        if (!_view.IsMine)
-            return;
-
-        //Local
-        UnsubscribeToInputs();
-    }
-
-    private void Update()
-    {
-        //Not local
-        if (!_view.IsMine)
-            return;
-
-        //Local
-        //Move Camera
-        CameraMotion();
-    }
-    #endregion
-
-    #region Camera Methods
-    /// <summary>
-    /// Moving the orientation point of the camera (Camera follows orientation movements and rotations)
-    /// </summary>
-    private void CameraMotion()
-    {
-        //Setting the orientation rotation
-        orientation.rotation = Quaternion.Euler(0f, orientation.eulerAngles.y + (-_inputsRotation.y + _inputsRotation.x) * rotateSpeed * Time.deltaTime, 0f);
-        //Calculating the direction with inputs
-        Vector3 direction = Quaternion.Euler(0f, -orientation.eulerAngles.y, 0f) * (orientation.forward * DirectionInputs.y + orientation.right * DirectionInputs.x);
-
-        //Moving orientation point
-        orientation.Translate((direction.normalized) * movingSpeed * Time.deltaTime);
-    }
-
-    /// <summary>
-    /// Repositionning the camera behind and up distance
-    /// </summary>
-    private void CameraRepositionning(InputAction.CallbackContext ctx)
-    {
-        //Calcultating camera distance with scroll value
-        float scroll = _thirdPerson.CameraDistance + (ctx.ReadValue<Vector2>().y / 120f) * scrollingMultilier;
-        //Clamping the rotation between bounds
-        scroll = Mathf.Clamp(scroll, minZoomValue, maxZoomValue);
-        //Setting the cameraDistance
-        _thirdPerson.CameraDistance = scroll;
-
-        //Setting Rig shouder Y 
-        //Calculating the percentage of the actual angle on the y Axis
-        float scrollPercents = ((scroll - minZoomValue) * 100f) / (maxZoomValue - minZoomValue) / 2f;
-        //Bounds reached
-        if (scroll == minZoomValue || scroll == maxZoomValue)
-            //Return
-            return;
-
-        //Bounds not reached
-        //Setting the position by multiplying the maxDistance with percentage of angle
-        _thirdPerson.ShoulderOffset.y = maxUpDistance * (1f - (scrollPercents / 100f));
-    }
-    #endregion
-
-    #region Events Subscribing
-    /// <summary>
-    /// Suscribe to inputs events
-    /// </summary>
-    private void SubscribeToInputs()
-    {
-        //Directions Inputs
-        _inputs.actions["Motion"].performed += ctx => DirectionInputs = ctx.ReadValue<Vector2>();
-        _inputs.actions["Motion"].canceled += ctx => DirectionInputs = ctx.ReadValue<Vector2>();
-
-        //Inputs Rotations => X
-        _inputs.actions["RotateCamCW"].started += ctx => _inputsRotation.x = ctx.ReadValue<float>();
-        _inputs.actions["RotateCamCW"].canceled += ctx => _inputsRotation.x = ctx.ReadValue<float>();
-
-        //Inputs Rotations => Y
-        _inputs.actions["RotateCamACW"].started += ctx => _inputsRotation.y = ctx.ReadValue<float>();
-        _inputs.actions["RotateCamACW"].canceled += ctx => _inputsRotation.y = ctx.ReadValue<float>();
-
-        //Scrolling
-        _inputs.actions["Scrolling"].performed += CameraRepositionning;
-    }
-
-    /// <summary>
-    /// Unsubscribe to inputs events
-    /// </summary>
-    private void UnsubscribeToInputs()
-    {
-        //Directions Inputs
-        _inputs.actions["Motion"].performed -= ctx => DirectionInputs = ctx.ReadValue<Vector2>();
-        _inputs.actions["Motion"].canceled -= ctx => DirectionInputs = ctx.ReadValue<Vector2>();
-
-        //Inputs Rotations => X
-        _inputs.actions["RotateCamCW"].started -= ctx => _inputsRotation.x = ctx.ReadValue<float>();
-        _inputs.actions["RotateCamCW"].canceled -= ctx => _inputsRotation.x = ctx.ReadValue<float>();
-
-        //Inputs Rotations => Y
-        _inputs.actions["RotateCamACW"].started -= ctx => _inputsRotation.y = ctx.ReadValue<float>();
-        _inputs.actions["RotateCamACW"].canceled -= ctx => _inputsRotation.y = ctx.ReadValue<float>();
-
-        //Scrolling
-        _inputs.actions["Scrolling"].performed -= CameraRepositionning;
-    }
-    #endregion
 }

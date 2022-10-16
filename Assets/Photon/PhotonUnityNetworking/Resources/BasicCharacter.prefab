@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1963387783943598652}
   - component: {fileID: 1503638685126038442}
   m_Layer: 0
-  m_Name: PlayerRemake
+  m_Name: BasicCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,6 +57,11 @@ MonoBehaviour:
   mesh: {fileID: 363609563075200846}
   lookAt: {fileID: 4827582306762976749}
   orientation: {fileID: 4044801599910046067}
+  healthRecup: 2
+  staminaRecup: 2
+  healthRecupTime: 3
+  staminaToRun: 1
+  staminaToDodge: 20
   walkSpeed: 3
   runSpeed: 7
   aimWalkSpeed: 1

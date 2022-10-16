@@ -1,21 +1,27 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Trap", menuName = "Scriptables/Trap")]
-public class TrapSO : ScriptableObject
+namespace _Scripts.TrapSystem
 {
-    public Trap trapInstance;
+    [CreateAssetMenu(fileName = "New Trap", menuName = "Scriptables/Trap")]
+    public class TrapSO : ScriptableObject
+    {
+        public Trap trapInstance;
+    }
 }
 
-
-[System.Serializable]
-public struct Trap
+namespace _Scripts.TrapSystem
 {
-    [Tooltip("Trap prefab to instantiate")]
-    public GameObject trapPrefab;
+    [Serializable]
+    public struct Trap
+    {
+        [Tooltip("Trap prefab to instantiate")]
+        public GameObject trapPrefab;
 
-    [Range(1, 10), Tooltip("XAmount of required tiles")]
-    public int xAmount;
+        [Range(1, 10), Tooltip("XAmount of required tiles")]
+        public int xAmount;
 
-    [Range(1, 10), Tooltip("YAmount of required tiles")]
-    public int yAmount;
+        [Range(1, 10), Tooltip("YAmount of required tiles")]
+        public int yAmount;
+    }
 }

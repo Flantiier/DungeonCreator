@@ -307,7 +307,7 @@ namespace _Scripts.Characters
             }
 
             AdvSimpleCamera instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<AdvSimpleCamera>();
-            instance.SetCameraInfos(lookAt);
+            instance.SetCamera(lookAt);
 
             _myCamera = instance;
         }

@@ -13,9 +13,9 @@ namespace _Scripts.Characters.Cameras
 
 		#region Methods
 
-		public override void SetCameraInfos(Transform target)
+		public override void SetCamera(Transform target)
 		{
-			base.SetCameraInfos(target);
+			base.SetCamera(target);
 
 			aimFreelook.Follow = target;
 			aimFreelook.LookAt = target;

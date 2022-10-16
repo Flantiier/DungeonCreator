@@ -1,45 +1,19 @@
 using UnityEngine;
 using Cinemachine;
-using Photon.Pun;
 
 namespace _Scripts.Characters.Cameras
 {
-    public class AdvSimpleCamera : MonoBehaviour
+    public class AdvSimpleCamera : CameraSetup
     {
         #region Variables
 
-        [SerializeField] protected Camera mainCam;
         [SerializeField] protected CinemachineFreeLook mainFreelook;
-
-        protected PhotonView _Pview;
-
-        #endregion
-
-        #region Properties
-
-        public Camera MainCam => mainCam;
-
-        #endregion
-
-        #region Builts_In
-
-        public virtual void Awake()
-        {
-            _Pview = mainCam.GetComponent<PhotonView>();
-
-            if (!_Pview.IsMine)
-                Destroy(gameObject);
-        }
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// Set cinemachines camera follow and lookAt target
-        /// </summary>
-        /// <param name="target"> Target object </param>
-        public virtual void SetCameraInfos(Transform target)
+        public override void SetCamera(Transform target)
         {
             mainFreelook.Follow = target;
             mainFreelook.LookAt = target;

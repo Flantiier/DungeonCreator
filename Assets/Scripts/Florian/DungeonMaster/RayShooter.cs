@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Photon.Pun;
+using _Scripts.TrapSystem;
 
 public class RayShooter : MonoBehaviour
 {
@@ -88,7 +89,7 @@ public class RayShooter : MonoBehaviour
         //Get inputs
         _inputs = GetComponent<PlayerInput>();
         //Get the tiling infos (width, height, offsets)
-        _offsetVector = new Vector3(tilingInfos.tilePrefab.transform.localScale.x + tilingInfos.xOffset, tilingInfos.tilePrefab.transform.localScale.y + tilingInfos.yOffset);
+        _offsetVector = new Vector3(tilingInfos.tilePrefab.transform.localScale.x, tilingInfos.tilePrefab.transform.localScale.y);
     }
 
     private void OnEnable()

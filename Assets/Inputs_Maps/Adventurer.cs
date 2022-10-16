@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace PlayerInputs
+namespace InputsMaps
 {
     public partial class @Adventurer : IInputActionCollection2, IDisposable
     {

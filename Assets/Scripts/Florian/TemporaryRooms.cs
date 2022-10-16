@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class TemporaryRooms : MonoBehaviourPunCallbacks
 {
@@ -37,6 +36,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     #endregion
 
     #region Methods
+
     /// <summary>
     /// Instantiate the selected entity
     /// </summary>
@@ -93,5 +93,6 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
 
         return transform.position;
     }
+
     #endregion
 }
