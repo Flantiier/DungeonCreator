@@ -7,7 +7,9 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            CharacterAnimation.GetPlayer(animator).PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+            Character player = CharacterAnimation.GetPlayer(animator);
+
+            player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
         }
     }
 }

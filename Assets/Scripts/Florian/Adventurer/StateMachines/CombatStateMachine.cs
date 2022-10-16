@@ -1,28 +1,35 @@
 using UnityEngine;
 using _Scripts.Characters.StateMachines;
 using _Scriptables.Curves;
-using Photon.Realtime;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
     public class CombatStateMachine : NetworkStateMachine
     {
+        #region Variables
+
         [SerializeField] protected float attackCooldown = 0.7f;
+        [SerializeField] protected float dodgeCooldown = 0.7f;
         [SerializeField] protected CombatCurve combatCurves;
         [SerializeField] protected int curveIndex;
         protected Character Character { get; set; }
         protected AnimationCurve _attackCurve;
+
+        #endregion
+
+        #region Inherited_Methods
 
         protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
             Character = player;
 
-            SmoothPlayerMomentum(player);
-            TurnPlayer(player);
-
             player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Attack;
             Character.PlayerStateMachine.CanAttack = false;
+            Character.PlayerStateMachine.CanDodge = false;
+            
+            SmoothPlayerMomentum(player);
+            player.TurnPlayer();
         }
 
         protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -33,6 +40,10 @@ namespace _Scripts.Characters.Animations.StateMachines
             Character.HandleCombatMovement(speed);
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Smooth momentum when starting the attack
         /// </summary>
@@ -41,17 +52,6 @@ namespace _Scripts.Characters.Animations.StateMachines
             float momentum = player.CurrentSpeed;
             _attackCurve = combatCurves.curves[curveIndex];
             _attackCurve.MoveKey(0, new Keyframe(_attackCurve.keys[0].time, momentum));
-        }
-
-        /// <summary>
-        /// Turn the player at the attack start
-        /// </summary>
-        protected void TurnPlayer(Character player)
-        {
-            float angle = Mathf.Atan2(player.InputsVector.x, player.InputsVector.y) * Mathf.Rad2Deg + player.orientation.eulerAngles.y;
-            player.Mesh.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            player.OverrideDir = new Vector2(player.Mesh.forward.x, player.Mesh.forward.z);
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void DisableActions(float time)
         {
-            if (time >= attackCooldown)
-                Character.PlayerStateMachine.CanAttack = true;
-            else
-                Character.PlayerStateMachine.CanAttack = false;
+            Character.PlayerStateMachine.CanAttack = time >= attackCooldown ? true : false;
+            Character.PlayerStateMachine.CanDodge = time >= dodgeCooldown ? true : false;
         }
+
+        #endregion
     }
 }

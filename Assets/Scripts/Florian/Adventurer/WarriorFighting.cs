@@ -4,7 +4,7 @@ using Photon.Pun;
 
 namespace Adventurer
 {
-	public class WarriorFighting : CharacterFighting, IDefending
+	public class WarriorFighting : CharacterFighting
 	{
         #region Warrior Variables
         [Header("Warrior Fighting Variables")]
