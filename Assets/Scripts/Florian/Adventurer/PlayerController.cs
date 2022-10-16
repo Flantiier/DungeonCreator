@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     #region Variables
     #region Global
@@ -22,7 +24,7 @@ public class PlayerController : MonoBehaviour
     protected CharacterController _cc;
     //Player animator
     protected Animator _animator;
-    private float _health;
+    private float _currentHealth;
 
     #endregion
 
@@ -79,6 +81,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AdventurerData adventurerDatas;
     public AdventurerData AdventurerDatas => adventurerDatas;
 
+    [SerializeField] private Image _healthBarImage;
+    [SerializeField] private GameObject _playerUICanvas;
+
     /// <summary>
     /// Smoothing inputs value
     /// </summary>
@@ -99,6 +104,8 @@ public class PlayerController : MonoBehaviour
     public float dodgeSpeed = 5f;
     //Dodge direction
     private Vector2 _dodgeDir;
+
+    private PhotonView _view;
 
     [Header("Camera")]
     /// <summary>
@@ -164,7 +171,7 @@ public class PlayerController : MonoBehaviour
         //add the tag Player for gameobject in awake
         gameObject.tag = "Player";
         //create health for the party
-        _health = adventurerDatas.health;
+        _currentHealth = adventurerDatas.health;
         //Get RB Component
         _cc = GetComponent<CharacterController>();
         //Get Inputs Component
@@ -173,9 +180,15 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         //New SM
         _playerStateMachine = new PlayerStateMachine();
+        _view = GetComponent<PhotonView>();
 
         //Create a camera
         InstantiateCamera();
+
+        if(!_view.IsMine)
+        {
+            Destroy(_playerUICanvas);
+        }
     }
 
     public virtual void OnEnable()
@@ -483,27 +496,35 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region
+    #region Trigger
     //Trigger with Traps
     private void OnTriggerEnter(Collider other)
     {
         //if the trap have the tag Trap
         if(other.gameObject.tag == "Trap")
         {
+            if (!_view.IsMine)
+                return;
+
             _trapManager = other.gameObject.GetComponentInChildren<TrapManager>();
-            //take damage if player touch trap no destructible
+
             if(_trapManager.trapSO)
             {
-                _health -= _trapManager.trapSO.damage;
+                _currentHealth -= _trapManager.trapSO.damage;
             }
-            //take damage if player touch trap destructible
             else if(_trapManager.trapDestructibleSO)
             {
-                _health -= _trapManager.trapDestructibleSO.damage;            
+                _currentHealth -= _trapManager.trapDestructibleSO.damage;            
             }
 
-            //if player have ni life, he's dead
-            if(_health <=0)
+            _healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
+
+            if(other.gameObject.name == "flechebaliste")
+            {
+                Destroy(other.gameObject);
+            }
+
+            if(_currentHealth <= 0)
             {
                 Destroy(gameObject);
             }

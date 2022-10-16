@@ -15,9 +15,4 @@ public class TrapManager : MonoBehaviourPunCallbacks
         if(!trapSO) return;
         if(!trapDestructibleSO) return;
     }
-
-    void Update()
-    {
-        //Faire une fonction pour tirer les fleches tout droit. 
-    }
 }

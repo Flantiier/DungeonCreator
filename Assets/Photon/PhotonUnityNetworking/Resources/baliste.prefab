@@ -97,6 +97,9 @@ GameObject:
   - component: {fileID: 6830202591615717760}
   - component: {fileID: 6830202591615717761}
   - component: {fileID: 877404231724830064}
+  - component: {fileID: 1703775193}
+  - component: {fileID: 1703775192}
+  - component: {fileID: 1703775194}
   m_Layer: 0
   m_Name: baliste
   m_TagString: Untagged
@@ -158,6 +161,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 6830202591615717760}
+  - {fileID: 1703775192}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -174,6 +178,57 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.8830507, y: 0.84388244, z: 1.8536196}
   m_Center: {x: 0.010387301, y: 0.33232802, z: 0.09757757}
+--- !u!95 &1703775193
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5911160053989953627}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 987a6f75c75404841affa5464459bb0d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1703775192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5911160053989953627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+--- !u!114 &1703775194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5911160053989953627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a512361eff5f9ca4fae891ffc0894247, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _arrowSpawnPosition: {fileID: 4814774022506361989}
 --- !u!1 &7802260452409580626
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +257,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7802260452409580626}
   m_LocalRotation: {x: 0.00000008146034, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.63013977, z: 0.26634616}
+  m_LocalPosition: {x: -0, y: 0.6, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
