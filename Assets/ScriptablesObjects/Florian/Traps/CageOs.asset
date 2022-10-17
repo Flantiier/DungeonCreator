@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f2f35b619a6e054786ba13b402eb3c4, type: 3}
-  m_Name: Baliste
+  m_Name: CageOs
   m_EditorClassIdentifier: 
-  trapPrefab: {fileID: 5911160053989953627, guid: eb046e9156c99c24aaf3bcadd759d243,
+  trapPrefab: {fileID: 4413572524461186908, guid: 898693d1a3c1fa94780f1b3f765b38f0,
     type: 3}
-  trapName: Baliste
-  damage: 3
-  description: "Une baliste sans piti\xE9 ! "
-  xAmount: 1
-  yAmount: 1
-  health: 5
+  trapName: Cage d'Os
+  damage: 1
+  isContinuous: 1
+  description: Une cage qui ne vous laissera pas partir...
+  xAmount: 3
+  yAmount: 3
+  health: 10

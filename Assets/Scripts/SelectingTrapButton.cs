@@ -9,24 +9,39 @@ namespace _Scripts.TrapSystem.UI
     {
         [Header("Button infos")]
         [SerializeField] private TrapSO trapToSelect;
+        [SerializeField] private TrapDamageableSO trapDamageableToSelect;
 
         public void Awake()
         {
-            if(!trapToSelect)
-            {
-                Debug.LogError($"Missing trap reference on button : {gameObject}");
-                return;
-            }
-
             TextMeshProUGUI textComp = GetComponentInChildren<TextMeshProUGUI>();
 
-            if (textComp)
-                textComp.text = trapToSelect.trapName;
+            if (!trapToSelect && !trapDamageableToSelect)
+            {
+                return;
+            }
+            else if(trapToSelect)
+            {
+                if (textComp)
+                    textComp.text = trapToSelect.trapName;
+            }
+            else
+            {
+                if (textComp)
+                    textComp.text = trapDamageableToSelect.trapName;
+            }
         }
 
         public void SelectTrap()
         {
-            DMController.SelectingTrap(trapToSelect);
+            if(trapToSelect != null)
+            {
+                DMController.SelectingTrap(trapToSelect);
+            }
+            else if(trapDamageableToSelect != null)
+            {
+                DMController.SelectingTrap(trapDamageableToSelect);
+            }
         }
+
     }
 }

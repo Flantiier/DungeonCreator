@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using _Scripts.Characters;
 
 namespace _Scripts.TrapSystem.Datas
 {
@@ -7,6 +8,7 @@ namespace _Scripts.TrapSystem.Datas
     {
         [Header("Trap Info")]
         public TrapSO trapSO;
+        public TrapDamageableSO trapDamageableSO;
 
         // Start is called before the first frame update
         void Start()
@@ -14,6 +16,7 @@ namespace _Scripts.TrapSystem.Datas
             gameObject.tag = "Trap";
 
             if(!trapSO) return;
+            if(!trapDamageableSO) return;
         }
 
         //Trigger with Traps
@@ -22,29 +25,51 @@ namespace _Scripts.TrapSystem.Datas
             //if the trap have the tag Trap
             if(other.gameObject.tag == "Player")
             {
-                // if(_trapManager.trapSO)
-                // {
-                //     _currentHealth -= _trapManager.trapSO.damage;
-                // }
+                Character _player = other.gameObject.GetComponent<Character>();
 
+                if (trapSO)
+                {
+                    _player.DamagePlayer(trapSO.damage);
+                }
+                if (trapDamageableSO)
+                {
+                    _player.DamagePlayer(trapDamageableSO.damage);
+                }
+
+                if (_player.PlayerStateMachine.CurrentState == Characters.StateMachines.PlayerStateMachine.PlayerStates.Attack && trapDamageableSO)
+                {
+                    trapDamageableSO.health -= 1f;
+
+                    if (trapDamageableSO.health <= 0)
+                    {
+                        Destroy(trapDamageableSO);
+                    }
+                }
+                // [SerializeField] private Image _healthBarImage;
+                // [SerializeField] private GameObject _playerUICanvas;
                 // _healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
-
-                // if(other.gameObject.name == "flechebaliste")
-                // {
-                //     Destroy(other.gameObject);
-                // }
-
-                // if(_currentHealth <= 0)
-                // {
-                //     Destroy(gameObject);
-                // }
             }
+        }
 
-            // [SerializeField] private AdventurerData adventurerDatas;
-            // public AdventurerData AdventurerDatas => adventurerDatas;
+        private void OnTriggerStay(Collider other)
+        {
+            if(other.gameObject.tag == "Player")
+            {
+                Character _player = other.gameObject.GetComponent<Character>();
 
-            // [SerializeField] private Image _healthBarImage;
-            // [SerializeField] private GameObject _playerUICanvas;
+                if (trapSO && trapSO.isContinuous)
+                {
+                    _player.DamagePlayer(trapSO.damage);
+                }
+                else if (trapDamageableSO && trapDamageableSO.isContinuous)
+                {
+                    _player.DamagePlayer(trapDamageableSO.damage);
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
     }
 }

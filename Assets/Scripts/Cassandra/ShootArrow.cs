@@ -6,7 +6,7 @@ public class ShootArrow : MonoBehaviourPunCallbacks
 {
     [SerializeField] private Transform _arrowSpawnPosition;
 
-    private string _arrowPrefabName = "FlecheBalistePrefab";
+    [SerializeField] private GameObject _arrowPrefab;
     private float _arrowSpeed = 20f;
     private float _timeLeft = 1f;
 
@@ -22,7 +22,7 @@ public class ShootArrow : MonoBehaviourPunCallbacks
 
     IEnumerator Shoot()
     {
-        GameObject _arrow = PhotonNetwork.Instantiate(_arrowPrefabName, _arrowSpawnPosition.position, Quaternion.identity, 0);
+        GameObject _arrow = PhotonNetwork.Instantiate(_arrowPrefab.name, _arrowSpawnPosition.position, _arrowSpawnPosition.rotation, 0);
         _arrow.GetComponent<Rigidbody>().velocity = _arrowSpawnPosition.forward * _arrowSpeed;
 
         yield return new WaitForSeconds(3f);
