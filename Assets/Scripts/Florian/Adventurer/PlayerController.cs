@@ -129,8 +129,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// <summary>
     /// Player StateMachine
     /// </summary>
-    private PlayerStateMachine _playerStateMachine;
-    public PlayerStateMachine PlayerStateMachine => _playerStateMachine;
+    private PlayerStateMachine_Old _playerStateMachine;
+    public PlayerStateMachine_Old PlayerStateMachine => _playerStateMachine;
 
     //Trap Manager
     private TrapManager _trapManager;
@@ -179,7 +179,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //Get the animator
         _animator = GetComponentInChildren<Animator>();
         //New SM
-        _playerStateMachine = new PlayerStateMachine();
+        _playerStateMachine = new PlayerStateMachine_Old();
         _view = GetComponent<PhotonView>();
 
         //Create a camera
@@ -315,7 +315,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         switch (_playerStateMachine.CurrentState)
         {
-            case PlayerStateMachine.PlayerStates.Walk:
+            case PlayerStateMachine_Old.PlayerStates.Walk:
 
                 if (!IsLanding)
                 {
@@ -492,7 +492,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private bool DodgeCondition()
     {
-        return _playerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll && _currentGroundState == GroundStates.Grounded;
+        return _playerStateMachine.CurrentState != PlayerStateMachine_Old.PlayerStates.Roll && _currentGroundState == GroundStates.Grounded;
     }
     #endregion
 
@@ -537,7 +537,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
 #region PlayerStateMachine
 [System.Serializable]
-public class PlayerStateMachine
+public class PlayerStateMachine_Old
 {
     /// <summary>
     /// Differents player states
@@ -547,6 +547,7 @@ public class PlayerStateMachine
     /// Current player state
     /// </summary>
     public PlayerStates CurrentState { get; set; }
+    public bool CanAttack { get; internal set; }
 }
 #endregion
 
