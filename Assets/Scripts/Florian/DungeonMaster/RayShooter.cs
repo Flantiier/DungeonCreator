@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Photon.Pun;
 using _Scripts.TrapSystem;
+using _Scripts.TrapSystem.Datas;
 
 public class RayShooter : MonoBehaviour
 {
@@ -71,7 +72,7 @@ public class RayShooter : MonoBehaviour
         if (trapTransform != null)
             Destroy(trapTransform.gameObject);
 
-        trapTransform = Instantiate(selectedTrap.trapInstance.trapPrefab, Vector3.down * 20f, Quaternion.identity).transform;
+        trapTransform = Instantiate(selectedTrap.trapPrefab, Vector3.down * 20f, Quaternion.identity).transform;
     }
     #endregion
 
@@ -190,8 +191,8 @@ public class RayShooter : MonoBehaviour
     public void GetPivotPosition()
     {
         //Get the bounds of the required tiling
-        float pivotX = Mathf.FloorToInt(trap.trapInstance.xAmount / 2) * _offsetVector.x;
-        float pivotZ = Mathf.FloorToInt(trap.trapInstance.yAmount / 2) * _offsetVector.y;
+        float pivotX = Mathf.FloorToInt(trap.xAmount / 2) * _offsetVector.x;
+        float pivotZ = Mathf.FloorToInt(trap.yAmount / 2) * _offsetVector.y;
 
         //Projecting the vector on the hitted surface
         projectedTransform.position = _rayHitting.transform.position;
@@ -219,7 +220,7 @@ public class RayShooter : MonoBehaviour
     /// </summary>
     public void SetTrapPosition()
     {
-        _trapPosition = _pivot - projectedTransform.right * ((trap.trapInstance.xAmount - 1f) * _offsetVector.x * 0.5f) - projectedTransform.forward * ((trap.trapInstance.yAmount - 1f) * _offsetVector.y * 0.5f);
+        _trapPosition = _pivot - projectedTransform.right * ((trap.xAmount - 1f) * _offsetVector.x * 0.5f) - projectedTransform.forward * ((trap.yAmount - 1f) * _offsetVector.y * 0.5f);
         trapTransform.position = _trapPosition;
     }
 
@@ -233,9 +234,9 @@ public class RayShooter : MonoBehaviour
         bool placeTrap = true;
 
         //For trap xAmount and yAmount of tiles, Displaying the tile like selected
-        for (int i = 0; i < trap.trapInstance.xAmount; i++)
+        for (int i = 0; i < trap.xAmount; i++)
         {
-            for (int j = 0; j < trap.trapInstance.yAmount; j++)
+            for (int j = 0; j < trap.yAmount; j++)
             {
                 //Defining a Vector to check the tile position
                 Vector3 castOrigin = _pivot - projectedTransform.right * _offsetVector.x * i - projectedTransform.forward * _offsetVector.y * j + trapTransform.up;
@@ -303,7 +304,7 @@ public class RayShooter : MonoBehaviour
             return;
 
         //Instantiate the trap
-        Instantiate(trap.trapInstance.trapPrefab, _trapPosition, projectedTransform.rotation);
+        Instantiate(trap.trapPrefab, _trapPosition, projectedTransform.rotation);
         //Changing the state of the used tiles for this trap
         ChangeTilesStates(Tile.TileState.Used);
 

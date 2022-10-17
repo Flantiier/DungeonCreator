@@ -66,7 +66,9 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.Instantiate(masterPrefab.name, SpawnPosition(spawnPositionMaster), Quaternion.identity);
-        //Instantiate(masterUI, null);
+
+        if(masterUI)
+            Instantiate(masterUI, null);
     }
 
     /// <summary>

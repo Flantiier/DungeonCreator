@@ -4,8 +4,7 @@ using Photon.Pun;
 
 namespace _Scripts.Characters.Cameras
 {
-	[RequireComponent(typeof(PhotonView))]
-	public class DMSkyCamera : CameraSetup
+	public class SkyCameraSetup : CameraSetup
 	{
         #region Variables/Properties
 

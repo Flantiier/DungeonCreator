@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,21 +6,20 @@ using Cinemachine;
 using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
-using UnityEngine.Rendering;
-using System;
+using _Scripts.TrapSystem.Datas;
 
-namespace _Scripts.Character.Cameras
+namespace _Scripts.DungeonMaster
 {
-    public class SkyCamera : MonoBehaviour
+    public class DMController : MonoBehaviour
     {
         #region Variables
         [Header("References")]
-        [SerializeField] private DMSkyCamera cameraPrefab;
+        [SerializeField] private SkyCameraSetup cameraPrefab;
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform projectedTransform;
 
         private PlayerInput _inputs;
-        private DMSkyCamera _myCamera;
+        private SkyCameraSetup _myCamera;
         private CinemachineTransposer _transposer;
 
         #region Motion
@@ -45,7 +45,7 @@ namespace _Scripts.Character.Cameras
         [SerializeField] private float maxCheckDistance = 2f;
         [SerializeField] private LayerMask tilesMask;
 
-        public static TrapSO _selectedTrap;
+        public static TrapSO selectedTrap;
         public static Transform _selectedTrapInstance;
         private Transform _lastTileHitted;
         private List<Tile> _reachedTiles = new List<Tile>();
@@ -66,7 +66,7 @@ namespace _Scripts.Character.Cameras
         {
             _inputs = GetComponent<PlayerInput>();
 
-            _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<DMSkyCamera>();
+            _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
             _myCamera.SetCamera(orientation);
             _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
         }
@@ -180,19 +180,6 @@ namespace _Scripts.Character.Cameras
         #endregion
 
         #region TrapCreation
-        /// <summary>
-        /// Selecting a new trap
-        /// </summary>
-        /// <param name="targetTrap"></param>
-        public static void SelectingTrap(TrapSO targetTrap)
-        {
-            _selectedTrap = targetTrap;
-
-            if (_selectedTrapInstance != null)
-                Destroy(_selectedTrapInstance.gameObject);
-
-            _selectedTrapInstance = Instantiate(_selectedTrap.trapInstance.trapPrefab, Vector3.up * 20f, Quaternion.identity).transform;
-        }
 
         #region RayShooting
         /// <summary>
@@ -203,7 +190,7 @@ namespace _Scripts.Character.Cameras
             Ray ray = _myCamera.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
 
-            if (_selectedTrap == null)
+            if (selectedTrap == null)
                 return;
 
             if (Physics.Raycast(ray, out _rayHit, Mathf.Infinity, tilesMask))
@@ -253,8 +240,8 @@ namespace _Scripts.Character.Cameras
             else
                 targetRotation = Quaternion.Euler(_selectedTrapRotation, 0f, 90f);
 
-            float pivotX = Mathf.FloorToInt(_selectedTrap.trapInstance.xAmount / 2) * tilingInfos.lengthX;
-            float pivotZ = Mathf.FloorToInt(_selectedTrap.trapInstance.yAmount / 2) * tilingInfos.lengthY;
+            float pivotX = Mathf.FloorToInt(selectedTrap.xAmount / 2) * tilingInfos.lengthX;
+            float pivotZ = Mathf.FloorToInt(selectedTrap.yAmount / 2) * tilingInfos.lengthY;
 
             projectedTransform.position = hitPosition;
             Vector3 pivotPosition = projectedTransform.position + projectedTransform.right * pivotX + projectedTransform.forward * pivotZ;
@@ -271,8 +258,8 @@ namespace _Scripts.Character.Cameras
         /// </summary>
         public void SetTrapPosition(Vector3 pivotPosition)
         {
-            Vector3 trapPosition = pivotPosition - projectedTransform.right * ((_selectedTrap.trapInstance.xAmount - 1) * tilingInfos.lengthX * 0.5f) -
-                                        projectedTransform.forward * ((_selectedTrap.trapInstance.yAmount - 1) * tilingInfos.lengthY * 0.5f);
+            Vector3 trapPosition = pivotPosition - projectedTransform.right * ((selectedTrap.xAmount - 1) * tilingInfos.lengthX * 0.5f) -
+                                        projectedTransform.forward * ((selectedTrap.yAmount - 1) * tilingInfos.lengthY * 0.5f);
 
             _selectedTrapInstance.position = trapPosition;
 
@@ -288,9 +275,9 @@ namespace _Scripts.Character.Cameras
             ResetTilesList();
             bool placeTrap = true;
 
-            for (int i = 0; i < _selectedTrap.trapInstance.xAmount; i++)
+            for (int i = 0; i < selectedTrap.xAmount; i++)
             {
-                for (int j = 0; j < _selectedTrap.trapInstance.yAmount; j++)
+                for (int j = 0; j < selectedTrap.yAmount; j++)
                 {
                     Vector3 castOrigin = pivotPosition - projectedTransform.right * (i * tilingInfos.lengthX) - projectedTransform.forward * (j * tilingInfos.lengthY) + _selectedTrapInstance.up;
 
@@ -343,6 +330,20 @@ namespace _Scripts.Character.Cameras
 
         #region Trap Methods
         /// <summary>
+        /// Selecting a new trap
+        /// </summary>
+        /// <param name="targetTrap"> Selected trap </param>
+        public static void SelectingTrap(TrapSO targetTrap)
+        {
+            selectedTrap = targetTrap;
+
+            if (_selectedTrapInstance != null)
+                Destroy(_selectedTrapInstance.gameObject);
+
+            _selectedTrapInstance = Instantiate(selectedTrap.trapPrefab, Vector3.up * 20f, Quaternion.identity).transform;
+        }
+
+        /// <summary>
         /// Instantiate a trap
         /// </summary>
         private void InstantiateTrap(InputAction.CallbackContext _)
@@ -350,7 +351,7 @@ namespace _Scripts.Character.Cameras
             if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                 return;
 
-            Instantiate(_selectedTrap.trapInstance.trapPrefab, _selectedTrapInstance.position, projectedTransform.rotation);
+            Instantiate(selectedTrap.trapPrefab, _selectedTrapInstance.position, projectedTransform.rotation);
             ChangeTilesStates(Tile.TileState.Used);
 
             _selectedTrapRotation = 0f;

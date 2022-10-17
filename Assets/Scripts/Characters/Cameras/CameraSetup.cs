@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Cameras
 {
+    [RequireComponent(typeof(PhotonView))]
 	public class CameraSetup : MonoBehaviour
 	{
         #region Variables/Props
