@@ -218,7 +218,7 @@ namespace _Scripts.DungeonMaster
         /// </summary>
         public void UpdateTiling()
         {
-            //Step 1, Définir la position du piege
+            //Step 1, Dï¿½finir la position du piege
             GetPivotPosition(_rayHit.transform.position, _rayHit.normal);
         }
 
@@ -351,7 +351,7 @@ namespace _Scripts.DungeonMaster
             if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                 return;
 
-            Instantiate(selectedTrap.trapPrefab, _selectedTrapInstance.position, projectedTransform.rotation);
+            PhotonNetwork.Instantiate(selectedTrap.trapPrefab.name, _selectedTrapInstance.position, projectedTransform.rotation);
             ChangeTilesStates(Tile.TileState.Used);
 
             _selectedTrapRotation = 0f;

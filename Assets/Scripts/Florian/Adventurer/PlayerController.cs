@@ -132,8 +132,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private PlayerStateMachine_Old _playerStateMachine;
     public PlayerStateMachine_Old PlayerStateMachine => _playerStateMachine;
 
-    //Trap Manager
-    private TrapManager _trapManager;
     #endregion
 
     #region Gravity
@@ -493,42 +491,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private bool DodgeCondition()
     {
         return _playerStateMachine.CurrentState != PlayerStateMachine_Old.PlayerStates.Roll && _currentGroundState == GroundStates.Grounded;
-    }
-    #endregion
-
-    #region Trigger
-    //Trigger with Traps
-    private void OnTriggerEnter(Collider other)
-    {
-        //if the trap have the tag Trap
-        if(other.gameObject.tag == "Trap")
-        {
-            if (!_view.IsMine)
-                return;
-
-            _trapManager = other.gameObject.GetComponentInChildren<TrapManager>();
-
-            if(_trapManager.trapSO)
-            {
-                _currentHealth -= _trapManager.trapSO.damage;
-            }
-            else if(_trapManager.trapDestructibleSO)
-            {
-                _currentHealth -= _trapManager.trapDestructibleSO.damage;            
-            }
-
-            _healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
-
-            if(other.gameObject.name == "flechebaliste")
-            {
-                Destroy(other.gameObject);
-            }
-
-            if(_currentHealth <= 0)
-            {
-                Destroy(gameObject);
-            }
-        }
     }
     #endregion
 
