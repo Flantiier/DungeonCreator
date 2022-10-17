@@ -13,13 +13,18 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to the server");
-        PhotonNetwork.JoinLobby();
+        PhotonNetwork.JoinRandomOrCreateRoom();
     }
 
     //Called when disconnected from the master server
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log("Disctonned from server to : " + cause.ToString());
+    }
+
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("Lobby successfully joined !");
     }
 
     //Called when joined a lobby

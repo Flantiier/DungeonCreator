@@ -29,6 +29,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     {
         InstantiateEntity();
     }
+
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
@@ -68,7 +69,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate(masterPrefab.name, SpawnPosition(spawnPositionMaster), Quaternion.identity);
 
         if(masterUI)
-            Instantiate(masterUI, null);
+            Instantiate(masterUI);
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 using UnityEngine;
 using _Scripts.Characters.StateMachines;
-using UnityEditorInternal;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {

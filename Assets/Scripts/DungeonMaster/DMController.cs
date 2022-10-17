@@ -21,6 +21,7 @@ namespace _Scripts.DungeonMaster
         private PlayerInput _inputs;
         private SkyCameraSetup _myCamera;
         private CinemachineTransposer _transposer;
+        private PhotonView _view;
 
         #region Motion
         [Header("Inputs")]
@@ -64,6 +65,11 @@ namespace _Scripts.DungeonMaster
         #region Builts_In
         private void Awake()
         {
+            _view = GetComponent<PhotonView>();
+
+            if (!_view.IsMine)
+                return;
+
             _inputs = GetComponent<PlayerInput>();
 
             _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
@@ -73,16 +79,25 @@ namespace _Scripts.DungeonMaster
 
         private void OnEnable()
         {
+            if (!_view.IsMine)
+                return;
+
             SubscribeToInputs();
         }
 
         private void OnDisable()
         {
+            if (!_view.IsMine)
+                return;
+
             UnsubscribeToInputs();
         }
 
         private void Update()
         {
+            if (!_view.IsMine)
+                return;
+
             HandleCameraMovements();
             ShootTileRay();
             UpdateCameraAngle();

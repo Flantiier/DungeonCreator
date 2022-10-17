@@ -4,6 +4,7 @@ namespace _Scripts.TrapSystem
 {
     public class TilingGenerator : MonoBehaviour
     {
+#if UNITY_EDITOR
         #region Tiling Variables
         [Header("Tiling Variables")]
         [SerializeField] private TilingSO tiling;
@@ -40,5 +41,6 @@ namespace _Scripts.TrapSystem
             }
         }
         #endregion
+#endif
     }
 }

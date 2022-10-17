@@ -21,10 +21,14 @@ namespace _Scripts.Characters
 
         [Header("Character references")]
         [SerializeField] protected AdventurerDatas characterDatas;
-        [SerializeField] protected AdvSimpleCamera cameraPrefab;
         [SerializeField] private Transform mesh;
         [SerializeField] private Transform lookAt;
         [SerializeField] private Transform orientation;
+
+        [Header("Other references")]
+        [SerializeField] protected AdvSimpleCamera cameraPrefab;
+        [SerializeField] protected PlayerHUD playerHUD;
+
         protected AdvSimpleCamera _myCamera;
         protected PlayerInput _inputs;
         private CharacterController _cc;
@@ -83,6 +87,7 @@ namespace _Scripts.Characters
         public bool PViewIsMine { get; private set; }
         public GroundStateMachine GroundStateMachine { get; private set; }
         public PlayerStateMachine PlayerStateMachine { get; private set; }
+        public AdventurerDatas CharacterDatas => characterDatas;
         public PlayerInput Inputs => _inputs;
         public Transform Mesh => mesh;
         public Transform Orientation => orientation;
@@ -115,9 +120,12 @@ namespace _Scripts.Characters
             _animator = mesh.GetComponent<Animator>();
             GroundStateMachine = new GroundStateMachine();
             PlayerStateMachine = new PlayerStateMachine();
+
             InitializeCharacter();
 
             InstantiateCamera();
+
+            InstantiateHUD();
         }
 
         public virtual void OnEnable()
@@ -170,7 +178,9 @@ namespace _Scripts.Characters
         {
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
-            UsingStamina = true;
+            UsingStamina = false;
+
+            //Call health RPC
         }
 
         #region Health
@@ -185,17 +195,19 @@ namespace _Scripts.Characters
                 return;
 
             CurrentHealth -= damages;
-            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, characterDatas.health);
+            if (_healthRecupCoroutine != null)
+                StopCoroutine(_healthRecupCoroutine);
+
+            Debug.Log($"Player health : {CurrentHealth}");
+            //Call RPC on others
 
             if (CurrentHealth <= 0)
             {
+                CurrentHealth = 0f;
                 Debug.Log("PlayerIsDead");
             }
             else
             {
-                if (_healthRecupCoroutine != null)
-                    StopCoroutine(_healthRecupCoroutine);
-
                 _healthRecupCoroutine = StartCoroutine("DamageTempo");
             }
         }
@@ -292,7 +304,7 @@ namespace _Scripts.Characters
 
         #endregion
 
-        #region Camera
+        #region Camera/UI
 
         /// <summary>
         /// Instantiate a camera for the player
@@ -309,6 +321,12 @@ namespace _Scripts.Characters
             instance.SetCamera(lookAt);
 
             _myCamera = instance;
+        }
+
+        private void InstantiateHUD()
+        {
+            PlayerHUD hud = Instantiate(playerHUD);
+            hud.SetHUD(this);
         }
 
         #endregion
