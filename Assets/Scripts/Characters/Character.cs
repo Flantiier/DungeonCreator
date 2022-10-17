@@ -6,7 +6,6 @@ using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
-using Photon.Pun.Demo.Cockpit;
 
 namespace _Scripts.Characters
 {
