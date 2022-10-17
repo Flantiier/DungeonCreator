@@ -7,6 +7,7 @@ using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
 using _Scripts.TrapSystem.Datas;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace _Scripts.DungeonMaster
 {
@@ -216,7 +217,6 @@ namespace _Scripts.DungeonMaster
                 if (hittedTile == _lastTileHitted)
                     return;
 
-                Debug.Log("Touched a new tile");
                 _lastTileHitted = hittedTile;
                 UpdateTiling();
             }
@@ -382,6 +382,7 @@ namespace _Scripts.DungeonMaster
                 return;
 
             _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation + 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
+            _lastTileHitted = null;
             UpdateTiling();
         }
 
@@ -394,6 +395,7 @@ namespace _Scripts.DungeonMaster
                 return;
 
             _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation - 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
+            _lastTileHitted = null;
             UpdateTiling();
         }
         #endregion

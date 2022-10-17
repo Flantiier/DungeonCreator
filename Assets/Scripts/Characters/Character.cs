@@ -6,6 +6,7 @@ using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
+using Photon.Realtime;
 
 namespace _Scripts.Characters
 {
@@ -83,7 +84,7 @@ namespace _Scripts.Characters
 
         #region Properties
 
-        public PhotonView PView { get; private set; }
+        public PhotonView View { get; private set; }
         public bool PViewIsMine { get; private set; }
         public GroundStateMachine GroundStateMachine { get; private set; }
         public PlayerStateMachine PlayerStateMachine { get; private set; }
@@ -99,6 +100,7 @@ namespace _Scripts.Characters
         public float CurrentStamina { get; set; }
         public bool UsingStamina { get; set; }
         public float StaminaToRun => staminaToRun;
+        public float StaminaToDodge => staminaToDodge;
         public float DodgeSpeed => dodgeSpeed;
         public float AirTime => _airTime;
 
@@ -114,7 +116,7 @@ namespace _Scripts.Characters
             if (!PViewIsMine)
                 return;
 
-            PView = view;
+            View = view;
             _inputs = GetComponent<PlayerInput>();
             _cc = GetComponent<CharacterController>();
             _animator = mesh.GetComponent<Animator>();
@@ -181,6 +183,7 @@ namespace _Scripts.Characters
             UsingStamina = false;
 
             //Call health RPC
+            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
         }
 
         #region Health
@@ -198,18 +201,23 @@ namespace _Scripts.Characters
             if (_healthRecupCoroutine != null)
                 StopCoroutine(_healthRecupCoroutine);
 
-            Debug.Log($"Player health : {CurrentHealth}");
-            //Call RPC on others
-
             if (CurrentHealth <= 0)
             {
                 CurrentHealth = 0f;
                 Debug.Log("PlayerIsDead");
             }
             else
-            {
                 _healthRecupCoroutine = StartCoroutine("DamageTempo");
-            }
+        }
+
+        /// <summary>
+        /// Send health over network
+        /// </summary>
+        /// <param name="healthAmount"> Current health amount </param>
+        [PunRPC]
+        private void HealthRPC(float healthAmount)
+        {
+            CurrentHealth = healthAmount;
         }
 
         /// <summary>
@@ -217,6 +225,8 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleHealthRecup()
         {
+            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
+
             if (!_gainHealth)
                 return;
 
@@ -248,7 +258,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleStaminaRecup()
         {
-            UsingStamina = PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) || (RunCondition());
+            UsingStamina = PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
             if (!UsingStamina && CurrentStamina < characterDatas.stamina)
                 CurrentStamina += staminaRecup * Time.deltaTime;
@@ -390,7 +400,7 @@ namespace _Scripts.Characters
             _animator.SetFloat("DirY", _currentInputs.y);
 
             float current = _animator.GetFloat("Motion");
-            float target = RunCondition() ? 2f : CurrentSpeed >= walkSpeed ? 1f : InputsVector.magnitude >= 0.1f ? InputsVector.magnitude : 0f;
+            float target = RunCondition() && CurrentStamina >= 0.1f ? 2f : CurrentSpeed >= walkSpeed ? 1f : InputsVector.magnitude >= 0.1f ? InputsVector.magnitude : 0f;
             float final = Mathf.Lerp(current, target, 0.1f);
             _animator.SetFloat("Motion", final);
 
@@ -476,7 +486,7 @@ namespace _Scripts.Characters
         {
             if (PlayerStateMachine.IsAiming)
                 return aimWalkSpeed;
-            else if (RunCondition())
+            else if (RunCondition() && CurrentStamina >= 0.1f)
                 return runSpeed;
             else if (InputsVector.magnitude >= 0.1f)
                 return walkSpeed;
@@ -489,8 +499,8 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool RunCondition()
         {
-            return CurrentStamina > 0f && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk)
-                    && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f && _inputs.actions["Run"].IsPressed();
+            return  _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f
+                && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk);
         }
 
         /// <summary>
@@ -565,7 +575,9 @@ namespace _Scripts.Characters
         /// </summary>
         private void StartRoll(InputAction.CallbackContext _)
         {
-            if (!DodgeCondition() && CurrentStamina < staminaToDodge)
+            Debug.Log(DodgeCondition());
+
+            if (!DodgeCondition() || CurrentStamina < staminaToDodge)
                 return;
 
             UseStamina(staminaToDodge);
@@ -578,7 +590,7 @@ namespace _Scripts.Characters
         /// </summary>
         private bool DodgeCondition()
         {
-            return PlayerStateMachine.CanDodge && PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll
+            return PlayerStateMachine.CanDodge || PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll
                         && GroundStateMachine.CurrentStatement == GroundStateMachine.GroundStatements.Grounded;
         }
         #endregion
