@@ -32,5 +32,4 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Lobby successfully joined !");
     }
-
 }

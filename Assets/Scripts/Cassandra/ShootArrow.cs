@@ -6,8 +6,8 @@ public class ShootArrow : MonoBehaviourPunCallbacks
 {
     [SerializeField] private Transform _arrowSpawnPosition;
 
-    private string _arrowPrefabName = "flechebaliste";
-    private float _arrowSpeed = 10f;
+    [SerializeField] private GameObject _arrowPrefab;
+    private float _arrowSpeed = 20f;
     private float _timeLeft = 1f;
 
     void Update()
@@ -22,12 +22,12 @@ public class ShootArrow : MonoBehaviourPunCallbacks
 
     IEnumerator Shoot()
     {
-        GameObject _arrow = PhotonNetwork.Instantiate(_arrowPrefabName, _arrowSpawnPosition.position, Quaternion.identity, 0);
+        GameObject _arrow = PhotonNetwork.Instantiate(_arrowPrefab.name, _arrowSpawnPosition.position, _arrowSpawnPosition.rotation, 0);
         _arrow.GetComponent<Rigidbody>().velocity = _arrowSpawnPosition.forward * _arrowSpeed;
 
         yield return new WaitForSeconds(3f);
 
         Destroy(_arrow);
-        //TODO : Une fois le décors mis en place, destroy la flêche si elle touche un élement du décors (murs, déco...)
+        //TODO : Une fois le dï¿½cors mis en place, destroy la flï¿½che si elle touche un ï¿½lement du dï¿½cors (murs, dï¿½co...)
     }
 }

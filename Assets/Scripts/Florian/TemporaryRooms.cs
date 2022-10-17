@@ -22,7 +22,15 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     #region Callbacks
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinRandomOrCreateRoom();
+        if(adventurerPrefab)
+        {
+            PhotonNetwork.JoinRoom("Adventurer_Scene");
+        }
+        else 
+        {
+            PhotonNetwork.JoinRoom("CassandraTestScene");
+        }
+        //PhotonNetwork.JoinRandomOrCreateRoom();
     }
 
     public override void OnJoinedRoom()
