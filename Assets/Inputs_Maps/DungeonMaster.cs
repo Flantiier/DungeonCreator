@@ -15,18 +15,29 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @DungeonMaster : IInputActionCollection2, IDisposable
+namespace InputsMaps
 {
-    public InputActionAsset asset { get; }
-    public @DungeonMaster()
+    public partial class @DungeonMaster : IInputActionCollection2, IDisposable
     {
-        asset = InputActionAsset.FromJson(@"{
+        public InputActionAsset asset { get; }
+        public @DungeonMaster()
+        {
+            asset = InputActionAsset.FromJson(@"{
     ""name"": ""DungeonMaster"",
     ""maps"": [
         {
             ""name"": ""Controls"",
             ""id"": ""eb7f45de-ee3b-4191-ae67-82356ea43618"",
             ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""8aea4457-75f4-4ba8-ae6e-cc4be2644690"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
                 {
                     ""name"": ""Mouse"",
                     ""type"": ""PassThrough"",
@@ -64,15 +75,6 @@ public partial class @DungeonMaster : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Motion"",
-                    ""type"": ""Value"",
-                    ""id"": ""e3b46d09-f6e1-439d-add6-694817f2e2fc"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""RotateCamCW"",
                     ""type"": ""Button"",
                     ""id"": ""4953df66-372a-4ff7-a523-79a31c99add3"",
@@ -91,27 +93,16 @@ public partial class @DungeonMaster : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Scrolling"",
-                    ""type"": ""PassThrough"",
+                    ""name"": ""VerticalAngle"",
+                    ""type"": ""Value"",
                     ""id"": ""e3511339-424c-47b1-90de-fc247aaf6631"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""0fe5d1c2-2a68-4b83-8919-dbef3c5fceb9"",
-                    ""path"": ""<VirtualMouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Mouse"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""2e551e2a-c581-44f2-8c11-a90b331c7561"",
@@ -146,61 +137,6 @@ public partial class @DungeonMaster : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""2538ef51-67cc-4eb7-9654-6012c85404c6"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""24131070-5887-42f2-af1d-0687ed4d4d2c"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""02b278cb-958c-4e81-b199-4c51a2e39bea"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""24010b6d-a690-4fc5-88db-e1751ed1a022"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""e6948784-a9c3-4693-b353-4a3fa0a41612"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Motion"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""6b8d45e9-e0f2-41b5-8bf6-18901a91e7f4"",
                     ""path"": ""<Keyboard>/e"",
@@ -229,178 +165,271 @@ public partial class @DungeonMaster : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Scrolling"",
+                    ""action"": ""VerticalAngle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""5e8423a3-b902-4d4a-8768-0cb649077338"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""56dbeb85-27c3-4426-b81e-738d18e27b60"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""a26a5a7a-65c5-4d24-a91f-9b1421af30e8"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""57340c1a-a783-4b4c-834d-825a783eae53"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""88ceff37-ea55-4225-bb1d-71103529fbc3"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0fe5d1c2-2a68-4b83-8919-dbef3c5fceb9"",
+                    ""path"": ""<VirtualMouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
             ]
         }
     ],
-    ""controlSchemes"": []
-}");
-        // Controls
-        m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
-        m_Controls_Mouse = m_Controls.FindAction("Mouse", throwIfNotFound: true);
-        m_Controls_Interact = m_Controls.FindAction("Interact", throwIfNotFound: true);
-        m_Controls_RotateCW = m_Controls.FindAction("RotateCW", throwIfNotFound: true);
-        m_Controls_RotateACW = m_Controls.FindAction("RotateACW", throwIfNotFound: true);
-        m_Controls_Motion = m_Controls.FindAction("Motion", throwIfNotFound: true);
-        m_Controls_RotateCamCW = m_Controls.FindAction("RotateCamCW", throwIfNotFound: true);
-        m_Controls_RotateCamACW = m_Controls.FindAction("RotateCamACW", throwIfNotFound: true);
-        m_Controls_Scrolling = m_Controls.FindAction("Scrolling", throwIfNotFound: true);
-    }
-
-    public void Dispose()
-    {
-        UnityEngine.Object.Destroy(asset);
-    }
-
-    public InputBinding? bindingMask
-    {
-        get => asset.bindingMask;
-        set => asset.bindingMask = value;
-    }
-
-    public ReadOnlyArray<InputDevice>? devices
-    {
-        get => asset.devices;
-        set => asset.devices = value;
-    }
-
-    public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-    public bool Contains(InputAction action)
-    {
-        return asset.Contains(action);
-    }
-
-    public IEnumerator<InputAction> GetEnumerator()
-    {
-        return asset.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public void Enable()
-    {
-        asset.Enable();
-    }
-
-    public void Disable()
-    {
-        asset.Disable();
-    }
-    public IEnumerable<InputBinding> bindings => asset.bindings;
-
-    public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
-    {
-        return asset.FindAction(actionNameOrId, throwIfNotFound);
-    }
-    public int FindBinding(InputBinding bindingMask, out InputAction action)
-    {
-        return asset.FindBinding(bindingMask, out action);
-    }
-
-    // Controls
-    private readonly InputActionMap m_Controls;
-    private IControlsActions m_ControlsActionsCallbackInterface;
-    private readonly InputAction m_Controls_Mouse;
-    private readonly InputAction m_Controls_Interact;
-    private readonly InputAction m_Controls_RotateCW;
-    private readonly InputAction m_Controls_RotateACW;
-    private readonly InputAction m_Controls_Motion;
-    private readonly InputAction m_Controls_RotateCamCW;
-    private readonly InputAction m_Controls_RotateCamACW;
-    private readonly InputAction m_Controls_Scrolling;
-    public struct ControlsActions
-    {
-        private @DungeonMaster m_Wrapper;
-        public ControlsActions(@DungeonMaster wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Mouse => m_Wrapper.m_Controls_Mouse;
-        public InputAction @Interact => m_Wrapper.m_Controls_Interact;
-        public InputAction @RotateCW => m_Wrapper.m_Controls_RotateCW;
-        public InputAction @RotateACW => m_Wrapper.m_Controls_RotateACW;
-        public InputAction @Motion => m_Wrapper.m_Controls_Motion;
-        public InputAction @RotateCamCW => m_Wrapper.m_Controls_RotateCamCW;
-        public InputAction @RotateCamACW => m_Wrapper.m_Controls_RotateCamACW;
-        public InputAction @Scrolling => m_Wrapper.m_Controls_Scrolling;
-        public InputActionMap Get() { return m_Wrapper.m_Controls; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(ControlsActions set) { return set.Get(); }
-        public void SetCallbacks(IControlsActions instance)
+    ""controlSchemes"": [
         {
-            if (m_Wrapper.m_ControlsActionsCallbackInterface != null)
+            ""name"": ""MK"",
+            ""bindingGroup"": ""MK"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
+}");
+            // Controls
+            m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
+            m_Controls_Move = m_Controls.FindAction("Move", throwIfNotFound: true);
+            m_Controls_Mouse = m_Controls.FindAction("Mouse", throwIfNotFound: true);
+            m_Controls_Interact = m_Controls.FindAction("Interact", throwIfNotFound: true);
+            m_Controls_RotateCW = m_Controls.FindAction("RotateCW", throwIfNotFound: true);
+            m_Controls_RotateACW = m_Controls.FindAction("RotateACW", throwIfNotFound: true);
+            m_Controls_RotateCamCW = m_Controls.FindAction("RotateCamCW", throwIfNotFound: true);
+            m_Controls_RotateCamACW = m_Controls.FindAction("RotateCamACW", throwIfNotFound: true);
+            m_Controls_VerticalAngle = m_Controls.FindAction("VerticalAngle", throwIfNotFound: true);
+        }
+
+        public void Dispose()
+        {
+            UnityEngine.Object.Destroy(asset);
+        }
+
+        public InputBinding? bindingMask
+        {
+            get => asset.bindingMask;
+            set => asset.bindingMask = value;
+        }
+
+        public ReadOnlyArray<InputDevice>? devices
+        {
+            get => asset.devices;
+            set => asset.devices = value;
+        }
+
+        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
+
+        public bool Contains(InputAction action)
+        {
+            return asset.Contains(action);
+        }
+
+        public IEnumerator<InputAction> GetEnumerator()
+        {
+            return asset.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Enable()
+        {
+            asset.Enable();
+        }
+
+        public void Disable()
+        {
+            asset.Disable();
+        }
+        public IEnumerable<InputBinding> bindings => asset.bindings;
+
+        public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
+        {
+            return asset.FindAction(actionNameOrId, throwIfNotFound);
+        }
+        public int FindBinding(InputBinding bindingMask, out InputAction action)
+        {
+            return asset.FindBinding(bindingMask, out action);
+        }
+
+        // Controls
+        private readonly InputActionMap m_Controls;
+        private IControlsActions m_ControlsActionsCallbackInterface;
+        private readonly InputAction m_Controls_Move;
+        private readonly InputAction m_Controls_Mouse;
+        private readonly InputAction m_Controls_Interact;
+        private readonly InputAction m_Controls_RotateCW;
+        private readonly InputAction m_Controls_RotateACW;
+        private readonly InputAction m_Controls_RotateCamCW;
+        private readonly InputAction m_Controls_RotateCamACW;
+        private readonly InputAction m_Controls_VerticalAngle;
+        public struct ControlsActions
+        {
+            private @DungeonMaster m_Wrapper;
+            public ControlsActions(@DungeonMaster wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Move => m_Wrapper.m_Controls_Move;
+            public InputAction @Mouse => m_Wrapper.m_Controls_Mouse;
+            public InputAction @Interact => m_Wrapper.m_Controls_Interact;
+            public InputAction @RotateCW => m_Wrapper.m_Controls_RotateCW;
+            public InputAction @RotateACW => m_Wrapper.m_Controls_RotateACW;
+            public InputAction @RotateCamCW => m_Wrapper.m_Controls_RotateCamCW;
+            public InputAction @RotateCamACW => m_Wrapper.m_Controls_RotateCamACW;
+            public InputAction @VerticalAngle => m_Wrapper.m_Controls_VerticalAngle;
+            public InputActionMap Get() { return m_Wrapper.m_Controls; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(ControlsActions set) { return set.Get(); }
+            public void SetCallbacks(IControlsActions instance)
             {
-                @Mouse.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
-                @Mouse.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
-                @Mouse.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
-                @Interact.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
-                @Interact.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
-                @Interact.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
-                @RotateCW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
-                @RotateCW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
-                @RotateCW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
-                @RotateACW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
-                @RotateACW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
-                @RotateACW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
-                @Motion.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
-                @Motion.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
-                @Motion.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMotion;
-                @RotateCamCW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
-                @RotateCamCW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
-                @RotateCamCW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
-                @RotateCamACW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
-                @RotateCamACW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
-                @RotateCamACW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
-                @Scrolling.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnScrolling;
-                @Scrolling.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnScrolling;
-                @Scrolling.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnScrolling;
-            }
-            m_Wrapper.m_ControlsActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @Mouse.started += instance.OnMouse;
-                @Mouse.performed += instance.OnMouse;
-                @Mouse.canceled += instance.OnMouse;
-                @Interact.started += instance.OnInteract;
-                @Interact.performed += instance.OnInteract;
-                @Interact.canceled += instance.OnInteract;
-                @RotateCW.started += instance.OnRotateCW;
-                @RotateCW.performed += instance.OnRotateCW;
-                @RotateCW.canceled += instance.OnRotateCW;
-                @RotateACW.started += instance.OnRotateACW;
-                @RotateACW.performed += instance.OnRotateACW;
-                @RotateACW.canceled += instance.OnRotateACW;
-                @Motion.started += instance.OnMotion;
-                @Motion.performed += instance.OnMotion;
-                @Motion.canceled += instance.OnMotion;
-                @RotateCamCW.started += instance.OnRotateCamCW;
-                @RotateCamCW.performed += instance.OnRotateCamCW;
-                @RotateCamCW.canceled += instance.OnRotateCamCW;
-                @RotateCamACW.started += instance.OnRotateCamACW;
-                @RotateCamACW.performed += instance.OnRotateCamACW;
-                @RotateCamACW.canceled += instance.OnRotateCamACW;
-                @Scrolling.started += instance.OnScrolling;
-                @Scrolling.performed += instance.OnScrolling;
-                @Scrolling.canceled += instance.OnScrolling;
+                if (m_Wrapper.m_ControlsActionsCallbackInterface != null)
+                {
+                    @Move.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
+                    @Move.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
+                    @Move.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
+                    @Mouse.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
+                    @Mouse.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
+                    @Mouse.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMouse;
+                    @Interact.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
+                    @Interact.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
+                    @Interact.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
+                    @RotateCW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
+                    @RotateCW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
+                    @RotateCW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCW;
+                    @RotateACW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
+                    @RotateACW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
+                    @RotateACW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateACW;
+                    @RotateCamCW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
+                    @RotateCamCW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
+                    @RotateCamCW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamCW;
+                    @RotateCamACW.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
+                    @RotateCamACW.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
+                    @RotateCamACW.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRotateCamACW;
+                    @VerticalAngle.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnVerticalAngle;
+                    @VerticalAngle.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnVerticalAngle;
+                    @VerticalAngle.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnVerticalAngle;
+                }
+                m_Wrapper.m_ControlsActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @Move.started += instance.OnMove;
+                    @Move.performed += instance.OnMove;
+                    @Move.canceled += instance.OnMove;
+                    @Mouse.started += instance.OnMouse;
+                    @Mouse.performed += instance.OnMouse;
+                    @Mouse.canceled += instance.OnMouse;
+                    @Interact.started += instance.OnInteract;
+                    @Interact.performed += instance.OnInteract;
+                    @Interact.canceled += instance.OnInteract;
+                    @RotateCW.started += instance.OnRotateCW;
+                    @RotateCW.performed += instance.OnRotateCW;
+                    @RotateCW.canceled += instance.OnRotateCW;
+                    @RotateACW.started += instance.OnRotateACW;
+                    @RotateACW.performed += instance.OnRotateACW;
+                    @RotateACW.canceled += instance.OnRotateACW;
+                    @RotateCamCW.started += instance.OnRotateCamCW;
+                    @RotateCamCW.performed += instance.OnRotateCamCW;
+                    @RotateCamCW.canceled += instance.OnRotateCamCW;
+                    @RotateCamACW.started += instance.OnRotateCamACW;
+                    @RotateCamACW.performed += instance.OnRotateCamACW;
+                    @RotateCamACW.canceled += instance.OnRotateCamACW;
+                    @VerticalAngle.started += instance.OnVerticalAngle;
+                    @VerticalAngle.performed += instance.OnVerticalAngle;
+                    @VerticalAngle.canceled += instance.OnVerticalAngle;
+                }
             }
         }
-    }
-    public ControlsActions @Controls => new ControlsActions(this);
-    public interface IControlsActions
-    {
-        void OnMouse(InputAction.CallbackContext context);
-        void OnInteract(InputAction.CallbackContext context);
-        void OnRotateCW(InputAction.CallbackContext context);
-        void OnRotateACW(InputAction.CallbackContext context);
-        void OnMotion(InputAction.CallbackContext context);
-        void OnRotateCamCW(InputAction.CallbackContext context);
-        void OnRotateCamACW(InputAction.CallbackContext context);
-        void OnScrolling(InputAction.CallbackContext context);
+        public ControlsActions @Controls => new ControlsActions(this);
+        private int m_MKSchemeIndex = -1;
+        public InputControlScheme MKScheme
+        {
+            get
+            {
+                if (m_MKSchemeIndex == -1) m_MKSchemeIndex = asset.FindControlSchemeIndex("MK");
+                return asset.controlSchemes[m_MKSchemeIndex];
+            }
+        }
+        public interface IControlsActions
+        {
+            void OnMove(InputAction.CallbackContext context);
+            void OnMouse(InputAction.CallbackContext context);
+            void OnInteract(InputAction.CallbackContext context);
+            void OnRotateCW(InputAction.CallbackContext context);
+            void OnRotateACW(InputAction.CallbackContext context);
+            void OnRotateCamCW(InputAction.CallbackContext context);
+            void OnRotateCamACW(InputAction.CallbackContext context);
+            void OnVerticalAngle(InputAction.CallbackContext context);
+        }
     }
 }

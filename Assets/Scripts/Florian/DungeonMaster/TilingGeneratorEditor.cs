@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Tiling
+namespace _Scripts.TrapSystem
 {
     [CustomEditor(typeof(TilingGenerator))]
     public class TilingGeneratorEditor : Editor

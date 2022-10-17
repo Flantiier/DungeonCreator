@@ -5,6 +5,5 @@ public class TilingSO : ScriptableObject
 {
     [Header("Tiling Variables")]
     public GameObject tilePrefab;
-    public float xOffset;
-    public float yOffset;
+    public float lengthX = 3f, lengthY = 3f;
 }

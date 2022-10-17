@@ -1,91 +1,84 @@
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+namespace _Scripts.TrapSystem
 {
-    #region Tile Variables
-    [Header("Tile Variables")]
-    [SerializeField, Tooltip("Base material of the Tile")]
-    private Material baseMaterial;
-
-    [SerializeField, Tooltip("Selected material of the Tile")]
-    private Material selectedMaterial;
-
-    [SerializeField, Tooltip("Used material of the Tile")]
-    private Material usedMaterial;
-
-    [SerializeField, Tooltip("Renderer Component of the Tile")]
-    private Renderer _renderer;
-
-    public enum TileState
+    public class Tile : MonoBehaviour
     {
-        Deselected, Selected, Waiting, Used,
-    }
+        #region Tile Variables
+        [Header("Tile Variables")]
+        [SerializeField] private Material baseMaterial;
+        [SerializeField] private Material selectedMaterial;
+        [SerializeField] private Material usedMaterial;
+        private Renderer _renderer;
 
-    /// <summary>
-    /// State of the Tile
-    /// </summary>
-    public TileState currentTileState { get; private set; }
-    /// <summary>
-    /// Indicates of the tile is used or not
-    /// </summary>
-    public bool IsUsed { get; private set; }
-    #endregion
+        public enum TileState { Deselected, Selected, Waiting, Used }
+        public TileState CurrentTileState { get; private set; }
+        public bool IsUsed { get; private set; }
+        #endregion
 
-    #region Builts-In
-    private void Awake()
-    {
-        NewTileState(TileState.Deselected);
-    }
-    #endregion
-
-    #region Tile State Methods
-    public void NewTileState(TileState newState)
-    {
-        currentTileState = newState;
-
-        switch (newState)
+        #region Builts-In
+        private void Awake()
         {
-            case TileState.Deselected:
-                DeselectingState();
-                break;
-            case TileState.Selected:
-                SelectingState();
-                break;
-            case TileState.Waiting:
-                WaitingState();
-                break;
-            case TileState.Used:
-                UsingState();
-                break;
+            IsUsed = false;
+            _renderer = GetComponent<Renderer>();
+            NewTileState(TileState.Deselected);
         }
-    }
+        #endregion
 
-    public bool TileUsed()
-    {
-        if (currentTileState != TileState.Used)
-            return false;
+        #region Tile State Methods
+        public void NewTileState(TileState newState)
+        {
+            CurrentTileState = newState;
 
-        return true;
-    }
+            switch (newState)
+            {
+                case TileState.Deselected:
+                    DeselectingState();
+                    break;
+                case TileState.Selected:
+                    SelectingState();
+                    break;
+                case TileState.Waiting:
+                    WaitingState();
+                    break;
+                case TileState.Used:
+                    UsingState();
+                    break;
+            }
+        }
 
-    private void DeselectingState()
-    {
-        _renderer.material = baseMaterial;
-    }
+        /// <summary>
+        /// Reset the tile to base state
+        /// </summary>
+        public void ResetTile()
+        {
+            DeselectingState();
+            IsUsed = false;
+        }
 
-    private void SelectingState()
-    {
-        _renderer.material = selectedMaterial;
-    }
-    private void WaitingState()
-    {
-        _renderer.material = usedMaterial;
-    }
+        /// <summary>
+        /// If the tile is occuped by a trap
+        /// </summary>
+        private void UsingState()
+        {
+            _renderer.material = usedMaterial;
+            IsUsed = true;
+        }
 
-    private void UsingState()
-    {
-        _renderer.material = usedMaterial;
-        IsUsed = true;
+        private void DeselectingState()
+        {
+            _renderer.material = baseMaterial;
+        }
+
+        private void SelectingState()
+        {
+            _renderer.material = selectedMaterial;
+        }
+
+        private void WaitingState()
+        {
+            _renderer.material = usedMaterial;
+        }
+        #endregion
     }
-    #endregion
 }

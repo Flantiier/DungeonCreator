@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Photon.Pun;
+using UnityEngine.Playables;
 
 namespace Adventurer
 {
@@ -30,7 +31,7 @@ namespace Adventurer
         #endregion
 
         #region Motion Variables
-        [Header("Moton Variables")]
+        [Header("Motion Variables")]
         [SerializeField, Tooltip("Speed while the player is walking")]
         private float walkSpeed = 5f;
 
@@ -76,7 +77,7 @@ namespace Adventurer
         [SerializeField, Tooltip("Transform position of the groundCheck")]
         private Transform checkPosition;
 
-        [SerializeField, Range(0f, 1f), Tooltip("Radius to check if the player is on ground")] 
+        [SerializeField, Range(0f, 1f), Tooltip("Radius to check if the player is on ground")]
         private float checkRadius = 0.1f;
 
         [SerializeField, Tooltip("Layer to detect the ground")]
@@ -106,7 +107,7 @@ namespace Adventurer
         [SerializeField, Tooltip("Maximum velocity on the World Y Axis")]
         private float maxVerticalVel = 30f;
 
-        [SerializeField, Tooltip("Minimum value to the timeInAir timer")] 
+        [SerializeField, Tooltip("Minimum value to the timeInAir timer")]
         private float minTimeInAir = 1f;
 
         [SerializeField, Tooltip("Maximum time in air")] private float maxTimeInAir = 3f;
@@ -131,7 +132,7 @@ namespace Adventurer
         /// <summary>
         /// Direction inputs vector
         /// </summary>
-        public Vector2 DirectionInputs { get; private set; }
+        public Vector2 InputsVector { get; private set; }
         /// <summary>
         /// Current Moving speed of the player
         /// </summary>
@@ -207,7 +208,7 @@ namespace Adventurer
             if (!_view.IsMine)
                 return;
 
-            //Local
+            //Local player
             //Activates inputs
             _inputs.ActivateInput();
             //Subscribing to inputs events
@@ -220,7 +221,7 @@ namespace Adventurer
             if (!_view.IsMine)
                 return;
 
-            //Local
+            //Local player
             //Deactivate Inputs
             _inputs.DeactivateInput();
             //Unsubscribe to inputs
@@ -252,7 +253,15 @@ namespace Adventurer
             //Updating animations
             UpdateAnimations();
         }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawSphere(checkPosition.position, checkRadius);
+            Gizmos.DrawSphere(slopeCheckPosition.position, slopeRadius);
+        }
         #endregion
+
+        #region Methods
 
         #region Motion Methods
         /// <summary>
@@ -268,7 +277,7 @@ namespace Adventurer
             MotionSpeed();
 
             //Calculate direction Vector
-            _movement = orientation.forward * DirectionInputs.y + orientation.right * DirectionInputs.x;
+            _movement = orientation.forward * InputsVector.y + orientation.right * InputsVector.x;
 
             //Checking if the player is aiming
             //Looking in the same direction as the camera
@@ -299,9 +308,9 @@ namespace Adventurer
         /// </summary>
         private void StandardRotate()
         {
-            if (DirectionInputs.magnitude >= 0.1f)
+            if (InputsVector.magnitude >= 0.1f)
             {
-                float angle = Mathf.Atan2(DirectionInputs.x, DirectionInputs.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
+                float angle = Mathf.Atan2(InputsVector.x, InputsVector.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
                 float smoothAngle = Mathf.SmoothDampAngle(playerMesh.eulerAngles.y, angle, ref _turnVel, lerpRotation);
                 playerMesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
             }
@@ -317,7 +326,7 @@ namespace Adventurer
                 _targetVel = 0f;
             else if (_fighting.CanAim && _fighting.IsAiming)
                 _targetVel = aimSpeed;
-            else if (CanRun && IsRunning && DirectionInputs.magnitude >= minRunValue)
+            else if (CanRun && IsRunning && InputsVector.magnitude >= minRunValue)
                 _targetVel = runSpeed;
             else
                 _targetVel = walkSpeed;
@@ -411,8 +420,8 @@ namespace Adventurer
             if (IsGrounded)
                 if (_timeInAir < maxTimeInAir)
                     _timeInAir += Time.deltaTime;
-            //Not grounded => Increase timer
-            else
+                //Not grounded => Increase timer
+                else
                 if (_timeInAir != minTimeInAir)
                     _timeInAir = minTimeInAir;
         }
@@ -449,7 +458,10 @@ namespace Adventurer
             //Casting a sphere on the ground
             //OnSlope
             if (Physics.SphereCast(slopeCheckPosition.position, slopeRadius, Vector3.down, out _slopeHit, slopeDistance, slopeMask) && _slopeHit.normal != Vector3.zero)
+            {
+                Debug.DrawRay(_slopeHit.point, _slopeHit.normal, Color.cyan);
                 IsOnSlope = true;
+            }
             //Not onSlope
             else
                 IsOnSlope = false;
@@ -460,8 +472,7 @@ namespace Adventurer
         /// </summary>
         private bool IsIdled()
         {
-            
-            if (DirectionInputs == Vector2.zero)
+            if (InputsVector == Vector2.zero)
                 return true;
 
             return false;
@@ -484,10 +495,10 @@ namespace Adventurer
                 _animator.SetBool("Inputs", false);
 
             //Inputs
-            _smoothInputs = Vector3.Lerp(_smoothInputs, DirectionInputs, lerpAnimInputs).normalized;
+            _smoothInputs = Vector3.Lerp(_smoothInputs, InputsVector, lerpAnimInputs).normalized;
 
             if (_smoothInputs.x <= 0.05f)
-                _smoothInputs.x = 0f; 
+                _smoothInputs.x = 0f;
             if (_smoothInputs.y <= 0.05f)
                 _smoothInputs.y = 0f;
 
@@ -500,7 +511,7 @@ namespace Adventurer
             else if (CanRun && IsRunning)
                 _animMotionSpeed = Mathf.Lerp(_animMotionSpeed, 2f, lerpAnimMotion);
             else
-                _animMotionSpeed = Mathf.Lerp(_animMotionSpeed, DirectionInputs.magnitude, lerpAnimMotion);
+                _animMotionSpeed = Mathf.Lerp(_animMotionSpeed, InputsVector.magnitude, lerpAnimMotion);
 
             if (IsIdled() && _animMotionSpeed < 0.1f)
                 _animMotionSpeed = 0f;
@@ -516,8 +527,8 @@ namespace Adventurer
         private void SubscribeToInputs()
         {
             //Motion
-            _inputs.actions["Motion"].performed += ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
-            _inputs.actions["Motion"].canceled += ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
+            _inputs.actions["Motion"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>().normalized;
+            _inputs.actions["Motion"].canceled += ctx => InputsVector = ctx.ReadValue<Vector2>().normalized;
 
             //Run
             _inputs.actions["Run"].started += ctx => IsRunning = ctx.ReadValueAsButton();
@@ -533,8 +544,8 @@ namespace Adventurer
         private void UnsubscribeToInputs()
         {
             //Motion
-            _inputs.actions["Motion"].performed -= ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
-            _inputs.actions["Motion"].canceled -= ctx => DirectionInputs = ctx.ReadValue<Vector2>().normalized;
+            _inputs.actions["Motion"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>().normalized;
+            _inputs.actions["Motion"].canceled -= ctx => InputsVector = ctx.ReadValue<Vector2>().normalized;
 
             //Run
             _inputs.actions["Run"].started -= ctx => IsRunning = ctx.ReadValueAsButton();
@@ -553,11 +564,6 @@ namespace Adventurer
         public void DisableDodge() { CanDodge = false; }
         public void EndDodgeAction() { IsDodging = false; }
         #endregion
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.DrawSphere(checkPosition.position, checkRadius);
-            Gizmos.DrawSphere(slopeCheckPosition.position, slopeRadius);
-        }
     }
+    #endregion
 }
