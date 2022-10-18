@@ -8,6 +8,7 @@ using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
 using _Scripts.TrapSystem.Datas;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine.UI;
 
 namespace _Scripts.DungeonMaster
 {
@@ -19,6 +20,10 @@ namespace _Scripts.DungeonMaster
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform projectedTransform;
 
+        [SerializeField] private float manaDM = 100;
+
+        private GameObject _manaBar;
+        private float _currentMana;
         private PlayerInput _inputs;
         private SkyCameraSetup _myCamera;
         private CinemachineTransposer _transposer;
@@ -76,6 +81,13 @@ namespace _Scripts.DungeonMaster
             _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
             _myCamera.SetCamera(orientation);
             _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
+
+            _currentMana = manaDM;
+        }
+
+        private void Start()
+        {
+            _manaBar = GameObject.Find("ManaBarImage");
         }
 
         private void OnEnable()
@@ -366,11 +378,17 @@ namespace _Scripts.DungeonMaster
             if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                 return;
 
-            PhotonNetwork.Instantiate(selectedTrap.trapPrefab.name, _selectedTrapInstance.position, projectedTransform.rotation);
-            ChangeTilesStates(Tile.TileState.Used);
+            if(_currentMana >= selectedTrap.manaCost)
+            {
+                PhotonNetwork.Instantiate(selectedTrap.trapPrefab.name, _selectedTrapInstance.position, projectedTransform.rotation);
+                ChangeTilesStates(Tile.TileState.Used);
 
-            _selectedTrapRotation = 0f;
-            _reachedTiles.Clear();
+                _currentMana -= selectedTrap.manaCost;
+                _manaBar.GetComponent<Image>().fillAmount = _currentMana / manaDM;
+
+                _selectedTrapRotation = 0f;
+                _reachedTiles.Clear();
+            }
         }
 
         /// <summary>
