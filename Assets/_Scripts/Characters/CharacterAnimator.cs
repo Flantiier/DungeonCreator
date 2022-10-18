@@ -3,11 +3,25 @@ using _Scripts.Characters;
 
 public class CharacterAnimator : MonoBehaviour
 {
+    [SerializeField] private CharacterHitbox[] hitboxs;
     public Character Character { get; private set; }
+    public CharacterHitbox[] Hitboxs => hitboxs;
 
     public virtual void Awake()
     {
         Character = GetComponentInParent<Character>();
+        GetHitboxs();
+    }
+
+    public void EnableCollider(int index, bool state)
+    {
+        hitboxs[index].SetColliderState(state);
+    }
+
+    [ContextMenu("Get Hitboxs")]
+    private void GetHitboxs()
+    {
+        hitboxs = GetComponentsInChildren<CharacterHitbox>();
     }
 }
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using _Scripts.Characters.StateMachines;
 using _Scriptables.Curves;
+using System;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
@@ -8,11 +9,17 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         #region Variables
 
-        [SerializeField] protected float attackCooldown = 0.7f;
-        [SerializeField] protected float dodgeCooldown = 0.7f;
+        [Header("Attack properties")]
         [SerializeField] protected CombatCurve combatCurves;
         [SerializeField] protected int curveIndex;
-        protected Character Character { get; set; }
+        [SerializeField] protected float attackCooldown = 0.7f;
+        [SerializeField] protected float dodgeCooldown = 0.7f;
+
+        [Header("Attack collider")]
+        [SerializeField] protected int colliderIndex = 0;
+        [SerializeField] protected float enableCollider = 0.3f, disableCollider = 0.8f;
+
+        protected Character _character;
         protected AnimationCurve _attackCurve;
 
         #endregion
@@ -22,12 +29,12 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
-            Character = player;
+            _character = player;
 
             player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Attack;
-            Character.PlayerStateMachine.CanAttack = false;
-            Character.PlayerStateMachine.CanDodge = false;
-            
+            _character.PlayerStateMachine.CanAttack = false;
+            _character.PlayerStateMachine.CanDodge = false;
+
             SmoothPlayerMomentum(player);
             player.TurnPlayer();
         }
@@ -35,9 +42,15 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             DisableActions(stateInfo.normalizedTime);
+            UpdateAttackCollider(animator, stateInfo.normalizedTime);
 
             float speed = GetCombatMomentum(stateInfo.normalizedTime);
-            Character.HandleCombatMovement(speed);
+            _character.HandleCombatMovement(speed);
+        }
+
+        protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, false);
         }
 
         #endregion
@@ -70,8 +83,24 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void DisableActions(float time)
         {
-            Character.PlayerStateMachine.CanAttack = time >= attackCooldown ? true : false;
-            Character.PlayerStateMachine.CanDodge = time >= dodgeCooldown ? true : false;
+            _character.PlayerStateMachine.CanAttack = time >= attackCooldown ? true : false;
+            _character.PlayerStateMachine.CanDodge = time >= dodgeCooldown ? true : false;
+        }
+
+        /// <summary>
+        /// Update collider state
+        /// </summary>
+        private void UpdateAttackCollider(Animator animator, float time)
+        {
+            CharacterAnimator characterAnimator = animator.GetComponent<CharacterAnimator>();
+
+            if (colliderIndex < 0 || characterAnimator.Hitboxs.Length > colliderIndex || !characterAnimator.Hitboxs[colliderIndex])
+                return;
+
+            if (time >= enableCollider && time <= disableCollider)
+                animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, true);
+            else
+                animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, false);
         }
 
         #endregion
