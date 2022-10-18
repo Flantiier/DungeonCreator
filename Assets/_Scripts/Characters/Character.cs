@@ -6,7 +6,6 @@ using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
-using Photon.Realtime;
 
 namespace _Scripts.Characters
 {
@@ -63,6 +62,7 @@ namespace _Scripts.Characters
         private Vector2 _smoothInputsRef;
         private float _speedSmoothingRef;
         private float _meshTurnRef;
+        private Coroutine _dodgeCoroutine;
 
         #endregion
 
@@ -183,9 +183,6 @@ namespace _Scripts.Characters
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
             UsingStamina = false;
-
-            //Call health RPC
-            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
         }
 
         #region Health
@@ -501,7 +498,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool RunCondition()
         {
-            return  _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f
+            return _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f
                 && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk);
         }
 
@@ -577,14 +574,14 @@ namespace _Scripts.Characters
         /// </summary>
         private void StartRoll(InputAction.CallbackContext _)
         {
-            Debug.Log(DodgeCondition());
-
-            if (!DodgeCondition() || CurrentStamina < staminaToDodge)
+            if (!PlayerStateMachine.CanDodge || CurrentStamina < staminaToDodge)
                 return;
 
-            UseStamina(staminaToDodge);
-            TurnPlayer();
-            _animator.SetTrigger("Roll");
+            if (DodgeCondition())
+            {
+                TurnPlayer();
+                _animator.SetTrigger("Roll");
+            }
         }
 
         /// <summary>
@@ -592,8 +589,7 @@ namespace _Scripts.Characters
         /// </summary>
         private bool DodgeCondition()
         {
-            return PlayerStateMachine.CanDodge || PlayerStateMachine.CurrentState != PlayerStateMachine.PlayerStates.Roll
-                        && GroundStateMachine.CurrentStatement == GroundStateMachine.GroundStatements.Grounded;
+            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded);
         }
         #endregion
 

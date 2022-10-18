@@ -8,4 +8,9 @@ public class AdventurerDatas : ScriptableObject
     public float attack = 20f;
     public float critAttack = 0.25f;
     public float defense = 25f;
+
+    public float GetAttackDamages()
+    {
+        return attack;
+    }
 }
