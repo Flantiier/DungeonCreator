@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using _Scripts.Interfaces;
 using _Scripts.Characters;
 
 namespace _Scripts.TrapSystem.Datas
@@ -13,62 +14,49 @@ namespace _Scripts.TrapSystem.Datas
         // Start is called before the first frame update
         void Start()
         {
-            gameObject.tag = "Trap";
-
             if(!trapSO) return;
             if(!trapDamageableSO) return;
         }
 
-        //Trigger with Traps
-        private void OnTriggerEnter(Collider other)
+        private void OnColliderEnter(Collision collision)
         {
-            //if the trap have the tag Trap
-            if(other.gameObject.tag == "Player")
+/*            if (!collision.TryGetComponent(out IDamageable damage))
             {
-                Character _player = other.gameObject.GetComponent<Character>();
-
-                if (trapSO)
-                {
-                    _player.DamagePlayer(trapSO.damage);
-                }
-                if (trapDamageableSO)
-                {
-                    _player.DamagePlayer(trapDamageableSO.damage);
-                }
-
-                if (_player.PlayerStateMachine.CurrentState == Characters.StateMachines.PlayerStateMachine.PlayerStates.Attack && trapDamageableSO)
-                {
-                    trapDamageableSO.health -= 1f;
-
-                    if (trapDamageableSO.health <= 0)
-                    {
-                        Destroy(trapDamageableSO);
-                    }
-                }
-                // [SerializeField] private Image _healthBarImage;
-                // [SerializeField] private GameObject _playerUICanvas;
-                // _healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
+                return;
             }
+            else
+            {
+                trapDamageableSO.health -= damage.TakeDamage();
+
+                if (trapDamageableSO.health <= 0)
+                {
+                    Destroy(gameObject);
+                }
+            }*/
         }
 
         private void OnTriggerStay(Collider other)
         {
-            if(other.gameObject.tag == "Player")
+            if (!other.TryGetComponent(out IPlayerDamageable player))
             {
-                Character _player = other.gameObject.GetComponent<Character>();
-
-                if (trapSO && trapSO.isContinuous)
+                return;
+            }
+            else
+            {
+                if (trapSO)
                 {
-                    _player.DamagePlayer(trapSO.damage);
+                    player.DamagePlayer(trapSO.damage);
                 }
-                else if (trapDamageableSO && trapDamageableSO.isContinuous)
+                else if (trapDamageableSO)
                 {
-                    _player.DamagePlayer(trapDamageableSO.damage);
+                    player.DamagePlayer(trapDamageableSO.damage);
                 }
                 else
                 {
                     return;
                 }
+                //se trouve dans player HUD (script)
+                // player._healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
             }
         }
     }

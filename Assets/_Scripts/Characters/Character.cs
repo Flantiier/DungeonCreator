@@ -110,8 +110,6 @@ namespace _Scripts.Characters
 
         public virtual void Awake()
         {
-            gameObject.tag = "Player";
-
             PhotonView view = GetComponent<PhotonView>();
             PViewIsMine = view.IsMine;
 
