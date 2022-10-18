@@ -11,6 +11,7 @@ namespace _Scripts.TrapSystem.Datas
         public string trapName = "New trap";
         public float damage;
         public int manaCost;
+        public bool isStaminaLow;
 
         [TextArea(10, 10)] public string description = "New description";
         [Range(1, 10)] public int xAmount = 5;

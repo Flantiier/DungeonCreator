@@ -10,7 +10,7 @@ namespace _Scripts.TrapSystem.Datas
 
         [SerializeField] private GameObject _arrowPrefab;
         private float _arrowSpeed = 20f;
-        private float _timeLeft = 2f;
+        private float _timeLeft = 1f;
 
         void Update()
         {
@@ -18,7 +18,7 @@ namespace _Scripts.TrapSystem.Datas
             if (_timeLeft <= 0)
             {
                 StartCoroutine(Shoot());
-                _timeLeft = 2f;
+                _timeLeft = 1f;
             }
         }
 

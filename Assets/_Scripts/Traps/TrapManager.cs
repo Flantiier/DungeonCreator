@@ -13,6 +13,7 @@ namespace _Scripts.TrapSystem.Datas
         public TrapDamageableSO trapDamageableSO;
 
         private Animator _animator;
+        private ParticleSystem _particle;
 
         // Start is called before the first frame update
         void Start()
@@ -22,10 +23,9 @@ namespace _Scripts.TrapSystem.Datas
 
             if (!trapSO) return;
             if (!trapDamageableSO) return;
-
         }
 
-        private void OnColliderEnter(Collision collision)
+        private void OnCollisionEnter(Collision collision)
         {
 /*            if (!collision.TryGetComponent(out IDamageable damage))
             {
@@ -66,12 +66,13 @@ namespace _Scripts.TrapSystem.Datas
             {
                 player.DamagePlayer(trapDamageableSO.damage);
             }
-            else
-            {
-                return;
-            }
             //se trouve dans player HUD (script)
-            // player._healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
+        }
+
+        private void PlayParticle()
+        {
+            _particle = GetComponentInChildren<ParticleSystem>();
+            _particle.Play();
         }
     }
 }
