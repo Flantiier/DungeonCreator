@@ -9,5 +9,6 @@ namespace _Scripts.TrapSystem.Datas
     {
         [Header("Trap damageable infos")]
         public float health;
+        public bool isPlayerTrapped;
     }
 }

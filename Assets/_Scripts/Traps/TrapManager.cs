@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using _Scripts.Interfaces;
 using _Scripts.Characters;
+using _Scripts.Characters.StateMachines;
 
 namespace _Scripts.TrapSystem.Datas
 {
@@ -11,11 +12,17 @@ namespace _Scripts.TrapSystem.Datas
         public TrapSO trapSO;
         public TrapDamageableSO trapDamageableSO;
 
+        private Animator _animator;
+
         // Start is called before the first frame update
         void Start()
         {
-            if(!trapSO) return;
-            if(!trapDamageableSO) return;
+            if(TryGetComponent(out Animator animator))
+                _animator = GetComponent<Animator>();
+
+            if (!trapSO) return;
+            if (!trapDamageableSO) return;
+
         }
 
         private void OnColliderEnter(Collision collision)
@@ -35,29 +42,36 @@ namespace _Scripts.TrapSystem.Datas
             }*/
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.TryGetComponent(out IPlayerDamageable player)) return;
+            if (trapSO) return;
+
+            if (trapDamageableSO.isPlayerTrapped == true)
+            {
+                _animator.SetBool("isCaged", true);                
+                //TODO : Faire la destruction de l'objet quand il n'a plus de points de vie
+            }
+        }
+
         private void OnTriggerStay(Collider other)
         {
-            if (!other.TryGetComponent(out IPlayerDamageable player))
+            if (!other.TryGetComponent(out IPlayerDamageable player)) return;
+
+            if (trapSO)
             {
-                return;
+                player.DamagePlayer(trapSO.damage);
+            }
+            else if (trapDamageableSO)
+            {
+                player.DamagePlayer(trapDamageableSO.damage);
             }
             else
             {
-                if (trapSO)
-                {
-                    player.DamagePlayer(trapSO.damage);
-                }
-                else if (trapDamageableSO)
-                {
-                    player.DamagePlayer(trapDamageableSO.damage);
-                }
-                else
-                {
-                    return;
-                }
-                //se trouve dans player HUD (script)
-                // player._healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
+                return;
             }
+            //se trouve dans player HUD (script)
+            // player._healthBarImage.fillAmount = _currentHealth / adventurerDatas.health;
         }
     }
 }

@@ -96,10 +96,10 @@ GameObject:
   - component: {fileID: 6432117100319116001}
   - component: {fileID: 6830202591615717760}
   - component: {fileID: 6830202591615717761}
-  - component: {fileID: 877404231724830064}
   - component: {fileID: 1703775193}
   - component: {fileID: 1703775192}
-  - component: {fileID: 1703775194}
+  - component: {fileID: 578926571}
+  - component: {fileID: 3054340432726935228}
   m_Layer: 0
   m_Name: Trap_BalistePrefab
   m_TagString: Untagged
@@ -165,19 +165,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!65 &877404231724830064
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5911160053989953627}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.8830507, y: 0.84388244, z: 1.8536196}
-  m_Center: {x: 0.010387301, y: 0.33232802, z: 0.09757757}
 --- !u!95 &1703775193
 Animator:
   serializedVersion: 4
@@ -216,7 +203,20 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
---- !u!114 &1703775194
+--- !u!65 &578926571
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5911160053989953627}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5795147, y: 1.3077699, z: 2.6453187}
+  m_Center: {x: -0.04577458, y: 0.5636925, z: 0.20646799}
+--- !u!114 &3054340432726935228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,8 +242,6 @@ GameObject:
   - component: {fileID: 4814774022506361989}
   - component: {fileID: 5499604912956998659}
   - component: {fileID: 1675578298370532665}
-  - component: {fileID: 2813664601992724305}
-  - component: {fileID: 4255116940133388528}
   m_Layer: 0
   m_Name: fleche
   m_TagString: Untagged
@@ -316,33 +314,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2813664601992724305
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7802260452409580626}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.40109724, y: 0.40109718, z: 2.1335108}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4255116940133388528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7802260452409580626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6184fa0c01191bf47b31709cdbe23426, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trapSO: {fileID: 0}
-  trapDamageableSO: {fileID: 11400000, guid: 43226c5392ccdb842a5787b6b4fdea64, type: 2}
 --- !u!1 &9131194643117517424
 GameObject:
   m_ObjectHideFlags: 0
