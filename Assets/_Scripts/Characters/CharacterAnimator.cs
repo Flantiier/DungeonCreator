@@ -13,9 +13,13 @@ public class CharacterAnimator : MonoBehaviour
         GetHitboxs();
     }
 
-    public void EnableCollider(int index, bool state)
+    public void EnableCollider(int index)
     {
-        hitboxs[index].SetColliderState(state);
+        Hitboxs[index].gameObject.SetActive(true);
+    }
+    public void DisableCollider(int index)
+    {
+        Hitboxs[index].gameObject.SetActive(false);
     }
 
     [ContextMenu("Get Hitboxs")]

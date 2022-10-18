@@ -1,14 +1,12 @@
 using UnityEngine;
 using _Scripts.Characters.StateMachines;
 using _Scriptables.Curves;
-using System;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
     public class CombatStateMachine : NetworkStateMachine
     {
         #region Variables
-
         [Header("Attack properties")]
         [SerializeField] protected CombatCurve combatCurves;
         [SerializeField] protected int curveIndex;
@@ -21,11 +19,9 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         protected Character _character;
         protected AnimationCurve _attackCurve;
-
         #endregion
 
         #region Inherited_Methods
-
         protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
@@ -42,21 +38,13 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             DisableActions(stateInfo.normalizedTime);
-            UpdateAttackCollider(animator, stateInfo.normalizedTime);
 
             float speed = GetCombatMomentum(stateInfo.normalizedTime);
             _character.HandleCombatMovement(speed);
         }
-
-        protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, false);
-        }
-
         #endregion
 
         #region Methods
-
         /// <summary>
         /// Smooth momentum when starting the attack
         /// </summary>
@@ -86,23 +74,6 @@ namespace _Scripts.Characters.Animations.StateMachines
             _character.PlayerStateMachine.CanAttack = time >= attackCooldown ? true : false;
             _character.PlayerStateMachine.CanDodge = time >= dodgeCooldown ? true : false;
         }
-
-        /// <summary>
-        /// Update collider state
-        /// </summary>
-        private void UpdateAttackCollider(Animator animator, float time)
-        {
-            CharacterAnimator characterAnimator = animator.GetComponent<CharacterAnimator>();
-
-            if (colliderIndex < 0 || characterAnimator.Hitboxs.Length > colliderIndex || !characterAnimator.Hitboxs[colliderIndex])
-                return;
-
-            if (time >= enableCollider && time <= disableCollider)
-                animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, true);
-            else
-                animator.GetComponent<CharacterAnimator>().EnableCollider(colliderIndex, false);
-        }
-
         #endregion
     }
 }

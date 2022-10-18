@@ -5,15 +5,12 @@ public class Hitbox : MonoBehaviour
 {
     #region Variables
     protected Character _character;
-    public Collider Collider { get; private set; }
     #endregion
 
     #region Builts_In
     public virtual void Awake()
     {
         _character = GetComponentInParent<Character>();
-        Collider = GetComponent<Collider>();
-        SetColliderState(false);
     }
 
     public void OnTriggerEnter(Collider other)
@@ -34,14 +31,6 @@ public class Hitbox : MonoBehaviour
     #endregion
 
     #region Inherited methods
-    /// <summary>
-    /// Set the collider state
-    /// </summary>
-    public void SetColliderState(bool state)
-    {
-        Collider.enabled = state;
-    }
-
     /// <summary>
     /// Method called during OnCollisionEnter
     /// </summary>
