@@ -30,11 +30,12 @@ namespace _Scripts.TrapSystem.Datas
             {
                 if(player.IsLocal)
                 {
+                    Destroy(_arrow);
+
                     _arrow = PhotonNetwork.Instantiate(_arrowPrefab.name, _arrowSpawnPosition.position, _arrowSpawnPosition.rotation);
                     _arrow.GetComponent<Rigidbody>().velocity = _arrowSpawnPosition.forward * _arrowSpeed;
 
-                    yield return new WaitForSeconds(3f);
-                    Destroy(_arrow);
+                    yield return new WaitForSeconds(2.5f);
                 }
                 else
                 {
