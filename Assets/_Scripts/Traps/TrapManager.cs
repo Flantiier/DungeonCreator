@@ -50,7 +50,6 @@ namespace _Scripts.TrapSystem.Datas
             if (trapDamageableSO.isPlayerTrapped == true)
             {
                 _animator.SetBool("isCaged", true);                
-                //TODO : Faire la destruction de l'objet quand il n'a plus de points de vie
             }
         }
 
