@@ -30,8 +30,6 @@ namespace _Scripts.TrapSystem.Datas
             {
                 if(player.IsLocal)
                 {
-                    Destroy(_arrow);
-
                     _arrow = PhotonNetwork.Instantiate(_arrowPrefab.name, _arrowSpawnPosition.position, _arrowSpawnPosition.rotation);
                     _arrow.GetComponent<Rigidbody>().velocity = _arrowSpawnPosition.forward * _arrowSpeed;
 
@@ -41,6 +39,8 @@ namespace _Scripts.TrapSystem.Datas
                 {
                     yield break;
                 }
+
+                Destroy(_arrow);
             }
             //TODO : Une fois le d�cors mis en place, destroy la fl�che si elle touche un �lement du d�cors (murs, d�co...)
         }
