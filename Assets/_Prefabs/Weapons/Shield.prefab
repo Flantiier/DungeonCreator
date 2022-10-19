@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1915278380688290679}
   - component: {fileID: 3259396802195373266}
   - component: {fileID: 783418899163432984}
+  - component: {fileID: 8660071384591623660}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1287958191540890061}
-  m_LocalRotation: {x: 0.8365911, y: -0.000119440214, z: -0.00009435691, w: 0.5478278}
+  m_LocalRotation: {x: 0.83659226, y: -0.0001179014, z: -0.000093792354, w: 0.5478262}
   m_LocalPosition: {x: 0, y: 0.063, z: -0.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8660071384591623660
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287958191540890061}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5028442, y: 0.11253214, z: 0.751818}
+  m_Center: {x: 0.00011174381, y: 0.047093187, z: -0.009007661}

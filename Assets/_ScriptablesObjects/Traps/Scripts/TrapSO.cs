@@ -8,6 +8,7 @@ namespace _Scripts.TrapSystem.Datas
     {
         [Header("Trap infos")]
         public GameObject trapPrefab;
+        public GameObject trapGhostPrefab;
         public string trapName = "New trap";
         public float damage;
         public int manaCost;
