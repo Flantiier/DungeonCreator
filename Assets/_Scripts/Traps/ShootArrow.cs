@@ -14,6 +14,11 @@ namespace _Scripts.TrapSystem.Datas
         private float _timeLeft = 1f;
         private GameObject _arrow;
 
+        void Start()
+        {
+            StartCoroutine(Shoot());
+        }
+
         void Update()
         {
             _timeLeft -= Time.deltaTime;
@@ -28,19 +33,18 @@ namespace _Scripts.TrapSystem.Datas
         {
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if(player.IsLocal)
+                if (player.IsLocal)
                 {
+                    PhotonNetwork.Destroy(_arrow);
+
                     _arrow = PhotonNetwork.Instantiate(_arrowPrefab.name, _arrowSpawnPosition.position, _arrowSpawnPosition.rotation);
                     _arrow.GetComponent<Rigidbody>().velocity = _arrowSpawnPosition.forward * _arrowSpeed;
 
-                    yield return new WaitForSeconds(2.5f);
-                }
+                    yield return new WaitForSeconds(2.5f);                }
                 else
                 {
                     yield break;
                 }
-
-                Destroy(_arrow);
             }
             //TODO : Une fois le d�cors mis en place, destroy la fl�che si elle touche un �lement du d�cors (murs, d�co...)
         }
