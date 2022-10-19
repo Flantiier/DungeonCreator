@@ -181,6 +181,9 @@ namespace _Scripts.Characters
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
             UsingStamina = false;
+
+            PlayerStateMachine.CanAttack = true;
+            PlayerStateMachine.CanDodge = true;
         }
 
         #region Health
