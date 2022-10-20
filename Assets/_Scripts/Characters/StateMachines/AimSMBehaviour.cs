@@ -9,11 +9,6 @@ namespace _Scripts.Characters.Animations.StateMachines
 			CharacterAnimation.GetPlayer(animator).PlayerStateMachine.EnableLayers = true;
 		}
 
-		protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-		{
-			CharacterAnimation.GetPlayer(animator).AimMeshRotation();
-		}
-
 		protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
             CharacterAnimation.GetPlayer(animator).PlayerStateMachine.EnableLayers = false;

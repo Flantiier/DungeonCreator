@@ -528,7 +528,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void RotatePlayer()
         {
-            if (!mesh || PlayerStateMachine.EnableLayers)
+            if (!mesh /*&& !PlayerStateMachine.EnableLayers*/)
                 return;
 
             if (InputsVector.magnitude >= 0.1f)
