@@ -12,13 +12,13 @@ namespace _Scripts.Characters.Animations.StateMachines
             Character player = CharacterAnimation.GetPlayer(animator);
 
             player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Roll;
-            player.UseStamina(player.StaminaToDodge);
+            player.UseStamina(player.OverallDatas.staminaToDodge);
 
             float startVel = player.CurrentSpeed;
 
             dodgeCurve = new AnimationCurve(dodgeCurve.keys);
             dodgeCurve.MoveKey(0, new Keyframe(dodgeCurve.keys[0].time, startVel));
-            dodgeCurve.MoveKey(1, new Keyframe(dodgeCurve.keys[1].time, player.DodgeSpeed));
+            dodgeCurve.MoveKey(1, new Keyframe(dodgeCurve.keys[1].time, player.OverallDatas.dodgeSpeed));
             dodgeCurve.MoveKey(2, new Keyframe(dodgeCurve.keys[2].time, startVel));
         }
 

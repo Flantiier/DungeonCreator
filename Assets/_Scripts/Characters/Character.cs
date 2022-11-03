@@ -18,56 +18,36 @@ namespace _Scripts.Characters
         #region Variables
 
         #region References
+        [Header("Stats references")]
+        [SerializeField] protected CharactersOverallDatas overallDatas;
+        [SerializeField] protected AdventurerDatas characterDatas;
 
         [Header("Character references")]
-        [SerializeField] protected AdventurerDatas characterDatas;
         [SerializeField] private Transform mesh;
         [SerializeField] private Transform lookAt;
         [SerializeField] private Transform orientation;
 
         [Header("Other references")]
-        [SerializeField] protected AdvSimpleCamera cameraPrefab;
+        [SerializeField] protected AdvCamera cameraPrefab;
         [SerializeField] protected PlayerHUD playerHUD;
 
-        protected AdvSimpleCamera _myCamera;
+        protected AdvCamera _myCamera;
         protected PlayerInput _inputs;
         private CharacterController _cc;
         protected Animator _animator;
-
         #endregion
 
         #region Character
-
-        [Header("Character stats")]
-        [SerializeField] private float healthRecup = 2f;
-        [SerializeField] private float staminaRecup = 2f;
-        [SerializeField] private float healthRecupTime = 3f;
-        [SerializeField] private float staminaToRun = 1f;
-        [SerializeField] private float staminaToDodge = 20f;
-
         private Coroutine _healthRecupCoroutine;
         private bool _gainHealth = true;
-
-
-        [Header("Character motion")]
-        [SerializeField] private float walkSpeed = 3f;
-        [SerializeField] private float runSpeed = 7f;
-        [SerializeField] private float aimWalkSpeed = 1f;
-        [SerializeField] private float dodgeSpeed = 10f;
-        [SerializeField, Range(0f, 0.2f)] private float inputsSmoothing = 0.1f;
-        [SerializeField, Range(0f, 0.2f)] private float speedSmoothing = 0.15f;
-        [SerializeField, Range(0f, 0.2f)] private float meshRotation = 0.1f;
 
         private Vector2 _currentInputs;
         private Vector2 _smoothInputsRef;
         private float _speedSmoothingRef;
         private float _meshTurnRef;
-        private Coroutine _dodgeCoroutine;
-
         #endregion
 
         #region Physics
-
         [Header("Ground infos")]
         [SerializeField] private LayerMask walkableMask;
         [SerializeField] private float maxGroundDistance = 1f;
@@ -77,19 +57,19 @@ namespace _Scripts.Characters
         [SerializeField] private float appliedGravity = 5f;
         [SerializeField, Range(0f, 0.1f)] private float fallSmoothing = 0.05f;
         private float _airTime;
-
         #endregion
 
         #endregion
 
         #region Properties
-
         public PhotonView View { get; private set; }
         public bool PViewIsMine { get; private set; }
         public GroundStateMachine GroundStateMachine { get; private set; }
         public PlayerStateMachine PlayerStateMachine { get; private set; }
+        public CharactersOverallDatas OverallDatas => overallDatas;
         public AdventurerDatas CharacterDatas => characterDatas;
         public PlayerInput Inputs => _inputs;
+        public AdvCamera Camera => _myCamera;
         public Transform Mesh => mesh;
         public Transform Orientation => orientation;
         public Vector2 InputsVector { get; private set; }
@@ -99,15 +79,11 @@ namespace _Scripts.Characters
         public float CurrentHealth { get; set; }
         public float CurrentStamina { get; set; }
         public bool UsingStamina { get; set; }
-        public float StaminaToRun => staminaToRun;
-        public float StaminaToDodge => staminaToDodge;
-        public float DodgeSpeed => dodgeSpeed;
         public float AirTime => _airTime;
-
+        public bool HoldAttack { get; private set; }
         #endregion
 
         #region Builts_In
-
         public virtual void Awake()
         {
             PhotonView view = GetComponent<PhotonView>();
@@ -164,11 +140,11 @@ namespace _Scripts.Characters
             HandleCombat();
             SetOrientation();
             UpdateAnimations();
+            _myCamera.CameraSwitch(PlayerStateMachine.IsAiming);
 
             HandleHealthRecup();
             HandleStaminaRecup();
         }
-
         #endregion
 
         #region Methods
@@ -187,7 +163,6 @@ namespace _Scripts.Characters
         }
 
         #region Health
-
         /// <summary>
         /// Reduce health by the amount of damages
         /// </summary>
@@ -231,7 +206,7 @@ namespace _Scripts.Characters
                 return;
 
             if (CurrentHealth < characterDatas.health)
-                CurrentHealth += healthRecup * Time.deltaTime;
+                CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
 
             CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, characterDatas.health);
         }
@@ -243,16 +218,14 @@ namespace _Scripts.Characters
         {
             _gainHealth = false;
 
-            yield return new WaitForSecondsRealtime(healthRecupTime);
+            yield return new WaitForSecondsRealtime(overallDatas.healthRecupTime);
 
             _gainHealth = true;
             _healthRecupCoroutine = null;
         }
-
         #endregion
 
         #region Stamina
-
         /// <summary>
         /// Handle stamina recuperation
         /// </summary>
@@ -261,7 +234,7 @@ namespace _Scripts.Characters
             UsingStamina = PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
             if (!UsingStamina && CurrentStamina < characterDatas.stamina)
-                CurrentStamina += staminaRecup * Time.deltaTime;
+                CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;
 
             CurrentStamina = Mathf.Clamp(CurrentStamina, 0f, characterDatas.stamina);
         }
@@ -277,11 +250,9 @@ namespace _Scripts.Characters
 
             CurrentStamina -= amount;
         }
-
         #endregion
 
         #region Inputs
-
         /// <summary>
         /// Subscribe Player actions to methods
         /// </summary>
@@ -295,6 +266,8 @@ namespace _Scripts.Characters
             _inputs.actions["Roll"].started += StartRoll;
 
             _inputs.actions["Attack"].started += StartAttack;
+            _inputs.actions["Attack"].performed += ctx => HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].canceled += ctx => HoldAttack = ctx.ReadValueAsButton();
         }
 
         /// <summary>
@@ -310,12 +283,12 @@ namespace _Scripts.Characters
             _inputs.actions["Roll"].started -= StartRoll;
 
             _inputs.actions["Attack"].started -= StartAttack;
+            _inputs.actions["Attack"].performed -= ctx => HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].canceled -= ctx => HoldAttack = ctx.ReadValueAsButton();
         }
-
         #endregion
 
         #region Camera/UI
-
         /// <summary>
         /// Instantiate a camera for the player
         /// </summary>
@@ -327,8 +300,8 @@ namespace _Scripts.Characters
                 return;
             }
 
-            AdvSimpleCamera instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<AdvSimpleCamera>();
-            instance.SetCamera(lookAt);
+            AdvCamera instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<AdvCamera>();
+            instance.SetCameraInfos(lookAt);
 
             _myCamera = instance;
         }
@@ -338,11 +311,9 @@ namespace _Scripts.Characters
             PlayerHUD hud = Instantiate(playerHUD);
             hud.SetHUD(this);
         }
-
         #endregion
 
         #region StateMachines Methods
-
         /// <summary>
         /// Handle the GroundStateMachine
         /// </summary>
@@ -400,10 +371,11 @@ namespace _Scripts.Characters
             _animator.SetFloat("DirY", _currentInputs.y);
 
             float current = _animator.GetFloat("Motion");
-            float target = RunCondition() && CurrentStamina >= 0.1f ? 2f : CurrentSpeed >= walkSpeed ? 1f : InputsVector.magnitude >= 0.1f ? InputsVector.magnitude : 0f;
+            float target = RunCondition() && CurrentStamina >= 0.1f ? 2f : CurrentSpeed >= overallDatas.walkSpeed ? 1f : InputsVector.magnitude >= 0.1f ? InputsVector.magnitude : 0f;
             float final = Mathf.Lerp(current, target, 0.1f);
             _animator.SetFloat("Motion", final);
 
+            _animator.SetBool("HoldAttack", HoldAttack);
             _animator.SetBool("Aiming", PlayerStateMachine.IsAiming);
 
             float weight = PlayerStateMachine.EnableLayers ? 1f : 0f;
@@ -418,17 +390,15 @@ namespace _Scripts.Characters
         {
             _animator.SetLayerWeight(1, value);
         }
-
         #endregion
 
         #region Motion
-
         /// <summary>
         /// Handle player motion
         /// </summary>
         private void HandleMotion()
         {
-            _currentInputs = Vector2.SmoothDamp(_currentInputs, InputsVector, ref _smoothInputsRef, inputsSmoothing);
+            _currentInputs = Vector2.SmoothDamp(_currentInputs, InputsVector, ref _smoothInputsRef, overallDatas.inputSmoothing);
 
             UpdateSpeed(GetMovementSpeed());
 
@@ -462,21 +432,12 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Return the override vector multiplied by the speed
-        /// </summary>
-        /// <param name="speed"> Motion speed </param>
-        protected Vector3 GetOverrideVector(float speed)
-        {
-            return new Vector3(OverrideDir.x, -appliedGravity, OverrideDir.y) * speed;
-        }
-
-        /// <summary>
         /// Lerping the motion speed to a target speed
         /// </summary>
         /// <param name="targetSpeed"> Targeting speed </param>
         private void UpdateSpeed(float targetSpeed)
         {
-            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, targetSpeed, ref _speedSmoothingRef, speedSmoothing);
+            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, targetSpeed, ref _speedSmoothingRef, overallDatas.speedSmoothing);
         }
 
         /// <summary>
@@ -485,22 +446,13 @@ namespace _Scripts.Characters
         public float GetMovementSpeed()
         {
             if (PlayerStateMachine.IsAiming)
-                return aimWalkSpeed;
+                return overallDatas.aimSpeed;
             else if (RunCondition() && CurrentStamina >= 0.1f)
-                return runSpeed;
+                return overallDatas.runSpeed;
             else if (InputsVector.magnitude >= 0.1f)
-                return walkSpeed;
+                return overallDatas.walkSpeed;
 
             return 0f;
-        }
-
-        /// <summary>
-        /// Conditions if the player can run
-        /// </summary>
-        protected virtual bool RunCondition()
-        {
-            return _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f
-                && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk);
         }
 
         /// <summary>
@@ -513,8 +465,27 @@ namespace _Scripts.Characters
             Movement = new Vector3(0f, Movement.y, 0f);
         }
 
-        #region Rotations
+        /// <summary>
+        /// Return the override vector multiplied by the speed
+        /// </summary>
+        /// <param name="speed"> Motion speed </param>
+        protected Vector3 GetOverrideVector(float speed)
+        {
+            return new Vector3(OverrideDir.x, -appliedGravity, OverrideDir.y) * speed;
+        }
 
+        /// <summary>
+        /// Conditions if the player can run
+        /// </summary>
+        protected virtual bool RunCondition()
+        {
+            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+                return false;
+
+            return _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f;
+        }
+
+        #region Rotations
         /// <summary>
         /// Setting player orientation
         /// </summary>
@@ -528,23 +499,26 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void RotatePlayer()
         {
-            if (!mesh /*&& !PlayerStateMachine.EnableLayers*/)
+            if (!mesh && !PlayerStateMachine.EnableLayers)
                 return;
 
             if (InputsVector.magnitude >= 0.1f)
             {
                 float angle = Mathf.Atan2(InputsVector.x, InputsVector.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
-                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _meshTurnRef, meshRotation);
+                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _meshTurnRef, overallDatas.rotationSmoothing);
                 mesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
             }
         }
 
         /// <summary>
-        /// Return the direction of the mesh
+        /// Handle player rotation during aiming
         /// </summary>
-        public Vector2 MeshDirection()
+        public void AimRotation()
         {
-            return new Vector2(mesh.forward.x, mesh.forward.z);
+            if (PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+                return;
+
+            mesh.rotation = Quaternion.LookRotation(orientation.forward, Vector3.up);
         }
 
         /// <summary>
@@ -555,16 +529,19 @@ namespace _Scripts.Characters
             Vector2 inputs = InputsVector;
             Vector3 dir;
 
-            if (inputs.magnitude <= 0)
-                dir = Mesh.forward;
-            else
-                dir = Orientation.forward * inputs.y + Orientation.right * inputs.x;
-
+            dir = inputs.magnitude <= 0 ? Mesh.forward : Orientation.forward * inputs.y + Orientation.right * inputs.x;
             Mesh.rotation = Quaternion.LookRotation(dir, transform.up);
 
             OverrideDir = MeshDirection();
         }
 
+        /// <summary>
+        /// Return the direction of the mesh
+        /// </summary>
+        public Vector2 MeshDirection()
+        {
+            return new Vector2(mesh.forward.x, mesh.forward.z);
+        }
         #endregion
 
         #endregion
@@ -575,7 +552,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void StartRoll(InputAction.CallbackContext _)
         {
-            if (!PlayerStateMachine.CanDodge || CurrentStamina < staminaToDodge)
+            if (!PlayerStateMachine.CanDodge || CurrentStamina < overallDatas.staminaToDodge)
                 return;
 
             if (DodgeCondition())
@@ -590,21 +567,20 @@ namespace _Scripts.Characters
         /// </summary>
         private bool DodgeCondition()
         {
-            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded);
+            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+                return false;
+
+            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 
         #region Combat
-
         /// <summary>
         /// Handle combat methods
         /// </summary>
         protected virtual void HandleCombat()
         {
-            if (AimCondition() && _inputs.actions["Aim"].IsPressed())
-                PlayerStateMachine.IsAiming = true;
-            else
-                PlayerStateMachine.IsAiming = false;
+            PlayerStateMachine.IsAiming = AimCondition() && _inputs.actions["Aim"].IsPressed();
         }
 
         /// <summary>
@@ -623,19 +599,10 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool AttackCondition()
         {
-            return PlayerStateMachine.CanAttack && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll)
-                && GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded);
-        }
+            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+                return false;
 
-        /// <summary>
-        /// Handle player rotation during aiming
-        /// </summary>
-        public void AimMeshRotation()
-        {
-            if (PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Attack))
-                return;
-
-            mesh.rotation = Quaternion.LookRotation(orientation.forward, Vector3.up);
+            return PlayerStateMachine.CanAttack && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
 
         /// <summary>
@@ -643,9 +610,11 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool AimCondition()
         {
-            return GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded);
-        }
+            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+                return false;
 
+            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Attack);
+        }
         #endregion
 
         #region Physics

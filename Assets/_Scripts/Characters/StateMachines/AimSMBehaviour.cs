@@ -6,12 +6,23 @@ namespace _Scripts.Characters.Animations.StateMachines
 	{
 		protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			CharacterAnimation.GetPlayer(animator).PlayerStateMachine.EnableLayers = true;
+			Character player = CharacterAnimation.GetPlayer(animator);
+
+            player.PlayerStateMachine.EnableLayers = true;
 		}
+
+		protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+		{
+			Character player = CharacterAnimation.GetPlayer(animator);
+
+			player.AimRotation();
+        }
 
 		protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-            CharacterAnimation.GetPlayer(animator).PlayerStateMachine.EnableLayers = false;
+			Character player = CharacterAnimation.GetPlayer(animator);
+
+            player.PlayerStateMachine.EnableLayers = false;
         }
 	}
 }

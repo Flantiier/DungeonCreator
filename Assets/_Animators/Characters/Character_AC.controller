@@ -578,11 +578,11 @@ AnimatorStateMachine:
   - {fileID: -992986542844384756}
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -1217819187297063539}
+  - first: {fileID: 1404632360419869136}
     second: []
   - first: {fileID: 1133295136853357548}
     second: []
-  - first: {fileID: 1404632360419869136}
+  - first: {fileID: -1217819187297063539}
     second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 340, y: 120, z: 0}
@@ -728,6 +728,12 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: Aiming
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: HoldAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0

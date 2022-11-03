@@ -18,7 +18,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             Character player = CharacterAnimation.GetPlayer(animator);
 
             if (player.Inputs.actions["Run"].IsPressed())
-                player.UseStamina( player.StaminaToRun * Time.deltaTime);
+                player.UseStamina( player.OverallDatas.staminaToRun * Time.deltaTime);
         }
     }
 }
