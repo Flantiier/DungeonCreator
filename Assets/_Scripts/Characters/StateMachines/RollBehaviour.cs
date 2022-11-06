@@ -7,7 +7,7 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         [SerializeField] private AnimationCurve dodgeCurve;
 
-        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 
@@ -22,7 +22,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             dodgeCurve.MoveKey(2, new Keyframe(dodgeCurve.keys[2].time, startVel));
         }
 
-        protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 

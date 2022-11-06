@@ -4,21 +4,20 @@ using Photon.Pun;
 namespace _Scripts.Characters.Cameras
 {
     [RequireComponent(typeof(PhotonView))]
-	public class CameraSetup : MonoBehaviour
+	public class CameraSetup : NetworkMonoBehaviour
 	{
         #region Variables/Props
+        [Header("Camera references")]
         [SerializeField] protected Camera mainCam;
 		public Camera MainCam => mainCam;
-
-        private PhotonView _view;
         #endregion
 
         #region Methods
-        public virtual void Awake()
+        public override void Awake()
         {
-            _view = GetComponent<PhotonView>();
+            base.Awake();
 
-            if (!_view.IsMine)
+            if (!ViewIsMine())
                 Destroy(gameObject);
         }
         #endregion

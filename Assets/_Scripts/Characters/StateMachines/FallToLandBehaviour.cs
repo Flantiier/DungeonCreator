@@ -4,7 +4,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 {
     public class FallToLandBehaviour : NetworkStateMachine
     {
-        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 
@@ -16,7 +16,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             }
         }
 
-        protected override void OnExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             CharacterAnimation.GetPlayer(animator).GroundStateMachine.IsLanding = false;
             animator.SetBool("Landing", false);

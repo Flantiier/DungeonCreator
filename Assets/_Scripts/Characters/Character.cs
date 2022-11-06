@@ -6,6 +6,7 @@ using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
+using _Scripts.Utilities.Florian;
 
 namespace _Scripts.Characters
 {
@@ -13,7 +14,7 @@ namespace _Scripts.Characters
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
-    public class Character : MonoBehaviour, IPlayerDamageable
+    public class Character : NetworkMonoBehaviour, IPlayerDamageable
     {
         #region Variables
 
@@ -62,8 +63,6 @@ namespace _Scripts.Characters
         #endregion
 
         #region Properties
-        public PhotonView View { get; private set; }
-        public bool PViewIsMine { get; private set; }
         public GroundStateMachine GroundStateMachine { get; private set; }
         public PlayerStateMachine PlayerStateMachine { get; private set; }
         public CharactersOverallDatas OverallDatas => overallDatas;
@@ -84,15 +83,13 @@ namespace _Scripts.Characters
         #endregion
 
         #region Builts_In
-        public virtual void Awake()
+        public override void Awake()
         {
-            PhotonView view = GetComponent<PhotonView>();
-            PViewIsMine = view.IsMine;
+            base.Awake();
 
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
-            View = view;
             _inputs = GetComponent<PlayerInput>();
             _cc = GetComponent<CharacterController>();
             _animator = mesh.GetComponent<Animator>();
@@ -108,7 +105,7 @@ namespace _Scripts.Characters
 
         public virtual void OnEnable()
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             SubscribeToInputs();
@@ -116,7 +113,7 @@ namespace _Scripts.Characters
 
         public virtual void OnDisable()
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             UnsubscribeToInputs();
@@ -124,7 +121,7 @@ namespace _Scripts.Characters
 
         public virtual void OnDestroy()
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             if (_myCamera)
@@ -133,7 +130,7 @@ namespace _Scripts.Characters
 
         public virtual void Update()
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             HandleGroundStateMachine();
@@ -169,7 +166,7 @@ namespace _Scripts.Characters
         /// <param name="damages"> incoming damages </param>
         public void DamagePlayer(float damages)
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             CurrentHealth -= damages;
@@ -245,7 +242,7 @@ namespace _Scripts.Characters
         /// <param name="amount"> amount of stamina used </param>
         public void UseStamina(float amount)
         {
-            if (!PViewIsMine)
+            if (!ViewIsMine())
                 return;
 
             CurrentStamina -= amount;
@@ -268,6 +265,9 @@ namespace _Scripts.Characters
             _inputs.actions["Attack"].started += StartAttack;
             _inputs.actions["Attack"].performed += ctx => HoldAttack = ctx.ReadValueAsButton();
             _inputs.actions["Attack"].canceled += ctx => HoldAttack = ctx.ReadValueAsButton();
+
+            _inputs.actions["Aim"].started += ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
+            _inputs.actions["Aim"].canceled += ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
         }
 
         /// <summary>
@@ -285,6 +285,9 @@ namespace _Scripts.Characters
             _inputs.actions["Attack"].started -= StartAttack;
             _inputs.actions["Attack"].performed -= ctx => HoldAttack = ctx.ReadValueAsButton();
             _inputs.actions["Attack"].canceled -= ctx => HoldAttack = ctx.ReadValueAsButton();
+
+            _inputs.actions["Aim"].started -= ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
+            _inputs.actions["Aim"].canceled -= ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
         }
         #endregion
 
@@ -378,8 +381,16 @@ namespace _Scripts.Characters
             _animator.SetBool("HoldAttack", HoldAttack);
             _animator.SetBool("Aiming", PlayerStateMachine.IsAiming);
 
-            float weight = PlayerStateMachine.EnableLayers ? 1f : 0f;
-            SetLowerBodyWeight(Mathf.Lerp(_animator.GetLayerWeight(1), weight, 0.05f));
+            float targetWeight = PlayerStateMachine.EnableLayers ? 1f : 0f;
+            float currentWeight = _animator.GetLayerWeight(1);
+            float updatedWeight = Mathf.Lerp(currentWeight, targetWeight, 0.05f);
+
+            if (PersonnalUtilities.MathFunctions.ApproximationRange(updatedWeight, 0f, 0.05f))
+                updatedWeight = 0f;
+            else if (PersonnalUtilities.MathFunctions.ApproximationRange(updatedWeight, 1f, 0.05f))
+                updatedWeight = 1f;
+
+            SetLowerBodyWeight(updatedWeight);
         }
 
         /// <summary>

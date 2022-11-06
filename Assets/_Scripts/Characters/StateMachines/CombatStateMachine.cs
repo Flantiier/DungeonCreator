@@ -22,7 +22,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         #endregion
 
         #region Inherited_Methods
-        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
             _character = player;
@@ -35,7 +35,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             player.TurnPlayer();
         }
 
-        protected override void OnUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             DisableActions(stateInfo.normalizedTime);
 

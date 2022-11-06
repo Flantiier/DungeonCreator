@@ -5,7 +5,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 {
     public class RollEndBehaviour : NetworkStateMachine
     {
-        protected override void OnEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 
