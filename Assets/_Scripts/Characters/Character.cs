@@ -44,8 +44,9 @@ namespace _Scripts.Characters
         private float _speedSmoothingRef;
         private float _meshTurnRef;
 
-        private Coroutine _healthRecupCoroutine;
         private bool _gainHealth = true;
+        private Coroutine _healthRecupCoroutine;
+        private Coroutine _recenteringCoroutine;
         #endregion
 
         #region Physics
@@ -259,6 +260,8 @@ namespace _Scripts.Characters
             _inputs.actions["Attack"].started += StartAttack;
             _inputs.actions["Attack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
             _inputs.actions["Attack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+
+            _inputs.actions["Recenter"].started += RecenterTpsCamera;
         }
 
         /// <summary>
@@ -276,6 +279,8 @@ namespace _Scripts.Characters
             _inputs.actions["Attack"].started -= StartAttack;
             _inputs.actions["Attack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
             _inputs.actions["Attack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+
+            _inputs.actions["Recenter"].started += RecenterTpsCamera;
         }
         #endregion
 
@@ -304,6 +309,30 @@ namespace _Scripts.Characters
         {
             PlayerHUD hud = Instantiate(playerHUD);
             hud.SetHUD(this);
+        }
+
+        /// <summary>
+        /// Recentering camera behind the look at
+        /// </summary>
+        private void RecenterTpsCamera(InputAction.CallbackContext _)
+        {
+            if (_recenteringCoroutine != null)
+                return;
+
+            _recenteringCoroutine = StartCoroutine("RecenterCoroutine");
+        }
+
+        /// <summary>
+        /// Recentering coroutine
+        /// </summary>
+        private IEnumerator RecenterCoroutine()
+        {
+            _tpsCamera.EnableRecentering(true);
+
+            yield return new WaitForSecondsRealtime(_tpsCamera.CameraSettings.maxRecenteringDuration);
+
+            _tpsCamera.EnableRecentering(false);
+            _recenteringCoroutine = null;
         }
         #endregion
 

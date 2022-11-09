@@ -6,10 +6,7 @@ namespace _Scripts.Characters.Cameras
     [RequireComponent(typeof(PhotonView))]
     public class CameraSetup : NetworkMonoBehaviour
     {
-        #region Variables/Props
-        [Header("Camera Settings")]
-        [SerializeField] protected AdvCameraSettings cameraSettings;
-
+        #region Variables
         [Header("Camera references")]
         [SerializeField] protected Camera mainCam;
         public Camera MainCam => mainCam;
