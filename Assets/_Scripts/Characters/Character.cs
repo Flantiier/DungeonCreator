@@ -29,23 +29,23 @@ namespace _Scripts.Characters
         [SerializeField] private Transform orientation;
 
         [Header("Other references")]
-        [SerializeField] protected AdvCamera cameraPrefab;
+        [SerializeField] protected CameraSetup cameraPrefab;
         [SerializeField] protected PlayerHUD playerHUD;
 
-        protected AdvCamera _myCamera;
         protected PlayerInput _inputs;
         private CharacterController _cc;
         protected Animator _animator;
+        protected TpsCameraHandler _tpsCamera;
         #endregion
 
         #region Character
-        private Coroutine _healthRecupCoroutine;
-        private bool _gainHealth = true;
-
         private Vector2 _currentInputs;
         private Vector2 _smoothInputsRef;
         private float _speedSmoothingRef;
         private float _meshTurnRef;
+
+        private Coroutine _healthRecupCoroutine;
+        private bool _gainHealth = true;
         #endregion
 
         #region Physics
@@ -63,14 +63,10 @@ namespace _Scripts.Characters
         #endregion
 
         #region Properties
-        public GroundStateMachine GroundStateMachine { get; private set; }
-        public PlayerStateMachine PlayerStateMachine { get; private set; }
+        public GroundStateMachine GroundSM { get; private set; }
+        public PlayerStateMachine PlayerSM { get; private set; }
         public CharactersOverallDatas OverallDatas => overallDatas;
         public AdventurerDatas CharacterDatas => characterDatas;
-        public PlayerInput Inputs => _inputs;
-        public AdvCamera Camera => _myCamera;
-        public Transform Mesh => mesh;
-        public Transform Orientation => orientation;
         public Vector2 InputsVector { get; private set; }
         public Vector3 Movement { get; set; }
         public Vector2 OverrideDir { get; set; }
@@ -79,7 +75,6 @@ namespace _Scripts.Characters
         public float CurrentStamina { get; set; }
         public bool UsingStamina { get; set; }
         public float AirTime => _airTime;
-        public bool HoldAttack { get; private set; }
         #endregion
 
         #region Builts_In
@@ -93,13 +88,12 @@ namespace _Scripts.Characters
             _inputs = GetComponent<PlayerInput>();
             _cc = GetComponent<CharacterController>();
             _animator = mesh.GetComponent<Animator>();
-            GroundStateMachine = new GroundStateMachine();
-            PlayerStateMachine = new PlayerStateMachine();
+            GroundSM = new GroundStateMachine();
+            PlayerSM = new PlayerStateMachine();
 
             InitializeCharacter();
 
             InstantiateCamera();
-
             InstantiateHUD();
         }
 
@@ -124,8 +118,8 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            if (_myCamera)
-                PhotonNetwork.Destroy(_myCamera.gameObject);
+            if (_tpsCamera.MainCam)
+                PhotonNetwork.Destroy(_tpsCamera.MainCam.gameObject);
         }
 
         public virtual void Update()
@@ -134,29 +128,29 @@ namespace _Scripts.Characters
                 return;
 
             HandleGroundStateMachine();
-            HandleCombat();
             SetOrientation();
+            HandleCombat();
             UpdateAnimations();
-            _myCamera.CameraSwitch(PlayerStateMachine.IsAiming);
 
             HandleHealthRecup();
             HandleStaminaRecup();
+
+            //_myCamera.CameraSwitch(PlayerStateMachine.IsAiming);
         }
         #endregion
 
         #region Methods
-
         /// <summary>
-        /// Initiliazing player stats
+        /// Reset the player
         /// </summary>
-        protected void InitializeCharacter()
+        public void InitializeCharacter()
         {
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
             UsingStamina = false;
 
-            PlayerStateMachine.CanAttack = true;
-            PlayerStateMachine.CanDodge = true;
+            PlayerSM.CanAttack = true;
+            PlayerSM.CanDodge = true;
         }
 
         #region Health
@@ -228,7 +222,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleStaminaRecup()
         {
-            UsingStamina = PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
+            UsingStamina = PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
             if (!UsingStamina && CurrentStamina < characterDatas.stamina)
                 CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;
@@ -263,11 +257,8 @@ namespace _Scripts.Characters
             _inputs.actions["Roll"].started += StartRoll;
 
             _inputs.actions["Attack"].started += StartAttack;
-            _inputs.actions["Attack"].performed += ctx => HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["Attack"].canceled += ctx => HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.actions["Aim"].started += ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
-            _inputs.actions["Aim"].canceled += ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
         }
 
         /// <summary>
@@ -283,11 +274,8 @@ namespace _Scripts.Characters
             _inputs.actions["Roll"].started -= StartRoll;
 
             _inputs.actions["Attack"].started -= StartAttack;
-            _inputs.actions["Attack"].performed -= ctx => HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["Attack"].canceled -= ctx => HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.actions["Aim"].started -= ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
-            _inputs.actions["Aim"].canceled -= ctx => PlayerStateMachine.IsAiming = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["Attack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
         }
         #endregion
 
@@ -295,7 +283,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Instantiate a camera for the player
         /// </summary>
-        private void InstantiateCamera()
+        protected virtual void InstantiateCamera()
         {
             if (!cameraPrefab)
             {
@@ -303,12 +291,15 @@ namespace _Scripts.Characters
                 return;
             }
 
-            AdvCamera instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<AdvCamera>();
-            instance.SetCameraInfos(lookAt);
+            TpsCameraHandler instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<TpsCameraHandler>();
+            instance.SetLookAtTarget(lookAt);
 
-            _myCamera = instance;
+            _tpsCamera = instance;
         }
 
+        /// <summary>
+        /// Instantiate and set the player HUD
+        /// </summary>
         private void InstantiateHUD()
         {
             PlayerHUD hud = Instantiate(playerHUD);
@@ -322,9 +313,10 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleGroundStateMachine()
         {
-            GroundStateMachine.CurrentStatement = _cc.isGrounded || _lowGround ? GroundStateMachine.GroundStatements.Grounded : GroundStateMachine.GroundStatements.Falling;
+            GroundSM.CurrentStatement = _cc.isGrounded || _lowGround ? GroundStateMachine.GroundStatements.Grounded : GroundStateMachine.GroundStatements.Falling;
+            PlayerSM.IsRunning = RunCondition();
 
-            switch (GroundStateMachine.CurrentStatement)
+            switch (GroundSM.CurrentStatement)
             {
                 case GroundStateMachine.GroundStatements.Grounded:
 
@@ -346,14 +338,12 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandlePlayerStateMachine()
         {
-            switch (PlayerStateMachine.CurrentState)
+            switch (PlayerSM.CurrentState)
             {
                 case PlayerStateMachine.PlayerStates.Walk:
 
-                    if (!GroundStateMachine.IsLanding)
-                    {
+                    if (!GroundSM.IsLanding)
                         HandleMotion();
-                    }
                     break;
             }
         }
@@ -367,7 +357,7 @@ namespace _Scripts.Characters
                 return;
 
             _animator.SetFloat("CurrentState", _animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            _animator.SetBool("IsGrounded", GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) || _lowGround);
+            _animator.SetBool("IsGrounded", GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || _lowGround);
 
             _animator.SetFloat("Inputs", InputsVector.magnitude);
             _animator.SetFloat("DirX", _currentInputs.x);
@@ -378,10 +368,18 @@ namespace _Scripts.Characters
             float final = Mathf.Lerp(current, target, 0.1f);
             _animator.SetFloat("Motion", final);
 
-            _animator.SetBool("HoldAttack", HoldAttack);
-            _animator.SetBool("Aiming", PlayerStateMachine.IsAiming);
+            _animator.SetBool("HoldAttack", PlayerSM.HoldAttack);
+            _animator.SetBool("Aiming", PlayerSM.IsAiming);
 
-            float targetWeight = PlayerStateMachine.EnableLayers ? 1f : 0f;
+            UpdateAnimationLayers();
+        }
+
+        /// <summary>
+        /// Updating layers waight during update
+        /// </summary>
+        public void UpdateAnimationLayers()
+        {
+            float targetWeight = PlayerSM.EnableLayers ? 1f : 0f;
             float currentWeight = _animator.GetLayerWeight(1);
             float updatedWeight = Mathf.Lerp(currentWeight, targetWeight, 0.05f);
 
@@ -456,7 +454,7 @@ namespace _Scripts.Characters
         /// </summary>
         public float GetMovementSpeed()
         {
-            if (PlayerStateMachine.IsAiming)
+            if (PlayerSM.IsAiming)
                 return overallDatas.aimSpeed;
             else if (RunCondition() && CurrentStamina >= 0.1f)
                 return overallDatas.runSpeed;
@@ -490,10 +488,10 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool RunCondition()
         {
-            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
-            return _inputs.actions["Run"].IsPressed() && !PlayerStateMachine.IsAiming && InputsVector.magnitude >= 0.8f;
+            return _inputs.actions["Run"].IsPressed() && !PlayerSM.IsAiming && InputsVector.magnitude >= 0.8f;
         }
 
         #region Rotations
@@ -502,7 +500,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void SetOrientation()
         {
-            orientation.rotation = Quaternion.Euler(0f, _myCamera.MainCam.transform.eulerAngles.y, 0f);
+            orientation.rotation = Quaternion.Euler(0f, _tpsCamera.MainCam.transform.eulerAngles.y, 0f);
         }
 
         /// <summary>
@@ -510,7 +508,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void RotatePlayer()
         {
-            if (!mesh && !PlayerStateMachine.EnableLayers)
+            if (!mesh && !PlayerSM.EnableLayers)
                 return;
 
             if (InputsVector.magnitude >= 0.1f)
@@ -526,7 +524,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void AimRotation()
         {
-            if (PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return;
 
             mesh.rotation = Quaternion.LookRotation(orientation.forward, Vector3.up);
@@ -540,8 +538,8 @@ namespace _Scripts.Characters
             Vector2 inputs = InputsVector;
             Vector3 dir;
 
-            dir = inputs.magnitude <= 0 ? Mesh.forward : Orientation.forward * inputs.y + Orientation.right * inputs.x;
-            Mesh.rotation = Quaternion.LookRotation(dir, transform.up);
+            dir = inputs.magnitude <= 0 ? mesh.forward : orientation.forward * inputs.y + orientation.right * inputs.x;
+            mesh.rotation = Quaternion.LookRotation(dir, transform.up);
 
             OverrideDir = MeshDirection();
         }
@@ -563,7 +561,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void StartRoll(InputAction.CallbackContext _)
         {
-            if (!PlayerStateMachine.CanDodge || CurrentStamina < overallDatas.staminaToDodge)
+            if (!PlayerSM.CanDodge || CurrentStamina < overallDatas.staminaToDodge)
                 return;
 
             if (DodgeCondition())
@@ -578,10 +576,10 @@ namespace _Scripts.Characters
         /// </summary>
         private bool DodgeCondition()
         {
-            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
-            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 
@@ -591,7 +589,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void HandleCombat()
         {
-            PlayerStateMachine.IsAiming = AimCondition() && _inputs.actions["Aim"].IsPressed();
+            //PlayerStateMachine.IsAiming = AimCondition() && _inputs.actions["Aim"].IsPressed();
         }
 
         /// <summary>
@@ -610,10 +608,10 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool AttackCondition()
         {
-            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
-            return PlayerStateMachine.CanAttack && !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+            return PlayerSM.CanAttack && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
 
         /// <summary>
@@ -621,10 +619,10 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool AimCondition()
         {
-            if (!GroundStateMachine.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
-            return !PlayerStateMachine.IsThisState(PlayerStateMachine.PlayerStates.Attack);
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack);
         }
         #endregion
 
@@ -704,8 +702,10 @@ namespace _Scripts.Characters.StateMachines
     {
         public enum PlayerStates { Walk, Roll, Attack }
         public PlayerStates CurrentState { get; set; }
-        public bool CanAttack { get; set; }
+        public bool IsRunning { get; set; }
         public bool CanDodge { get; set; }
+        public bool CanAttack { get; set; }
+        public bool HoldAttack { get; set; }
         public bool IsAiming { get; set; }
         public bool EnableLayers { get; set; }
 

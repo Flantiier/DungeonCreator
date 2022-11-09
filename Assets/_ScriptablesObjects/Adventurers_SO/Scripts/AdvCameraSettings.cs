@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Cinemachine;
 
@@ -5,12 +6,13 @@ using Cinemachine;
 public class AdvCameraSettings : ScriptableObject
 {
     #region Variables
-    [Header("User settings")]
+    [Header("User sensivities")]
     public float sensivity = 0.03f;
     public float aimSensivity = 0.03f;
 
-    [Header("Body properties")]
-    public float cameraDistance = 4f;
+    [Header("TPS camera settings")]
+    [Range(0f, 10f)] public float minCameraDistance = 2f;
+    [Range(0f, 10f)] public float maxCameraDistance = 5f;
     public Vector3 offsetFromTarget = Vector3.zero;
     [Space]
 
@@ -28,21 +30,20 @@ public class AdvCameraSettings : ScriptableObject
     #endregion
 
     #region Methods
-    public void SetSensivities(CinemachinePOV tps, CinemachinePOV aim)
+    public void SetSensitivity(CinemachinePOV target, float value)
     {
-        tps.m_HorizontalAxis.m_MaxSpeed = sensivity;
-        tps.m_VerticalAxis.m_MaxSpeed = sensivity;
-
-        aim.m_HorizontalAxis.m_MaxSpeed = aimSensivity;
-        aim.m_VerticalAxis.m_MaxSpeed = aimSensivity;
+        target.m_HorizontalAxis.m_MaxSpeed = value;
+        target.m_VerticalAxis.m_MaxSpeed = value;
     }
 
-    public void SetBodyProperties(CinemachineFramingTransposer target)
+    /*public void SetBodyProperties(CinemachineFramingTransposer target)
     {
         target.m_TrackedObjectOffset = offsetFromTarget;
         target.m_CameraDistance = cameraDistance;
+
         target.m_LookaheadTime = lookTargetTime;
         target.m_LookaheadSmoothing = lookTargetSmooth;
+
         target.m_XDamping = xDamping;
         target.m_YDamping = yDamping;
         target.m_ZDamping = zDamping;
@@ -61,12 +62,12 @@ public class AdvCameraSettings : ScriptableObject
         target.m_VerticalAxis.m_AccelTime = verticalAxis.accelTime;
         target.m_VerticalAxis.m_DecelTime = verticalAxis.decelTime;
         target.m_VerticalAxis.m_InvertInput = verticalAxis.invertAxis;
-    }
+    }*/
     #endregion
 }
 
 #region AimAxis_Class
-[System.Serializable]
+[Serializable]
 public class AxisInfo
 {
     public float minValue, maxValue;

@@ -11,7 +11,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 
-            player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Roll;
+            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
             player.UseStamina(player.OverallDatas.staminaToDodge);
 
             float startVel = player.CurrentSpeed;

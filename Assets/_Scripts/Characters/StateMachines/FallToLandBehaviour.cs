@@ -10,7 +10,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
             if (player.AirTime >= 1f)
             {
-                player.GroundStateMachine.IsLanding = true;
+                player.GroundSM.IsLanding = true;
                 animator.SetBool("Landing", true);
                 player.ResetVelocity();
             }
@@ -18,7 +18,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            CharacterAnimation.GetPlayer(animator).GroundStateMachine.IsLanding = false;
+            CharacterAnimation.GetPlayer(animator).GroundSM.IsLanding = false;
             animator.SetBool("Landing", false);
         }
     }

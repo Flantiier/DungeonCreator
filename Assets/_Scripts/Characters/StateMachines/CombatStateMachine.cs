@@ -27,9 +27,9 @@ namespace _Scripts.Characters.Animations.StateMachines
             Character player = CharacterAnimation.GetPlayer(animator);
             _character = player;
 
-            player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Attack;
-            _character.PlayerStateMachine.CanAttack = false;
-            _character.PlayerStateMachine.CanDodge = false;
+            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Attack;
+            _character.PlayerSM.CanAttack = false;
+            _character.PlayerSM.CanDodge = false;
 
             SmoothPlayerMomentum(player);
             player.TurnPlayer();
@@ -71,8 +71,8 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void DisableActions(float time)
         {
-            _character.PlayerStateMachine.CanAttack = time >= attackCooldown ? true : false;
-            _character.PlayerStateMachine.CanDodge = time >= dodgeCooldown ? true : false;
+            _character.PlayerSM.CanAttack = time >= attackCooldown ? true : false;
+            _character.PlayerSM.CanDodge = time >= dodgeCooldown ? true : false;
         }
         #endregion
     }

@@ -3,18 +3,12 @@ using Cinemachine;
 
 namespace _Scripts.Characters.Cameras
 {
-    public class AdvCamera : CameraSetup
+    public class AimCameraHandler : TpsCameraHandler
     {
         #region Variables
-
-        [SerializeField] private CinemachineVirtualCamera tpsCam;
         [SerializeField] private CinemachineVirtualCamera aimCam;
 
-        [Header("Camera Settings")]
-        [SerializeField] private AdvCameraSettings camSettings;
-
-        private CinemachinePOV _tpsPov;
-        private CinemachinePOV _aimPov;
+        private CinemachinePOV _aimCamAimProperties;
         private bool _switchToAim;
         #endregion
 
@@ -43,39 +37,28 @@ namespace _Scripts.Characters.Cameras
         {
             base.Awake();
 
-            _tpsPov = tpsCam.GetCinemachineComponent<CinemachinePOV>();
-            _aimPov = aimCam.GetCinemachineComponent<CinemachinePOV>();
-        }
-
-        public void Update()
-        {
-            try
-            {
-                camSettings.SetSensivities(_tpsPov, _aimPov);
-                camSettings.SetBodyProperties(tpsCam.GetCinemachineComponent<CinemachineFramingTransposer>());
-                camSettings.SetAimProperties(_aimPov);
-            }
-            catch
-            {
-                Debug.LogError("Check if body is a FRAMINGTRANSPOSER and the aim is a POV");
-            }
+            _aimCamAimProperties = aimCam.GetCinemachineComponent<CinemachinePOV>();
         }
         #endregion
 
-        #region Methods
-        /// <summary>
-        /// Set camera lookAt target
-        /// </summary>
-        /// <param name="target"> Target to look at </param>
-        public void SetCameraInfos(Transform target)
+        #region Inherited Methods
+        public override void SetLookAtTarget(Transform target)
         {
-            tpsCam.Follow = target;
-            tpsCam.LookAt = target;
+            base.SetLookAtTarget(target);
 
             aimCam.Follow = target;
             aimCam.LookAt = target;
         }
 
+        protected override void CameraUpdate()
+        {
+            base.CameraUpdate();
+
+            cameraSettings.SetSensitivity(_aimCamAimProperties, cameraSettings.aimSensivity);
+        }
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Switch between aim an tps cameras
         /// </summary>
@@ -90,8 +73,8 @@ namespace _Scripts.Characters.Cameras
         /// </summary>
         public void RecenterTpsCamera()
         {
-            _tpsPov.m_HorizontalAxis.Value = _aimPov.m_HorizontalAxis.Value;
-            _tpsPov.m_VerticalAxis.Value = _aimPov.m_VerticalAxis.Value;
+            _tpsAimProperties.m_HorizontalAxis.Value = _aimCamAimProperties.m_HorizontalAxis.Value;
+            _tpsAimProperties.m_VerticalAxis.Value = _aimCamAimProperties.m_VerticalAxis.Value;
         }
 
         /// <summary>
@@ -99,8 +82,8 @@ namespace _Scripts.Characters.Cameras
         /// </summary>
         public void RecenterAimCamera()
         {
-            _aimPov.m_HorizontalAxis.Value = _tpsPov.m_HorizontalAxis.Value;
-            _aimPov.m_VerticalAxis.Value = _tpsPov.m_VerticalAxis.Value;
+            _aimCamAimProperties.m_HorizontalAxis.Value = _tpsAimProperties.m_HorizontalAxis.Value;
+            _aimCamAimProperties.m_VerticalAxis.Value = _tpsAimProperties.m_VerticalAxis.Value;
         }
         #endregion
     }

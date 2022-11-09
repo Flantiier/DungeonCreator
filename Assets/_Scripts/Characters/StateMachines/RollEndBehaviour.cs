@@ -9,7 +9,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         {
             Character player = CharacterAnimation.GetPlayer(animator);
 
-            player.PlayerStateMachine.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Walk;
         }
     }
 }

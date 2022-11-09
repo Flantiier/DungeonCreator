@@ -11,7 +11,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
             Character player = CharacterAnimation.GetPlayer(animator);
 
-            player.PlayerStateMachine.EnableLayers = true;
+            player.PlayerSM.EnableLayers = true;
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -28,7 +28,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
             Character player = CharacterAnimation.GetPlayer(animator);
 
-            player.PlayerStateMachine.EnableLayers = false;
+            player.PlayerSM.EnableLayers = false;
         }
 	}
 }
