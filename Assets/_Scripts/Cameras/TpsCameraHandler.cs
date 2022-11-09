@@ -1,6 +1,6 @@
 using UnityEngine;
 using Cinemachine;
-using _SciptablesObjects.Adventurer;
+using _SciptablesObjects.Settings.Adventurer.Camera;
 
 namespace _Scripts.Characters.Cameras
 {

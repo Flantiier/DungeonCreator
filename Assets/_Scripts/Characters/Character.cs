@@ -7,6 +7,7 @@ using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
+using _SciptablesObjects.Adventurer;
 
 namespace _Scripts.Characters
 {
