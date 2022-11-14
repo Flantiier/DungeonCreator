@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 575963356850089547}
   - component: {fileID: 3481810322078032366}
   - component: {fileID: 1708297213218592036}
-  - component: {fileID: 9095899501869424684}
   m_Layer: 0
   m_Name: Plafond_Arrondie_Angle_Exterieur_28
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 915896705696707825}
-  m_Mesh: {fileID: 551243727472223004, guid: 3f40e3fd97f6a7343975f389416339f1, type: 3}
+  m_Mesh: {fileID: 551243727472223004, guid: 4ca3889135a4a8344bc8fd820a463ca8, type: 3}
 --- !u!23 &1708297213218592036
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &9095899501869424684
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 915896705696707825}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 551243727472223004, guid: 3f40e3fd97f6a7343975f389416339f1, type: 3}

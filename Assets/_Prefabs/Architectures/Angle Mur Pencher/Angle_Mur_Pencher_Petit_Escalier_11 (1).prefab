@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8060152538586280039}
   - component: {fileID: 6373914616613502914}
   - component: {fileID: 9191924746646326024}
-  - component: {fileID: 4916594679685469127}
   m_Layer: 0
   m_Name: Angle_Mur_Pencher_Petit_Escalier_11 (1)
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7246497044499901149}
-  m_Mesh: {fileID: 1828786638354328426, guid: ec71348ac9875fc45945e283cea0d435, type: 3}
+  m_Mesh: {fileID: 1828786638354328426, guid: fa8ef2ea433d4d5449d31c208df4e5f1, type: 3}
 --- !u!23 &9191924746646326024
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4916594679685469127
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7246497044499901149}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1828786638354328426, guid: ec71348ac9875fc45945e283cea0d435, type: 3}

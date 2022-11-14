@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6628396607896593956}
   - component: {fileID: 7805600230843066753}
   - component: {fileID: 5456083753632488779}
-  - component: {fileID: 8444667007728048603}
   m_Layer: 0
   m_Name: Mur_Simple_Triangle_Escalier_Haut_5
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5816147354036010142}
-  m_Mesh: {fileID: -5698832669504439609, guid: de775c1fc58962743937ce2f9cef1a65, type: 3}
+  m_Mesh: {fileID: -5698832669504439609, guid: 300caa60adf96274daf879001f1072c7, type: 3}
 --- !u!23 &5456083753632488779
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8444667007728048603
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5816147354036010142}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5698832669504439609, guid: de775c1fc58962743937ce2f9cef1a65, type: 3}

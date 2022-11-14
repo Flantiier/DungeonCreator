@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7900624751265411160}
   - component: {fileID: 6488407022610579453}
   - component: {fileID: 9074617488302050103}
-  - component: {fileID: 8128661266275231509}
   m_Layer: 0
   m_Name: Plafond_plat_Fin_Couloir_26
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417280111413897954}
-  m_Mesh: {fileID: 7382914813478344652, guid: 2f4f29c802961bd4db54d39a8c8b1021, type: 3}
+  m_Mesh: {fileID: 7382914813478344652, guid: a0d18d69ace447045858e9a4e21c59c0, type: 3}
 --- !u!23 &9074617488302050103
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8128661266275231509
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7417280111413897954}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7382914813478344652, guid: 2f4f29c802961bd4db54d39a8c8b1021, type: 3}
