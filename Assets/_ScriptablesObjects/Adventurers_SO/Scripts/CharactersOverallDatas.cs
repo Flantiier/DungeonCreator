@@ -14,6 +14,7 @@ namespace _SciptablesObjects.Adventurer
         public float runSpeed = 8f;
         public float aimSpeed = 1f;
         public float dodgeSpeed = 10f;
+        public AnimationCurve dodgeCurve;
 
         [Header("Overall stats")]
         public float healthRecup = 7f;

@@ -8,6 +8,6 @@ namespace _ScriptablesObjects.Settings.UI
         [Header("Reticle properties")]
         public bool enabled = true;
         [Range(0f, 3f)] public float size = 1f;
-        public Color color = Color.white;
+        [Range(0f, 1f)] public float oppacity = 1f;
     }
 }

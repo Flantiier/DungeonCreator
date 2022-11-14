@@ -12,21 +12,13 @@ namespace _SciptablesObjects.Settings.Adventurer.Camera
         #region TPS Camera Properties
         [Header("User settings")]
         public float sensivity = 0.03f;
-        public float aimSensivity = 0.03f;
 
         [Header("TPS camera properties")]
         [Range(0f, 10f)] public float tpsMinCameraDistance = 2f;
         [Range(0f, 10f)] public float tpsMaxCameraDistance = 5f;
         public CameraProperties tpsCamProperties;
 
-        [Space] public float maxRecenteringDuration = 0.5f;
-        public float recenteringTime = 0.1f;
-        #endregion
-
-        #region Aim Camera Properties
-        [Header("AIM camera properties")]
-        [Range(0f, 10f)] public float aimCameraDistance = 2f;
-        public CameraProperties aimCamProperties;
+        [Space] public float recenteringTime = 0.1f;
         #endregion
 
         #endregion

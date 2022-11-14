@@ -26,7 +26,7 @@ namespace InputsMaps
     ""name"": ""Adventurer"",
     ""maps"": [
         {
-            ""name"": ""Controls"",
+            ""name"": ""MainGameplay"",
             ""id"": ""3782464c-a55f-41a2-97e4-0c2e4ca56061"",
             ""actions"": [
                 {
@@ -66,7 +66,7 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""MainAttack"",
                     ""type"": ""Button"",
                     ""id"": ""027f58dc-add8-4bc7-86be-fda02543078c"",
                     ""expectedControlType"": ""Button"",
@@ -75,9 +75,18 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Aim"",
+                    ""name"": ""SecondAttack"",
                     ""type"": ""Button"",
-                    ""id"": ""de1feb52-ba08-4334-b3a6-533494d3a77f"",
+                    ""id"": ""dc19a340-ae01-49a0-b0c8-858012a3ba7a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill"",
+                    ""type"": ""Button"",
+                    ""id"": ""11d8fabf-0a22-400e-83fc-8876713d6ad9"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -123,7 +132,7 @@ namespace InputsMaps
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MK"",
-                    ""action"": ""Attack"",
+                    ""action"": ""MainAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -134,29 +143,7 @@ namespace InputsMaps
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
-                    ""action"": ""Attack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""770bbcf9-ed46-4d53-917f-ef04dbf1a9a1"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MK"",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c50d635d-37da-437f-8a43-c2abc3badf3d"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""GamePad"",
-                    ""action"": ""Aim"",
+                    ""action"": ""MainAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -280,6 +267,28 @@ namespace InputsMaps
                     ""action"": ""Recenter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d40fa854-d052-4438-af2f-30d4c3530425"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""SecondAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c386a6f2-be5d-459c-8403-811c40c8c67c"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MK"",
+                    ""action"": ""Skill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -314,15 +323,16 @@ namespace InputsMaps
         }
     ]
 }");
-            // Controls
-            m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
-            m_Controls_Look = m_Controls.FindAction("Look", throwIfNotFound: true);
-            m_Controls_Move = m_Controls.FindAction("Move", throwIfNotFound: true);
-            m_Controls_Run = m_Controls.FindAction("Run", throwIfNotFound: true);
-            m_Controls_Roll = m_Controls.FindAction("Roll", throwIfNotFound: true);
-            m_Controls_Attack = m_Controls.FindAction("Attack", throwIfNotFound: true);
-            m_Controls_Aim = m_Controls.FindAction("Aim", throwIfNotFound: true);
-            m_Controls_Recenter = m_Controls.FindAction("Recenter", throwIfNotFound: true);
+            // MainGameplay
+            m_MainGameplay = asset.FindActionMap("MainGameplay", throwIfNotFound: true);
+            m_MainGameplay_Look = m_MainGameplay.FindAction("Look", throwIfNotFound: true);
+            m_MainGameplay_Move = m_MainGameplay.FindAction("Move", throwIfNotFound: true);
+            m_MainGameplay_Run = m_MainGameplay.FindAction("Run", throwIfNotFound: true);
+            m_MainGameplay_Roll = m_MainGameplay.FindAction("Roll", throwIfNotFound: true);
+            m_MainGameplay_MainAttack = m_MainGameplay.FindAction("MainAttack", throwIfNotFound: true);
+            m_MainGameplay_SecondAttack = m_MainGameplay.FindAction("SecondAttack", throwIfNotFound: true);
+            m_MainGameplay_Skill = m_MainGameplay.FindAction("Skill", throwIfNotFound: true);
+            m_MainGameplay_Recenter = m_MainGameplay.FindAction("Recenter", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -379,59 +389,64 @@ namespace InputsMaps
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // Controls
-        private readonly InputActionMap m_Controls;
-        private IControlsActions m_ControlsActionsCallbackInterface;
-        private readonly InputAction m_Controls_Look;
-        private readonly InputAction m_Controls_Move;
-        private readonly InputAction m_Controls_Run;
-        private readonly InputAction m_Controls_Roll;
-        private readonly InputAction m_Controls_Attack;
-        private readonly InputAction m_Controls_Aim;
-        private readonly InputAction m_Controls_Recenter;
-        public struct ControlsActions
+        // MainGameplay
+        private readonly InputActionMap m_MainGameplay;
+        private IMainGameplayActions m_MainGameplayActionsCallbackInterface;
+        private readonly InputAction m_MainGameplay_Look;
+        private readonly InputAction m_MainGameplay_Move;
+        private readonly InputAction m_MainGameplay_Run;
+        private readonly InputAction m_MainGameplay_Roll;
+        private readonly InputAction m_MainGameplay_MainAttack;
+        private readonly InputAction m_MainGameplay_SecondAttack;
+        private readonly InputAction m_MainGameplay_Skill;
+        private readonly InputAction m_MainGameplay_Recenter;
+        public struct MainGameplayActions
         {
             private @Adventurer m_Wrapper;
-            public ControlsActions(@Adventurer wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Look => m_Wrapper.m_Controls_Look;
-            public InputAction @Move => m_Wrapper.m_Controls_Move;
-            public InputAction @Run => m_Wrapper.m_Controls_Run;
-            public InputAction @Roll => m_Wrapper.m_Controls_Roll;
-            public InputAction @Attack => m_Wrapper.m_Controls_Attack;
-            public InputAction @Aim => m_Wrapper.m_Controls_Aim;
-            public InputAction @Recenter => m_Wrapper.m_Controls_Recenter;
-            public InputActionMap Get() { return m_Wrapper.m_Controls; }
+            public MainGameplayActions(@Adventurer wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Look => m_Wrapper.m_MainGameplay_Look;
+            public InputAction @Move => m_Wrapper.m_MainGameplay_Move;
+            public InputAction @Run => m_Wrapper.m_MainGameplay_Run;
+            public InputAction @Roll => m_Wrapper.m_MainGameplay_Roll;
+            public InputAction @MainAttack => m_Wrapper.m_MainGameplay_MainAttack;
+            public InputAction @SecondAttack => m_Wrapper.m_MainGameplay_SecondAttack;
+            public InputAction @Skill => m_Wrapper.m_MainGameplay_Skill;
+            public InputAction @Recenter => m_Wrapper.m_MainGameplay_Recenter;
+            public InputActionMap Get() { return m_Wrapper.m_MainGameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
             public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(ControlsActions set) { return set.Get(); }
-            public void SetCallbacks(IControlsActions instance)
+            public static implicit operator InputActionMap(MainGameplayActions set) { return set.Get(); }
+            public void SetCallbacks(IMainGameplayActions instance)
             {
-                if (m_Wrapper.m_ControlsActionsCallbackInterface != null)
+                if (m_Wrapper.m_MainGameplayActionsCallbackInterface != null)
                 {
-                    @Look.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
-                    @Look.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
-                    @Look.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnLook;
-                    @Move.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
-                    @Move.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
-                    @Move.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMove;
-                    @Run.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
-                    @Run.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
-                    @Run.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRun;
-                    @Roll.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
-                    @Roll.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
-                    @Roll.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRoll;
-                    @Attack.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
-                    @Attack.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
-                    @Attack.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAttack;
-                    @Aim.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
-                    @Aim.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
-                    @Aim.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnAim;
-                    @Recenter.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRecenter;
-                    @Recenter.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRecenter;
-                    @Recenter.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnRecenter;
+                    @Look.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnLook;
+                    @Look.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnLook;
+                    @Look.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnLook;
+                    @Move.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMove;
+                    @Move.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMove;
+                    @Move.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMove;
+                    @Run.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRun;
+                    @Run.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRun;
+                    @Run.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRun;
+                    @Roll.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRoll;
+                    @Roll.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRoll;
+                    @Roll.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRoll;
+                    @MainAttack.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMainAttack;
+                    @MainAttack.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMainAttack;
+                    @MainAttack.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnMainAttack;
+                    @SecondAttack.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSecondAttack;
+                    @SecondAttack.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSecondAttack;
+                    @SecondAttack.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSecondAttack;
+                    @Skill.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSkill;
+                    @Skill.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSkill;
+                    @Skill.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnSkill;
+                    @Recenter.started -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRecenter;
+                    @Recenter.performed -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRecenter;
+                    @Recenter.canceled -= m_Wrapper.m_MainGameplayActionsCallbackInterface.OnRecenter;
                 }
-                m_Wrapper.m_ControlsActionsCallbackInterface = instance;
+                m_Wrapper.m_MainGameplayActionsCallbackInterface = instance;
                 if (instance != null)
                 {
                     @Look.started += instance.OnLook;
@@ -446,19 +461,22 @@ namespace InputsMaps
                     @Roll.started += instance.OnRoll;
                     @Roll.performed += instance.OnRoll;
                     @Roll.canceled += instance.OnRoll;
-                    @Attack.started += instance.OnAttack;
-                    @Attack.performed += instance.OnAttack;
-                    @Attack.canceled += instance.OnAttack;
-                    @Aim.started += instance.OnAim;
-                    @Aim.performed += instance.OnAim;
-                    @Aim.canceled += instance.OnAim;
+                    @MainAttack.started += instance.OnMainAttack;
+                    @MainAttack.performed += instance.OnMainAttack;
+                    @MainAttack.canceled += instance.OnMainAttack;
+                    @SecondAttack.started += instance.OnSecondAttack;
+                    @SecondAttack.performed += instance.OnSecondAttack;
+                    @SecondAttack.canceled += instance.OnSecondAttack;
+                    @Skill.started += instance.OnSkill;
+                    @Skill.performed += instance.OnSkill;
+                    @Skill.canceled += instance.OnSkill;
                     @Recenter.started += instance.OnRecenter;
                     @Recenter.performed += instance.OnRecenter;
                     @Recenter.canceled += instance.OnRecenter;
                 }
             }
         }
-        public ControlsActions @Controls => new ControlsActions(this);
+        public MainGameplayActions @MainGameplay => new MainGameplayActions(this);
         private int m_MKSchemeIndex = -1;
         public InputControlScheme MKScheme
         {
@@ -477,14 +495,15 @@ namespace InputsMaps
                 return asset.controlSchemes[m_GamePadSchemeIndex];
             }
         }
-        public interface IControlsActions
+        public interface IMainGameplayActions
         {
             void OnLook(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnRun(InputAction.CallbackContext context);
             void OnRoll(InputAction.CallbackContext context);
-            void OnAttack(InputAction.CallbackContext context);
-            void OnAim(InputAction.CallbackContext context);
+            void OnMainAttack(InputAction.CallbackContext context);
+            void OnSecondAttack(InputAction.CallbackContext context);
+            void OnSkill(InputAction.CallbackContext context);
             void OnRecenter(InputAction.CallbackContext context);
         }
     }

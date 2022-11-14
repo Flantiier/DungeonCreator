@@ -33,17 +33,39 @@ namespace _Scripts.UI.Gameplay
         /// </summary>
         private void SetReticleParameters()
         {
-            if (!_image || !_rectTransform)
+            if(_image.enabled != reticleParamaters.enabled)
+                _image.enabled = reticleParamaters.enabled;
+
+            if (!reticleParamaters.enabled)
                 return;
 
-            _image.enabled = reticleParamaters.enabled;
+            SetReticleSize();
+            SetReticleOppacity();
+        }
 
-            if (!_image.enabled)
+        /// <summary>
+        /// Return the size sets in the user settings
+        /// </summary>
+        private void SetReticleSize()
+        {
+            if (!_rectTransform)
                 return;
 
             float size = reticleParamaters.size;
             _rectTransform.localScale = new Vector2(size, size);
-            _image.color = reticleParamaters.color;
+        }
+
+        /// <summary>
+        /// Return the oppacity value sets in the user settings
+        /// </summary>
+        private void SetReticleOppacity()
+        {
+            if (!_image)
+                return;
+
+            Color newColor = Color.white;
+            newColor.a = reticleParamaters.oppacity;
+            _image.color = newColor;
         }
         #endregion
     }

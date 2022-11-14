@@ -8,6 +8,7 @@ using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
 using _SciptablesObjects.Adventurer;
+using _Scripts.NetworkScript;
 
 namespace _Scripts.Characters
 {
@@ -69,6 +70,8 @@ namespace _Scripts.Characters
         public PlayerStateMachine PlayerSM { get; private set; }
         public CharactersOverallDatas OverallDatas => overallDatas;
         public AdventurerDatas CharacterDatas => characterDatas;
+        public Transform MainCamTransform => _tpsCamera.MainCam.transform;
+        public Transform Orientation => orientation;
         public Vector2 InputsVector { get; private set; }
         public Vector3 Movement { get; set; }
         public Vector2 OverrideDir { get; set; }
@@ -131,7 +134,6 @@ namespace _Scripts.Characters
 
             HandleGroundStateMachine();
             SetOrientation();
-            HandleCombat();
             UpdateAnimations();
 
             HandleHealthRecup();
@@ -256,11 +258,12 @@ namespace _Scripts.Characters
             _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
             _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
 
-            _inputs.actions["Roll"].started += StartRoll;
+            _inputs.actions["Roll"].started += HandleDodge;
 
-            _inputs.actions["Attack"].started += StartAttack;
-            _inputs.actions["Attack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["Attack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["MainAttack"].started += HandleMainAttack;
+            _inputs.actions["SecondAttack"].started += HandleSecondAttack;
+            _inputs.actions["MainAttack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
             _inputs.actions["Recenter"].started += RecenterTpsCamera;
         }
@@ -275,11 +278,12 @@ namespace _Scripts.Characters
             _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
             _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
 
-            _inputs.actions["Roll"].started -= StartRoll;
+            _inputs.actions["Roll"].started -= HandleDodge;
 
-            _inputs.actions["Attack"].started -= StartAttack;
-            _inputs.actions["Attack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["Attack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["MainAttack"].started -= HandleMainAttack;
+            _inputs.actions["SecondAttack"].started -= HandleSecondAttack;
+            _inputs.actions["MainAttack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["MainAttack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
             _inputs.actions["Recenter"].started += RecenterTpsCamera;
         }
@@ -301,6 +305,7 @@ namespace _Scripts.Characters
             instance.SetLookAtTarget(lookAt);
 
             _tpsCamera = instance;
+            Debug.Log(MainCamTransform);
         }
 
         /// <summary>
@@ -328,9 +333,11 @@ namespace _Scripts.Characters
         /// </summary>
         private IEnumerator RecenterCoroutine()
         {
+            lookAt.localRotation = Quaternion.Euler(0f, mesh.eulerAngles.y, 0f);
             _tpsCamera.EnableRecentering(true);
 
-            yield return new WaitForSecondsRealtime(_tpsCamera.CameraSettings.maxRecenteringDuration);
+            while (!PersonnalUtilities.MathFunctions.ApproximationRange(MainCamTransform.localEulerAngles.y, lookAt.localEulerAngles.y, 1f))
+                yield return new WaitForSecondsRealtime(0.05f);
 
             _tpsCamera.EnableRecentering(false);
             _recenteringCoroutine = null;
@@ -375,6 +382,14 @@ namespace _Scripts.Characters
                     if (!GroundSM.IsLanding)
                         HandleMotion();
                     break;
+
+                case PlayerStateMachine.PlayerStates.Roll:
+                    HandleMotionFromAnimations();
+                    break;
+
+                case PlayerStateMachine.PlayerStates.Attack:
+                    HandleMotionFromAnimations();
+                    break;
             }
         }
 
@@ -386,7 +401,7 @@ namespace _Scripts.Characters
             if (!_animator)
                 return;
 
-            _animator.SetFloat("CurrentState", _animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            _animator.SetFloat("CurrentStateTime", _animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
             _animator.SetBool("IsGrounded", GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || _lowGround);
 
             _animator.SetFloat("Inputs", InputsVector.magnitude);
@@ -398,8 +413,7 @@ namespace _Scripts.Characters
             float final = Mathf.Lerp(current, target, 0.1f);
             _animator.SetFloat("Motion", final);
 
-            _animator.SetBool("HoldAttack", PlayerSM.HoldAttack);
-            _animator.SetBool("Aiming", PlayerSM.IsAiming);
+            _animator.SetBool("HoldMainAttack", PlayerSM.HoldAttack);
 
             UpdateAnimationLayers();
         }
@@ -445,36 +459,34 @@ namespace _Scripts.Characters
             movement.y = -appliedGravity;
             Movement = movement;
 
-            RotatePlayer();
+            HandlePlayerRotation();
         }
 
         /// <summary>
         /// Handle the player movement during an animation
         /// </summary>
-        /// <param name="speed"> Incoming motion speed </param>
-        public void HandleDodgeMovement(float speed)
+        public void HandleMotionFromAnimations()
         {
-            UpdateSpeed(speed);
-
-            Movement = GetOverrideVector(CurrentSpeed);
+            Movement = GetMeshForward(CurrentSpeed);
         }
 
-        /// <summary>
-        /// Handle the player movement durinng an animation
-        /// </summary>
-        /// <param name="speed"> Combat motion speed </param>
-        public void HandleCombatMovement(float speed)
-        {
-            UpdateSpeed(speed);
 
-            Movement = GetOverrideVector(speed);
+        /// <summary>
+        /// Conditions if the player can run
+        /// </summary>
+        protected virtual bool RunCondition()
+        {
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+                return false;
+
+            return _inputs.actions["Run"].IsPressed() && InputsVector.magnitude >= 0.8f;
         }
 
         /// <summary>
         /// Lerping the motion speed to a target speed
         /// </summary>
         /// <param name="targetSpeed"> Targeting speed </param>
-        private void UpdateSpeed(float targetSpeed)
+        public void UpdateSpeed(float targetSpeed)
         {
             CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, targetSpeed, ref _speedSmoothingRef, overallDatas.speedSmoothing);
         }
@@ -484,9 +496,7 @@ namespace _Scripts.Characters
         /// </summary>
         public float GetMovementSpeed()
         {
-            if (PlayerSM.IsAiming)
-                return overallDatas.aimSpeed;
-            else if (RunCondition() && CurrentStamina >= 0.1f)
+            if (RunCondition() && CurrentStamina >= 0.1f)
                 return overallDatas.runSpeed;
             else if (InputsVector.magnitude >= 0.1f)
                 return overallDatas.walkSpeed;
@@ -508,21 +518,40 @@ namespace _Scripts.Characters
         /// Return the override vector multiplied by the speed
         /// </summary>
         /// <param name="speed"> Motion speed </param>
-        protected Vector3 GetOverrideVector(float speed)
+        protected Vector3 GetMeshForward(float speed)
         {
-            return new Vector3(OverrideDir.x, -appliedGravity, OverrideDir.y) * speed;
+            return new Vector3(mesh.forward.x, -appliedGravity, mesh.forward.z) * speed;
+        }
+
+        #region Dodge
+        /// <summary>
+        /// Roll action callback
+        /// </summary>
+        private void HandleDodge(InputAction.CallbackContext _)
+        {
+            if (!DodgeCondition())
+                return;
+
+            Vector3 newOrientation = InputsVector.magnitude <= 0 ? mesh.forward : orientation.forward * InputsVector.y + orientation.right * InputsVector.x;
+            SetPlayerMeshOrientation(newOrientation);
+
+            _animator.SetTrigger("Roll");
         }
 
         /// <summary>
-        /// Conditions if the player can run
+        /// Conidition to be able to dodge
         /// </summary>
-        protected virtual bool RunCondition()
+        private bool DodgeCondition()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+            if (!PlayerSM.CanDodge || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
-            return _inputs.actions["Run"].IsPressed() && !PlayerSM.IsAiming && InputsVector.magnitude >= 0.8f;
+            if (CurrentStamina < overallDatas.staminaToDodge)
+                return false;
+
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
+        #endregion
 
         #region Rotations
         /// <summary>
@@ -536,7 +565,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Handle mesh rotation
         /// </summary>
-        protected virtual void RotatePlayer()
+        protected virtual void HandlePlayerRotation()
         {
             if (!mesh && !PlayerSM.EnableLayers)
                 return;
@@ -563,96 +592,60 @@ namespace _Scripts.Characters
         /// <summary>
         /// Turn the player in inputs direction
         /// </summary>
-        public void TurnPlayer()
+        public void SetPlayerMeshOrientation(Vector3 orientation)
         {
-            Vector2 inputs = InputsVector;
-            Vector3 dir;
-
-            dir = inputs.magnitude <= 0 ? mesh.forward : orientation.forward * inputs.y + orientation.right * inputs.x;
-            mesh.rotation = Quaternion.LookRotation(dir, transform.up);
-
-            OverrideDir = MeshDirection();
-        }
-
-        /// <summary>
-        /// Return the direction of the mesh
-        /// </summary>
-        public Vector2 MeshDirection()
-        {
-            return new Vector2(mesh.forward.x, mesh.forward.z);
+            mesh.rotation = Quaternion.LookRotation(orientation, Vector3.up);
         }
         #endregion
 
-        #endregion
-
-        #region Dodge
-        /// <summary>
-        /// Roll action callback
-        /// </summary>
-        private void StartRoll(InputAction.CallbackContext _)
-        {
-            if (!PlayerSM.CanDodge || CurrentStamina < overallDatas.staminaToDodge)
-                return;
-
-            if (DodgeCondition())
-            {
-                TurnPlayer();
-                _animator.SetTrigger("Roll");
-            }
-        }
-
-        /// <summary>
-        /// Conidition to be able to dodge
-        /// </summary>
-        private bool DodgeCondition()
-        {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
-                return false;
-
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
-        }
         #endregion
 
         #region Combat
         /// <summary>
-        /// Handle combat methods
+        /// Main attack callback
         /// </summary>
-        protected virtual void HandleCombat()
+        private void HandleMainAttack(InputAction.CallbackContext _)
         {
-            //PlayerStateMachine.IsAiming = AimCondition() && _inputs.actions["Aim"].IsPressed();
+            if (!AttackConditions())
+                return;
+
+            _animator.SetTrigger("MainAttack");
         }
 
         /// <summary>
-        /// Attack action callback
+        /// Second attack callback
         /// </summary>
-        private void StartAttack(InputAction.CallbackContext _)
+        private void HandleSecondAttack(InputAction.CallbackContext _)
         {
-            if (!AttackCondition())
+            if (!AttackConditions())
                 return;
 
-            _animator.SetTrigger("Attack");
+            _animator.SetTrigger("SecondAttack");
         }
 
         /// <summary>
         /// Condition to be able to attack
         /// </summary>
-        protected virtual bool AttackCondition()
+        protected virtual bool AttackConditions()
         {
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
             return PlayerSM.CanAttack && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
+        #endregion
 
+        #region Character Skill
         /// <summary>
-        /// Conditions to be able to aim
+        /// Skill to be able to use his skill
         /// </summary>
-        protected virtual bool AimCondition()
+        /// <returns></returns>
+        public bool SkillConditions()
         {
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack);
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack);
         }
         #endregion
 
@@ -736,8 +729,8 @@ namespace _Scripts.Characters.StateMachines
         public bool CanDodge { get; set; }
         public bool CanAttack { get; set; }
         public bool HoldAttack { get; set; }
-        public bool IsAiming { get; set; }
         public bool EnableLayers { get; set; }
+        public bool UsingSkill { get; set; }
 
         /// <summary>
         /// Return if the target state is the same as the current

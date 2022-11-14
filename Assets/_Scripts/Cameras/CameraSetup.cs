@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using _Scripts.NetworkScript;
 
 namespace _Scripts.Characters.Cameras
 {

@@ -2,7 +2,7 @@
     "name": "Adventurer",
     "maps": [
         {
-            "name": "Controls",
+            "name": "MainGameplay",
             "id": "3782464c-a55f-41a2-97e4-0c2e4ca56061",
             "actions": [
                 {
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "MainAttack",
                     "type": "Button",
                     "id": "027f58dc-add8-4bc7-86be-fda02543078c",
                     "expectedControlType": "Button",
@@ -51,9 +51,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Aim",
+                    "name": "SecondAttack",
                     "type": "Button",
-                    "id": "de1feb52-ba08-4334-b3a6-533494d3a77f",
+                    "id": "dc19a340-ae01-49a0-b0c8-858012a3ba7a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill",
+                    "type": "Button",
+                    "id": "11d8fabf-0a22-400e-83fc-8876713d6ad9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -99,7 +108,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "MK",
-                    "action": "Attack",
+                    "action": "MainAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -110,29 +119,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "GamePad",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "770bbcf9-ed46-4d53-917f-ef04dbf1a9a1",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MK",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c50d635d-37da-437f-8a43-c2abc3badf3d",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "GamePad",
-                    "action": "Aim",
+                    "action": "MainAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -254,6 +241,28 @@
                     "processors": "",
                     "groups": "MK",
                     "action": "Recenter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d40fa854-d052-4438-af2f-30d4c3530425",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MK",
+                    "action": "SecondAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c386a6f2-be5d-459c-8403-811c40c8c67c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MK",
+                    "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
