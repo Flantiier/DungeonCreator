@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2751518252680373686}
   - component: {fileID: 1261149528821295635}
   - component: {fileID: 3919389076345298649}
-  - component: {fileID: 2409126738380192775}
   m_Layer: 0
   m_Name: Poutre_Angle_Pencher_Mur_Haut_24
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3270893063676116748}
-  m_Mesh: {fileID: 7473983412265994138, guid: 767ede510c25ece489a68a5bb7ff5ea0, type: 3}
+  m_Mesh: {fileID: 7473983412265994138, guid: cfb4f0c58927fa843982423c258217c6, type: 3}
 --- !u!23 &3919389076345298649
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2409126738380192775
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3270893063676116748}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7473983412265994138, guid: 767ede510c25ece489a68a5bb7ff5ea0, type: 3}

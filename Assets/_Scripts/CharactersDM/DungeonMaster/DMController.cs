@@ -79,7 +79,7 @@ namespace _Scripts.DungeonMaster
             _inputs = GetComponent<PlayerInput>();
 
             _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
-            _myCamera.SetCamera(orientation);
+            _myCamera.SetCameraInfos(orientation);
             _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
 
             _currentMana = manaDM;
@@ -367,7 +367,7 @@ namespace _Scripts.DungeonMaster
             if (_selectedTrapInstance != null)
                 Destroy(_selectedTrapInstance.gameObject);
 
-            _selectedTrapInstance = Instantiate(selectedTrap.trapGhostPrefab, Vector3.up * 20f, Quaternion.identity).transform;
+            _selectedTrapInstance = Instantiate(selectedTrap.trapGhostPrefab, Vector3.up * 200f, Quaternion.identity).transform;
         }
 
         /// <summary>

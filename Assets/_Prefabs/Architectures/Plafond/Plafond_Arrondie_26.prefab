@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5738406787740272427}
   - component: {fileID: 8650624355350087822}
   - component: {fileID: 6911273138331122756}
-  - component: {fileID: 361149691423086534}
   m_Layer: 0
   m_Name: Plafond_Arrondie_26
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4965564099787447697}
-  m_Mesh: {fileID: -8130715439012217402, guid: 8b3be75b484c62f489dc7ac3fa396ee4, type: 3}
+  m_Mesh: {fileID: -8130715439012217402, guid: 90159a8ef5c01644a9a502b0643dd452, type: 3}
 --- !u!23 &6911273138331122756
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1aeaa54de29d954d9799d5be7522542, type: 2}
+  - {fileID: 2100000, guid: 31e48acc306c1ac42b9051c8194fec22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &361149691423086534
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4965564099787447697}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -8130715439012217402, guid: 8b3be75b484c62f489dc7ac3fa396ee4, type: 3}

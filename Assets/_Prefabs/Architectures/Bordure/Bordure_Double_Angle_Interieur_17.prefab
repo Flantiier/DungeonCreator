@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7464262855752840858}
   - component: {fileID: 5780853977130563903}
   - component: {fileID: 8637146907113000437}
-  - component: {fileID: 5254514684141220600}
   m_Layer: 0
   m_Name: Bordure_Double_Angle_Interieur_17
   m_TagString: Untagged
@@ -41,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7844623116804959264}
-  m_Mesh: {fileID: -5192350732857804949, guid: 13b95ebe52243d54ca98b7c97199ebd3, type: 3}
+  m_Mesh: {fileID: -5192350732857804949, guid: 5e74028b2a491a749b21904f342ca149, type: 3}
 --- !u!23 &8637146907113000437
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5254514684141220600
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7844623116804959264}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5192350732857804949, guid: 13b95ebe52243d54ca98b7c97199ebd3, type: 3}

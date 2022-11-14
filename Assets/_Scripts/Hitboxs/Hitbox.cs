@@ -5,6 +5,7 @@ public class Hitbox : MonoBehaviour
 {
     #region Variables
     protected Character _character;
+    protected Collider _collider;
     #endregion
 
     #region Builts_In
@@ -15,7 +16,7 @@ public class Hitbox : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (!_character.PViewIsMine)
+        if (!_character.ViewIsMine())
             return;
 
         TriggerEnter(other);   
@@ -23,7 +24,7 @@ public class Hitbox : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (!_character.PViewIsMine)
+        if (!_character.ViewIsMine())
             return;
 
         ColliderEnter(collision.collider);
