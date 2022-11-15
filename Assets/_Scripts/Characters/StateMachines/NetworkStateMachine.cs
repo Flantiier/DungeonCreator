@@ -2,12 +2,16 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class NetworkStateMachine : StateMachineBehaviour
-	{
+    public class NetworkStateMachine : StateMachineBehaviour
+    {
+        #region Variables
+        protected Character MyCharacter { get; set; }
+        #endregion
+
         #region Builts_In
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
         {
-            if (!CharacterAnimation.IsMyPlayer(CharacterAnimation.GetPlayer(animator)))
+            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
             StateMachineEnter(animator, stateMachinePathHash);
@@ -15,7 +19,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
         {
-            if (!CharacterAnimation.IsMyPlayer(CharacterAnimation.GetPlayer(animator)))
+            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
             StateMachineExit(animator, stateMachinePathHash);
@@ -23,22 +27,23 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!CharacterAnimation.IsMyPlayer(CharacterAnimation.GetPlayer(animator)))
+            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
+            GetCharacter(animator);
             StateEnter(animator, stateInfo, layerIndex);
-		}
-		public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        }
+        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!CharacterAnimation.IsMyPlayer(CharacterAnimation.GetPlayer(animator)))
+            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
             StateUpdate(animator, stateInfo, layerIndex);
         }
 
-		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!CharacterAnimation.IsMyPlayer(CharacterAnimation.GetPlayer(animator)))
+            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
             StateExit(animator, stateInfo, layerIndex);
@@ -46,6 +51,14 @@ namespace _Scripts.Characters.Animations.StateMachines
         #endregion
 
         #region Inherited Methods
+        /// <summary>
+        /// Get the player character refrences
+        /// </summary>
+        protected void GetCharacter(Animator animator)
+        {
+            MyCharacter = animator.GetComponent<CharacterAnimator>().Character;
+        }
+
         /// <summary>
         /// Executed during OnStateEnter of the StateMachine on local player
         /// </summary>

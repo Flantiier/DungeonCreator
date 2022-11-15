@@ -83,10 +83,8 @@ namespace _Scripts.Characters
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public virtual void Awake()
         {
-            base.Awake();
-
             if (!ViewIsMine())
                 return;
 
@@ -138,8 +136,6 @@ namespace _Scripts.Characters
 
             HandleHealthRecup();
             HandleStaminaRecup();
-
-            //_myCamera.CameraSwitch(PlayerStateMachine.IsAiming);
         }
         #endregion
 
@@ -185,7 +181,7 @@ namespace _Scripts.Characters
         /// </summary>
         /// <param name="healthAmount"> Current health amount </param>
         [PunRPC]
-        private void HealthRPC(float healthAmount)
+        public void HealthRPC(float healthAmount)
         {
             CurrentHealth = healthAmount;
         }
@@ -305,7 +301,6 @@ namespace _Scripts.Characters
             instance.SetLookAtTarget(lookAt);
 
             _tpsCamera = instance;
-            Debug.Log(MainCamTransform);
         }
 
         /// <summary>
@@ -414,14 +409,12 @@ namespace _Scripts.Characters
             _animator.SetFloat("Motion", final);
 
             _animator.SetBool("HoldMainAttack", PlayerSM.HoldAttack);
-
-            UpdateAnimationLayers();
         }
 
         /// <summary>
         /// Updating layers waight during update
         /// </summary>
-        public void UpdateAnimationLayers()
+        protected void UpdateAnimationLayers()
         {
             float targetWeight = PlayerSM.EnableLayers ? 1f : 0f;
             float currentWeight = _animator.GetLayerWeight(1);
@@ -479,6 +472,9 @@ namespace _Scripts.Characters
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
+            if (PlayerSM.UsingSkill)
+                return false;
+
             return _inputs.actions["Run"].IsPressed() && InputsVector.magnitude >= 0.8f;
         }
 
@@ -532,10 +528,16 @@ namespace _Scripts.Characters
             if (!DodgeCondition())
                 return;
 
+            _animator.SetTrigger("Roll");
+        }
+
+        /// <summary>
+        /// Setting player orientation based on inputs to set the dodge direction
+        /// </summary>
+        public void SetOrientationToDodge()
+        {
             Vector3 newOrientation = InputsVector.magnitude <= 0 ? mesh.forward : orientation.forward * InputsVector.y + orientation.right * InputsVector.x;
             SetPlayerMeshOrientation(newOrientation);
-
-            _animator.SetTrigger("Roll");
         }
 
         /// <summary>
@@ -581,12 +583,12 @@ namespace _Scripts.Characters
         /// <summary>
         /// Handle player rotation during aiming
         /// </summary>
-        public void AimRotation()
+        public void RotateMeshToOrientation()
         {
-            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll))
                 return;
 
-            mesh.rotation = Quaternion.LookRotation(orientation.forward, Vector3.up);
+            SetPlayerMeshOrientation(orientation.forward);
         }
 
         /// <summary>
@@ -640,12 +642,12 @@ namespace _Scripts.Characters
         /// Skill to be able to use his skill
         /// </summary>
         /// <returns></returns>
-        public bool SkillConditions()
+        protected virtual bool SkillConditions()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack);
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 

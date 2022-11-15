@@ -8,6 +8,7 @@ namespace _Scripts.Weapons.Projectiles
     public class Projectile : NetworkMonoBehaviour
 	{
 		#region Variables
+		[Header("Projectile properties")]
 		[SerializeField] private float speed = 10f;
 
 		private Rigidbody _rb;
@@ -15,10 +16,8 @@ namespace _Scripts.Weapons.Projectiles
 		#endregion
 
 		#region Builts_In
-		public override void Awake()
+		public virtual void Awake()
 		{
-			base.Awake();
-
 			if (!ViewIsMine())
 				return;
 

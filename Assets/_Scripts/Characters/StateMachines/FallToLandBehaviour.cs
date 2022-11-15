@@ -6,19 +6,17 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
-
-            if (player.AirTime >= 1f)
+            if (MyCharacter.AirTime >= 1f)
             {
-                player.GroundSM.IsLanding = true;
+                MyCharacter.GroundSM.IsLanding = true;
                 animator.SetBool("Landing", true);
-                player.ResetVelocity();
+                MyCharacter.ResetVelocity();
             }
         }
 
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            CharacterAnimation.GetPlayer(animator).GroundSM.IsLanding = false;
+            MyCharacter.GroundSM.IsLanding = false;
             animator.SetBool("Landing", false);
         }
     }

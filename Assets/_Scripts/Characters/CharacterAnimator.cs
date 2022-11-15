@@ -1,8 +1,7 @@
 using UnityEngine;
-using _Scripts.Characters;
-using _Scripts.Characters.Animations;
 using _Scripts.NetworkScript;
 using _Scripts.Weapons.Projectiles;
+using _Scripts.Hitboxs;
 using Photon.Pun;
 
 namespace _Scripts.Characters.Animations
@@ -26,10 +25,8 @@ namespace _Scripts.Characters.Animations
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public virtual void Awake()
         {
-            SetView(transform.root.gameObject);
-
             if (!ViewIsMine())
                 return;
 
@@ -56,7 +53,7 @@ namespace _Scripts.Characters.Animations
             if (!ViewIsMine() || HitboxNotFound(index))
                 return;
 
-            hitboxs[index].gameObject.SetActive(true);
+            hitboxs[index].Collider.enabled = true;
         }
 
         /// <summary>
@@ -68,7 +65,7 @@ namespace _Scripts.Characters.Animations
             if (!ViewIsMine() || HitboxNotFound(index))
                 return;
 
-            hitboxs[index].gameObject.SetActive(false);
+            hitboxs[index].Collider.enabled = false;
         }
 
         /// <summary>
@@ -122,26 +119,3 @@ namespace _Scripts.Characters.Animations
         #endregion
     }
 }
-
-#region AdventurerStatic
-public static class CharacterAnimation
-{
-    /// <summary>
-    /// Get character script from an animator's parent object
-    /// </summary>
-    /// <param name="animator"> Animator to get from  </param>
-    public static Character GetPlayer(Animator animator)
-    {
-        return animator.GetComponent<CharacterAnimator>().Character;
-    }
-
-    /// <summary>
-    /// Return if the character photon view is the local one
-    /// </summary>
-    /// <param name="character"> Character to check </param>
-    public static bool IsMyPlayer(Character character)
-    {
-        return character.ViewIsMine();
-    }
-}
-#endregion

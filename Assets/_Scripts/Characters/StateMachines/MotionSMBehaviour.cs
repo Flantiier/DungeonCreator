@@ -7,18 +7,14 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
-
-            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Walk;
-            player.PlayerSM.CanAttack = true;
+            MyCharacter.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Walk;
+            MyCharacter.PlayerSM.CanAttack = true;
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
-
-            if (player.PlayerSM.IsRunning)
-                player.UseStamina( player.OverallDatas.staminaToRun * Time.deltaTime);
+            if (MyCharacter.PlayerSM.IsRunning)
+                MyCharacter.UseStamina(MyCharacter.OverallDatas.staminaToRun * Time.deltaTime);
         }
     }
 }

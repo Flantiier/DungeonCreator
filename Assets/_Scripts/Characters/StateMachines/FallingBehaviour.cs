@@ -11,7 +11,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            CharacterAnimation.GetPlayer(animator).ResetAirTime();
+            MyCharacter.ResetAirTime();
             animator.SetBool("IsFalling", false);
         }
     }

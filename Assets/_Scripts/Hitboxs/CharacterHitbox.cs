@@ -1,12 +1,34 @@
 using UnityEngine;
+using _Scripts.Characters;
 
-public class CharacterHitbox : Hitbox
+namespace _Scripts.Hitboxs
 {
-    protected override void TriggerEnter(Collider other)
+    public class CharacterHitbox : Hitbox
     {
-        if (!other.TryGetComponent(out IDamageable player))
-            return;
+        #region Variables
+        private Character _character;
+        #endregion
 
-        player.Damage(_character.CharacterDatas.GetAttackDamages());
+        #region Builts_In
+        public override void Awake()
+        {
+            base.Awake();
+
+            Collider.enabled = false;
+
+            if(ViewIsMine())
+                _character = GetComponentInParent<Character>();
+
+        }
+
+        protected override void TriggerEnter(Collider other)
+        {
+            if (!other.TryGetComponent(out IDamageable player))
+                return;
+
+            Debug.Log("Collide");
+            player.Damage(_character.CharacterDatas.GetAttackDamages());
+        }
+        #endregion
     }
 }
