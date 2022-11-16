@@ -20,6 +20,7 @@ namespace _Scripts.Characters.Temporary
         #region Methods
         public void Damage(float damages)
         {
+            Debug.Log($"Took {damages} damages");
             View.RPC("HitFeedbackRPC", RpcTarget.All);
         }
 

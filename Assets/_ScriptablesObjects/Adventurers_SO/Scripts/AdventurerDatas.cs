@@ -11,7 +11,7 @@ namespace _SciptablesObjects.Adventurer
         public float stamina = 100f;
 
         [Header("Combat stats")]
-        public float attack = 20f;
+        public int attack = 20;
         [Range(0f, 1f)] public float critAttackRate = 0.25f;
         public float critAttackBoost = 5f;
         public float defense = 5f;
@@ -21,12 +21,11 @@ namespace _SciptablesObjects.Adventurer
         /// <summary>
         /// Return random attacks damages
         /// </summary>
-        public float GetAttackDamages()
+        public int GetAttackDamages()
         {
             float rate = Random.Range(0f, 1f);
-            float finalAttack = critAttackRate > rate ? attack : Random.Range(attack - critAttackBoost, attack + critAttackBoost);
+            int finalAttack = rate > critAttackRate ? attack : Mathf.RoundToInt(attack + Random.Range(0f, critAttackBoost));
 
-            Debug.Log(finalAttack);
             return finalAttack;
         }
 

@@ -99,7 +99,6 @@ MonoBehaviour:
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.05
-  shieldCollider: {fileID: 0}
 --- !u!114 &6367050242111418875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,6 +387,25 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &4564569047049618233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026851862256033268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a147736dfd7ebc46b9efb3eef6dc2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 8712005996548828645}
+  hitboxs:
+  - {fileID: 1517213855280665373}
+  throwPoint: {fileID: 6445459908093138736}
+  projectilePrefab: {fileID: 9178926944558135289, guid: 957271c58a77a8845a29e5efe127c1f5,
+    type: 3}
+  throwOffsetFromCamera: 4.25
 --- !u!114 &5498467722832261758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,25 +465,6 @@ MonoBehaviour:
     LayerIndex: 0
   - SynchronizeType: 1
     LayerIndex: 1
---- !u!114 &8121084298556078530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026851862256033268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f037a7403261f7142b71657bd1f09e88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  view: {fileID: 8712005996548828645}
-  throwPoint: {fileID: 6445459908093138736}
-  projectilePrefab: {fileID: 2244712920318624115, guid: 957271c58a77a8845a29e5efe127c1f5,
-    type: 3}
-  throwOffsetFromCamera: 5
-  hitboxs:
-  - {fileID: 1517213855280665373}
 --- !u!114 &8712005996548828645
 MonoBehaviour:
   m_ObjectHideFlags: 0

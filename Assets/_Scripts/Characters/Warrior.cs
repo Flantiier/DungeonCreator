@@ -4,15 +4,6 @@ namespace _Scripts.Characters
 {
 	public class Warrior : Character
 	{
-		#region Variables
-		[Header("Warrior properties")]
-		[SerializeField] private Collider shieldCollider;
-        #endregion
-
-        #region Properties
-        public Collider ShieldCollider => shieldCollider;
-        #endregion
-
         #region Builts_In
         public override void Update()
         {
