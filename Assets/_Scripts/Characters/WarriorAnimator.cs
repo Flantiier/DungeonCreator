@@ -8,6 +8,7 @@ namespace _Scripts.Characters.Animations
 	{
         #region Variables
         [Header("Warrior requirements")]
+        [SerializeField] protected GameObject sword;
         [SerializeField] protected Transform throwPoint;
         [SerializeField] protected Projectile projectilePrefab;
         [SerializeField] private float throwOffsetFromCamera = 5f;
@@ -24,6 +25,9 @@ namespace _Scripts.Characters.Animations
             }
             catch { }
         }
+        #endregion
+
+        #region Animation Methods
         #endregion
 
         #region Methods
