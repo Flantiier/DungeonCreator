@@ -14,10 +14,8 @@ namespace _Scripts.Characters.Cameras
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public virtual void Awake()
         {
-            base.Awake();
-
             if (!ViewIsMine())
                 Destroy(gameObject);
         }

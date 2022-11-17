@@ -13,22 +13,18 @@ namespace _Scripts.Characters.Animations.StateMachines
         [SerializeField] protected float attackCooldown = 0.7f;
         [SerializeField] protected float dodgeCooldown = 0.7f;
 
-        protected Character _character;
         protected AnimationCurve _attackCurve;
         #endregion
 
         #region Inherited_Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
-            _character = player;
+            MyCharacter.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Attack;
+            MyCharacter.PlayerSM.CanAttack = false;
+            MyCharacter.PlayerSM.CanDodge = false;
 
-            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Attack;
-            _character.PlayerSM.CanAttack = false;
-            _character.PlayerSM.CanDodge = false;
-
-            SetAttackCurve(player);
-            player.SetPlayerMeshOrientation(player.Orientation.forward);
+            SetAttackCurve(MyCharacter);
+            MyCharacter.SetPlayerMeshOrientation(MyCharacter.Orientation.forward);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -36,7 +32,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             DisableActions(stateInfo.normalizedTime);
 
             float speed = GetCombatMomentum(stateInfo.normalizedTime);
-            _character.UpdateSpeed(speed);
+            MyCharacter.UpdateSpeed(speed);
         }
         #endregion
 
@@ -65,8 +61,8 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void DisableActions(float time)
         {
-            _character.PlayerSM.CanAttack = time >= attackCooldown ? true : false;
-            _character.PlayerSM.CanDodge = time >= dodgeCooldown ? true : false;
+            MyCharacter.PlayerSM.CanAttack = time >= attackCooldown ? true : false;
+            MyCharacter.PlayerSM.CanDodge = time >= dodgeCooldown ? true : false;
         }
         #endregion
     }

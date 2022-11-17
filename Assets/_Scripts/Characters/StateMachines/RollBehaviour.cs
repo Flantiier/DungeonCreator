@@ -12,20 +12,17 @@ namespace _Scripts.Characters.Animations.StateMachines
         #region Inherited Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
+            MyCharacter.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
+            MyCharacter.SetOrientationToDodge();
+            MyCharacter.UseStamina(MyCharacter.OverallDatas.staminaToDodge);
 
-            player.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
-            player.UseStamina(player.OverallDatas.staminaToDodge);
-
-            DynamicDodgeCurve(player);
+            DynamicDodgeCurve(MyCharacter);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character player = CharacterAnimation.GetPlayer(animator);
-
             float dodgeSpeed = _dodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
-            player.UpdateSpeed(dodgeSpeed);
+            MyCharacter.UpdateSpeed(dodgeSpeed);
         }
         #endregion
 

@@ -9,6 +9,7 @@ using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
 using _SciptablesObjects.Adventurer;
 using _Scripts.NetworkScript;
+using UnityEditor.Build;
 
 namespace _Scripts.Characters
 {
@@ -74,29 +75,23 @@ namespace _Scripts.Characters
         public Transform Orientation => orientation;
         public Vector2 InputsVector { get; private set; }
         public Vector3 Movement { get; set; }
-        public Vector2 OverrideDir { get; set; }
+        public bool DisableInputs { get; set; }
         public float CurrentSpeed { get; set; }
         public float CurrentHealth { get; set; }
         public float CurrentStamina { get; set; }
-        public bool UsingStamina { get; set; }
         public float AirTime => _airTime;
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public virtual void Awake()
         {
-            base.Awake();
+            _animator = mesh.GetComponent<Animator>();
 
             if (!ViewIsMine())
                 return;
 
             _inputs = GetComponent<PlayerInput>();
             _cc = GetComponent<CharacterController>();
-            _animator = mesh.GetComponent<Animator>();
-            GroundSM = new GroundStateMachine();
-            PlayerSM = new PlayerStateMachine();
-
-            InitializeCharacter();
 
             InstantiateCamera();
             InstantiateHUD();
@@ -107,6 +102,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            InitializeCharacter();
             SubscribeToInputs();
         }
 
@@ -129,7 +125,7 @@ namespace _Scripts.Characters
 
         public virtual void Update()
         {
-            if (!ViewIsMine())
+            if (!ViewIsMine() || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
             HandleGroundStateMachine();
@@ -138,8 +134,6 @@ namespace _Scripts.Characters
 
             HandleHealthRecup();
             HandleStaminaRecup();
-
-            //_myCamera.CameraSwitch(PlayerStateMachine.IsAiming);
         }
         #endregion
 
@@ -147,14 +141,15 @@ namespace _Scripts.Characters
         /// <summary>
         /// Reset the player
         /// </summary>
-        public void InitializeCharacter()
+        protected virtual void InitializeCharacter()
         {
+            DisableInputs = false;
+
+            GroundSM = new GroundStateMachine();
+            PlayerSM = new PlayerStateMachine();
+
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
-            UsingStamina = false;
-
-            PlayerSM.CanAttack = true;
-            PlayerSM.CanDodge = true;
         }
 
         #region Health
@@ -168,26 +163,29 @@ namespace _Scripts.Characters
                 return;
 
             CurrentHealth -= damages;
+            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
+
             if (_healthRecupCoroutine != null)
                 StopCoroutine(_healthRecupCoroutine);
 
             if (CurrentHealth <= 0)
-            {
-                CurrentHealth = 0f;
-                Debug.Log("PlayerIsDead");
-            }
+                HandleCharacterDeath();
             else
                 _healthRecupCoroutine = StartCoroutine("DamageTempo");
         }
 
         /// <summary>
-        /// Send health over network
+        /// Character death method
         /// </summary>
-        /// <param name="healthAmount"> Current health amount </param>
-        [PunRPC]
-        private void HealthRPC(float healthAmount)
+        [ContextMenu("Instant Death")]
+        protected void HandleCharacterDeath()
         {
-            CurrentHealth = healthAmount;
+            Debug.Log("Player dead");
+
+            PlayerSM.InvokeDeathEvent();
+            CurrentHealth = 0f;
+
+            View.RPC("CharacterDeathRPC", RpcTarget.All);
         }
 
         /// <summary>
@@ -195,8 +193,6 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleHealthRecup()
         {
-            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
-
             if (!_gainHealth)
                 return;
 
@@ -218,6 +214,25 @@ namespace _Scripts.Characters
             _gainHealth = true;
             _healthRecupCoroutine = null;
         }
+
+        /// <summary>
+        /// Send health over network
+        /// </summary>
+        /// <param name="healthAmount"> Current health amount </param>
+        [PunRPC]
+        public void HealthRPC(float healthAmount)
+        {
+            CurrentHealth = healthAmount;
+        }
+
+        /// <summary>
+        /// Send death over the network
+        /// </summary>
+        [PunRPC]
+        public void CharacterDeathRPC()
+        {
+            _animator.SetTrigger("Dead");
+        }
         #endregion
 
         #region Stamina
@@ -226,9 +241,9 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleStaminaRecup()
         {
-            UsingStamina = PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
+            PlayerSM.UsingStamina = PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
-            if (!UsingStamina && CurrentStamina < characterDatas.stamina)
+            if (!PlayerSM.UsingStamina && CurrentStamina < characterDatas.stamina)
                 CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;
 
             CurrentStamina = Mathf.Clamp(CurrentStamina, 0f, characterDatas.stamina);
@@ -266,6 +281,8 @@ namespace _Scripts.Characters
             _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
             _inputs.actions["Recenter"].started += RecenterTpsCamera;
+
+            PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
         /// <summary>
@@ -285,7 +302,7 @@ namespace _Scripts.Characters
             _inputs.actions["MainAttack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
             _inputs.actions["MainAttack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
-            _inputs.actions["Recenter"].started += RecenterTpsCamera;
+            _inputs.actions["Recenter"].started -= RecenterTpsCamera;
         }
         #endregion
 
@@ -305,7 +322,6 @@ namespace _Scripts.Characters
             instance.SetLookAtTarget(lookAt);
 
             _tpsCamera = instance;
-            Debug.Log(MainCamTransform);
         }
 
         /// <summary>
@@ -322,7 +338,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void RecenterTpsCamera(InputAction.CallbackContext _)
         {
-            if (_recenteringCoroutine != null)
+            if (_recenteringCoroutine != null || DisableInputs)
                 return;
 
             _recenteringCoroutine = StartCoroutine("RecenterCoroutine");
@@ -414,14 +430,12 @@ namespace _Scripts.Characters
             _animator.SetFloat("Motion", final);
 
             _animator.SetBool("HoldMainAttack", PlayerSM.HoldAttack);
-
-            UpdateAnimationLayers();
         }
 
         /// <summary>
         /// Updating layers waight during update
         /// </summary>
-        public void UpdateAnimationLayers()
+        protected void UpdateAnimationLayers()
         {
             float targetWeight = PlayerSM.EnableLayers ? 1f : 0f;
             float currentWeight = _animator.GetLayerWeight(1);
@@ -479,6 +493,9 @@ namespace _Scripts.Characters
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
+            if (PlayerSM.UsingSkill)
+                return false;
+
             return _inputs.actions["Run"].IsPressed() && InputsVector.magnitude >= 0.8f;
         }
 
@@ -529,13 +546,19 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleDodge(InputAction.CallbackContext _)
         {
-            if (!DodgeCondition())
+            if (!DodgeCondition() || DisableInputs)
                 return;
 
+            _animator.SetTrigger("Roll");
+        }
+
+        /// <summary>
+        /// Setting player orientation based on inputs to set the dodge direction
+        /// </summary>
+        public void SetOrientationToDodge()
+        {
             Vector3 newOrientation = InputsVector.magnitude <= 0 ? mesh.forward : orientation.forward * InputsVector.y + orientation.right * InputsVector.x;
             SetPlayerMeshOrientation(newOrientation);
-
-            _animator.SetTrigger("Roll");
         }
 
         /// <summary>
@@ -581,12 +604,12 @@ namespace _Scripts.Characters
         /// <summary>
         /// Handle player rotation during aiming
         /// </summary>
-        public void AimRotation()
+        public void RotateMeshToOrientation()
         {
-            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll))
                 return;
 
-            mesh.rotation = Quaternion.LookRotation(orientation.forward, Vector3.up);
+            SetPlayerMeshOrientation(orientation.forward);
         }
 
         /// <summary>
@@ -640,12 +663,12 @@ namespace _Scripts.Characters
         /// Skill to be able to use his skill
         /// </summary>
         /// <returns></returns>
-        public bool SkillConditions()
+        protected virtual bool SkillConditions()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack);
+            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 
@@ -699,9 +722,17 @@ namespace _Scripts.Characters.StateMachines
     [Serializable]
     public class GroundStateMachine
     {
+        #region Properties
         public enum GroundStatements { Grounded, Falling }
         public GroundStatements CurrentStatement { get; set; }
         public bool IsLanding { get; set; }
+        #endregion
+
+        #region Methods
+        public GroundStateMachine()
+        {
+            CurrentStatement = GroundStatements.Grounded;
+        }
 
         /// <summary>
         /// Return if the target state is the same as the current
@@ -711,6 +742,7 @@ namespace _Scripts.Characters.StateMachines
         {
             return CurrentStatement == targetState;
         }
+        #endregion
     }
 }
 
@@ -723,14 +755,30 @@ namespace _Scripts.Characters.StateMachines
     [Serializable]
     public class PlayerStateMachine
     {
-        public enum PlayerStates { Walk, Roll, Attack }
+        #region Properties
+        public enum PlayerStates { Walk, Roll, Attack, Dead }
         public PlayerStates CurrentState { get; set; }
         public bool IsRunning { get; set; }
+        public bool UsingStamina { get; set; }
         public bool CanDodge { get; set; }
         public bool CanAttack { get; set; }
         public bool HoldAttack { get; set; }
         public bool EnableLayers { get; set; }
         public bool UsingSkill { get; set; }
+        #endregion
+
+        #region Events
+        public event PlayerDeathDelegate OnPlayerDeath;
+        public delegate void PlayerDeathDelegate();
+        #endregion
+
+        #region Methods
+        public PlayerStateMachine()
+        {
+            CurrentState = PlayerStates.Walk;
+            CanAttack = true;
+            CanDodge = true;
+        }
 
         /// <summary>
         /// Return if the target state is the same as the current
@@ -740,6 +788,16 @@ namespace _Scripts.Characters.StateMachines
         {
             return CurrentState == targetState;
         }
+
+        /// <summary>
+        /// Invoking the player death event
+        /// </summary>
+        public void InvokeDeathEvent()
+        {
+            CurrentState = PlayerStates.Dead;
+            OnPlayerDeath?.Invoke();
+        }
+        #endregion
     }
 }
 

@@ -1,44 +1,36 @@
 using UnityEngine;
-using _Scripts.Characters;
+using _Scripts.NetworkScript;
 
-public class Hitbox : MonoBehaviour
+namespace _Scripts.Hitboxs
 {
-    #region Variables
-    protected Character _character;
-    protected Collider _collider;
-    #endregion
-
-    #region Builts_In
-    public virtual void Awake()
+    public class Hitbox : NetworkMonoBehaviour
     {
-        _character = GetComponentInParent<Character>();
+        #region Variables
+        protected Collider _collider;
+
+        public Collider Collider => _collider;
+        #endregion
+
+        #region Builts_In
+        public virtual void Awake()
+        {
+            _collider = GetComponent<Collider>();
+        }
+
+        public void OnTriggerEnter(Collider other)
+        {
+            if (!ViewIsMine())
+                return;
+
+            TriggerEnter(other);
+        }
+        #endregion
+
+        #region Inherited methods
+        /// <summary>
+        /// Method called during OnTriggerEnter
+        /// </summary>
+        protected virtual void TriggerEnter(Collider other) { }
+        #endregion
     }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (!_character.ViewIsMine())
-            return;
-
-        TriggerEnter(other);   
-    }
-
-    public void OnCollisionEnter(Collision collision)
-    {
-        if (!_character.ViewIsMine())
-            return;
-
-        ColliderEnter(collision.collider);
-    }
-    #endregion
-
-    #region Inherited methods
-    /// <summary>
-    /// Method called during OnCollisionEnter
-    /// </summary>
-    protected virtual void ColliderEnter(Collider other) { }
-    /// <summary>
-    /// Method called during OnTriggerEnter
-    /// </summary>
-    protected virtual void TriggerEnter(Collider other) { }
-    #endregion
 }

@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7576599312497301863}
-  - component: {fileID: 8265298971830555615}
+  - component: {fileID: 7643406747728635735}
   - component: {fileID: 6367050242111418875}
   - component: {fileID: 6851713507707752308}
   - component: {fileID: 1963387783943598652}
@@ -71,7 +71,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8265298971830555615
+--- !u!114 &7643406747728635735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,9 +80,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2029296496209362982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d749c857d6b18184d9c4145bdc53c878, type: 3}
+  m_Script: {fileID: 11500000, guid: a0e97f7a8a226634183bf81961714fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  view: {fileID: 1963387783943598652}
   overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
   characterDatas: {fileID: 11400000, guid: 393ca4f807d5ede4fa3d72137e351063, type: 2}
   mesh: {fileID: 363609563075200846}
@@ -94,7 +95,7 @@ MonoBehaviour:
     type: 3}
   walkableMask:
     serializedVersion: 2
-    m_Bits: 2483027968
+    m_Bits: 67108864
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.05
@@ -167,8 +168,6 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 1503638685126038442}
-  - {fileID: 3750921481229028529}
-  - {fileID: 5498467722832261758}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -388,6 +387,25 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &4564569047049618233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026851862256033268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a147736dfd7ebc46b9efb3eef6dc2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 8712005996548828645}
+  hitboxs:
+  - {fileID: 1517213855280665373}
+  throwPoint: {fileID: 6445459908093138736}
+  projectilePrefab: {fileID: 9178926944558135289, guid: 957271c58a77a8845a29e5efe127c1f5,
+    type: 3}
+  throwOffsetFromCamera: 4.25
 --- !u!114 &5498467722832261758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,12 +457,15 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 1
     Name: SecondAttack
+  - Type: 4
+    SynchronizeType: 1
+    Name: SkillEnabled
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
   - SynchronizeType: 1
     LayerIndex: 1
---- !u!114 &8121084298556078530
+--- !u!114 &8712005996548828645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -453,15 +474,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1026851862256033268}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f037a7403261f7142b71657bd1f09e88, type: 3}
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwPoint: {fileID: 6445459908093138736}
-  projectilePrefab: {fileID: 2244712920318624115, guid: 957271c58a77a8845a29e5efe127c1f5,
-    type: 3}
-  throwOffsetFromCamera: 5
-  hitboxs:
-  - {fileID: 2594580060282570415}
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 3750921481229028529}
+  - {fileID: 5498467722832261758}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!4 &1960430674022162285 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: e2ee342101394f0488d2266e97bef86e,
@@ -610,16 +637,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sword_Prefab
       objectReference: {fileID: 0}
-    - target: {fileID: 5298720023343219823, guid: bde19ee5991a3204c9fe94b242f756cd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bde19ee5991a3204c9fe94b242f756cd, type: 3}
---- !u!114 &2594580060282570415 stripped
+--- !u!114 &1517213855280665373 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7815673196554205898, guid: bde19ee5991a3204c9fe94b242f756cd,
+  m_CorrespondingSourceObject: {fileID: 6735463628782038904, guid: bde19ee5991a3204c9fe94b242f756cd,
     type: 3}
   m_PrefabInstance: {fileID: 5221665990497270885}
   m_PrefabAsset: {fileID: 0}

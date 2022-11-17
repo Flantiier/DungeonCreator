@@ -8,17 +8,17 @@ namespace _Scripts.Weapons.Projectiles
     public class Projectile : NetworkMonoBehaviour
 	{
 		#region Variables
-		[SerializeField] private float speed = 10f;
+		[Header("Projectile properties")]
+		[SerializeField] protected float damages = 10f;
+		[SerializeField] protected float speed = 10f;
 
-		private Rigidbody _rb;
-		private Collider _collider;
+		protected Rigidbody _rb;
+		protected Collider _collider;
 		#endregion
 
 		#region Builts_In
-		public override void Awake()
+		public virtual void Awake()
 		{
-			base.Awake();
-
 			if (!ViewIsMine())
 				return;
 
@@ -28,8 +28,11 @@ namespace _Scripts.Weapons.Projectiles
 		}
 
 		private void OnTriggerEnter(Collider other)
-		{
-			HandleCollision();
+        {
+            if (!ViewIsMine())
+                return;
+
+            HandleCollision(other);
 		}
 		#endregion
 
@@ -48,11 +51,8 @@ namespace _Scripts.Weapons.Projectiles
 		/// <summary>
 		/// Executed during OnTriggerEnter, Projectile's behaviour on collision
 		/// </summary>
-		protected virtual void HandleCollision()
+		protected virtual void HandleCollision(Collider other)
 		{
-			if (!ViewIsMine())
-				return;
-
 			PhotonNetwork.Destroy(gameObject);
 		}
 		#endregion
