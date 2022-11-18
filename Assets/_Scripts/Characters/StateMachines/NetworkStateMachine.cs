@@ -5,7 +5,7 @@ namespace _Scripts.Characters.Animations.StateMachines
     public class NetworkStateMachine : StateMachineBehaviour
     {
         #region Variables
-        protected Character MyCharacter { get; set; }
+        protected Character MyCharacter { get; private set; }
         #endregion
 
         #region Builts_In
@@ -33,6 +33,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             GetCharacter(animator);
             StateEnter(animator, stateInfo, layerIndex);
         }
+
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())

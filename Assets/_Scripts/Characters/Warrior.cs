@@ -2,9 +2,40 @@ using UnityEngine;
 
 namespace _Scripts.Characters
 {
-	public class Warrior : Character
-	{
+    public class Warrior : Character
+    {
+        #region Variables
+        [Header("Warrior references")]
+        [SerializeField] private Shield shield;
+        #endregion
+
+        #region Properties
+        public Shield Shield => shield;
+        #endregion
+
         #region Builts_In
+        public override void OnEnable()
+        {
+            if (!ViewIsMine())
+                return;
+
+            base.OnEnable();
+
+            Shield.OnShieldDestroyed += UseSkill;
+            OnSkillRecovered += Shield.InitializeShield;
+        }
+
+        public override void OnDisable()
+        {
+            if (!ViewIsMine())
+                return;
+
+            base.OnEnable();
+
+            Shield.OnShieldDestroyed -= UseSkill;
+            OnSkillRecovered -= Shield.InitializeShield;
+        }
+
         public override void Update()
         {
             if (!ViewIsMine())

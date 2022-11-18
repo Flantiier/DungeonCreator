@@ -1,4 +1,5 @@
 using UnityEngine;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Weapons.Projectiles
 {

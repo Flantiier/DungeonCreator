@@ -1,6 +1,7 @@
 using UnityEngine;
-using _Scripts.NetworkScript;
 using Photon.Pun;
+using _Scripts.NetworkScript;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Characters.Temporary
 {

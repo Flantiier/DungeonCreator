@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _SciptablesObjects.Adventurer
+namespace _ScriptablesObjects.Adventurers
 {
     [CreateAssetMenu(fileName = "New AdventurerDatas", menuName = "Scriptables/Adventurers/BasicAdventurer")]
     public class AdventurerDatas : ScriptableObject
@@ -9,6 +9,9 @@ namespace _SciptablesObjects.Adventurer
         [Header("Character properties")]
         public float health = 100f;
         public float stamina = 100f;
+
+        [Header("Skill & Abilities")]
+        public float skillCooldown = 10f;
 
         [Header("Combat stats")]
         public int attack = 20;

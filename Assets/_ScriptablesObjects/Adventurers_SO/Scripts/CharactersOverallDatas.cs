@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _SciptablesObjects.Adventurer
+namespace _ScriptablesObjects.Adventurers
 {
     [CreateAssetMenu(fileName = "New OverallDatas", menuName = "Scriptables/Adventurers/CharacterOverall")]
     public class CharactersOverallDatas : ScriptableObject

@@ -99,6 +99,7 @@ MonoBehaviour:
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.05
+  shield: {fileID: 7413140868289725481}
 --- !u!114 &6367050242111418875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 7371a20f8b86e234ab3b3ef6ddc88b30,
     type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -124,7 +125,39 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d4d36912-9446-4df3-a300-108a92479d3f
+    m_ActionName: MainGameplay/Look[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8deae71b-928b-426f-b673-66e2264873d3
+    m_ActionName: MainGameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ab886c4d-e460-4bb8-9cfc-374bad69a1ea
+    m_ActionName: MainGameplay/Run[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 41d8770c-6a73-457f-ae21-b23bc3296d2c
+    m_ActionName: MainGameplay/Roll[/Keyboard/ctrl]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 027f58dc-add8-4bc7-86be-fda02543078c
+    m_ActionName: MainGameplay/MainAttack[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dc19a340-ae01-49a0-b0c8-858012a3ba7a
+    m_ActionName: MainGameplay/SecondAttack[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 11d8fabf-0a22-400e-83fc-8876713d6ad9
+    m_ActionName: MainGameplay/Skill[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3500fd9e-873d-40cd-b5c0-e9668c8c37ed
+    m_ActionName: MainGameplay/Recenter[/Keyboard/c]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: MainGameplay
@@ -571,6 +604,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f8e93cff6cf79c4794652050884fb84, type: 3}
+--- !u!114 &7413140868289725481 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2600204858330957726, guid: 6f8e93cff6cf79c4794652050884fb84,
+    type: 3}
+  m_PrefabInstance: {fileID: 4824776719398912951}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97730881ed74c04cb78f898ed9119ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5221665990497270885
 PrefabInstance:
   m_ObjectHideFlags: 0

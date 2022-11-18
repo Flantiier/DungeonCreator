@@ -1,4 +1,7 @@
-public interface IDamageable
+namespace _Scripts.Interfaces
 {
-    public void Damage(float damages);
+    public interface IDamageable
+    {
+        public void Damage(float damages);
+    }
 }

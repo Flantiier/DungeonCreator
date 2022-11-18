@@ -1,5 +1,6 @@
 using UnityEngine;
 using _Scripts.Characters;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Hitboxs
 {

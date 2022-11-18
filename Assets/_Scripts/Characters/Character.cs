@@ -7,9 +7,8 @@ using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
-using _SciptablesObjects.Adventurer;
+using _ScriptablesObjects.Adventurers;
 using _Scripts.NetworkScript;
-using UnityEditor.Build;
 
 namespace _Scripts.Characters
 {
@@ -17,7 +16,7 @@ namespace _Scripts.Characters
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
-    public class Character : NetworkMonoBehaviour, IPlayerDamageable
+    public class Character : NetworkMonoBehaviour, ITrapDamageable, IPlayerDamageable
     {
         #region Variables
 
@@ -31,7 +30,7 @@ namespace _Scripts.Characters
         [SerializeField] private Transform lookAt;
         [SerializeField] private Transform orientation;
 
-        [Header("Other references")]
+        [Header("Gameplay references")]
         [SerializeField] protected CameraSetup cameraPrefab;
         [SerializeField] protected PlayerHUD playerHUD;
 
@@ -50,6 +49,10 @@ namespace _Scripts.Characters
         private bool _gainHealth = true;
         private Coroutine _healthRecupCoroutine;
         private Coroutine _recenteringCoroutine;
+
+        private bool _skillEnabled;
+        public event Action OnSkillUsed;
+        public event Action OnSkillRecovered;
         #endregion
 
         #region Physics
@@ -102,8 +105,10 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InitializeCharacter();
             SubscribeToInputs();
+            InitializeCharacter();
+
+            PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
         public virtual void OnDisable()
@@ -112,6 +117,8 @@ namespace _Scripts.Characters
                 return;
 
             UnsubscribeToInputs();
+
+            PlayerSM.OnPlayerDeath -= UnsubscribeToInputs;
         }
 
         public virtual void OnDestroy()
@@ -141,23 +148,50 @@ namespace _Scripts.Characters
         /// <summary>
         /// Reset the player
         /// </summary>
+        [ContextMenu("Reset")]
         protected virtual void InitializeCharacter()
         {
+            SubscribeToInputs();
+
             DisableInputs = false;
+            _skillEnabled = true;
 
             GroundSM = new GroundStateMachine();
             PlayerSM = new PlayerStateMachine();
-
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
+
+            View.RPC("ResetAnimator", RpcTarget.All);
         }
+
+        /// <summary>
+        /// Reset the animator over the network
+        /// </summary>
+        [PunRPC]
+        protected void ResetAnimator()
+        {
+            _animator.Rebind();
+            _animator.Update(0f);
+        }
+
+        #region Interfaces Implementations
+        public void TakeDamages(float damages)
+        {
+            HandleDamages(damages);
+        }
+
+        public void TrapDamages(float damages)
+        {
+            HandleDamages(damages);
+        }
+        #endregion
 
         #region Health
         /// <summary>
-        /// Reduce health by the amount of damages
+        /// Handle the incoming damages on the player
         /// </summary>
-        /// <param name="damages"> incoming damages </param>
-        public void DamagePlayer(float damages)
+        /// <param name="damages"> Damages amount </param>
+        protected virtual void HandleDamages(float damages)
         {
             if (!ViewIsMine())
                 return;
@@ -281,8 +315,6 @@ namespace _Scripts.Characters
             _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
             _inputs.actions["Recenter"].started += RecenterTpsCamera;
-
-            PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
         /// <summary>
@@ -660,12 +692,38 @@ namespace _Scripts.Characters
 
         #region Character Skill
         /// <summary>
+        /// Start skill cooldown
+        /// </summary>
+        protected void UseSkill()
+        {
+            if (!ViewIsMine())
+                return;
+
+            OnSkillUsed?.Invoke();
+            StartCoroutine(SkillCooldown());
+        }
+
+        /// <summary>
+        /// Skill recovery
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator SkillCooldown()
+        {
+            _skillEnabled = false;
+
+            yield return new WaitForSecondsRealtime(characterDatas.skillCooldown);
+
+            _skillEnabled = true;
+            OnSkillRecovered?.Invoke();
+        }
+
+        /// <summary>
         /// Skill to be able to use his skill
         /// </summary>
         /// <returns></returns>
-        protected virtual bool SkillConditions()
+        protected bool SkillConditions()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+            if (!_skillEnabled || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 
             return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
@@ -708,7 +766,6 @@ namespace _Scripts.Characters
 
             return false;
         }
-
         #endregion
 
         #endregion

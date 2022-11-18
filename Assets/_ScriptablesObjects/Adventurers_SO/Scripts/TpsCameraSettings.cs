@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Cinemachine;
 
-namespace _SciptablesObjects.Settings.Adventurer.Camera
+namespace _ScriptablesObjects.Settings.Adventurer.Camera
 {
     [CreateAssetMenu(fileName = "New CameraSettings", menuName = "Scriptables/Adventurers/Camera")]
     public class TpsCameraSettings : ScriptableObject

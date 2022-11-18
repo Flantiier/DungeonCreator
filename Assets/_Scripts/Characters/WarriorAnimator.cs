@@ -4,8 +4,8 @@ using _Scripts.Weapons.Projectiles;
 
 namespace _Scripts.Characters.Animations
 {
-	public class WarriorAnimator : CharacterAnimator
-	{
+    public class WarriorAnimator : CharacterAnimator
+    {
         #region Variables
         [Header("Warrior requirements")]
         [SerializeField] protected GameObject sword;
@@ -16,7 +16,20 @@ namespace _Scripts.Characters.Animations
         private Projectile _lastProjectile;
         #endregion
 
+        #region Properties
+        public Warrior Warrior { get; private set; }
+        #endregion
+
         #region Builts_In
+        public override void Awake()
+        {
+            if (!ViewIsMine())
+                return;
+
+            base.Awake();
+            Warrior = GetComponentInParent<Warrior>();
+        }
+
         private void OnDrawGizmos()
         {
             try
@@ -34,6 +47,15 @@ namespace _Scripts.Characters.Animations
         public void EnableSword(bool state)
         {
             sword.SetActive(state);
+        }
+
+        /// <summary>
+        /// Enable shield collider
+        /// </summary>
+        /// <param name="id"> 0 => Disable, 1 => Enable </param>
+        public void EnableShield(bool state)
+        {
+            Warrior.Shield.EnableShield(state);
         }
         #endregion
 
