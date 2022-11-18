@@ -28,6 +28,13 @@ namespace _Scripts.Characters.Animations
         #endregion
 
         #region Animation Methods
+        /// <summary>
+        /// Enabe or Disable the sword
+        /// </summary>
+        public void EnableSword(bool state)
+        {
+            sword.SetActive(state);
+        }
         #endregion
 
         #region Methods

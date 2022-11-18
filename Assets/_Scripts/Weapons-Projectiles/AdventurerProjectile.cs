@@ -7,10 +7,8 @@ namespace _Scripts.Weapons.Projectiles
         #region Inherited Methods
         protected override void HandleCollision(Collider other)
         {
-            if (!other.TryGetComponent(out IDamageable damageable))
-                return;
-
-            damageable.Damage(damages);
+            if (other.TryGetComponent(out IDamageable damageable))
+                damageable.Damage(damages);
 
             base.HandleCollision(other);
         }
