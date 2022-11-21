@@ -14,7 +14,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         {
             MyCharacter.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
             MyCharacter.SetOrientationToDodge();
-            MyCharacter.UseStamina(MyCharacter.OverallDatas.staminaToDodge);
+            MyCharacter.UsingStamina(MyCharacter.OverallDatas.staminaToDodge);
 
             DynamicDodgeCurve(MyCharacter);
         }

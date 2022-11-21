@@ -14,7 +14,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             if (MyCharacter.PlayerSM.IsRunning)
-                MyCharacter.UseStamina(MyCharacter.OverallDatas.staminaToRun * Time.deltaTime);
+                MyCharacter.UsingStamina(MyCharacter.OverallDatas.staminaToRun * Time.deltaTime);
         }
     }
 }

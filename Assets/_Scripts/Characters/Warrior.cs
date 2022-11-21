@@ -61,6 +61,13 @@ namespace _Scripts.Characters
         #endregion
 
         #region Methods
+        protected override void InitializeCharacter()
+        {
+            base.InitializeCharacter();
+
+            shield.InitializeShield();
+        }
+
         private void WarriorUpdate()
         {
             if (PlayerSM.EnableLayers)

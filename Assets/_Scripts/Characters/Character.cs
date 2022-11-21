@@ -8,7 +8,6 @@ using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
 using _ScriptablesObjects.Adventurers;
-using _Scripts.NetworkScript;
 
 namespace _Scripts.Characters
 {
@@ -16,7 +15,7 @@ namespace _Scripts.Characters
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
-    public class Character : NetworkMonoBehaviour, ITrapDamageable, IPlayerDamageable
+    public class Character : Entity, ITrapDamageable, IPlayerDamageable, IRespawnable
     {
         #region Variables
 
@@ -46,11 +45,12 @@ namespace _Scripts.Characters
         private float _speedSmoothingRef;
         private float _meshTurnRef;
 
-        private bool _gainHealth = true;
+        private bool healthRecup = true;
         private Coroutine _healthRecupCoroutine;
         private Coroutine _recenteringCoroutine;
 
         private bool _skillEnabled;
+        private Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
         #endregion
@@ -80,7 +80,6 @@ namespace _Scripts.Characters
         public Vector3 Movement { get; set; }
         public bool DisableInputs { get; set; }
         public float CurrentSpeed { get; set; }
-        public float CurrentHealth { get; set; }
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
         #endregion
@@ -107,7 +106,6 @@ namespace _Scripts.Characters
 
             SubscribeToInputs();
             InitializeCharacter();
-
             PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
@@ -117,7 +115,6 @@ namespace _Scripts.Characters
                 return;
 
             UnsubscribeToInputs();
-
             PlayerSM.OnPlayerDeath -= UnsubscribeToInputs;
         }
 
@@ -139,8 +136,8 @@ namespace _Scripts.Characters
             SetOrientation();
             UpdateAnimations();
 
-            HandleHealthRecup();
-            HandleStaminaRecup();
+            HandleHealthRecuperation();
+            HandleStaminaRecuperation();
         }
         #endregion
 
@@ -148,115 +145,77 @@ namespace _Scripts.Characters
         /// <summary>
         /// Reset the player
         /// </summary>
-        [ContextMenu("Reset")]
         protected virtual void InitializeCharacter()
         {
-            SubscribeToInputs();
-
             DisableInputs = false;
             _skillEnabled = true;
 
             GroundSM = new GroundStateMachine();
             PlayerSM = new PlayerStateMachine();
+
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
-
-            View.RPC("ResetAnimator", RpcTarget.All);
         }
 
         /// <summary>
         /// Reset the animator over the network
         /// </summary>
         [PunRPC]
-        protected void ResetAnimator()
+        protected void ResetAnimatorRPC()
         {
             _animator.Rebind();
             _animator.Update(0f);
         }
 
         #region Interfaces Implementations
+        public void Respawn()
+        {
+            InitializeCharacter();
+            View.RPC("ResetAnimatorRPC", RpcTarget.All);
+        }
+
         public void TakeDamages(float damages)
         {
-            HandleDamages(damages);
+            HandleHealth(damages);
         }
 
         public void TrapDamages(float damages)
         {
-            HandleDamages(damages);
+            HandleHealth(damages);
         }
         #endregion
 
         #region Health
-        /// <summary>
-        /// Handle the incoming damages on the player
-        /// </summary>
-        /// <param name="damages"> Damages amount </param>
-        protected virtual void HandleDamages(float damages)
+        protected override void HandleHealth(float damages)
         {
-            if (!ViewIsMine())
+            if (!ViewIsMine() || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
             CurrentHealth -= damages;
+            Mathf.Clamp(CurrentHealth, 0, Mathf.Infinity);
             View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
 
-            if (_healthRecupCoroutine != null)
-                StopCoroutine(_healthRecupCoroutine);
+            if (CurrentHealth > 0)
+            {
+                if (_healthRecupCoroutine != null)
+                    StopCoroutine(_healthRecupCoroutine);
 
-            if (CurrentHealth <= 0)
-                HandleCharacterDeath();
-            else
-                _healthRecupCoroutine = StartCoroutine("DamageTempo");
+                _healthRecupCoroutine = StartCoroutine(HealthRecupDelay());
+                return;
+            }
+
+            HandleEntityDeath();
         }
 
-        /// <summary>
-        /// Character death method
-        /// </summary>
         [ContextMenu("Instant Death")]
-        protected void HandleCharacterDeath()
+        protected override void HandleEntityDeath()
         {
-            Debug.Log("Player dead");
+            SetLowerBodyWeight(0f);
+            StopCoroutine(_healthRecupCoroutine);
+            StopCoroutine(_skillCoroutine);
 
             PlayerSM.InvokeDeathEvent();
-            CurrentHealth = 0f;
-
             View.RPC("CharacterDeathRPC", RpcTarget.All);
-        }
-
-        /// <summary>
-        /// Handle health recuperation
-        /// </summary>
-        protected void HandleHealthRecup()
-        {
-            if (!_gainHealth)
-                return;
-
-            if (CurrentHealth < characterDatas.health)
-                CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
-
-            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, characterDatas.health);
-        }
-
-        /// <summary>
-        /// Wait time before recup health
-        /// </summary>
-        public IEnumerator DamageTempo()
-        {
-            _gainHealth = false;
-
-            yield return new WaitForSecondsRealtime(overallDatas.healthRecupTime);
-
-            _gainHealth = true;
-            _healthRecupCoroutine = null;
-        }
-
-        /// <summary>
-        /// Send health over network
-        /// </summary>
-        /// <param name="healthAmount"> Current health amount </param>
-        [PunRPC]
-        public void HealthRPC(float healthAmount)
-        {
-            CurrentHealth = healthAmount;
         }
 
         /// <summary>
@@ -267,19 +226,45 @@ namespace _Scripts.Characters
         {
             _animator.SetTrigger("Dead");
         }
+
+        /// <summary>
+        /// Handle health recuperation
+        /// </summary>
+        protected void HandleHealthRecuperation()
+        {
+            if (!healthRecup || CurrentHealth > characterDatas.health)
+                return;
+
+            CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
+            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, characterDatas.health);
+        }
+
+        /// <summary>
+        /// Wait time before recup health
+        /// </summary>
+        private IEnumerator HealthRecupDelay()
+        {
+            healthRecup = false;
+
+            yield return new WaitForSecondsRealtime(overallDatas.healthRecupTime);
+
+            healthRecup = true;
+            _healthRecupCoroutine = null;
+        }
         #endregion
 
         #region Stamina
         /// <summary>
         /// Handle stamina recuperation
         /// </summary>
-        protected void HandleStaminaRecup()
+        protected void HandleStaminaRecuperation()
         {
             PlayerSM.UsingStamina = PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
-            if (!PlayerSM.UsingStamina && CurrentStamina < characterDatas.stamina)
-                CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;
+            if (!PlayerSM.UsingStamina || CurrentStamina > characterDatas.stamina)
+                return;
 
+            CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;
             CurrentStamina = Mathf.Clamp(CurrentStamina, 0f, characterDatas.stamina);
         }
 
@@ -287,7 +272,7 @@ namespace _Scripts.Characters
         /// using stamina
         /// </summary>
         /// <param name="amount"> amount of stamina used </param>
-        public void UseStamina(float amount)
+        public void UsingStamina(float amount)
         {
             if (!ViewIsMine())
                 return;
@@ -700,7 +685,7 @@ namespace _Scripts.Characters
                 return;
 
             OnSkillUsed?.Invoke();
-            StartCoroutine(SkillCooldown());
+            _skillCoroutine = StartCoroutine(SkillCooldown());
         }
 
         /// <summary>
