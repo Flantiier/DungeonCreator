@@ -157,6 +157,7 @@ namespace _Scripts.Characters
             CurrentStamina = characterDatas.stamina;
         }
 
+        #region RPC Methods
         /// <summary>
         /// Reset the animator over the network
         /// </summary>
@@ -166,6 +167,7 @@ namespace _Scripts.Characters
             _animator.Rebind();
             _animator.Update(0f);
         }
+        #endregion
 
         #region Interfaces Implementations
         public void Respawn()
@@ -210,12 +212,16 @@ namespace _Scripts.Characters
         [ContextMenu("Instant Death")]
         protected override void HandleEntityDeath()
         {
-            SetLowerBodyWeight(0f);
-            StopCoroutine(_healthRecupCoroutine);
-            StopCoroutine(_skillCoroutine);
-
             PlayerSM.InvokeDeathEvent();
             View.RPC("CharacterDeathRPC", RpcTarget.All);
+
+            SetLowerBodyWeight(0f);
+
+            if (_healthRecupCoroutine != null)
+                StopCoroutine(_healthRecupCoroutine);
+
+            if(_skillCoroutine != null)
+            StopCoroutine(_skillCoroutine);
         }
 
         /// <summary>
