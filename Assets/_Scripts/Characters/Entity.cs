@@ -4,27 +4,40 @@ using _Scripts.NetworkScript;
 
 namespace _Scripts.Characters
 {
-	public class Entity : NetworkMonoBehaviour
+	public class Entity : NetworkAnimatedObject
 	{
 		#region Properties
-		public float CurrentHealth { get; set; }
+		public float CurrentHealth { get; protected set; }
         #endregion
 
         #region Health Methods
 		/// <summary>
 		/// Handle entity health
 		/// </summary>
-        protected virtual void HandleHealth(float damages) {}
+        protected virtual void HandleEntityHealth(float damages) {}
 
 		/// <summary>
 		/// Method executed when the health goes down to 0
 		/// </summary>
 		protected virtual void HandleEntityDeath() {}
 
+		/// <summary>
+		/// Clamping current health between a minimum and a maximum
+		/// </summary>
+		/// <param name="minValue"> Minimum value </param>
+		/// <param name="maxValue"> Maximum value </param>
+		protected virtual float ClampedHealth(float damages, float minValue, float maxValue)
+		{
+			float health = CurrentHealth - damages;
+            health = Mathf.Clamp(health, minValue, maxValue);
+
+			return health;
+		}
+
         /// <summary>
         /// Setting entity health method
         /// </summary>
-		[PunRPC]
+        [PunRPC]
         public void HealthRPC(float healthValue)
 		{
 			CurrentHealth = healthValue;

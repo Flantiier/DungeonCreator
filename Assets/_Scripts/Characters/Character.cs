@@ -8,6 +8,7 @@ using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
 using _ScriptablesObjects.Adventurers;
+using UnityEngine.Windows;
 
 namespace _Scripts.Characters
 {
@@ -15,7 +16,7 @@ namespace _Scripts.Characters
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
-    public class Character : Entity, ITrapDamageable, IPlayerDamageable, IRespawnable
+    public class Character : Entity, ITrapDamageable, IPlayerDamageable
     {
         #region Variables
 
@@ -45,7 +46,6 @@ namespace _Scripts.Characters
         private float _speedSmoothingRef;
         private float _meshTurnRef;
 
-        private bool healthRecup = true;
         private Coroutine _healthRecupCoroutine;
         private Coroutine _recenteringCoroutine;
 
@@ -106,6 +106,7 @@ namespace _Scripts.Characters
 
             SubscribeToInputs();
             InitializeCharacter();
+
             PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
@@ -115,6 +116,7 @@ namespace _Scripts.Characters
                 return;
 
             UnsubscribeToInputs();
+
             PlayerSM.OnPlayerDeath -= UnsubscribeToInputs;
         }
 
@@ -136,7 +138,6 @@ namespace _Scripts.Characters
             SetOrientation();
             UpdateAnimations();
 
-            HandleHealthRecuperation();
             HandleStaminaRecuperation();
         }
         #endregion
@@ -157,52 +158,33 @@ namespace _Scripts.Characters
             CurrentStamina = characterDatas.stamina;
         }
 
-        #region RPC Methods
-        /// <summary>
-        /// Reset the animator over the network
-        /// </summary>
-        [PunRPC]
-        protected void ResetAnimatorRPC()
-        {
-            _animator.Rebind();
-            _animator.Update(0f);
-        }
-        #endregion
-
         #region Interfaces Implementations
-        public void Respawn()
-        {
-            InitializeCharacter();
-            View.RPC("ResetAnimatorRPC", RpcTarget.All);
-        }
-
         public void TakeDamages(float damages)
         {
-            HandleHealth(damages);
+            HandleEntityHealth(damages);
         }
 
         public void TrapDamages(float damages)
         {
-            HandleHealth(damages);
+            HandleEntityHealth(damages);
         }
         #endregion
 
         #region Health
-        protected override void HandleHealth(float damages)
+        protected override void HandleEntityHealth(float damages)
         {
             if (!ViewIsMine() || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
-            CurrentHealth -= damages;
-            Mathf.Clamp(CurrentHealth, 0, Mathf.Infinity);
-            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
+            CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
+            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 
             if (CurrentHealth > 0)
             {
                 if (_healthRecupCoroutine != null)
                     StopCoroutine(_healthRecupCoroutine);
 
-                _healthRecupCoroutine = StartCoroutine(HealthRecupDelay());
+                _healthRecupCoroutine = StartCoroutine(HealthRecuperation());
                 return;
             }
 
@@ -213,8 +195,7 @@ namespace _Scripts.Characters
         protected override void HandleEntityDeath()
         {
             PlayerSM.InvokeDeathEvent();
-            View.RPC("CharacterDeathRPC", RpcTarget.All);
-
+            RPCAnimatorTrigger(RpcTarget.All, "Death", true);
             SetLowerBodyWeight(0f);
 
             if (_healthRecupCoroutine != null)
@@ -225,36 +206,19 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Send death over the network
+        /// Loop until the life is full, stopped if the character takes a hit
         /// </summary>
-        [PunRPC]
-        public void CharacterDeathRPC()
+        private IEnumerator HealthRecuperation()
         {
-            _animator.SetTrigger("Dead");
-        }
-
-        /// <summary>
-        /// Handle health recuperation
-        /// </summary>
-        protected void HandleHealthRecuperation()
-        {
-            if (!healthRecup || CurrentHealth > characterDatas.health)
-                return;
-
-            CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
-            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, characterDatas.health);
-        }
-
-        /// <summary>
-        /// Wait time before recup health
-        /// </summary>
-        private IEnumerator HealthRecupDelay()
-        {
-            healthRecup = false;
-
             yield return new WaitForSecondsRealtime(overallDatas.healthRecupTime);
 
-            healthRecup = true;
+            while (CurrentHealth < characterDatas.health)
+            {
+                CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
+                yield return null;
+            }
+
+            CurrentHealth = ClampedHealth(0f, 0f, characterDatas.health);
             _healthRecupCoroutine = null;
         }
         #endregion
@@ -423,11 +387,11 @@ namespace _Scripts.Characters
                     break;
 
                 case PlayerStateMachine.PlayerStates.Roll:
-                    HandleMotionFromAnimations();
+                    MoveInMeshForward();
                     break;
 
                 case PlayerStateMachine.PlayerStates.Attack:
-                    HandleMotionFromAnimations();
+                    MoveInMeshForward();
                     break;
             }
         }
@@ -484,7 +448,7 @@ namespace _Scripts.Characters
 
         #region Motion
         /// <summary>
-        /// Handle player motion
+        /// Smoothing inputs, handle player motion and rotation
         /// </summary>
         private void HandleMotion()
         {
@@ -500,13 +464,12 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Handle the player movement during an animation
+        /// Set the movement vector to the mesh forward
         /// </summary>
-        public void HandleMotionFromAnimations()
+        public void MoveInMeshForward()
         {
             Movement = GetMeshForward(CurrentSpeed);
         }
-
 
         /// <summary>
         /// Conditions if the player can run
@@ -519,7 +482,7 @@ namespace _Scripts.Characters
             if (PlayerSM.UsingSkill)
                 return false;
 
-            return _inputs.actions["Run"].IsPressed() && InputsVector.magnitude >= 0.8f;
+            return InputsVector.magnitude >= 0.8 && _inputs.actions["Run"].IsPressed();
         }
 
         /// <summary>
@@ -532,7 +495,7 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Return the targeted motion speed
+        /// Return the current target motion speed
         /// </summary>
         public float GetMovementSpeed()
         {
@@ -572,7 +535,7 @@ namespace _Scripts.Characters
             if (!DodgeCondition() || DisableInputs)
                 return;
 
-            _animator.SetTrigger("Roll");
+            RPCAnimatorTrigger(RpcTarget.All, "Roll", true);
         }
 
         /// <summary>
@@ -585,7 +548,7 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Conidition to be able to dodge
+        /// Condition to be able to dodge
         /// </summary>
         private bool DodgeCondition()
         {
@@ -601,7 +564,7 @@ namespace _Scripts.Characters
 
         #region Rotations
         /// <summary>
-        /// Setting player orientation
+        /// Setting the orientation transform to look towards mainCamera forward
         /// </summary>
         protected void SetOrientation()
         {
@@ -609,7 +572,7 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Handle mesh rotation
+        /// Setting mesh rotations based on current inputs
         /// </summary>
         protected virtual void HandlePlayerRotation()
         {
@@ -625,9 +588,9 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Handle player rotation during aiming
+        /// Setting the mesh rotation to a flatten plan vector
         /// </summary>
-        public void RotateMeshToOrientation()
+        public void LookTowardsOrientation()
         {
             if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll))
                 return;
@@ -636,8 +599,9 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Turn the player in inputs direction
+        /// Setting the mesh rotation based on an orientation vector
         /// </summary>
+        /// <param name="orientation"> New orientation </param>
         public void SetPlayerMeshOrientation(Vector3 orientation)
         {
             mesh.rotation = Quaternion.LookRotation(orientation, Vector3.up);
@@ -655,7 +619,7 @@ namespace _Scripts.Characters
             if (!AttackConditions())
                 return;
 
-            _animator.SetTrigger("MainAttack");
+            RPCAnimatorTrigger(RpcTarget.All, "MainAttack", true);
         }
 
         /// <summary>
@@ -666,7 +630,7 @@ namespace _Scripts.Characters
             if (!AttackConditions())
                 return;
 
-            _animator.SetTrigger("SecondAttack");
+            RPCAnimatorTrigger(RpcTarget.All, "SecondAttack", true);
         }
 
         /// <summary>
@@ -685,26 +649,24 @@ namespace _Scripts.Characters
         /// <summary>
         /// Start skill cooldown
         /// </summary>
-        protected void UseSkill()
+        protected void InvokeSkillCooldown()
         {
             if (!ViewIsMine())
                 return;
 
             OnSkillUsed?.Invoke();
-            _skillCoroutine = StartCoroutine(SkillCooldown());
+            _skillCoroutine = StartCoroutine(SkillCooldownRoutine());
         }
 
         /// <summary>
-        /// Skill recovery
+        /// Start the cooldown to recover the character skill
         /// </summary>
-        /// <returns></returns>
-        private IEnumerator SkillCooldown()
+        private IEnumerator SkillCooldownRoutine()
         {
             _skillEnabled = false;
-
             yield return new WaitForSecondsRealtime(characterDatas.skillCooldown);
-
             _skillEnabled = true;
+
             OnSkillRecovered?.Invoke();
         }
 
@@ -723,14 +685,12 @@ namespace _Scripts.Characters
 
         #region Physics
         /// <summary>
-        /// Handle fall movement
+        /// Smoothing the speed during a fall
         /// </summary>
         private void HandleFall()
         {
-            //Increase air time
             _airTime += Time.deltaTime;
 
-            //Inputs
             Vector3 movement = Vector3.Slerp(Movement, Vector3.zero, fallSmoothing / 10f);
             movement.y = -appliedGravity * _airTime;
             Movement = movement;
@@ -745,7 +705,7 @@ namespace _Scripts.Characters
         }
 
         /// <summary>
-        /// Shooting a raycast to detect if there's a low ground
+        /// Shooting a raycast to detect if there's a low ground under the player
         /// </summary>
         public bool LowGroundDetect()
         {

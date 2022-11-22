@@ -4,6 +4,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 {
     public class FallingBehaviour : NetworkStateMachine
     {
+        #region Inherited Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             animator.SetBool("IsFalling", true);
@@ -14,5 +15,6 @@ namespace _Scripts.Characters.Animations.StateMachines
             MyCharacter.ResetAirTime();
             animator.SetBool("IsFalling", false);
         }
+        #endregion
     }
 }

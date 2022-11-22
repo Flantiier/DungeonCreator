@@ -21,7 +21,7 @@ namespace _Scripts.Characters
 
             base.OnEnable();
 
-            Shield.OnShieldDestroyed += UseSkill;
+            Shield.OnShieldDestroyed += InvokeSkillCooldown;
             OnSkillRecovered += Shield.InitializeShield;
         }
 
@@ -32,7 +32,7 @@ namespace _Scripts.Characters
 
             base.OnEnable();
 
-            Shield.OnShieldDestroyed -= UseSkill;
+            Shield.OnShieldDestroyed -= InvokeSkillCooldown;
             OnSkillRecovered -= Shield.InitializeShield;
         }
 
@@ -71,7 +71,7 @@ namespace _Scripts.Characters
         private void WarriorUpdate()
         {
             if (PlayerSM.EnableLayers)
-                RotateMeshToOrientation();
+                LookTowardsOrientation();
         }
         #endregion
     }

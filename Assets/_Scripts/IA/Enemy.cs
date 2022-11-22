@@ -10,16 +10,9 @@ namespace _Scripts.IA
         #region Variables
         [Header("Enemy properties")]
         [SerializeField] protected float health = 50f;
-
-        protected Animator _animator;
         #endregion
 
         #region Builts_In
-        public virtual void Awake()
-        {
-            _animator = GetComponentInChildren<Animator>();
-        }
-
         public virtual void OnEnable()
         {
             if (!ViewIsMine())
@@ -33,50 +26,31 @@ namespace _Scripts.IA
         /// <summary>
         /// Initializing script variables
         /// </summary>
+        [PunRPC]
         protected virtual void InitializeEnemy()
         {
             CurrentHealth = health;
         }
 
-        #region RPC Methods
-        /// <summary>
-        /// Sending a RPC to trigger a feedback over the network
-        /// </summary>
-        [PunRPC]
-        public void DeathRPC()
-        {
-            _animator.SetTrigger("Death");
-        }
-
-        /// <summary>
-        /// Sending a RPC to trigger a feedback over the network
-        /// </summary>
-        [PunRPC]
-        public void HitFeedbackRPC()
-        {
-            _animator.SetTrigger("Hit");
-        }
-        #endregion
-
         #region Health Methods
-        protected override void HandleHealth(float damages)
+        protected override void HandleEntityHealth(float damages)
         {
-            CurrentHealth -= damages;
-            Mathf.Clamp(CurrentHealth, 0, Mathf.Infinity);
-
-            View.RPC("HealthRPC", RpcTarget.Others, CurrentHealth);
-            View.RPC("HitFeedbackRPC", RpcTarget.All);
+            CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
 
             if (CurrentHealth > 0)
+            {
+                RPCAnimatorTrigger(RpcTarget.All, "Hit", true);
                 return;
+            }
 
             HandleEntityDeath();
         }
 
         protected override void HandleEntityDeath()
         {
-            View.RPC("DeathRPC", RpcTarget.All);
-            DestroyWithDelay(View, 3f);
+            RPCAnimatorTrigger(RpcTarget.All, "Death", true);
+            RPCDestroyWithDelay(View, 3f);
         }
         #endregion
 
@@ -89,7 +63,7 @@ namespace _Scripts.IA
                 return;
 
             Debug.Log($"Took {damages} damages");
-            HandleHealth(damages);
+            HandleEntityHealth(damages);
         }
         #endregion
     }

@@ -7,13 +7,32 @@ namespace _Scripts.NetworkScript
     public class NetworkMonoBehaviour : MonoBehaviour
     {
         #region Variables
-        [Header("Network Object")]
+        [Header("Network requirements")]
         [SerializeField] private PhotonView view;
 
         public PhotonView View => view;
         #endregion
 
         #region Methods
+
+        #region Network State
+        /// <summary>
+        /// Method to call RPC on the object
+        /// </summary>
+        /// <param name="methodName"> RPC method name </param>
+        /// <param name="target"> RPC Target type </param>
+        /// <param name="parameters"> RPC method parameters </param>
+        public void RPCCall(string methodName, RpcTarget target, params object[] parameters)
+        {
+            if (!PhotonNetwork.IsConnected)
+            {
+                Debug.LogWarning("RPC was not executed. Not connected to network");
+                return;
+            }
+
+            view.RPC(methodName, target, parameters);
+        }
+
         /// <summary>
         /// Indicates if the view component on the root object is mine
         /// </summary>
@@ -22,13 +41,44 @@ namespace _Scripts.NetworkScript
             return View.IsMine;
         }
 
+        /// <summary>
+        /// Indicates if the local player is the master client
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMasterClient()
+        {
+            return PhotonNetwork.MasterClient.IsLocal;
+        }
+        #endregion
+
+        #region RPC Debugging
+        /// <summary>
+        /// Debug method over the network by selecting a target
+        /// </summary>
+        /// <param name="rpcTargets"> Target rype </param>
+        /// <param name="rpcMessage"> Debug message </param>
+        public void RPCDebugging(RpcTarget rpcTargets, string rpcMessage)
+        {
+            View.RPC("DebugRPC", rpcTargets, rpcMessage);
+        }
+
+        /// <summary>
+        /// Sending a rpc with a debug message
+        /// </summary>
+        [PunRPC]
+        public void DebugRPC(string rpcMessage)
+        {
+            Debug.Log(rpcMessage);
+        }
+        #endregion
+
         #region Object Destruction
         /// <summary>
         /// Will send the rpc to the master after a referenced delay
         /// </summary>
         /// <param name="view"> Photon view of the object </param>
         /// <param name="delay"> Destroy delay </param>
-        public void DestroyWithDelay(PhotonView view, float delay)
+        public void RPCDestroyWithDelay(PhotonView view, float delay)
         {
             StartCoroutine(DestroyWithDelayRoutine(view, delay));
         }
