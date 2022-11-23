@@ -1824,7 +1824,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Pr\xEAt"
+  m_text: '>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1851,7 +1851,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27.2
+  m_fontSize: 44.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2418,8 +2418,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 667296926}
   m_HandleRect: {fileID: 667296925}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2911,7 +2911,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2081537027}
   m_HandleRect: {fileID: 2081537026}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3686,6 +3686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0113dfe093dfb7a4eb67e5390664e402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPlayersPerRoom: 4
 --- !u!1 &1500200228
 GameObject:
   m_ObjectHideFlags: 0
@@ -4424,7 +4425,7 @@ GameObject:
   - component: {fileID: 1939608021}
   - component: {fileID: 1939608020}
   m_Layer: 5
-  m_Name: "Button Pr\xEAt"
+  m_Name: Button Rejoindre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
