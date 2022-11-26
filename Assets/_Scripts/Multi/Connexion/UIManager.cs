@@ -21,11 +21,6 @@ namespace _Scripts.UI
             SceneManager.LoadSceneAsync("Menu_Credit");
         }
 
-        public void ReturnStart()
-        {
-            SceneManager.LoadSceneAsync("Menu_Start");
-        }
-
         public void QuitGame()
         {
             Application.Quit();

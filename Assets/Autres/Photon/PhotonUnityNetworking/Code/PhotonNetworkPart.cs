@@ -61,6 +61,11 @@ namespace Photon.Pun
             }
         }
 
+        public static void CreateRoom(string text, RoomOptions roomOptions, object typedLobby, object expectedUsers)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Returns a new iterable collection of current photon views.
         /// </summary>
