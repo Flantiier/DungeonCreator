@@ -13,40 +13,22 @@ namespace _Scripts.Multi.Connexion
         #region Variables
         [Header("Création de Rooms")]
         [Tooltip("Le nombre max de joueurs par Room")]
-        [SerializeField] private byte maxPlayersPerRoom = 4;
+        [SerializeField] public byte maxPlayersPerRoom = 4;
 
         [Tooltip("Le text permettant de récupérer le nom de la room créée")]
         [SerializeField] private TMP_Text roomName;
-
-        [Tooltip("Le text permettant de récupérer le nom de la room créée")]
-        [SerializeField] private TMP_Text roomPasswordText;
 
         [Tooltip("Le text permettant de récupérer le mot de passe de la room créée")]
         [SerializeField] private GameObject roomPassword;
 
         [Tooltip("Le bouton Toggle permettant de récupérer l'information si la room est privée ou non")]
         [SerializeField] private Toggle privateToggle;
-
-        [Header("Affichages Rooms")]
-        [Tooltip("Le menu a afficher lors de la création de room")]
-        [SerializeField] private GameObject createOrJoinRoom;
-
-        [Tooltip("Le menu a afficher lorsque la room a été créée")]
-        [SerializeField] private GameObject currentRoom;
-
-        [Tooltip("Le menu a afficher lorsque la room a été créée")]
-        [SerializeField] private TMP_Text currentRoomName;
-
-        [Tooltip("Le menu a afficher lorsque la room a été créée")]
-        [SerializeField] private TMP_Text currentRoomPassword;
         #endregion
 
         #region MonoBehaviour CallBacks
 
         void Start()
         {
-            currentRoom.SetActive(false);
-
             roomPassword.SetActive(false);
             privateToggle.isOn = true;
 
@@ -75,26 +57,41 @@ namespace _Scripts.Multi.Connexion
             {
                 roomOptions.IsOpen = false;
 
+                string roomPasswordText = roomPassword.GetComponent<TMP_InputField>().text.ToString();
+
                 Hashtable tablePassword = new Hashtable
                 {
-                    { "Password", roomPasswordText.text }
+                    ["pwd"] = roomPasswordText
                 };
 
                 roomOptions.CustomRoomProperties = tablePassword;
 
-                roomOptions.CustomRoomPropertiesForLobby = new string[] { "Password" };
+                roomOptions.CustomRoomPropertiesForLobby = new string[] { "pwd" };
 
-                PhotonNetwork.LocalPlayer.CustomProperties = tablePassword;
-
-                currentRoomPassword.text = "*****";
-                //Debug.Log(tablePassword);
+                //PhotonNetwork.LocalPlayer.CustomProperties = tablePassword;
             }
-            currentRoomName.text = roomName.text;
 
-            PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+            if (roomName.text.Length <= 1)
+            {
+                string roomNameRandom = "Room " + Random.Range(1, 100);
+                PhotonNetwork.JoinOrCreateRoom(roomNameRandom, roomOptions, TypedLobby.Default);
+            }
+            else
+            {
+                PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+            }
+        }
 
-            currentRoom.SetActive(true);
-            createOrJoinRoom.SetActive(false);
+        public override void OnJoinedRoom()
+        {
+            if(PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.LoadLevel("Menu_Room");
+            }
+            else if (PhotonNetwork.CurrentRoom.PlayerCount != 0)
+            {
+                PhotonNetwork.LoadLevel("Menu_Room");
+            }
         }
 
         public void ToggleValueChange(Toggle privateToggle)
@@ -111,16 +108,12 @@ namespace _Scripts.Multi.Connexion
 
         public override void OnLeftLobby()
         {
-            SceneManager.LoadSceneAsync(0);
+            PhotonNetwork.LoadLevel(0);
         }
 
         public void LeaveLobby()
         {
             PhotonNetwork.LeaveLobby();
-
-            currentRoom.SetActive(false);
-            createOrJoinRoom.SetActive(true);
-
         }
 
         #endregion

@@ -17,6 +17,7 @@ namespace _Scripts.Multi.Connexion
         [SerializeField] private GameObject connexionText;
 
         private string _gameVersion = "1";
+        private bool _isConnecting;
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -37,15 +38,19 @@ namespace _Scripts.Multi.Connexion
         #region Menu Start Callbacks
         public override void OnConnectedToMaster()
         {
-            base.OnConnectedToMaster();
+            if(_isConnecting)
+            {
+                _isConnecting = false;
+            }
         }
 
         public void Connect()
         {
             ConnectedUI(true, false, false);
+
             if (!PhotonNetwork.IsConnected)
             {
-                PhotonNetwork.ConnectUsingSettings();
+                _isConnecting = PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = _gameVersion;
             }
             else
@@ -56,7 +61,7 @@ namespace _Scripts.Multi.Connexion
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            ConnectedUI(false, true, true);
+            _isConnecting = false;
         }
 
         public override void OnJoinedLobby()

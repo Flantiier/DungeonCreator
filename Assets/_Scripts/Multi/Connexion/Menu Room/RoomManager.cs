@@ -2,42 +2,33 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 namespace _Scripts.Multi.Connexion
 {
     public class RoomManager : MonoBehaviourPunCallbacks
     {
         #region Variables
-
+        [Tooltip("Le text permettant d'afficher le nom de la room actuelle")]
+        [SerializeField] private TMP_Text _currentRoomName;
         #endregion
 
         #region MonoBehaviour CallBacks
-
-        void Start()
+        private void Start()
         {
-
-        }
-
-        void Update()
-        {
-
+            _currentRoomName.text = PhotonNetwork.CurrentRoom.Name.ToString();
         }
 
         #endregion
 
         #region Menu Room
 
-        public override void OnJoinedRoom()
-        {
-            Debug.Log("j'ai bien rejoint la room " + PhotonNetwork.CurrentRoom.Name);
-        }
-
         public override void OnLeftRoom()
         {
-            SceneManager.LoadSceneAsync(0);
+            PhotonNetwork.LoadLevel(0);
         }
 
-        private void LeaveRoom()
+        public void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
         }
