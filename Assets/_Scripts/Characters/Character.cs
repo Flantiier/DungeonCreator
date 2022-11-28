@@ -9,6 +9,8 @@ using _Scripts.Interfaces;
 using _Scripts.Utilities.Florian;
 using _ScriptablesObjects.Adventurers;
 using UnityEngine.Windows;
+using UnityEngine.Rendering.UI;
+using Unity.VisualScripting;
 
 namespace _Scripts.Characters
 {
@@ -136,7 +138,6 @@ namespace _Scripts.Characters
             HandleGroundStateMachine();
             SetOrientation();
             UpdateAnimations();
-
             HandleStaminaRecuperation();
         }
         #endregion
@@ -373,8 +374,11 @@ namespace _Scripts.Characters
         /// <summary>
         /// Handle the PlayerStateMachine
         /// </summary>
-        private void HandlePlayerStateMachine()
+        protected virtual void HandlePlayerStateMachine()
         {
+            if (DisableInputs)
+                return;
+
             switch (PlayerSM.CurrentState)
             {
                 case PlayerStateMachine.PlayerStates.Walk:
@@ -611,7 +615,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleMainAttack(InputAction.CallbackContext _)
         {
-            if (!AttackConditions())
+            if (!AttackConditions() || DisableInputs)
                 return;
 
             PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
@@ -623,7 +627,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleSecondAttack(InputAction.CallbackContext _)
         {
-            if (!AttackConditions())
+            if (!AttackConditions() || DisableInputs)
                 return;
 
             PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
@@ -685,6 +689,9 @@ namespace _Scripts.Characters
         /// <returns></returns>
         protected bool SkillConditions()
         {
+            if (DisableInputs)
+                return false;
+
             if (_skillCoroutine != null || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 

@@ -4,7 +4,7 @@ using Photon.Pun;
 public class TemporaryRooms : MonoBehaviourPunCallbacks
 {
     #region Variables
-    public enum GameEntity { Warrior, Wizard, DungeonMaster }
+    public enum GameEntity { Warrior, Wizard, Bowman, DungeonMaster }
 
     [Header("Connections infos")]
     [SerializeField] private GameEntity myEntity = GameEntity.Warrior;
@@ -17,6 +17,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     [Header("Adventurer infos")]
     [SerializeField] private SpawnAdventurerInfo warriorSpawn;
     [SerializeField] private SpawnAdventurerInfo wizardSpawn;
+    [SerializeField] private SpawnAdventurerInfo bowmanSpawn;
     #endregion
 
     #region Callbacks
@@ -50,6 +51,10 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
 
             case GameEntity.Wizard:
                 InstantiateAdventurer(wizardSpawn);
+                break;
+
+            case GameEntity.Bowman:
+                InstantiateAdventurer(bowmanSpawn);
                 break;
 
             case GameEntity.DungeonMaster:

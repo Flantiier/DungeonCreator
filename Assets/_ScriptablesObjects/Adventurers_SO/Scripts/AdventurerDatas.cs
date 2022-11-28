@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace _ScriptablesObjects.Adventurers
 {
-    [CreateAssetMenu(fileName = "New AdventurerDatas", menuName = "Scriptables/Adventurers/BasicAdventurer")]
+    [CreateAssetMenu(fileName = "New CharacterDatas", menuName = "Scriptables/Adventurers/Character Datas")]
     public class AdventurerDatas : ScriptableObject
     {
         #region Variables

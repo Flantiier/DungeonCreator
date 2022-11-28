@@ -6,6 +6,9 @@ using Photon.Pun;
 
 namespace _Scripts.Characters.Animations
 {
+    [RequireComponent(typeof(PhotonView))]
+    [RequireComponent(typeof(PhotonTransformView))]
+    [RequireComponent(typeof(PhotonAnimatorView))]
     public class CharacterAnimator : NetworkMonoBehaviour
     {
         #region Variables     
