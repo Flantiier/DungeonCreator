@@ -49,7 +49,6 @@ namespace _Scripts.Characters
         private Coroutine _healthRecupCoroutine;
         private Coroutine _recenteringCoroutine;
 
-        private bool _skillEnabled;
         private Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
@@ -149,7 +148,6 @@ namespace _Scripts.Characters
         protected virtual void InitializeCharacter()
         {
             DisableInputs = false;
-            _skillEnabled = true;
 
             GroundSM = new GroundStateMachine();
             PlayerSM = new PlayerStateMachine();
@@ -157,6 +155,48 @@ namespace _Scripts.Characters
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
         }
+
+        #region Inputs
+        /// <summary>
+        /// Subscribe Player actions to methods
+        /// </summary>
+        protected virtual void SubscribeToInputs()
+        {
+            _inputs.ActivateInput();
+
+            _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
+
+            _inputs.actions["Roll"].started += HandleDodge;
+
+            _inputs.actions["MainAttack"].started += HandleMainAttack;
+            _inputs.actions["SecondAttack"].started += HandleSecondAttack;
+            _inputs.actions["MainAttack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+
+            _inputs.actions["Recenter"].started += RecenterTpsCamera;
+        }
+
+        /// <summary>
+        /// Unsubscribe Player actions to methods
+        /// </summary>
+        protected virtual void UnsubscribeToInputs()
+        {
+            _inputs.DeactivateInput();
+
+            _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
+
+            _inputs.actions["Roll"].started -= HandleDodge;
+
+            _inputs.actions["MainAttack"].started -= HandleMainAttack;
+            _inputs.actions["SecondAttack"].started -= HandleSecondAttack;
+            _inputs.actions["MainAttack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton() && PlayerSM.CanAttack;
+            _inputs.actions["MainAttack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton() && PlayerSM.CanAttack;
+
+            _inputs.actions["Recenter"].started -= RecenterTpsCamera;
+        }
+        #endregion
 
         #region Interfaces Implementations
         public void TakeDamages(float damages)
@@ -196,7 +236,6 @@ namespace _Scripts.Characters
         {
             PlayerSM.InvokeDeathEvent();
             RPCAnimatorTrigger(RpcTarget.All, "Death", true);
-            SetLowerBodyWeight(0f);
 
             if (_healthRecupCoroutine != null)
                 StopCoroutine(_healthRecupCoroutine);
@@ -248,48 +287,6 @@ namespace _Scripts.Characters
                 return;
 
             CurrentStamina -= amount;
-        }
-        #endregion
-
-        #region Inputs
-        /// <summary>
-        /// Subscribe Player actions to methods
-        /// </summary>
-        protected virtual void SubscribeToInputs()
-        {
-            _inputs.ActivateInput();
-
-            _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
-
-            _inputs.actions["Roll"].started += HandleDodge;
-
-            _inputs.actions["MainAttack"].started += HandleMainAttack;
-            _inputs.actions["SecondAttack"].started += HandleSecondAttack;
-            _inputs.actions["MainAttack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.actions["Recenter"].started += RecenterTpsCamera;
-        }
-
-        /// <summary>
-        /// Unsubscribe Player actions to methods
-        /// </summary>
-        protected virtual void UnsubscribeToInputs()
-        {
-            _inputs.DeactivateInput();
-
-            _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
-
-            _inputs.actions["Roll"].started -= HandleDodge;
-
-            _inputs.actions["MainAttack"].started -= HandleMainAttack;
-            _inputs.actions["SecondAttack"].started -= HandleSecondAttack;
-            _inputs.actions["MainAttack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["MainAttack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.actions["Recenter"].started -= RecenterTpsCamera;
         }
         #endregion
 
@@ -385,14 +382,6 @@ namespace _Scripts.Characters
                     if (!GroundSM.IsLanding)
                         HandleMotion();
                     break;
-
-                case PlayerStateMachine.PlayerStates.Roll:
-                    MoveInMeshForward();
-                    break;
-
-                case PlayerStateMachine.PlayerStates.Attack:
-                    MoveInMeshForward();
-                    break;
             }
         }
 
@@ -416,7 +405,7 @@ namespace _Scripts.Characters
             float final = Mathf.Lerp(current, target, 0.1f);
             _animator.SetFloat("Motion", final);
 
-            _animator.SetBool("HoldMainAttack", PlayerSM.HoldAttack);
+            _animator.SetBool("HoldMainAttack", PlayerSM.HoldAttack && PlayerSM.CanAttack);
         }
 
         /// <summary>
@@ -479,7 +468,7 @@ namespace _Scripts.Characters
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
-            if (PlayerSM.UsingSkill)
+            if (PlayerSM.UsingSkill || PlayerSM.EnableLayers)
                 return false;
 
             return InputsVector.magnitude >= 0.8 && _inputs.actions["Run"].IsPressed();
@@ -576,8 +565,14 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void HandlePlayerRotation()
         {
-            if (!mesh && !PlayerSM.EnableLayers)
+            if (!mesh)
                 return;
+
+            if (PlayerSM.EnableLayers)
+            {
+                LookTowardsOrientation();
+                return;
+            }
 
             if (InputsVector.magnitude >= 0.1f)
             {
@@ -619,6 +614,7 @@ namespace _Scripts.Characters
             if (!AttackConditions())
                 return;
 
+            PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
             RPCAnimatorTrigger(RpcTarget.All, "MainAttack", true);
         }
 
@@ -630,6 +626,7 @@ namespace _Scripts.Characters
             if (!AttackConditions())
                 return;
 
+            PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
             RPCAnimatorTrigger(RpcTarget.All, "SecondAttack", true);
         }
 
@@ -641,7 +638,20 @@ namespace _Scripts.Characters
             if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
+            if (PlayerSM.WaitAttack != null)
+                return false;
+
             return PlayerSM.CanAttack && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+        }
+
+        /// <summary>
+        /// Safety to combat spamming
+        /// </summary>
+        protected IEnumerator AttackWaitRoutine()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            PlayerSM.WaitAttack = null;
         }
         #endregion
 
@@ -649,7 +659,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Start skill cooldown
         /// </summary>
-        protected void InvokeSkillCooldown()
+        public void InvokeSkillCooldown()
         {
             if (!ViewIsMine())
                 return;
@@ -663,10 +673,9 @@ namespace _Scripts.Characters
         /// </summary>
         private IEnumerator SkillCooldownRoutine()
         {
-            _skillEnabled = false;
             yield return new WaitForSecondsRealtime(characterDatas.skillCooldown);
-            _skillEnabled = true;
 
+            _skillCoroutine = null;
             OnSkillRecovered?.Invoke();
         }
 
@@ -676,7 +685,7 @@ namespace _Scripts.Characters
         /// <returns></returns>
         protected bool SkillConditions()
         {
-            if (!_skillEnabled || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
+            if (_skillCoroutine != null || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 
             return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
@@ -770,6 +779,7 @@ namespace _Scripts.Characters.StateMachines
         public bool UsingStamina { get; set; }
         public bool CanDodge { get; set; }
         public bool CanAttack { get; set; }
+        public Coroutine WaitAttack { get; set; }
         public bool HoldAttack { get; set; }
         public bool EnableLayers { get; set; }
         public bool UsingSkill { get; set; }
@@ -786,6 +796,7 @@ namespace _Scripts.Characters.StateMachines
             CurrentState = PlayerStates.Walk;
             CanAttack = true;
             CanDodge = true;
+            WaitAttack = null;
         }
 
         /// <summary>

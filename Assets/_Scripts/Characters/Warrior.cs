@@ -35,16 +35,6 @@ namespace _Scripts.Characters
             Shield.OnShieldDestroyed -= InvokeSkillCooldown;
             OnSkillRecovered -= Shield.InitializeShield;
         }
-
-        public override void Update()
-        {
-            if (!ViewIsMine())
-                return;
-
-            base.Update();
-
-            WarriorUpdate();
-        }
         #endregion
 
         #region Inherited Methods
@@ -66,12 +56,6 @@ namespace _Scripts.Characters
             base.InitializeCharacter();
 
             shield.InitializeShield();
-        }
-
-        private void WarriorUpdate()
-        {
-            if (PlayerSM.EnableLayers)
-                LookTowardsOrientation();
         }
         #endregion
     }

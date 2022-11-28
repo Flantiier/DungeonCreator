@@ -4,10 +4,10 @@ using Photon.Pun;
 public class TemporaryRooms : MonoBehaviourPunCallbacks
 {
     #region Variables
-    public enum GameEntity { Adventurer, DungeonMaster }
+    public enum GameEntity { Warrior, Wizard, DungeonMaster }
 
     [Header("Connections infos")]
-    [SerializeField] private GameEntity myEntity = GameEntity.Adventurer; 
+    [SerializeField] private GameEntity myEntity = GameEntity.Warrior;
 
     [Header("DungeonMaster infos")]
     [SerializeField] private GameObject masterPrefab;
@@ -15,8 +15,8 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     [SerializeField] private Transform spawnPositionMaster;
 
     [Header("Adventurer infos")]
-    [SerializeField] private GameObject adventurerPrefab;
-    [SerializeField] private Transform spawnPositionAdventurer;
+    [SerializeField] private SpawnAdventurerInfo warriorSpawn;
+    [SerializeField] private SpawnAdventurerInfo wizardSpawn;
     #endregion
 
     #region Callbacks
@@ -37,7 +37,6 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     #endregion
 
     #region Methods
-
     /// <summary>
     /// Instantiate the selected entity
     /// </summary>
@@ -45,8 +44,12 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     {
         switch (myEntity)
         {
-            case GameEntity.Adventurer:
-                InstantiateAdventurer();
+            case GameEntity.Warrior:
+                InstantiateAdventurer(warriorSpawn);
+                break;
+
+            case GameEntity.Wizard:
+                InstantiateAdventurer(wizardSpawn);
                 break;
 
             case GameEntity.DungeonMaster:
@@ -66,36 +69,45 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.Instantiate(masterPrefab.name, SpawnPosition(spawnPositionMaster), Quaternion.identity);
+        PhotonNetwork.Instantiate(masterPrefab.name, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
 
         if(masterUI)
             Instantiate(masterUI);
     }
 
     /// <summary>
-    /// Instantiate a new Adventurer over the network
+    /// Instantiate a new adventurer prefab over the network
     /// </summary>
-    public void InstantiateAdventurer()
+    public void InstantiateAdventurer(SpawnAdventurerInfo spawnInfo)
     {
-        if (!adventurerPrefab)
+        if (!spawnInfo.prefab)
         {
             Debug.LogError("Adventurer prefab missing !");
             return;
         }
 
-        PhotonNetwork.Instantiate(adventurerPrefab.name, SpawnPosition(spawnPositionAdventurer), Quaternion.identity);
+        PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.position), Quaternion.identity);
     }
 
     /// <summary>
-    /// Return transform position if missing reference
+    /// Check if the transform target isn't null, if null return this gameObject position
     /// </summary>
-    private Vector3 SpawnPosition(Transform target)
+    private Vector3 GetSpawnPosition(Transform target)
     {
         if (target)
             return target.position;
 
         return transform.position;
     }
-
     #endregion
 }
+
+
+#region SpawnAdventurer_Class
+[System.Serializable]
+public struct SpawnAdventurerInfo
+{
+    public GameObject prefab;
+    public Transform position;
+}
+#endregion

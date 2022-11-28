@@ -14,6 +14,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
+            GetCharacter(animator);
             StateMachineEnter(animator, stateMachinePathHash);
         }
 
@@ -57,6 +58,9 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void GetCharacter(Animator animator)
         {
+            if (MyCharacter)
+                return;
+
             MyCharacter = animator.GetComponent<CharacterAnimator>().Character;
         }
 

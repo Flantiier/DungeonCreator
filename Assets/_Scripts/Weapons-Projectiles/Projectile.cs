@@ -14,7 +14,18 @@ namespace _Scripts.Weapons.Projectiles
 
 		protected Rigidbody _rb;
 		protected Collider _collider;
-		#endregion
+        #endregion
+
+        #region Properties
+		public float Damages
+		{
+			get => damages;
+			set
+			{
+				damages = value;
+			}
+		}
+        #endregion
 
 		#region Builts_In
 		public virtual void Awake()
@@ -46,6 +57,15 @@ namespace _Scripts.Weapons.Projectiles
 			_collider.enabled = true;
 			transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 			_rb.AddForce(direction * speed, ForceMode.Impulse);
+		}
+
+		/// <summary>
+		/// Set a new value to projectile damages
+		/// </summary>
+		/// <param name="newDamages"> New damage value </param>
+		public void OverrideProjectileDamages(float newDamages)
+		{
+			damages = newDamages;
 		}
 
 		/// <summary>
