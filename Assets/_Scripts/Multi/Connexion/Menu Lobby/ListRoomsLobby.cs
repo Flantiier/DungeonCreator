@@ -9,6 +9,8 @@ namespace _Scripts.Multi.Connexion
 {
     public class ListRoomsLobby : MonoBehaviourPunCallbacks
     {
+        const string roomPasswordPrefKey = "";
+
         [Tooltip("Le text ou afficher le nom de la room")]
         [SerializeField] private TMP_Text roomName;
 
@@ -21,6 +23,8 @@ namespace _Scripts.Multi.Connexion
         [Tooltip("Le text ou le mdp pourra être rentré")]
         [SerializeField] private GameObject passwordToggle;
 
+        private TMP_Text errorText;
+
         private string _password;
         private bool _isConnecting = false;
 
@@ -28,7 +32,7 @@ namespace _Scripts.Multi.Connexion
 
         public void Start()
         {
-            passwordToggle.SetActive(false);
+            errorText = GameObject.Find("Erreurs Text").GetComponent<TMP_Text>();
 
             passwordToggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { ToggleValueChange(passwordToggle.GetComponent<Toggle>()); });
         }
@@ -38,6 +42,8 @@ namespace _Scripts.Multi.Connexion
             RoomInfo = roomInfo;
 
             roomName.text = roomInfo.Name;
+            PhotonNetwork.LocalPlayer.CustomProperties.TryAdd("roomname", roomName.text);
+
             numberOfPlayers.text = roomInfo.PlayerCount + " / 4";
 
             if(roomInfo.IsOpen == false)
@@ -46,14 +52,7 @@ namespace _Scripts.Multi.Connexion
 
                 _password = roomInfo.CustomProperties["pwd"].ToString();
 
-                if(_password == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
-                {
-                    _isConnecting = true;
-                }
-                else
-                {
-                    _isConnecting = false;
-                }
+                PhotonNetwork.LocalPlayer.CustomProperties.TryAdd("pwd", _password);
             }
             else
             {
@@ -63,14 +62,29 @@ namespace _Scripts.Multi.Connexion
 
         public void JoinRoomToList()
         {
-            if (_isConnecting == true)
+            errorText.text = "";
+
+            if (!passwordToggle.GetComponent<Toggle>().isOn)
             {
-                PhotonNetwork.JoinRoom(roomName.text);
+                if (PhotonNetwork.LocalPlayer.CustomProperties["pwd"].ToString() == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
+                {
+                    PhotonNetwork.JoinRoom(roomName.text);
+                    Debug.Log(roomName.text);
+                }
+                else
+                {
+                    errorText.text = "Mot de Passe Incorrect";
+                }
             }
             else
             {
-                Debug.Log("mot de passe incorrect");
+                    errorText.text = "Vous n'avez pas entré le mdp";
             }
+        }
+
+        public override void OnJoinedRoom()
+        {
+            PhotonNetwork.LoadLevel("Menu_Room");
         }
 
         public void ToggleValueChange(Toggle privateToggle)

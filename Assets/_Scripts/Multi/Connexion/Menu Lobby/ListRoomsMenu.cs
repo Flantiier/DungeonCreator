@@ -59,6 +59,5 @@ namespace _Scripts.Multi.Connexion
         {
             _listRoomsLobby.Clear();
         }
-
     }
 }

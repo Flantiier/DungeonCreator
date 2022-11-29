@@ -16,6 +16,8 @@ namespace _Scripts.Multi.Connexion
         #region MonoBehaviour CallBacks
         private void Start()
         {
+            PhotonNetwork.AutomaticallySyncScene = true;
+
             _currentRoomName.text = PhotonNetwork.CurrentRoom.Name.ToString();
         }
 

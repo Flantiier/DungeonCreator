@@ -29,6 +29,8 @@ namespace _Scripts.Multi.Connexion
 
         void Start()
         {
+            PhotonNetwork.AutomaticallySyncScene = true;
+
             roomPassword.SetActive(false);
             privateToggle.isOn = true;
 
@@ -68,7 +70,7 @@ namespace _Scripts.Multi.Connexion
 
                 roomOptions.CustomRoomPropertiesForLobby = new string[] { "pwd" };
 
-                //PhotonNetwork.LocalPlayer.CustomProperties = tablePassword;
+                PhotonNetwork.LocalPlayer.CustomProperties = tablePassword;
             }
 
             if (roomName.text.Length <= 1)
@@ -81,17 +83,11 @@ namespace _Scripts.Multi.Connexion
                 PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
             }
         }
-
-        public override void OnJoinedRoom()
+        public override void OnCreatedRoom()
         {
-            if(PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.LoadLevel("Menu_Room");
-            }
-            else if (PhotonNetwork.CurrentRoom.PlayerCount != 0)
-            {
-                PhotonNetwork.LoadLevel("Menu_Room");
-            }
+            if (!PhotonNetwork.IsMasterClient) return;
+
+            PhotonNetwork.LoadLevel("Menu_Room");
         }
 
         public void ToggleValueChange(Toggle privateToggle)

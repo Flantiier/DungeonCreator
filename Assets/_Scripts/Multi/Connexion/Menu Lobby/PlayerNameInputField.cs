@@ -22,7 +22,7 @@ namespace _Scripts.Multi.Connexion
 
         void Start()
         {
-            string defaultName = string.Empty;
+            string defaultName = "Entrer votre nom...";
 
             InputField _inputField = GetComponent<InputField>();
 
@@ -36,7 +36,7 @@ namespace _Scripts.Multi.Connexion
             }
 
             PhotonNetwork.NickName = defaultName;
-            loadedName.text = PlayerPrefs.GetString(playerNamePrefKey);
+            loadedName.text = defaultName;
         }
 
         #endregion

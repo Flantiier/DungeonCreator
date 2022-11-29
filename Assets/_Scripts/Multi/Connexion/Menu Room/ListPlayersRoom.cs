@@ -17,13 +17,13 @@ namespace _Scripts.Multi.Connexion
         {
             Player = player;
 
-            if(player.NickName.Length != 0)
-            {
-                playerNameText.text = player.NickName;
-            }
-            else
+            if(player.NickName == "Entrer votre nom...")
             {
                 playerNameText.text = "player " + Random.Range(3, 100);
+            }
+            else if(player.NickName.Length != 0)
+            {
+                playerNameText.text = player.NickName;
             }
         }
     }
