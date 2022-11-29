@@ -126,6 +126,9 @@ namespace _Scripts.Characters.Animations
             if (!ViewIsMine())
                 return;
 
+            if (!_lastProjectile)
+                CreateProjectile();
+
             _lastProjectile.transform.SetParent(null);
             _lastProjectile.transform.position = Character.MainCamTransform.position + Character.MainCamTransform.forward * throwOffsetFromCamera;
 
