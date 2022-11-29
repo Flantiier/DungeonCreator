@@ -32,7 +32,7 @@ namespace _Scripts.Multi.Connexion
             PhotonNetwork.AutomaticallySyncScene = true;
 
             roomPassword.SetActive(false);
-            privateToggle.isOn = true;
+            privateToggle.isOn = false;
 
             privateToggle.onValueChanged.AddListener(delegate { ToggleValueChange(privateToggle); });
         }
@@ -55,10 +55,8 @@ namespace _Scripts.Multi.Connexion
             roomOptions.IsVisible = true;
             roomOptions.MaxPlayers = maxPlayersPerRoom;
 
-            if (privateToggle.isOn == false)
+            if (privateToggle.isOn == true)
             {
-                //roomOptions.IsOpen = false;
-
                 string roomPasswordText = roomPassword.GetComponent<TMP_InputField>().text.ToString();
 
                 Hashtable tablePassword = new Hashtable
@@ -94,11 +92,11 @@ namespace _Scripts.Multi.Connexion
         {
             if(privateToggle.isOn)
             {
-                roomPassword.SetActive(false);
+                roomPassword.SetActive(true);
             }
             else 
             {
-                roomPassword.SetActive(true);
+                roomPassword.SetActive(false);
             }
         }
 

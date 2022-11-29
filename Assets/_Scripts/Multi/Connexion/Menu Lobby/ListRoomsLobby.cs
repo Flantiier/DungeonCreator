@@ -27,7 +27,6 @@ namespace _Scripts.Multi.Connexion
         private TMP_Text errorText;
 
         private string _password;
-        private bool _isConnecting = false;
 
         public RoomInfo RoomInfo { get; private set; }
 
@@ -35,11 +34,9 @@ namespace _Scripts.Multi.Connexion
         {
             errorText = GameObject.Find("Erreurs Text").GetComponent<TMP_Text>();
 
-            passwordToggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { ToggleValueChange(passwordToggle.GetComponent<Toggle>()); });
-        }
-        public override void OnConnectedToMaster()
-        {
+            passwordToggle.GetComponent<Toggle>().isOn = true;
 
+            passwordToggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { ToggleValueChange(passwordToggle.GetComponent<Toggle>()); });
         }
 
         public void SetRoomInfo(RoomInfo roomInfo)
@@ -66,7 +63,6 @@ namespace _Scripts.Multi.Connexion
         {
             errorText.text = "";
 
-            //PhotonNetwork.JoinRoom(roomName.text);
             if (!passwordToggle.GetComponent<Toggle>().isOn)
             {
                 if (_password == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
@@ -96,7 +92,7 @@ namespace _Scripts.Multi.Connexion
 
         public void ToggleValueChange(Toggle privateToggle)
         {
-            if (privateToggle.isOn)
+            if (!privateToggle.isOn)
             {
                 passwordInputField.SetActive(false);
             }
