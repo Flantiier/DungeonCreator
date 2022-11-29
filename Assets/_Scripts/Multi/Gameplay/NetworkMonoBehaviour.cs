@@ -4,7 +4,7 @@ using Photon.Pun;
 
 namespace _Scripts.NetworkScript
 {
-    public class NetworkMonoBehaviour : MonoBehaviour
+    public class NetworkMonoBehaviour : MonoBehaviourPunCallbacks
     {
         #region Variables
         [Header("Network requirements")]

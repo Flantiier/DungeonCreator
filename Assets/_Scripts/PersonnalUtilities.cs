@@ -18,4 +18,60 @@ namespace _Scripts.Utilities.Florian
             }
         }
     }
+
+    public abstract class TimeFunctions
+    {
+        public enum TimeUnit { Seconds, Minuts, Hours }
+
+        /// <summary>
+        /// Converting a duration in a selected time unit into an other
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="baseUnit"></param>
+        /// <param name="targetUnit"></param>
+        public static float ConvertTime(float time, TimeUnit baseUnit, TimeUnit targetUnit)
+        {
+            return GetConvertedTime(GetTimeInSeconds(time, baseUnit), targetUnit);
+        }
+
+        /// <summary>
+        /// Converting a duration value into seconds
+        /// </summary>
+        /// <param name="time"> Duration value </param>
+        /// <param name="unit"> Duration's time unit </param>
+        public static float GetTimeInSeconds(float time, TimeUnit unit)
+        {
+            switch (unit)
+            {
+                case TimeUnit.Minuts:
+                    return time * 60f;
+
+                case TimeUnit.Hours:
+                    return time * 3600f;
+
+                default:
+                    return time;
+            }
+        }
+
+        /// <summary>
+        /// Converting a duration in seconds in a target time unit
+        /// </summary>
+        /// <param name="seconds"> Duration to convert (in seconds) </param>
+        /// <param name="unit"> Unit to convert into </param>
+        public static float GetConvertedTime(float seconds, TimeUnit unit)
+        {
+            switch (unit)
+            {
+                case TimeUnit.Minuts:
+                    return seconds / 60f;
+
+                case TimeUnit.Hours:
+                    return seconds / 3600f;
+
+                default:
+                    return seconds;
+            }
+        }
+    }
 }
