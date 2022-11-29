@@ -19,7 +19,9 @@ namespace _Scripts.Multi.Connexion
 
             if(player.NickName == "Entrer votre nom...")
             {
-                playerNameText.text = "player " + Random.Range(3, 100);
+                playerNameText.text = "Player " + PhotonNetwork.CurrentRoom.PlayerCount;
+                //playerNameText.text = "Player " + Random.Range(3, 100);
+                player.NickName = playerNameText.text;
             }
             else if(player.NickName.Length != 0)
             {

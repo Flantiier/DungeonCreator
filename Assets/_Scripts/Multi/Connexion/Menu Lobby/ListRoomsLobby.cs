@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace _Scripts.Multi.Connexion
 {
@@ -36,23 +37,24 @@ namespace _Scripts.Multi.Connexion
 
             passwordToggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { ToggleValueChange(passwordToggle.GetComponent<Toggle>()); });
         }
+        public override void OnConnectedToMaster()
+        {
+
+        }
 
         public void SetRoomInfo(RoomInfo roomInfo)
         {
             RoomInfo = roomInfo;
 
             roomName.text = roomInfo.Name;
-            PhotonNetwork.LocalPlayer.CustomProperties.TryAdd("roomname", roomName.text);
 
             numberOfPlayers.text = roomInfo.PlayerCount + " / 4";
 
-            if(roomInfo.IsOpen == false)
+            if(roomInfo.CustomProperties["pwd"] != null)
             {
                 passwordToggle.SetActive(true);
 
                 _password = roomInfo.CustomProperties["pwd"].ToString();
-
-                PhotonNetwork.LocalPlayer.CustomProperties.TryAdd("pwd", _password);
             }
             else
             {
@@ -64,12 +66,12 @@ namespace _Scripts.Multi.Connexion
         {
             errorText.text = "";
 
+            //PhotonNetwork.JoinRoom(roomName.text);
             if (!passwordToggle.GetComponent<Toggle>().isOn)
             {
-                if (PhotonNetwork.LocalPlayer.CustomProperties["pwd"].ToString() == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
+                if (_password == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
                 {
                     PhotonNetwork.JoinRoom(roomName.text);
-                    Debug.Log(roomName.text);
                 }
                 else
                 {
@@ -78,13 +80,18 @@ namespace _Scripts.Multi.Connexion
             }
             else
             {
-                    errorText.text = "Vous n'avez pas entré le mdp";
+                PhotonNetwork.JoinRoom(roomName.text);
             }
         }
 
         public override void OnJoinedRoom()
         {
             PhotonNetwork.LoadLevel("Menu_Room");
+        }
+
+        public override void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.Log(message + " " + returnCode);
         }
 
         public void ToggleValueChange(Toggle privateToggle)

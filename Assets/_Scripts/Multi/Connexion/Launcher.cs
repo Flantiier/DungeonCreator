@@ -26,33 +26,43 @@ namespace _Scripts.Multi.Connexion
         {
             if (!PhotonNetwork.IsConnected)
             {
+                ConnectedUI(true, false, false);
+
                 PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = _gameVersion;
+
+                _isConnecting = true;
+            }
+            else
+            {
+                ConnectedUI(false, true, true);
             }
 
             PhotonNetwork.AutomaticallySyncScene = true;
-
-            ConnectedUI(false, true, true);
         }
         #endregion
 
         #region Menu Start Callbacks
         public override void OnConnectedToMaster()
         {
-            if(_isConnecting)
+            if (_isConnecting)
             {
+                ConnectedUI(false, true, true);
+
                 _isConnecting = false;
             }
         }
 
         public void Connect()
         {
-            ConnectedUI(true, false, false);
-
             if (!PhotonNetwork.IsConnected)
             {
+                ConnectedUI(true, false, false);
+
                 _isConnecting = PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = _gameVersion;
+
+                _isConnecting = true;
             }
             else
             {

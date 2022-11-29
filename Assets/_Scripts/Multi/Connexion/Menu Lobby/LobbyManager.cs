@@ -57,7 +57,7 @@ namespace _Scripts.Multi.Connexion
 
             if (privateToggle.isOn == false)
             {
-                roomOptions.IsOpen = false;
+                //roomOptions.IsOpen = false;
 
                 string roomPasswordText = roomPassword.GetComponent<TMP_InputField>().text.ToString();
 
