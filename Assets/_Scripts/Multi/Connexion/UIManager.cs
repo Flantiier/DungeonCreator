@@ -20,6 +20,11 @@ namespace _Scripts.UI
             SceneManager.LoadSceneAsync("Menu_Credit");
         }
 
+        public void ReturnHome()
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
+
         public void QuitGame()
         {
             Application.Quit();

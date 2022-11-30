@@ -54,6 +54,7 @@ namespace _Scripts.Multi.Connexion
             roomOptions.IsOpen = true;
             roomOptions.IsVisible = true;
             roomOptions.MaxPlayers = maxPlayersPerRoom;
+            roomOptions.BroadcastPropsChangeToAll = true;
 
             if (privateToggle.isOn == true)
             {
@@ -73,14 +74,16 @@ namespace _Scripts.Multi.Connexion
 
             if (roomName.text.Length <= 1)
             {
-                string roomNameRandom = "Room " + Random.Range(1, 100);
+                string roomNameRandom = "Room " + Random.Range(1, 100) + " (" + PhotonNetwork.LocalPlayer.NickName.ToString() + ")";
                 PhotonNetwork.JoinOrCreateRoom(roomNameRandom, roomOptions, TypedLobby.Default);
             }
             else
             {
-                PhotonNetwork.JoinOrCreateRoom(roomName.text, roomOptions, TypedLobby.Default);
+                string roomNameForCreateRoom = roomName.text + " (" + PhotonNetwork.LocalPlayer.NickName.ToString() + ")";
+                PhotonNetwork.JoinOrCreateRoom(roomNameForCreateRoom, roomOptions, TypedLobby.Default);
             }
         }
+
         public override void OnCreatedRoom()
         {
             if (!PhotonNetwork.IsMasterClient) return;
@@ -90,11 +93,11 @@ namespace _Scripts.Multi.Connexion
 
         public void ToggleValueChange(Toggle privateToggle)
         {
-            if(privateToggle.isOn)
+            if (privateToggle.isOn)
             {
                 roomPassword.SetActive(true);
             }
-            else 
+            else
             {
                 roomPassword.SetActive(false);
             }

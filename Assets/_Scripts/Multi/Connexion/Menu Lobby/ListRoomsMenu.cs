@@ -43,6 +43,8 @@ namespace _Scripts.Multi.Connexion
                     }
                 }
             }
+
+            _listRoomsLobby.Clear();
         }
 
         public override void OnJoinedLobby()

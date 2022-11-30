@@ -22,7 +22,7 @@ namespace _Scripts.Multi.Connexion
         [SerializeField] private GameObject passwordInputField;
 
         [Tooltip("Le text ou le mdp pourra être rentré")]
-        [SerializeField] private GameObject passwordToggle;
+        [SerializeField] private GameObject passwordLock;
 
         private TMP_Text errorText;
 
@@ -33,10 +33,6 @@ namespace _Scripts.Multi.Connexion
         public void Start()
         {
             errorText = GameObject.Find("Erreurs Text").GetComponent<TMP_Text>();
-
-            passwordToggle.GetComponent<Toggle>().isOn = true;
-
-            passwordToggle.GetComponent<Toggle>().onValueChanged.AddListener(delegate { ToggleValueChange(passwordToggle.GetComponent<Toggle>()); });
         }
 
         public void SetRoomInfo(RoomInfo roomInfo)
@@ -49,29 +45,39 @@ namespace _Scripts.Multi.Connexion
 
             if(roomInfo.CustomProperties["pwd"] != null)
             {
-                passwordToggle.SetActive(true);
+                passwordLock.SetActive(true);
 
                 _password = roomInfo.CustomProperties["pwd"].ToString();
             }
             else
             {
-                passwordToggle.SetActive(false);
+                passwordLock.SetActive(false);
             }
         }
 
         public void JoinRoomToList()
         {
             errorText.text = "";
+            string passwordEnter = passwordInputField.GetComponent<TMP_InputField>().text.ToString();
 
-            if (!passwordToggle.GetComponent<Toggle>().isOn)
+            if (_password != null)
             {
-                if (_password == passwordInputField.GetComponent<TMP_InputField>().text.ToString())
+                passwordInputField.SetActive(true);
+
+                if (passwordEnter.Length >= 1)
                 {
-                    PhotonNetwork.JoinRoom(roomName.text);
+                    if (_password == passwordEnter)
+                    {
+                        PhotonNetwork.JoinRoom(roomName.text);
+                    }
+                    else
+                    {
+                        errorText.text = "Mot de Passe Incorrect";
+                    }
                 }
                 else
                 {
-                    errorText.text = "Mot de Passe Incorrect";
+                    errorText.text = "Room privée, entrez le mdp";
                 }
             }
             else
@@ -80,26 +86,15 @@ namespace _Scripts.Multi.Connexion
             }
         }
 
+
         public override void OnJoinedRoom()
         {
-            PhotonNetwork.LoadLevel("Menu_Room");
+            passwordInputField.SetActive(false);
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log(message + " " + returnCode);
-        }
-
-        public void ToggleValueChange(Toggle privateToggle)
-        {
-            if (!privateToggle.isOn)
-            {
-                passwordInputField.SetActive(false);
-            }
-            else
-            {
-                passwordInputField.SetActive(true);
-            }
         }
     }
 }

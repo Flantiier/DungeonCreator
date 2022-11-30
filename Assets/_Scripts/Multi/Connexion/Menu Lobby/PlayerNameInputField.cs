@@ -22,7 +22,7 @@ namespace _Scripts.Multi.Connexion
 
         void Start()
         {
-            string defaultName = "Entrer votre nom...";
+            string defaultName = "Player " + Random.Range(0, 100);
 
             InputField _inputField = GetComponent<InputField>();
 
@@ -52,9 +52,10 @@ namespace _Scripts.Multi.Connexion
         {
             if (string.IsNullOrEmpty(value))
             {
-                Debug.LogError("Player Name is null or empty");
-                return;
+                string randomName = "Player " + Random.Range(0, 100);
+                PhotonNetwork.NickName = randomName;
             }
+
             PhotonNetwork.NickName = value;
 
             PlayerPrefs.SetString(playerNamePrefKey, value);

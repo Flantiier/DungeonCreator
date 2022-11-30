@@ -29,9 +29,16 @@ namespace _Scripts.Multi.Connexion
         private void AddPlayerList(Player newPlayer)
         {
             ListPlayersRoom listPlayersRoom = Instantiate(listPlayersRoomScript, content);
+
             if (listPlayersRoom != null)
             {
                 listPlayersRoom.SetPlayerInfo(newPlayer);
+
+                if (newPlayer == PhotonNetwork.LocalPlayer)
+                {
+                    listPlayersRoom.ApplyLocalChanges();
+                }
+
                 _listPlayersRoom.Add(listPlayersRoom);
             }
         }
