@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class TemporaryRooms : MonoBehaviourPunCallbacks
 {
@@ -18,6 +20,8 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     [SerializeField] private SpawnAdventurerInfo warriorSpawn;
     [SerializeField] private SpawnAdventurerInfo wizardSpawn;
     [SerializeField] private SpawnAdventurerInfo bowmanSpawn;
+
+    public static event Action<GameObject> OnEntityCreated;
     #endregion
 
     #region Callbacks
@@ -38,6 +42,11 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     #endregion
 
     #region Methods
+    public void RaiseEntityEvent(GameObject obj)
+    {
+        OnEntityCreated?.Invoke(obj);
+    }
+
     /// <summary>
     /// Instantiate the selected entity
     /// </summary>
@@ -74,7 +83,8 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.Instantiate(masterPrefab.name, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
+        GameObject instance = PhotonNetwork.Instantiate(masterPrefab.name, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
+        RaiseEntityEvent(instance);
 
         if(masterUI)
             Instantiate(masterUI);
@@ -91,7 +101,8 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.position), Quaternion.identity);
+        GameObject instance = PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.position), Quaternion.identity);
+        RaiseEntityEvent(instance);
     }
 
     /// <summary>

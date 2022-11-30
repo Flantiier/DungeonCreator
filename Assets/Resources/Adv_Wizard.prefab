@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3188778175188630945}
   - component: {fileID: 1314738718839440989}
-  - component: {fileID: 8514038087985157144}
   - component: {fileID: 1442995459259293191}
   - component: {fileID: 6398734410080870558}
   - component: {fileID: 7220202576787202970}
@@ -68,37 +67,6 @@ MonoBehaviour:
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.05
---- !u!114 &8514038087985157144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643132849922697506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 7371a20f8b86e234ab3b3ef6ddc88b30,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: MainGameplay
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!143 &1442995459259293191
 CharacterController:
   m_ObjectHideFlags: 0

@@ -2,19 +2,18 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using InputsMaps;
 using Photon.Pun;
+using _Scripts.Utilities.Florian;
+using _Scripts.Managers;
+using _ScriptablesObjects.Adventurers;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
-using _Scripts.Utilities.Florian;
-using _ScriptablesObjects.Adventurers;
-using UnityEngine.Windows;
-using UnityEngine.Rendering.UI;
-using Unity.VisualScripting;
+using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
-    [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
@@ -36,7 +35,7 @@ namespace _Scripts.Characters
         [SerializeField] protected CameraSetup cameraPrefab;
         [SerializeField] protected PlayerHUD playerHUD;
 
-        protected PlayerInput _inputs;
+        protected AdventurerInputs _inputs;
         private CharacterController _cc;
         protected Animator _animator;
         protected TpsCameraHandler _tpsCamera;
@@ -54,6 +53,10 @@ namespace _Scripts.Characters
         private Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
+        #endregion
+
+        #region Events
+        public static event Action OnPlayerDeath;
         #endregion
 
         #region Physics
@@ -79,7 +82,6 @@ namespace _Scripts.Characters
         public Transform Orientation => orientation;
         public Vector2 InputsVector { get; private set; }
         public Vector3 Movement { get; set; }
-        public bool DisableInputs { get; set; }
         public float CurrentSpeed { get; set; }
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
@@ -89,12 +91,11 @@ namespace _Scripts.Characters
         public virtual void Awake()
         {
             _animator = mesh.GetComponent<Animator>();
+            _inputs = new AdventurerInputs();
+            _cc = GetComponent<CharacterController>();
 
             if (!ViewIsMine())
                 return;
-
-            _inputs = GetComponent<PlayerInput>();
-            _cc = GetComponent<CharacterController>();
 
             InstantiateCamera();
             InstantiateHUD();
@@ -108,7 +109,7 @@ namespace _Scripts.Characters
             SubscribeToInputs();
             InitializeCharacter();
 
-            PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
+            UIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
         }
 
         public override void OnDisable()
@@ -118,7 +119,7 @@ namespace _Scripts.Characters
 
             UnsubscribeToInputs();
 
-            PlayerSM.OnPlayerDeath -= UnsubscribeToInputs;
+            UIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
 
         public virtual void OnDestroy()
@@ -132,7 +133,7 @@ namespace _Scripts.Characters
 
         public virtual void Update()
         {
-            if (!ViewIsMine() || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Dead))
+            if (!ViewIsMine())
                 return;
 
             HandleGroundStateMachine();
@@ -148,7 +149,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void InitializeCharacter()
         {
-            DisableInputs = false;
+            EnableInputs(true);
 
             GroundSM = new GroundStateMachine();
             PlayerSM = new PlayerStateMachine();
@@ -159,23 +160,34 @@ namespace _Scripts.Characters
 
         #region Inputs
         /// <summary>
+        /// Enable or disable the playerInput component
+        /// </summary>
+        /// <param name="state"> Enable or disable </param>
+        public void EnableInputs(bool state)
+        {
+            if (state)
+                _inputs.Enable();
+            else
+                _inputs.Disable();
+        }
+
+        /// <summary>
         /// Subscribe Player actions to methods
         /// </summary>
         protected virtual void SubscribeToInputs()
         {
-            _inputs.ActivateInput();
+            _inputs.Enable();
+            
+            _inputs.Gameplay.Move.performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.Gameplay.Move.canceled += ctx => InputsVector = Vector2.zero;
+            _inputs.Gameplay.Roll.started += HandleDodge;
 
-            _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
+            _inputs.Gameplay.MainAttack.started += HandleMainAttack;
+            _inputs.Gameplay.SecondAttack.started += HandleSecondAttack;
+            _inputs.Gameplay.MainAttack.performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.Gameplay.MainAttack.canceled+= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
-            _inputs.actions["Roll"].started += HandleDodge;
-
-            _inputs.actions["MainAttack"].started += HandleMainAttack;
-            _inputs.actions["SecondAttack"].started += HandleSecondAttack;
-            _inputs.actions["MainAttack"].performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-            _inputs.actions["MainAttack"].canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.actions["Recenter"].started += RecenterTpsCamera;
+            _inputs.Gameplay.Recenter.started += RecenterTpsCamera;
         }
 
         /// <summary>
@@ -183,19 +195,18 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void UnsubscribeToInputs()
         {
-            _inputs.DeactivateInput();
+            _inputs.Disable();
 
-            _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
+            _inputs.Gameplay.Move.performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
+            _inputs.Gameplay.Move.canceled -= ctx => InputsVector = Vector2.zero;
+            _inputs.Gameplay.Roll.started -= HandleDodge;
 
-            _inputs.actions["Roll"].started -= HandleDodge;
+            _inputs.Gameplay.MainAttack.started -= HandleMainAttack;
+            _inputs.Gameplay.SecondAttack.started -= HandleSecondAttack;
+            _inputs.Gameplay.MainAttack.performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
+            _inputs.Gameplay.MainAttack.canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
 
-            _inputs.actions["MainAttack"].started -= HandleMainAttack;
-            _inputs.actions["SecondAttack"].started -= HandleSecondAttack;
-            _inputs.actions["MainAttack"].performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton() && PlayerSM.CanAttack;
-            _inputs.actions["MainAttack"].canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton() && PlayerSM.CanAttack;
-
-            _inputs.actions["Recenter"].started -= RecenterTpsCamera;
+            _inputs.Gameplay.Recenter.started -= RecenterTpsCamera;
         }
         #endregion
 
@@ -214,7 +225,7 @@ namespace _Scripts.Characters
         #region Health
         protected override void HandleEntityHealth(float damages)
         {
-            if (!ViewIsMine() || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Dead))
+            if (!ViewIsMine() || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
@@ -235,8 +246,11 @@ namespace _Scripts.Characters
         [ContextMenu("Instant Death")]
         protected override void HandleEntityDeath()
         {
-            PlayerSM.InvokeDeathEvent();
-            RPCAnimatorTrigger(RpcTarget.All, "Death", true);
+            EnableInputs(false);
+            ResetVelocity();
+
+            InvokeDeathEvent();
+            RPCAnimatorTrigger(RpcTarget.All, "Dead", true);
 
             if (_healthRecupCoroutine != null)
                 StopCoroutine(_healthRecupCoroutine);
@@ -261,6 +275,15 @@ namespace _Scripts.Characters
             CurrentHealth = ClampedHealth(0f, 0f, characterDatas.health);
             _healthRecupCoroutine = null;
         }
+
+        /// <summary>
+        /// Invoking the player death event
+        /// </summary>
+        public void InvokeDeathEvent()
+        {
+            PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Dead;
+            OnPlayerDeath?.Invoke();
+        }
         #endregion
 
         #region Stamina
@@ -269,7 +292,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void HandleStaminaRecuperation()
         {
-            PlayerSM.UsingStamina = PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
+            PlayerSM.UsingStamina = PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll) || RunCondition();
 
             if (!PlayerSM.UsingStamina || CurrentStamina > characterDatas.stamina)
                 return;
@@ -323,7 +346,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void RecenterTpsCamera(InputAction.CallbackContext _)
         {
-            if (_recenteringCoroutine != null || DisableInputs)
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || _recenteringCoroutine != null)
                 return;
 
             _recenteringCoroutine = StartCoroutine("RecenterCoroutine");
@@ -376,9 +399,6 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void HandlePlayerStateMachine()
         {
-            if (DisableInputs)
-                return;
-
             switch (PlayerSM.CurrentState)
             {
                 case PlayerStateMachine.PlayerStates.Walk:
@@ -469,13 +489,13 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool RunCondition()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
             if (PlayerSM.UsingSkill || PlayerSM.EnableLayers)
                 return false;
 
-            return InputsVector.magnitude >= 0.8 && _inputs.actions["Run"].IsPressed();
+            return InputsVector.magnitude >= 0.8 && _inputs.Gameplay.Run.IsPressed();
         }
 
         /// <summary>
@@ -525,7 +545,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleDodge(InputAction.CallbackContext _)
         {
-            if (!DodgeCondition() || DisableInputs)
+            if (!DodgeCondition())
                 return;
 
             RPCAnimatorTrigger(RpcTarget.All, "Roll", true);
@@ -551,7 +571,7 @@ namespace _Scripts.Characters
             if (CurrentStamina < overallDatas.staminaToDodge)
                 return false;
 
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+            return !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 
@@ -591,7 +611,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void LookTowardsOrientation()
         {
-            if (PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll))
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Attack) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll))
                 return;
 
             SetPlayerMeshOrientation(orientation.forward);
@@ -615,7 +635,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleMainAttack(InputAction.CallbackContext _)
         {
-            if (!AttackConditions() || DisableInputs)
+            if (!AttackConditions())
                 return;
 
             PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
@@ -627,7 +647,7 @@ namespace _Scripts.Characters
         /// </summary>
         private void HandleSecondAttack(InputAction.CallbackContext _)
         {
-            if (!AttackConditions() || DisableInputs)
+            if (!AttackConditions())
                 return;
 
             PlayerSM.WaitAttack = StartCoroutine("AttackWaitRoutine");
@@ -639,13 +659,13 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual bool AttackConditions()
         {
-            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Walk))
+            if (!GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
             if (PlayerSM.WaitAttack != null)
                 return false;
 
-            return PlayerSM.CanAttack && !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+            return PlayerSM.CanAttack && !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll);
         }
 
         /// <summary>
@@ -689,13 +709,10 @@ namespace _Scripts.Characters
         /// <returns></returns>
         protected bool SkillConditions()
         {
-            if (DisableInputs)
+            if (_skillCoroutine != null || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Attack))
                 return false;
 
-            if (_skillCoroutine != null || !GroundSM.IsThisState(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Attack))
-                return false;
-
-            return !PlayerSM.IsThisState(PlayerStateMachine.PlayerStates.Roll);
+            return !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll);
         }
         #endregion
 
@@ -792,11 +809,6 @@ namespace _Scripts.Characters.StateMachines
         public bool UsingSkill { get; set; }
         #endregion
 
-        #region Events
-        public event PlayerDeathDelegate OnPlayerDeath;
-        public delegate void PlayerDeathDelegate();
-        #endregion
-
         #region Methods
         public PlayerStateMachine()
         {
@@ -810,18 +822,9 @@ namespace _Scripts.Characters.StateMachines
         /// Return if the target state is the same as the current
         /// </summary>
         /// <param name="targetState"> Target State </param>
-        public bool IsThisState(PlayerStates targetState)
+        public bool IsStateOf(PlayerStates targetState)
         {
             return CurrentState == targetState;
-        }
-
-        /// <summary>
-        /// Invoking the player death event
-        /// </summary>
-        public void InvokeDeathEvent()
-        {
-            CurrentState = PlayerStates.Dead;
-            OnPlayerDeath?.Invoke();
         }
         #endregion
     }

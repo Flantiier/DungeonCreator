@@ -21,14 +21,14 @@ namespace _Scripts.Characters
         {
             base.SubscribeToInputs();
 
-            _inputs.actions["Skill"].started += SkillAction;
+            _inputs.Gameplay.Skill.started += SkillAction;
         }
 
         protected override void UnsubscribeToInputs()
         {
             base.UnsubscribeToInputs();
 
-            _inputs.actions["Skill"].started -= SkillAction;
+            _inputs.Gameplay.Skill.started -= SkillAction;
         }
         #endregion
 

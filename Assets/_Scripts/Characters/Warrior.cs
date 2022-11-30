@@ -42,7 +42,7 @@ namespace _Scripts.Characters
         {
             base.UpdateAnimations();
 
-            PlayerSM.UsingSkill = SkillConditions() && _inputs.actions["Skill"].IsPressed();
+            PlayerSM.UsingSkill = SkillConditions() && _inputs.Gameplay.Skill.IsPressed();
             _animator.SetBool("SkillEnabled", PlayerSM.UsingSkill);
 
             PlayerSM.EnableLayers = PlayerSM.UsingSkill;

@@ -15,6 +15,7 @@ namespace _Scripts.Managers
         #endregion
 
         #region Properties
+        public GameObject PlayerInstance { get; set; }
         public GameSettings GameSettings => gameSettings;
         public GameStatements GameStatement { get; private set; } = new GameStatements();
         public bool ValidGame { get; private set; } = false;
@@ -27,6 +28,16 @@ namespace _Scripts.Managers
             base.Awake();
 
             RemainingGameTime = gameSettings.duration.GetMyTime();
+        }
+
+        public override void OnEnable()
+        {
+            TemporaryRooms.OnEntityCreated += ctx => PlayerInstance = ctx.gameObject;
+        }
+
+        public override void OnDisable()
+        {
+            TemporaryRooms.OnEntityCreated -= ctx => PlayerInstance = ctx.gameObject;
         }
 
         private void Update()
