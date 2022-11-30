@@ -1,24 +1,24 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using _ScriptablesObjects.GameManagement;
-using Assets._Scripts.Multi.Gameplay;
-using _Scripts.Utilities.Florian;
 
 namespace _Scripts.Managers
 {
     public class GameManager : MonoBehaviourSingleton<GameManager>
     {
         #region Variables
-        public bool canPlay;
-
         [Header("Game properties")]
         [SerializeField] private GameSettings gameSettings;
+
+        [Header("Temporary")]
+        [SerializeField] private int requiredPlayerNumber = 1;
         #endregion
 
         #region Properties
         public GameSettings GameSettings => gameSettings;
-        public Timer Timer { get; private set; }
+        public GameStatements GameStatement { get; private set; } = new GameStatements();
+        public bool ValidGame { get; private set; } = false;
+        public float RemainingGameTime { get; private set; } = 0f;
         #endregion
 
         #region Builts_In
@@ -26,44 +26,104 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
-            if (!PhotonNetwork.IsMasterClient)
+            RemainingGameTime = gameSettings.duration.GetMyTime();
+        }
+
+        private void Update()
+        {
+            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
-            Timer = new Timer(TimeFunctions.GetTimeInSeconds(gameSettings.duration, TimeFunctions.TimeUnit.Minuts));
+            UpdateGameValidity();
+
+            if (!ValidGame)
+                return;
+
+            UpdateGameTime();
         }
         #endregion
 
         #region Methods
-        public void HelloWorld()
+        private void UpdateGameValidity()
         {
-            Debug.Log("HelloWorld");
-        }
-
-        public void HandleGameTimer()
-        {
-            if (!PhotonNetwork.IsMasterClient)
+            if (GameStatement.IsStatementOf(GameStatements.Statements.Over))
                 return;
 
-            Timer.SetTimer(false);
+            if (PhotonNetwork.PlayerList.Length >= requiredPlayerNumber)
+            {
+                ValidGame = true;
+                RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.InGame);
+            }
+            else
+            {
+                ValidGame = false;
+                RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.Waiting);
+            }
         }
 
+        #region Game Duration
+        public void InitializeGameTime(float time)
+        {
+            StartGame();
+
+            RemainingGameTime = time;
+            RPCCall("SetGameTimeRPC", RpcTarget.Others, RemainingGameTime);
+        }
+
+        private void UpdateGameTime()
+        {
+            if (RemainingGameTime <= 0)
+            {
+                GameEnded();
+                return;
+            }
+
+            RemainingGameTime -= Time.deltaTime;
+            Mathf.Clamp(RemainingGameTime, 0f, Mathf.Infinity);
+            RPCCall("SetGameTimeRPC", RpcTarget.Others, RemainingGameTime);
+        }
+
+        [PunRPC]
+        public void SetGameTimeRPC(float updatedTime)
+        {
+            RemainingGameTime = updatedTime;
+        }
         #endregion
 
-        #region Callbacks
-        public override void OnJoinedRoom()
+        #region GameState
+        private void StartGame()
         {
-            canPlay = PhotonNetwork.PlayerList.Length > 1;
+            Debug.Log("The game begin !");
+            RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.InGame);
         }
 
-        public override void OnPlayerEnteredRoom(Player newPlayer)
+        private void GameEnded()
         {
-            canPlay = PhotonNetwork.PlayerList.Length > 1;
+            Debug.Log("The game is finished !");
+            RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.Over);
         }
 
-        public override void OnPlayerLeftRoom(Player otherPlayer)
+        [PunRPC]
+        public void SetGameStateRPC(GameStatements.Statements newState)
         {
-            canPlay = PhotonNetwork.PlayerList.Length > 1;
+            GameStatement.CurrentState = newState;
         }
+        #endregion
+
         #endregion
     }
 }
+
+#region GameStatements_Class
+[System.Serializable]
+public class GameStatements
+{
+    public enum Statements { Connecting, Waiting, InGame, Over }
+    public Statements CurrentState = Statements.Connecting;
+
+    public bool IsStatementOf(Statements targetState)
+    {
+        return CurrentState == targetState;
+    }
+}
+#endregion

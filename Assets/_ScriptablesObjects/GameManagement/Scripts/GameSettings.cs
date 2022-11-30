@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using _Scripts.Utilities.Florian;
 
 namespace _ScriptablesObjects.GameManagement
 {
@@ -6,8 +8,8 @@ namespace _ScriptablesObjects.GameManagement
     public class GameSettings : ScriptableObject
     {
         [Header("Game info")]
-        public float startTempo = 10f;
-        public float duration = 20f;
+        public TimeReference startTempo = new TimeReference(30f, TimeFunctions.TimeUnit.Seconds);
+        public TimeReference duration = new TimeReference(20f, TimeFunctions.TimeUnit.Minuts);
 
         [Header("Respawns Table")]
         public RespawnUnit[] respawnUnits;
@@ -15,11 +17,31 @@ namespace _ScriptablesObjects.GameManagement
 }
 
 #region RespawnInfo_Class
-[System.Serializable]
+[Serializable]
 public struct RespawnUnit
 {
     public float minBound;
     public float maxBound;
     public float respawnDelay;
+}
+#endregion
+
+#region TimeReference_Class
+[Serializable]
+public class TimeReference
+{
+    public float duration = 20f;
+    public TimeFunctions.TimeUnit timeUnit = TimeFunctions.TimeUnit.Seconds;
+
+    public TimeReference(float _duration, TimeFunctions.TimeUnit _unit)
+    {
+        duration = _duration;
+        timeUnit = _unit;
+    }
+
+    public float GetMyTime()
+    {
+        return TimeFunctions.GetDurationInSeconds(duration, timeUnit);
+    }
 }
 #endregion

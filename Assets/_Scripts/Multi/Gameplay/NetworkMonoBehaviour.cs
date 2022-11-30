@@ -25,10 +25,7 @@ namespace _Scripts.NetworkScript
         public void RPCCall(string methodName, RpcTarget target, params object[] parameters)
         {
             if (!PhotonNetwork.IsConnected)
-            {
-                Debug.LogWarning("RPC was not executed. Not connected to network");
                 return;
-            }
 
             view.RPC(methodName, target, parameters);
         }
@@ -39,15 +36,6 @@ namespace _Scripts.NetworkScript
         public bool ViewIsMine()
         {
             return View.IsMine;
-        }
-
-        /// <summary>
-        /// Indicates if the local player is the master client
-        /// </summary>
-        /// <returns></returns>
-        public bool IsMasterClient()
-        {
-            return PhotonNetwork.MasterClient.IsLocal;
         }
         #endregion
 

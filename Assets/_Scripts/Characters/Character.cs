@@ -100,7 +100,7 @@ namespace _Scripts.Characters
             InstantiateHUD();
         }
 
-        public virtual void OnEnable()
+        public override void OnEnable()
         {
             if (!ViewIsMine())
                 return;
@@ -111,7 +111,7 @@ namespace _Scripts.Characters
             PlayerSM.OnPlayerDeath += UnsubscribeToInputs;
         }
 
-        public virtual void OnDisable()
+        public override void OnDisable()
         {
             if (!ViewIsMine())
                 return;

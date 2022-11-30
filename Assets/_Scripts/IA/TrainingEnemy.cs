@@ -26,7 +26,7 @@ namespace _Scripts.IA
             yield return new WaitForSecondsRealtime(delay);
 
             RPCDebugging(RpcTarget.All, $"Resetting {gameObject.name}");
-            RPCCall("InitializeEnemy", RpcTarget.AllBuffered);
+            RPCCall("InitializeEnemy", RpcTarget.All);
             RPCAnimatorTrigger(RpcTarget.AllBuffered, "Reset", true);
         }
         #endregion

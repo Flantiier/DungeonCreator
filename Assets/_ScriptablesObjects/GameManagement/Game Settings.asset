@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d421e78075d3bca42b12cb2df9c26ed7, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  startTempo: 10
-  duration: 20
+  startTempo:
+    duration: 30
+    timeUnit: 0
+  duration:
+    duration: 20
+    timeUnit: 1
   respawnUnits:
   - minBound: 0
     maxBound: 10

@@ -13,7 +13,7 @@ namespace _Scripts.IA
         #endregion
 
         #region Builts_In
-        public virtual void OnEnable()
+        public override void OnEnable()
         {
             if (!ViewIsMine())
                 return;
