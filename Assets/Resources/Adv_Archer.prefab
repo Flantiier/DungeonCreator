@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 1963387783943598652}
+  animator: {fileID: 0}
   overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
   characterDatas: {fileID: 11400000, guid: 393ca4f807d5ede4fa3d72137e351063, type: 2}
   mesh: {fileID: 363609563075200846}
@@ -99,6 +100,7 @@ MonoBehaviour:
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.05
+  shield: {fileID: 0}
 --- !u!114 &6367050242111418875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +408,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 9178926944558135289, guid: 957271c58a77a8845a29e5efe127c1f5,
     type: 3}
   throwOffsetFromCamera: 4.25
+  projectileMainAttack: 0
+  sword: {fileID: 0}
 --- !u!114 &5498467722832261758
 MonoBehaviour:
   m_ObjectHideFlags: 0

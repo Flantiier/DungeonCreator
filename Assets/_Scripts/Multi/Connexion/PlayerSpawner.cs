@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
@@ -13,11 +11,20 @@ namespace _Scripts.Multi.Connexion
 
         void Start()
         {
-            int randomPoint = Random.Range(0, spawnPoints.Length);
-            Transform spawnPoint = spawnPoints[randomPoint];
+            SpawnPlayer((int)PhotonNetwork.LocalPlayer.CustomProperties["playerCharacter"], Random.Range(0, spawnPoints.Length));
+        }
 
-            GameObject playerToSpawn = playerPrefabs[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerCharacter"]];
-            PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint.position, Quaternion.identity);
+        /// <summary>
+        /// Spawn a character prefab based on the character index
+        /// </summary>
+        /// <param name="characterIndex"> Prefabs index to instantiate </param>
+        /// <param name="positionIndex"> Spawn point index </param>
+        private void SpawnPlayer(int characterIndex, int positionIndex)
+        {
+            Vector3 spawnPoint = !spawnPoints[positionIndex] ? Vector3.zero : spawnPoints[positionIndex].position;
+
+            GameObject playerToSpawn = playerPrefabs[characterIndex];
+            PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using static _Scripts.Multi.Connexion.ListPlayersRoom;
 
 namespace _Scripts.Multi.Connexion
 {
@@ -11,6 +12,10 @@ namespace _Scripts.Multi.Connexion
     public class RoomManager : MonoBehaviourPunCallbacks
     {
         #region Variables
+        [Header("Chargement des scenes")]
+        [SerializeField] private string sceneToLoad = "GameScene";
+
+        [Header("UI references")]
         [Tooltip("Le text permettant d'afficher le nom de la room actuelle")]
         [SerializeField] private TMP_Text currentRoomName;
 
@@ -20,8 +25,7 @@ namespace _Scripts.Multi.Connexion
         [Tooltip("Le text ou sera affiché les éventuelles erreurs")]
         [SerializeField] private TMP_Text errorText;
 
-        private bool isDM;
-        private bool isAdventurer;
+        public Roles selectedRole = Roles.Undefined;
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -37,31 +41,20 @@ namespace _Scripts.Multi.Connexion
 
         private void Update()
         {
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
-            {
-                playButton.SetActive(true);
-            }
+            UpdateSelectedRole();
+            EnableStartGame();
+        }
 
-/*            CheckDMBeforeGame();
-            CheckAdventurerBeforeGame();
+        /// <summary>
+        /// Enable od disable start game button
+        /// </summary>
+        public void EnableStartGame()
+        {
+            bool condition = PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length >= 2;
+            playButton.SetActive(condition);
 
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
-            {
-                Debug.Log("master + 2");
-                if (isAdventurer == true)
-                {
-                    if(isDM == true)
-                    {
-                        Debug.Log("true * 2");
-
-                        playButton.SetActive(true);
-                    }
-                }
-                else
-                {
-                    errorText.text = "Pour commencer la partie il faut au moins un Donjon Master et un Aventurier";
-                }
-            }*/
+            if (!condition)
+                errorText.text = "Il faut un Dm et minimum un Aventurier pour commencer.";
         }
 
         #endregion
@@ -73,51 +66,54 @@ namespace _Scripts.Multi.Connexion
             PhotonNetwork.JoinLobby();
         }
 
-        public void CheckDMBeforeGame()
+        /// <summary>
+        /// Update the selected role
+        /// </summary>
+        public void UpdateSelectedRole()
         {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            if (PhotonNetwork.LocalPlayer.CustomProperties["role"] == null)
             {
-                Player player = PhotonNetwork.PlayerList[i];
+                Debug.Log("Custom property not existing");
+                return;
+            }
 
-                if (player.CustomProperties["dm"] != null)
-                {
-                    Debug.Log(player.CustomProperties["dm"].ToString());
-                    if (player.CustomProperties["dm"].ToString() == "true")
-                    {
-                        Debug.Log("dm + true");
+            Debug.Log("My role is : " + (Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"]);
+            selectedRole = (Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
 
-                        isDM = true;
-                    }
-                }
+            switch (selectedRole)
+            {
+                case Roles.Undefined:
+                    SetSelectedRole(Roles.Undefined);
+                    break;
+
+                case Roles.Adventurer:
+                    SetSelectedRole(Roles.Adventurer);
+                    break;
+
+                case Roles.DM:
+                    SetSelectedRole(Roles.DM);
+                    break;
             }
         }
 
-        public void CheckAdventurerBeforeGame()
+        /// <summary>
+        /// Set the selected role to a new role
+        /// </summary>
+        /// <param name="newRole"> New role </param>
+        private void SetSelectedRole(Roles newRole)
         {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            {
-                Player player = PhotonNetwork.PlayerList[i];
-                if (player.CustomProperties["adv"] != null)
-                {
-                    Debug.Log("adv" + player.CustomProperties["adv"].ToString());
-                    if (player.CustomProperties["adv"].ToString() == "true")
-                    {
-                        Debug.Log("adv + true");
-
-                        isAdventurer = true;
-                    }
-                }
-            }
+            selectedRole = newRole;
         }
+
 
         public void OnClickPlayButton()
         {
-            PhotonNetwork.LoadLevel("Cassandra");
+            PhotonNetwork.LoadLevel(sceneToLoad);
         }
 
         public override void OnLeftRoom()
         {
-            if(playButton != null)
+            if (playButton != null)
             {
                 playButton.SetActive(false);
             }

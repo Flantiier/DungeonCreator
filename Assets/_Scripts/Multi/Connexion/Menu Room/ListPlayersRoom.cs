@@ -17,12 +17,15 @@ namespace _Scripts.Multi.Connexion
         [SerializeField] private GameObject playerStartButton;
 
         [SerializeField] private Sprite[] characters;
+        [SerializeField] private int dmIndex = 3;
 
         private Image playerCharacterImage;
 
         Hashtable playerCharacter = new Hashtable();
 
         public Player Player { get; private set; }
+
+        public enum Roles { Undefined, Adventurer, DM }
 
         public void Awake()
         {
@@ -52,34 +55,27 @@ namespace _Scripts.Multi.Connexion
         {
             int playerChoiceCharacter = (int)PhotonNetwork.LocalPlayer.CustomProperties["playerCharacter"];
 
-            if(playerChoiceCharacter == 0)
+            if(playerChoiceCharacter != dmIndex)
             {
-                playerCharacter["playerCharacter"] = 0;
-                UpdatePlayerCustomProperties("vrai", "faux");
+                UpdatePlayerCustomProperties(Roles.Adventurer);
+                return;
             }
-            if (playerChoiceCharacter == 3)
-            {
-                UpdatePlayerCustomProperties("faux", "vrai");
-            }
-            else
-            {
-                UpdatePlayerCustomProperties("vrai", "faux");
-            }
+
+            UpdatePlayerCustomProperties(Roles.DM);
         }
 
-        public void UpdatePlayerCustomProperties(string adv, string dm)
+        public void UpdatePlayerCustomProperties(Roles myRole)
         {
-            playerCharacter["adv"] = adv;
-            playerCharacter["dm"] = dm;
+            playerCharacter["role"] = myRole;
             PhotonNetwork.SetPlayerCustomProperties(playerCharacter);
         }
 
         public void OnClickLeftArrow()
         {
-            if((int)playerCharacter["playerCharacter"] == 0)
+            if ((int)playerCharacter["playerCharacter"] == 0)
             {
                 playerCharacter["playerCharacter"] = characters.Length - 1;
-            } 
+            }
             else
             {
                 playerCharacter["playerCharacter"] = (int)playerCharacter["playerCharacter"] - 1;
@@ -102,7 +98,7 @@ namespace _Scripts.Multi.Connexion
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if(Player == targetPlayer)
+            if (Player == targetPlayer)
             {
                 UpdatePlayerCharacter(targetPlayer);
             }

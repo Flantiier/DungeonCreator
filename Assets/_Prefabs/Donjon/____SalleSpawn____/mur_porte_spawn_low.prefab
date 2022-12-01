@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2174905154499503457}
   - component: {fileID: 2990683869349735108}
   - component: {fileID: 1037512828589973006}
-  m_Layer: 0
+  - component: {fileID: 3288331271178285737}
+  m_Layer: 6
   m_Name: mur_porte_spawn_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3288331271178285737
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541638565969772507}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8373290739745669482, guid: 21404097ae949d946ba9d0bb4e767118, type: 3}
