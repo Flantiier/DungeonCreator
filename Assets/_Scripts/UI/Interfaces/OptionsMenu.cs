@@ -1,43 +1,71 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using _Scripts.Managers;
-using Photon.Pun;
+using UnityEngine.InputSystem;
 
 namespace _Scripts.UI.Interfaces
 {
     public class OptionsMenu : MonoBehaviour
     {
         #region Variables
+        [Header("Panels references")]
+        [SerializeField] private GameObject[] panels;
         #endregion
 
         #region Builts_In
-        private void OnEnable()
+        private void Awake()
         {
-            GameUIManager.Instance.InvokeOptionsMenuEvent(true);
+            EnableAllPanels(false);
+            gameObject.SetActive(false);
         }
 
         private void OnDisable()
         {
-            GameUIManager.Instance.InvokeOptionsMenuEvent(false);
+            EnableAllPanels(false);
+            gameObject.SetActive(false);
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Method assigned to the resume button
+        /// Enable or disable all the panels in the panels array
         /// </summary>
-        public void ResumeMethod()
+        /// <param name="state"> new state </param>
+        private void EnableAllPanels(bool state)
         {
-            gameObject.SetActive(false);
+            if (panels.Length <= 0)
+                return;
+
+                foreach (GameObject panel in panels)
+            {
+                if (!panel)
+                    continue;
+
+                panel.SetActive(state);
+            }
         }
 
         /// <summary>
-        /// Method assigned to the leave button
+        /// Enable a panel by referencing a index
         /// </summary>
-        public void LeaveMethod(string SceneToLoad)
+        public void EnablePanelByIndex(int index)
         {
-            PhotonNetwork.LeaveRoom();
-            SceneManager.LoadScene(SceneToLoad);
+            EnableAllPanels(false);
+
+            if (panels.Length <= 0 || panels.Length < index)
+                return;
+
+            Debug.Log("coucou");
+            panels[index].SetActive(true);
+        }
+
+        /// <summary>
+        /// Disable a panel by referencing a index
+        /// </summary>
+        public void DisablePanelByIndex(int index)
+        {
+            if (panels.Length <= 0 || panels.Length >= index)
+                return;
+
+            panels[index].SetActive(false);
         }
         #endregion
     }
