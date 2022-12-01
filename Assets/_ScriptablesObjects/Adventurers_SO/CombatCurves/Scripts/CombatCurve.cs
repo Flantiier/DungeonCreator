@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Scriptables.Curves
+namespace _ScriptableObjects.Curves
 {
 	[CreateAssetMenu(fileName = "CombatCurves", menuName = "Scriptables/Curves")]
 	public class CombatCurve : ScriptableObject

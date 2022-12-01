@@ -1,11 +1,14 @@
 using UnityEngine;
 using _Scripts.Characters;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Hitboxs
 {
     public class CharacterHitbox : Hitbox
     {
         #region Variables
+        [SerializeField] private bool IsMainAttack = true;
+
         private Character _character;
         #endregion
 
@@ -27,7 +30,7 @@ namespace _Scripts.Hitboxs
                 return;
 
             Debug.Log("Collide");
-            player.Damage(_character.CharacterDatas.GetAttackDamages());
+            player.Damage(_character.CharacterDatas.GetAttackDamages(IsMainAttack));
         }
         #endregion
     }

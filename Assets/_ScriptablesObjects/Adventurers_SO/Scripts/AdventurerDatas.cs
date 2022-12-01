@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace _SciptablesObjects.Adventurer
+namespace _ScriptablesObjects.Adventurers
 {
-    [CreateAssetMenu(fileName = "New AdventurerDatas", menuName = "Scriptables/Adventurers/BasicAdventurer")]
+    [CreateAssetMenu(fileName = "New CharacterDatas", menuName = "Scriptables/Adventurers/Character Datas")]
     public class AdventurerDatas : ScriptableObject
     {
         #region Variables
@@ -10,23 +10,22 @@ namespace _SciptablesObjects.Adventurer
         public float health = 100f;
         public float stamina = 100f;
 
+        [Header("Skill & Abilities")]
+        public float skillCooldown = 10f;
+
         [Header("Combat stats")]
-        public int attack = 20;
-        [Range(0f, 1f)] public float critAttackRate = 0.25f;
-        public float critAttackBoost = 5f;
+        public RandomAttack mainAttack;
+        public RandomAttack secondaryAttack;
         public float defense = 5f;
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Return random attacks damages
-        /// </summary>
-        public int GetAttackDamages()
+        public float GetAttackDamages(bool main)
         {
-            float rate = Random.Range(0f, 1f);
-            int finalAttack = rate > critAttackRate ? attack : Mathf.RoundToInt(attack + Random.Range(0f, critAttackBoost));
+            if (!main)
+                return secondaryAttack.GetAttackDamages();
 
-            return finalAttack;
+            return mainAttack.GetAttackDamages();
         }
 
         /// <summary>
@@ -42,3 +41,24 @@ namespace _SciptablesObjects.Adventurer
         #endregion
     }
 }
+
+#region RandomAttack_Class
+[System.Serializable]
+public class RandomAttack
+{
+    [SerializeField] private int damages = 20;
+    [SerializeField, Range(0f, 1f)] private float critRate = 0.25f;
+    [SerializeField] private float critBoost = 5f;
+
+    /// <summary>
+    /// Return random attacks damages
+    /// </summary>
+    public int GetAttackDamages()
+    {
+        float rate = Random.Range(0f, 1f);
+        int finalAttack = rate > critRate ? damages : Mathf.RoundToInt(damages + Random.Range(0f, critBoost));
+
+        return finalAttack;
+    }
+}
+#endregion

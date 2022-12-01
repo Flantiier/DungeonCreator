@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace _SciptablesObjects.Adventurer
+namespace _ScriptablesObjects.Adventurers
 {
-    [CreateAssetMenu(fileName = "New OverallDatas", menuName = "Scriptables/Adventurers/CharacterOverall")]
+    [CreateAssetMenu(fileName = "New OverallDatas", menuName = "Scriptables/Adventurers/Character OverallDatas")]
     public class CharactersOverallDatas : ScriptableObject
     {
         [Header("Movements properties")]

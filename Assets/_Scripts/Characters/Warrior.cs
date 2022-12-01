@@ -2,17 +2,38 @@ using UnityEngine;
 
 namespace _Scripts.Characters
 {
-	public class Warrior : Character
-	{
+    public class Warrior : Character
+    {
+        #region Variables
+        [Header("Warrior references")]
+        [SerializeField] private Shield shield;
+        #endregion
+
+        #region Properties
+        public Shield Shield => shield;
+        #endregion
+
         #region Builts_In
-        public override void Update()
+        public override void OnEnable()
         {
             if (!ViewIsMine())
                 return;
 
-            base.Update();
+            base.OnEnable();
 
-            WarriorUpdate();
+            Shield.OnShieldDestroyed += InvokeSkillCooldown;
+            OnSkillRecovered += Shield.InitializeShield;
+        }
+
+        public override void OnDisable()
+        {
+            if (!ViewIsMine())
+                return;
+
+            base.OnEnable();
+
+            Shield.OnShieldDestroyed -= InvokeSkillCooldown;
+            OnSkillRecovered -= Shield.InitializeShield;
         }
         #endregion
 
@@ -21,7 +42,7 @@ namespace _Scripts.Characters
         {
             base.UpdateAnimations();
 
-            PlayerSM.UsingSkill = SkillConditions() && _inputs.actions["Skill"].IsPressed();
+            PlayerSM.UsingSkill = SkillConditions() && _inputs.Gameplay.Skill.IsPressed();
             _animator.SetBool("SkillEnabled", PlayerSM.UsingSkill);
 
             PlayerSM.EnableLayers = PlayerSM.UsingSkill;
@@ -30,10 +51,11 @@ namespace _Scripts.Characters
         #endregion
 
         #region Methods
-        private void WarriorUpdate()
+        protected override void InitializeCharacter()
         {
-            if (PlayerSM.EnableLayers)
-                RotateMeshToOrientation();
+            base.InitializeCharacter();
+
+            shield.InitializeShield();
         }
         #endregion
     }

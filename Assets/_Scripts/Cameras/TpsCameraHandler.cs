@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
-using _SciptablesObjects.Settings.Adventurer.Camera;
+using _ScriptablesObjects.Settings.Adventurer.Camera;
+using _Scripts.Managers;
 
 namespace _Scripts.Characters.Cameras
 {
@@ -26,6 +27,16 @@ namespace _Scripts.Characters.Cameras
             _tpsAimProperties = tpsCam.GetCinemachineComponent<CinemachinePOV>();
             _inputProvider = tpsCam.GetComponent<CinemachineInputProvider>();
         }
+
+        public override void OnEnable()
+        {
+            UIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
+        }
+
+        public override void OnDisable()
+        {
+            UIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
+        }
         #endregion
 
         #region Inherited Methods
@@ -46,6 +57,17 @@ namespace _Scripts.Characters.Cameras
 
         #region Methods
         /// <summary>
+        /// Enable or disable input provider
+        /// </summary>
+        private void EnableInputs(bool state)
+        {
+            if (!_inputProvider)
+                return;
+
+            _inputProvider.enabled = state;
+        }
+
+        /// <summary>
         /// Enable camera recentering on X and Y axis
         /// </summary>
         /// <param name="state"> enable state </param>
@@ -53,7 +75,7 @@ namespace _Scripts.Characters.Cameras
         {
             _tpsAimProperties.m_HorizontalRecentering.m_enabled = state;
             _tpsAimProperties.m_VerticalRecentering.m_enabled = state;
-            _inputProvider.enabled = !state;
+            EnableInputs(!state);
         }
         #endregion
     }

@@ -5,7 +5,7 @@ namespace _Scripts.Characters.Animations.StateMachines
     public class NetworkStateMachine : StateMachineBehaviour
     {
         #region Variables
-        protected Character MyCharacter { get; set; }
+        protected Character MyCharacter { get; private set; }
         #endregion
 
         #region Builts_In
@@ -14,6 +14,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
                 return;
 
+            GetCharacter(animator);
             StateMachineEnter(animator, stateMachinePathHash);
         }
 
@@ -33,6 +34,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             GetCharacter(animator);
             StateEnter(animator, stateInfo, layerIndex);
         }
+
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
@@ -56,6 +58,9 @@ namespace _Scripts.Characters.Animations.StateMachines
         /// </summary>
         protected void GetCharacter(Animator animator)
         {
+            if (MyCharacter)
+                return;
+
             MyCharacter = animator.GetComponent<CharacterAnimator>().Character;
         }
 

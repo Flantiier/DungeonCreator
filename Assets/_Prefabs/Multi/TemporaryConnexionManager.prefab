@@ -63,6 +63,15 @@ MonoBehaviour:
   masterUI: {fileID: 8253873825412672147, guid: 7c191c71eec00b64787be63e6cb973d2,
     type: 3}
   spawnPositionMaster: {fileID: 7292928365533601570}
-  adventurerPrefab: {fileID: 2029296496209362982, guid: 50d3b1570b282684882213a61bb35514,
-    type: 3}
-  spawnPositionAdventurer: {fileID: 7292928365533601570}
+  warriorSpawn:
+    prefab: {fileID: 2029296496209362982, guid: 50d3b1570b282684882213a61bb35514,
+      type: 3}
+    position: {fileID: 0}
+  wizardSpawn:
+    prefab: {fileID: 1643132849922697506, guid: 933a28e28dff0a54397c28b0145a91e2,
+      type: 3}
+    position: {fileID: 0}
+  bowmanSpawn:
+    prefab: {fileID: 5761381986307864492, guid: f64a873688c25e44999c31379a18e271,
+      type: 3}
+    position: {fileID: 0}

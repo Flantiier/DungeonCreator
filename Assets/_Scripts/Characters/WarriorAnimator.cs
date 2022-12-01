@@ -4,56 +4,38 @@ using _Scripts.Weapons.Projectiles;
 
 namespace _Scripts.Characters.Animations
 {
-	public class WarriorAnimator : CharacterAnimator
-	{
+    public class WarriorAnimator : CharacterAnimator
+    {
         #region Variables
         [Header("Warrior requirements")]
-        [SerializeField] protected Transform throwPoint;
-        [SerializeField] protected Projectile projectilePrefab;
-        [SerializeField] private float throwOffsetFromCamera = 5f;
+        [SerializeField] protected GameObject sword;
+        #endregion
 
-        private Projectile _lastProjectile;
+        #region Properties
+        public Warrior MyWarrior { get; private set; }
         #endregion
 
         #region Builts_In
-        private void OnDrawGizmos()
-        {
-            try
-            {
-                Gizmos.DrawSphere(Character.MainCamTransform.position + Character.MainCamTransform.forward * throwOffsetFromCamera, 0.1f);
-            }
-            catch { }
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Creating a projectile
-        /// </summary>
-        public void CreateProjectile()
+        public override void Awake()
         {
             if (!ViewIsMine())
                 return;
 
-            Transform instance = PhotonNetwork.Instantiate(projectilePrefab.name, throwPoint.position, Quaternion.identity).transform;
-            instance.SetParent(throwPoint);
-
-            _lastProjectile = instance.GetComponent<Projectile>();
+            base.Awake();
+            MyWarrior = GetComponentInParent<Warrior>();
         }
+        #endregion
 
+        #region Animation Methods
         /// <summary>
-        /// Lauching the projectile
+        /// Enabe or Disable the sword
         /// </summary>
-        public void LaunchProjectile()
+        public void EnableSword(bool state)
         {
-            if (!ViewIsMine() || !_lastProjectile)
+            if (!sword)
                 return;
 
-            _lastProjectile.transform.SetParent(null);
-            _lastProjectile.transform.position = Character.MainCamTransform.position + Character.MainCamTransform.forward * throwOffsetFromCamera;
-            _lastProjectile.ThrowProjectile(Character.MainCamTransform.forward);
-
-            _lastProjectile = null;
+            sword.SetActive(state);
         }
         #endregion
     }
