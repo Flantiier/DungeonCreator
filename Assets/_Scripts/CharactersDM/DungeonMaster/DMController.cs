@@ -17,10 +17,12 @@ namespace _Scripts.DungeonMaster
         #region Variables
         [Header("References")]
         [SerializeField] private SkyCameraSetup cameraPrefab;
+        [SerializeField] private GameObject dmHUD;
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform projectedTransform;
 
         [SerializeField] private float manaDM = 100;
+        [SerializeField] private float manaRegen = 1;
 
         private GameObject _manaBar;
         private float _currentMana;
@@ -81,8 +83,9 @@ namespace _Scripts.DungeonMaster
             _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
             _myCamera.SetCameraInfos(orientation);
             _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
-
             _currentMana = manaDM;
+
+            InstantiateUI();
         }
 
         private void Start()
@@ -114,10 +117,18 @@ namespace _Scripts.DungeonMaster
             HandleCameraMovements();
             ShootTileRay();
             UpdateCameraAngle();
+            RegenMana();
         }
         #endregion
 
         #region Methods
+        private void InstantiateUI()
+        {
+            if (!dmHUD)
+                return;
+
+            Instantiate(dmHUD);
+        }
 
         #region Inputs
         /// <summary>
@@ -378,7 +389,7 @@ namespace _Scripts.DungeonMaster
             if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                 return;
 
-            if(_currentMana >= selectedTrap.manaCost)
+            if (_currentMana >= selectedTrap.manaCost)
             {
                 PhotonNetwork.Instantiate(selectedTrap.trapPrefab.name, _selectedTrapInstance.position, projectedTransform.rotation);
                 ChangeTilesStates(Tile.TileState.Used);
@@ -389,6 +400,15 @@ namespace _Scripts.DungeonMaster
                 _selectedTrapRotation = 0f;
                 _reachedTiles.Clear();
             }
+        }
+
+        private void RegenMana()
+        {
+            if(_currentMana >= manaDM)
+                return;
+
+            _currentMana += Time.deltaTime * manaRegen;
+            _manaBar.GetComponent<Image>().fillAmount = _currentMana / manaDM;
         }
 
         /// <summary>

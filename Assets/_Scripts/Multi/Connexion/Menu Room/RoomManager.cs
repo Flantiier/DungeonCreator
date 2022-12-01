@@ -81,6 +81,7 @@ namespace _Scripts.Multi.Connexion
             {
                 if (advNumber >= 1 && dmNumber == 1)
                 {
+                    errorText.text = "";
                     playButton.SetActive(condition);
                 }
                 else
