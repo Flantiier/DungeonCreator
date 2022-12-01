@@ -26,6 +26,9 @@ namespace _Scripts.Multi.Connexion
         [SerializeField] private TMP_Text errorText;
 
         public Roles selectedRole = Roles.Undefined;
+
+        private int dmNumber;
+        private int advNumber;
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -42,7 +45,6 @@ namespace _Scripts.Multi.Connexion
         private void Update()
         {
             UpdateSelectedRole();
-            EnableStartGame();
         }
 
         /// <summary>
@@ -51,10 +53,42 @@ namespace _Scripts.Multi.Connexion
         public void EnableStartGame()
         {
             bool condition = PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length >= 2;
-            playButton.SetActive(condition);
+            dmNumber = 0;
+            advNumber = 0;
 
-            if (!condition)
-                errorText.text = "Il faut un Dm et minimum un Aventurier pour commencer.";
+            foreach(Player player in PhotonNetwork.PlayerList)
+            {
+                if (player.CustomProperties["role"] == null) return;
+
+                Roles playerRole = (Roles)player.CustomProperties["role"];
+
+                switch (playerRole)
+                {
+                    case Roles.Undefined:
+                        break;
+                    case Roles.Adventurer:
+                        advNumber++;
+                        break;
+                    case Roles.DM:
+                        dmNumber++;
+                        break;
+                }
+            }
+
+            Debug.Log(advNumber + " / " + dmNumber);
+
+            if (condition)
+            {
+                if (advNumber >= 1 && dmNumber == 1)
+                {
+                    playButton.SetActive(condition);
+                }
+                else
+                {
+                    errorText.text = "Il faut un unique Dm et minimum un Aventurier pour commencer.";
+                    playButton.SetActive(false);
+                }
+            }
         }
 
         #endregion
@@ -71,13 +105,8 @@ namespace _Scripts.Multi.Connexion
         /// </summary>
         public void UpdateSelectedRole()
         {
-            if (PhotonNetwork.LocalPlayer.CustomProperties["role"] == null)
-            {
-                Debug.Log("Custom property not existing");
-                return;
-            }
-
-            Debug.Log("My role is : " + (Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"]);
+            ReturnIfRoleNull();
+            
             selectedRole = (Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
 
             switch (selectedRole)
@@ -94,6 +123,8 @@ namespace _Scripts.Multi.Connexion
                     SetSelectedRole(Roles.DM);
                     break;
             }
+
+            EnableStartGame();
         }
 
         /// <summary>
@@ -105,6 +136,14 @@ namespace _Scripts.Multi.Connexion
             selectedRole = newRole;
         }
 
+        public void ReturnIfRoleNull()
+        {
+            if (PhotonNetwork.LocalPlayer.CustomProperties["role"] == null)
+            {
+                Debug.Log("Custom property not existing");
+                return;
+            }
+        }
 
         public void OnClickPlayButton()
         {

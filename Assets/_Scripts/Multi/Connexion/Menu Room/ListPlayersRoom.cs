@@ -26,11 +26,11 @@ namespace _Scripts.Multi.Connexion
         public Player Player { get; private set; }
 
         public enum Roles { Undefined, Adventurer, DM }
-
         public void Awake()
         {
             playerCharacterImage = GetComponent<Image>();
 
+            playerCharacter["role"] = Roles.Undefined;
             playerCharacter["playerCharacter"] = 0;
             PhotonNetwork.SetPlayerCustomProperties(playerCharacter);
         }
@@ -60,7 +60,6 @@ namespace _Scripts.Multi.Connexion
                 UpdatePlayerCustomProperties(Roles.Adventurer);
                 return;
             }
-
             UpdatePlayerCustomProperties(Roles.DM);
         }
 
@@ -114,6 +113,7 @@ namespace _Scripts.Multi.Connexion
             else
             {
                 playerCharacter["playerCharacter"] = 0;
+                playerCharacter["role"] = Roles.Undefined;
             }
         }
     }
