@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace _Scripts.Managers
 {
-	public class UIManager : MonoBehaviourSingleton<UIManager>
+	public class GameUIManager : MonoBehaviourSingleton<GameUIManager>
 	{
 		#region Variables
 		[Header("UI references")]

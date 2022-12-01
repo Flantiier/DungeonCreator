@@ -13,12 +13,12 @@ namespace _Scripts.UI.Interfaces
         #region Builts_In
         private void OnEnable()
         {
-            UIManager.Instance.InvokeOptionsMenuEvent(true);
+            GameUIManager.Instance.InvokeOptionsMenuEvent(true);
         }
 
         private void OnDisable()
         {
-            UIManager.Instance.InvokeOptionsMenuEvent(false);
+            GameUIManager.Instance.InvokeOptionsMenuEvent(false);
         }
         #endregion
 

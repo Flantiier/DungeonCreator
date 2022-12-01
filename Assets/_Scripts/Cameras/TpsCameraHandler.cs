@@ -30,12 +30,12 @@ namespace _Scripts.Characters.Cameras
 
         public override void OnEnable()
         {
-            UIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
         }
 
         public override void OnDisable()
         {
-            UIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
         #endregion
 

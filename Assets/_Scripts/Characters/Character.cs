@@ -10,9 +10,7 @@ using _ScriptablesObjects.Adventurers;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using _Scripts.Interfaces;
-using _Scripts.Utilities.Florian;
-using _SciptablesObjects.Adventurer;
-using _Scripts.NetworkScript;
+using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
@@ -111,7 +109,7 @@ namespace _Scripts.Characters
             SubscribeToInputs();
             InitializeCharacter();
 
-            UIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
         }
 
         public override void OnDisable()
@@ -121,7 +119,7 @@ namespace _Scripts.Characters
 
             UnsubscribeToInputs();
 
-            UIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
 
         public virtual void OnDestroy()
