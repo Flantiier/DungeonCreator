@@ -61,6 +61,9 @@ namespace _Scripts.Characters.Cameras
         /// </summary>
         private void EnableInputs(bool state)
         {
+            if (!_inputProvider)
+                return;
+
             _inputProvider.enabled = state;
         }
 
