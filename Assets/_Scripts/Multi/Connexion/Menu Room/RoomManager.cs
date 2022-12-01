@@ -36,6 +36,8 @@ namespace _Scripts.Multi.Connexion
         {
             PhotonNetwork.AutomaticallySyncScene = true;
 
+            PhotonNetwork.LocalPlayer.CustomProperties["role"] = Roles.Undefined;
+
             playButton.SetActive(false);
 
             errorText.text = "";
