@@ -50,7 +50,7 @@ namespace _Scripts.Characters
         private Coroutine _healthRecupCoroutine;
         private Coroutine _recenteringCoroutine;
 
-        private Coroutine _skillCoroutine;
+        protected Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
         #endregion

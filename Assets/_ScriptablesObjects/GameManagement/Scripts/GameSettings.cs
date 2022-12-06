@@ -39,7 +39,7 @@ public class TimeReference
         timeUnit = _unit;
     }
 
-    public float GetMyTime()
+    public float GetTimeValue()
     {
         return TimeFunctions.GetDurationInSeconds(duration, timeUnit);
     }

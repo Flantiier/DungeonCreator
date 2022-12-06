@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using _ScriptablesObjects.GameManagement;
+using _Scripts.Utilities.Florian;
+using UnityEditor.AnimatedValues;
 
 namespace _Scripts.Managers
 {
@@ -19,7 +21,7 @@ namespace _Scripts.Managers
         public GameSettings GameSettings => gameSettings;
         public GameStatements GameStatement { get; private set; } = new GameStatements();
         public bool ValidGame { get; private set; } = false;
-        public float RemainingGameTime { get; private set; } = 0f;
+        public GlobalGameTime GameTime { get; private set; }
         #endregion
 
         #region Builts_In
@@ -27,7 +29,8 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
-            RemainingGameTime = gameSettings.duration.GetMyTime();
+            GameTime = new GlobalGameTime();
+            GameTime.RemainingTime = gameSettings.duration.GetTimeValue();
         }
 
         public override void OnEnable()
@@ -77,27 +80,27 @@ namespace _Scripts.Managers
         {
             StartGame();
 
-            RemainingGameTime = time;
-            RPCCall("SetGameTimeRPC", RpcTarget.Others, RemainingGameTime);
+            GameTime.RemainingTime = time;
+            RPCCall("SetGameTimeRPC", RpcTarget.Others, GameTime.RemainingTime);
         }
 
         private void UpdateGameTime()
         {
-            if (RemainingGameTime <= 0)
+            if (GameTime.RemainingTime <= 0)
             {
                 GameEnded();
                 return;
             }
 
-            RemainingGameTime -= Time.deltaTime;
-            Mathf.Clamp(RemainingGameTime, 0f, Mathf.Infinity);
-            RPCCall("SetGameTimeRPC", RpcTarget.Others, RemainingGameTime);
+            GameTime.RemainingTime -= Time.deltaTime * 5f;
+            Mathf.Clamp(GameTime.RemainingTime, 0f, Mathf.Infinity);
+            RPCCall("SetGameTimeRPC", RpcTarget.Others, GameTime.RemainingTime);
         }
 
         [PunRPC]
         public void SetGameTimeRPC(float updatedTime)
         {
-            RemainingGameTime = updatedTime;
+            GameTime.RemainingTime = updatedTime;
         }
         #endregion
 
@@ -135,6 +138,48 @@ public class GameStatements
     public bool IsStatementOf(Statements targetState)
     {
         return CurrentState == targetState;
+    }
+}
+#endregion
+
+#region GlobalGameTime_Class
+[System.Serializable]
+public class GlobalGameTime
+{
+    private float _remainingTime;
+    public float RemainingTime
+    {
+        get => _remainingTime;
+        set
+        {
+            _remainingTime = value;
+
+            if (_remainingTime <= 0)
+                return;
+
+            SetMinuts(_remainingTime);
+            SetSeconds(_remainingTime);
+        }
+    }
+    public float RemainingMinuts { get; private set; }
+    public float ClampedSeconds { get; private set; }
+
+    /// <summary>
+    /// Update the current number of minuts in the remaining time
+    /// </summary>
+    /// <param name="time"> Remaining time </param>
+    public void SetMinuts(float time)
+    {
+        RemainingMinuts = (int)TimeFunctions.GetConvertedTime(time, TimeFunctions.TimeUnit.Minuts);
+    }
+
+    /// <summary>
+    /// Update the current seconds by minuts
+    /// </summary>
+    /// <param name="time"> Remaining time </param>
+    public void SetSeconds(float time)
+    {
+        ClampedSeconds = time % 60f;
     }
 }
 #endregion

@@ -7,7 +7,7 @@ namespace _Scripts.Characters
 	{
         #region Variables
         [Header("Defuse properties")]
-        [SerializeField] private float distance;
+        [SerializeField] private float defuseDistance = 3f;
         #endregion
 
         #region Properties
@@ -55,6 +55,14 @@ namespace _Scripts.Characters
                 return;
 
             RPCAnimatorTrigger(Photon.Pun.RpcTarget.All, "SkillEnabled", true);
+        }
+        
+        private void RaycastTraps()
+        {
+            if (_skillCoroutine != null)
+                return;
+
+            
         }
         #endregion
     }
