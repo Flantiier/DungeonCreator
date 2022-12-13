@@ -14,12 +14,12 @@ namespace _Scripts.Characters
 		/// <summary>
 		/// Handle entity health
 		/// </summary>
-        protected virtual void HandleEntityHealth(float damages) {}
+        protected virtual void HandleEntityHealth(float damages) { }
 
 		/// <summary>
 		/// Method executed when the health goes down to 0
 		/// </summary>
-		protected virtual void HandleEntityDeath() {}
+		protected virtual void HandleEntityDeath() { }
 
 		/// <summary>
 		/// Clamping current health between a minimum and a maximum

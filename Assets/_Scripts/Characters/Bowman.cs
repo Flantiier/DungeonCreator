@@ -1,32 +1,39 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Characters
 {
-	public class Bowman : Character
-	{
+    public class Bowman : Character
+    {
         #region Variables
         [Header("Defuse properties")]
         [SerializeField] private float defuseDistance = 3f;
+        [SerializeField] private LayerMask defuseLayers;
+
+        private IDefusable _currentTrap;
         #endregion
 
         #region Properties
         public bool IsDefusing { get; set; }
+        public float TargetDefuseTime { get; set; }
+        public float CurrentDefuseTime { get; set; }
         #endregion
 
         #region Inherited Methods
 
-        #region Inputs
-        protected override void SubscribeToInputs()
+        #region Inputs Methods
+        protected override void SubscribeInputActions()
         {
-            base.SubscribeToInputs();
+            base.SubscribeInputActions();
 
             _inputs.Gameplay.Skill.started += SkillAction;
         }
 
-        protected override void UnsubscribeToInputs()
+        protected override void UnsubscribeInputActions()
         {
-            base.UnsubscribeToInputs();
+            base.UnsubscribeInputActions();
 
             _inputs.Gameplay.Skill.started -= SkillAction;
         }
@@ -36,15 +43,24 @@ namespace _Scripts.Characters
         {
             base.UpdateAnimations();
 
+            Animator.SetBool("Defusing", IsDefusing);
             UpdateAnimationLayers();
         }
 
-        protected override void HandlePlayerStateMachine()
+        protected override void HandleCharacterStateMachine()
         {
             if (IsDefusing)
                 return;
 
-            base.HandlePlayerStateMachine();
+            base.HandleCharacterStateMachine();
+        }
+
+        protected override bool SkillConditions()
+        {
+            if (IsDefusing)
+                return false;
+
+            return base.SkillConditions();
         }
         #endregion
 
@@ -54,15 +70,27 @@ namespace _Scripts.Characters
             if (!SkillConditions())
                 return;
 
-            RPCAnimatorTrigger(Photon.Pun.RpcTarget.All, "SkillEnabled", true);
-        }
-        
-        private void RaycastTraps()
-        {
-            if (_skillCoroutine != null)
+            if (!Physics.Raycast(MainCamTransform.position, MainCamTransform.forward, out RaycastHit hit, _tpsCamera.CameraDistance + defuseDistance, defuseLayers))
                 return;
 
-            
+            if (!hit.collider.TryGetComponent(out IDefusable trap) || trap.IsDisabled)
+                return;
+
+            _currentTrap = trap;
+            TargetDefuseTime = trap.DefuseDuration;
+            RPCAnimatorTrigger(Photon.Pun.RpcTarget.All, "SkillEnabled", true);
+        }
+
+        /// <summary>
+        /// Defuse the last trap
+        /// </summary>
+        public void DefuseTrap()
+        {
+            if (_currentTrap == null)
+                return;
+
+            _currentTrap.HasBeenDefused();
+            SkillUsed();
         }
         #endregion
     }

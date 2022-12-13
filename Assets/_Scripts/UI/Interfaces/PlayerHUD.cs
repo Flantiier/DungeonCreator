@@ -12,7 +12,7 @@ namespace _Scripts.UI.Interfaces
         /// Set sliders character reference
         /// </summary>
         /// <param name="character"> Referenced character </param>
-        public void SetHUD(Character character)
+        public void SetHUD(Characters.Character character)
         {
             healthSlider.SetPlayer(character);
             staminaSlider.SetPlayer(character);

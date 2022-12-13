@@ -9,7 +9,7 @@ namespace _Scripts.Hitboxs
         #region Variables
         [SerializeField] private bool IsMainAttack = true;
 
-        private Character _character;
+        private Characters.Character _character;
         #endregion
 
         #region Builts_In

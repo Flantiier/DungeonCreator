@@ -10,7 +10,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             {
                 MyCharacter.GroundSM.IsLanding = true;
                 animator.SetBool("Landing", true);
-                MyCharacter.ResetVelocity();
+                MyCharacter.ResetCharacterVelocity();
             }
         }
 

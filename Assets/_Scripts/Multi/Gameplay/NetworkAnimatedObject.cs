@@ -34,7 +34,7 @@ namespace _Scripts.NetworkScript
         {
             if (!Animator)
             {
-                Debug.LogWarning("Animator Rpc called but animator pproperty is missing.");
+                Debug.LogWarning("Animator Rpc called but animator property is missing.");
                 return;
             }
 

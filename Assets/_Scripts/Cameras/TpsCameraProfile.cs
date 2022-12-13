@@ -5,7 +5,7 @@ using _Scripts.Managers;
 
 namespace _Scripts.Characters.Cameras
 {
-    public class TpsCameraHandler : CameraSetup
+    public class TpsCameraProfile : CameraSetup
     {
         #region Variables
         [SerializeField] protected TpsCameraSettings cameraSettings;
@@ -16,6 +16,7 @@ namespace _Scripts.Characters.Cameras
         protected CinemachineInputProvider _inputProvider;
 
         public TpsCameraSettings CameraSettings => cameraSettings;
+        public float CameraDistance => _tpsBodyProperties.m_CameraDistance;
         #endregion
 
         #region Builts_In

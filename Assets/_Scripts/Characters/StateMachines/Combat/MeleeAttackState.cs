@@ -29,7 +29,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             base.StateUpdate(animator, stateInfo, layerIndex);
 
             float speed = GetCombatMomentum(stateInfo.normalizedTime);
-            MyCharacter.UpdateSpeed(speed);
+            MyCharacter.UpdateCharacterSpeed(speed);
             MyCharacter.MoveInMeshForward();
         }
         #endregion

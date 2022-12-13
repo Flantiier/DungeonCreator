@@ -9,7 +9,7 @@ namespace _Scripts.UI
         #region Variables
         protected Slider _slider;
 
-        public Character Character { get; protected set; }
+        public Characters.Character Character { get; protected set; }
         #endregion
 
         #region Builts_In
@@ -31,7 +31,7 @@ namespace _Scripts.UI
         /// <summary>
         /// Get the player to display
         /// </summary>
-        public void SetPlayer(Character character)
+        public void SetPlayer(Characters.Character character)
         {
             Character = character;
 

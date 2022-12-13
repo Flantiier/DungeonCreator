@@ -8,16 +8,16 @@ namespace _Scripts.Characters
         #region Inherited Methods
 
         #region Inputs
-        protected override void SubscribeToInputs()
+        protected override void SubscribeInputActions()
         {
-            base.SubscribeToInputs();
+            base.SubscribeInputActions();
 
             _inputs.Gameplay.Skill.started += SkillAction;
         }
 
-        protected override void UnsubscribeToInputs()
+        protected override void UnsubscribeInputActions()
         {
-            base.UnsubscribeToInputs();
+            base.UnsubscribeInputActions();
 
             _inputs.Gameplay.Skill.started -= SkillAction;
         }

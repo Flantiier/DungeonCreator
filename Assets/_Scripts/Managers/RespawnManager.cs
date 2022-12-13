@@ -1,12 +1,6 @@
-using _Scripts.Characters;
-using NUnit.Framework.Internal.Execution;
-using Photon.Pun;
-using System;
+
 using System.Collections;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.Rendering.Universal;
 
 namespace _Scripts.Managers
 {
@@ -19,12 +13,12 @@ namespace _Scripts.Managers
         #region Builts_In
         public override void OnEnable()
         {
-            Character.OnPlayerDeath += StartRespawnDelay;
+            Characters.Character.OnCharacterDeath += StartRespawnDelay;
         }
 
         public override void OnDisable()
         {
-            Character.OnPlayerDeath -= StartRespawnDelay;
+            Characters.Character.OnCharacterDeath -= StartRespawnDelay;
         }
         #endregion
 
