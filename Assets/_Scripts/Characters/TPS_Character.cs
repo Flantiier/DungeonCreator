@@ -208,18 +208,17 @@ namespace _Scripts.Characters
         /// <summary>
         /// Move the character based on the mesh orientation
         /// </summary>
-        public void MoveInMeshForward()
+        public void MoveForwards()
         {
-            _movement = GetMeshForward(CurrentSpeed);
+            _movement = new Vector3(mesh.forward.x, -appliedGravity, mesh.forward.z) * CurrentSpeed;
         }
 
         /// <summary>
-        /// Mesh forward direction multiplied by a motion speed
+        /// Move the character based on the mesh orientation
         /// </summary>
-        /// <param name="speed"> Character motion speed </param>
-        protected Vector3 GetMeshForward(float speed)
+        public void MoveBackwards()
         {
-            return new Vector3(mesh.forward.x, -appliedGravity, mesh.forward.z) * speed;
+            _movement = new Vector3(-mesh.forward.x, -appliedGravity, -mesh.forward.z) * CurrentSpeed;
         }
 
         /// <summary>
@@ -238,17 +237,6 @@ namespace _Scripts.Characters
             _currentInputs = Vector2.zero;
             _movement = new Vector3(0f, _movement.y, 0f);
         }
-
-        /// <summary>
-        /// Run is enable when all the conditions are fullfilled
-        /// </summary>
-        protected virtual bool RunConditions()
-        {
-            if (!GroundSM.IsStateOf(GroundStatements.Grounded))
-                return false;
-
-            return Inputs.magnitude >= 0.8f;
-        }
         #endregion
 
         #region Rotations Methods
@@ -264,7 +252,7 @@ namespace _Scripts.Characters
         /// Setting the mesh rotation based on an orientation
         /// </summary>
         /// <param name="orientation"> New orientation </param>
-        public void SetPlayerMeshOrientation(Vector3 orientation)
+        public void SetMeshOrientation(Vector3 orientation)
         {
             mesh.rotation = Quaternion.LookRotation(orientation, Vector3.up);
         }
@@ -290,7 +278,7 @@ namespace _Scripts.Characters
         /// </summary>
         public virtual void LookTowardsOrientation()
         {
-            SetPlayerMeshOrientation(orientation.forward);
+            SetMeshOrientation(orientation.forward);
         }
         #endregion
 

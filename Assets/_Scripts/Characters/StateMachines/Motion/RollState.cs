@@ -23,7 +23,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         {
             float dodgeSpeed = _dodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
             MyCharacter.UpdateCharacterSpeed(dodgeSpeed);
-            MyCharacter.MoveInMeshForward();
+            MyCharacter.MoveForwards();
         }
         #endregion
 

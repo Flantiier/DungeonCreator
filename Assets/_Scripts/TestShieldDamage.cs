@@ -17,7 +17,7 @@ public class TestShieldDamage : MonoBehaviour
         if (!other.TryGetComponent(out IPlayerDamageable damageable))
             return;
 
-        damageable.TakeDamages(damages);
+        damageable.SoftDamages(damages);
         StartCoroutine("Timing");
     }
 

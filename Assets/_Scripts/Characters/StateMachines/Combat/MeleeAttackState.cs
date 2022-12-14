@@ -21,7 +21,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             base.StateEnter(animator, stateInfo, layerIndex);
 
             SetAttackCurve();
-            MyCharacter.SetPlayerMeshOrientation(MyCharacter.Orientation.forward);
+            MyCharacter.SetMeshOrientation(MyCharacter.Orientation.forward);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -30,7 +30,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
             float speed = GetCombatMomentum(stateInfo.normalizedTime);
             MyCharacter.UpdateCharacterSpeed(speed);
-            MyCharacter.MoveInMeshForward();
+            MyCharacter.MoveForwards();
         }
         #endregion
 

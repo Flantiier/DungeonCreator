@@ -6,13 +6,14 @@ using InputsMaps;
 using UnityEngine.InputSystem;
 using _Scripts.Utilities.Florian;
 using _Scripts.Managers;
+using _Scripts.Interfaces;
 using _ScriptablesObjects.Adventurers;
 using _Scripts.Characters.StateMachines;
-using _Scripts.Interfaces;
+using _Scripts.GameplayFeatures.Afflictions;
 
 namespace _Scripts.Characters
 {
-    public class Character : TPS_Character, ITrapDamageable, IPlayerDamageable
+    public class Character : TPS_Character, ITrapDamageable, IPlayerDamageable, IPlayerAfflicted
     {
         #region Variables
 
@@ -27,7 +28,8 @@ namespace _Scripts.Characters
         #region Character
         public static event Action OnCharacterDeath;
 
-        private Coroutine _healthRecupCoroutine;
+        private Coroutine _healthRecupRoutinee;
+        private Coroutine _afflictionRoutine;
         private Coroutine _recenteringCoroutine;
 
         protected Coroutine _skillCoroutine;
@@ -41,6 +43,7 @@ namespace _Scripts.Characters
         public CharactersOverallDatas OverallDatas => overallDatas;
         public AdventurerDatas CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
+        public AfflictionStatus CurrentAffliction { get; set; }
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
         #endregion
@@ -100,6 +103,7 @@ namespace _Scripts.Characters
 
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
+            CurrentAffliction = null;
         }
 
         #region Inputs
@@ -149,21 +153,35 @@ namespace _Scripts.Characters
         #endregion
 
         #region Interfaces Implementations
-        public void TakeDamages(float damages)
+        public void SoftDamages(float damages)
         {
             HandleEntityHealth(damages);
+        }
+
+        public void HardDamages(float damages, Vector3 hitPoint)
+        {
+            HandleEntityHealth(damages);
+            HardHit(hitPoint);
         }
 
         public void TrapDamages(float damages)
         {
             HandleEntityHealth(damages);
         }
+
+        public void TouchedByAffliction(AfflictionStatus status)
+        {
+            if (CurrentAffliction != null)
+                return;
+
+            StartAfflictionEffect(status);
+        }
         #endregion
 
-        #region Health
+        #region Health Methods
         protected override void HandleEntityHealth(float damages)
         {
-            if (!ViewIsMine() || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
+            if (!ViewIsMine() || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
@@ -171,10 +189,10 @@ namespace _Scripts.Characters
 
             if (CurrentHealth > 0)
             {
-                if (_healthRecupCoroutine != null)
-                    StopCoroutine(_healthRecupCoroutine);
+                if (_healthRecupRoutinee != null)
+                    StopCoroutine(_healthRecupRoutinee);
 
-                _healthRecupCoroutine = StartCoroutine(HealthRecuperation());
+                _healthRecupRoutinee = StartCoroutine(HealthRecuperation());
                 return;
             }
 
@@ -186,11 +204,17 @@ namespace _Scripts.Characters
             base.HandleEntityDeath();
             InvokeDeathEvent();
 
-            if (_healthRecupCoroutine != null)
-                StopCoroutine(_healthRecupCoroutine);
+            if (_healthRecupRoutinee != null)
+                StopCoroutine(_healthRecupRoutinee);
 
             if (_skillCoroutine != null)
                 StopCoroutine(_skillCoroutine);
+
+            if (_afflictionRoutine != null)
+                StopCoroutine(_afflictionRoutine);
+
+            if (CurrentAffliction != null)
+                CurrentAffliction = null;
         }
 
         /// <summary>
@@ -207,7 +231,7 @@ namespace _Scripts.Characters
             }
 
             CurrentHealth = ClampedHealth(0f, 0f, characterDatas.health);
-            _healthRecupCoroutine = null;
+            _healthRecupRoutinee = null;
         }
 
         /// <summary>
@@ -220,7 +244,7 @@ namespace _Scripts.Characters
         }
         #endregion
 
-        #region Stamina
+        #region Stamina Methods
         /// <summary>
         /// Handle stamina recuperation
         /// </summary>
@@ -248,7 +272,40 @@ namespace _Scripts.Characters
         }
         #endregion
 
-        #region Camera
+        #region Affliction Methods
+        /// <summary>
+        /// Apply a new affliction on the player if there isn't one
+        /// </summary>
+        /// <param name="status"></param>
+        private void StartAfflictionEffect(AfflictionStatus status)
+        {
+            CurrentAffliction = status;
+            Debug.LogWarning(status);
+            _afflictionRoutine = StartCoroutine("AfflictionRoutine");
+        }
+
+        /// <summary>
+        /// Affliction effect duration
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator AfflictionRoutine()
+        {
+            float time = 0f;
+            float duration = CurrentAffliction.Duration;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                CurrentAffliction.UpdateEffect(this);
+                yield return null;
+            }
+
+            CurrentAffliction = null;
+            _afflictionRoutine = null;
+        }
+        #endregion
+
+        #region Camera Methods
         /// <summary>
         /// Recentering camera behind the look at
         /// </summary>
@@ -347,6 +404,21 @@ namespace _Scripts.Characters
         {
             Animator.SetLayerWeight(1, value);
         }
+
+        /// <summary>
+        /// By taking a strong hit, the hit creates a knockback
+        /// </summary>
+        private void HardHit(Vector3 hitPoint)
+        {
+            if (!GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+                return;
+
+            Vector3 dir = (hitPoint - transform.position).normalized;
+            dir.y = 0f;
+
+            SetMeshOrientation(dir);
+            RPCAnimatorTrigger(RpcTarget.All, "Knockback", true);
+        }
         #endregion
 
         #region Motion Methods
@@ -418,7 +490,7 @@ namespace _Scripts.Characters
         public void SetOrientationToDodge()
         {
             Vector3 newOrientation = Inputs.magnitude <= 0 ? mesh.forward : orientation.forward * Inputs.y + orientation.right * Inputs.x;
-            SetPlayerMeshOrientation(newOrientation);
+            SetMeshOrientation(newOrientation);
         }
 
         /// <summary>
@@ -545,7 +617,7 @@ namespace _Scripts.Characters.StateMachines
     public class PlayerStateMachine
     {
         #region Properties
-        public enum PlayerStates { Walk, Roll, Attack, Dead }
+        public enum PlayerStates { Walk, Roll, Attack, Knocked, OffBalanced, Dead }
         public PlayerStates CurrentState { get; set; }
         public bool UsingStamina { get; set; }
         public bool CanDodge { get; set; }

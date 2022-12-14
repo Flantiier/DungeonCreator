@@ -92,7 +92,7 @@ namespace _Scripts.Managers
                 return;
             }
 
-            GameTime.RemainingTime -= Time.deltaTime * 5f;
+            GameTime.RemainingTime -= Time.deltaTime;
             Mathf.Clamp(GameTime.RemainingTime, 0f, Mathf.Infinity);
             RPCCall("SetGameTimeRPC", RpcTarget.Others, GameTime.RemainingTime);
         }
