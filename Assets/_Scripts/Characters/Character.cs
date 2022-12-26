@@ -7,9 +7,9 @@ using UnityEngine.InputSystem;
 using _Scripts.Utilities.Florian;
 using _Scripts.Managers;
 using _Scripts.Interfaces;
-using _ScriptablesObjects.Adventurers;
 using _Scripts.Characters.StateMachines;
-using _Scripts.GameplayFeatures.Afflictions;
+using _ScriptableObjects.Adventurers;
+using _ScriptableObjects.Afflictions;
 
 namespace _Scripts.Characters
 {
@@ -30,7 +30,6 @@ namespace _Scripts.Characters
 
         private Coroutine _healthRecupRoutinee;
         private Coroutine _afflictionRoutine;
-        private Coroutine _recenteringCoroutine;
 
         protected Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
@@ -44,6 +43,7 @@ namespace _Scripts.Characters
         public AdventurerDatas CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
         public AfflictionStatus CurrentAffliction { get; set; }
+        public Transform LookAt { get; private set; }
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
         #endregion
@@ -92,6 +92,18 @@ namespace _Scripts.Characters
 
         #region Methods
         /// <summary>
+        /// Teleport the player to a point
+        /// </summary>
+        public void GetTeleported(Vector3 position)
+        {
+            InputsEnabled(false);
+            ResetCharacterVelocity();
+
+            transform.position = position;
+            InitializeCharacter();
+        }
+
+        /// <summary>
         /// Reset the player
         /// </summary>
         protected virtual void InitializeCharacter()
@@ -104,6 +116,8 @@ namespace _Scripts.Characters
             CurrentHealth = characterDatas.health;
             CurrentStamina = characterDatas.stamina;
             CurrentAffliction = null;
+
+            RPCCall("ResetAnimatorRPC", RpcTarget.All);
         }
 
         #region Inputs
@@ -128,8 +142,6 @@ namespace _Scripts.Characters
             _inputs.Gameplay.SecondAttack.started += HandleSecondAttack;
             _inputs.Gameplay.MainAttack.performed += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
             _inputs.Gameplay.MainAttack.canceled += ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.Gameplay.Recenter.started += RecenterTpsCamera;
         }
 
         /// <summary>
@@ -147,8 +159,6 @@ namespace _Scripts.Characters
             _inputs.Gameplay.SecondAttack.started -= HandleSecondAttack;
             _inputs.Gameplay.MainAttack.performed -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
             _inputs.Gameplay.MainAttack.canceled -= ctx => PlayerSM.HoldAttack = ctx.ReadValueAsButton();
-
-            _inputs.Gameplay.Recenter.started -= RecenterTpsCamera;
         }
         #endregion
 
@@ -302,34 +312,6 @@ namespace _Scripts.Characters
 
             CurrentAffliction = null;
             _afflictionRoutine = null;
-        }
-        #endregion
-
-        #region Camera Methods
-        /// <summary>
-        /// Recentering camera behind the look at
-        /// </summary>
-        private void RecenterTpsCamera(InputAction.CallbackContext _)
-        {
-            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || _recenteringCoroutine != null)
-                return;
-
-            _recenteringCoroutine = StartCoroutine("RecenterCoroutine");
-        }
-
-        /// <summary>
-        /// Recentering coroutine
-        /// </summary>
-        private IEnumerator RecenterCoroutine()
-        {
-            lookAt.localRotation = Quaternion.Euler(0f, mesh.eulerAngles.y, 0f);
-            _tpsCamera.EnableRecentering(true);
-
-            while (!PersonnalUtilities.MathFunctions.ApproximationRange(MainCamTransform.localEulerAngles.y, lookAt.localEulerAngles.y, 1f))
-                yield return new WaitForSecondsRealtime(0.05f);
-
-            _tpsCamera.EnableRecentering(false);
-            _recenteringCoroutine = null;
         }
         #endregion
 

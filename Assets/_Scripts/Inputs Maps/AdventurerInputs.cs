@@ -31,7 +31,7 @@ namespace InputsMaps
             ""actions"": [
                 {
                     ""name"": ""Look"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""d4d36912-9446-4df3-a300-108a92479d3f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -87,15 +87,6 @@ namespace InputsMaps
                     ""name"": ""Skill"",
                     ""type"": ""Button"",
                     ""id"": ""11d8fabf-0a22-400e-83fc-8876713d6ad9"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Recenter"",
-                    ""type"": ""Button"",
-                    ""id"": ""3500fd9e-873d-40cd-b5c0-e9668c8c37ed"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -259,17 +250,6 @@ namespace InputsMaps
                 },
                 {
                     ""name"": """",
-                    ""id"": ""74581b28-d029-4c1a-a723-3812622e7973"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MK"",
-                    ""action"": ""Recenter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""d40fa854-d052-4438-af2f-30d4c3530425"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
@@ -332,7 +312,6 @@ namespace InputsMaps
             m_Gameplay_MainAttack = m_Gameplay.FindAction("MainAttack", throwIfNotFound: true);
             m_Gameplay_SecondAttack = m_Gameplay.FindAction("SecondAttack", throwIfNotFound: true);
             m_Gameplay_Skill = m_Gameplay.FindAction("Skill", throwIfNotFound: true);
-            m_Gameplay_Recenter = m_Gameplay.FindAction("Recenter", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -399,7 +378,6 @@ namespace InputsMaps
         private readonly InputAction m_Gameplay_MainAttack;
         private readonly InputAction m_Gameplay_SecondAttack;
         private readonly InputAction m_Gameplay_Skill;
-        private readonly InputAction m_Gameplay_Recenter;
         public struct GameplayActions
         {
             private @AdventurerInputs m_Wrapper;
@@ -411,7 +389,6 @@ namespace InputsMaps
             public InputAction @MainAttack => m_Wrapper.m_Gameplay_MainAttack;
             public InputAction @SecondAttack => m_Wrapper.m_Gameplay_SecondAttack;
             public InputAction @Skill => m_Wrapper.m_Gameplay_Skill;
-            public InputAction @Recenter => m_Wrapper.m_Gameplay_Recenter;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -442,9 +419,6 @@ namespace InputsMaps
                     @Skill.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
                     @Skill.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
                     @Skill.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
-                    @Recenter.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRecenter;
-                    @Recenter.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRecenter;
-                    @Recenter.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRecenter;
                 }
                 m_Wrapper.m_GameplayActionsCallbackInterface = instance;
                 if (instance != null)
@@ -470,9 +444,6 @@ namespace InputsMaps
                     @Skill.started += instance.OnSkill;
                     @Skill.performed += instance.OnSkill;
                     @Skill.canceled += instance.OnSkill;
-                    @Recenter.started += instance.OnRecenter;
-                    @Recenter.performed += instance.OnRecenter;
-                    @Recenter.canceled += instance.OnRecenter;
                 }
             }
         }
@@ -504,7 +475,6 @@ namespace InputsMaps
             void OnMainAttack(InputAction.CallbackContext context);
             void OnSecondAttack(InputAction.CallbackContext context);
             void OnSkill(InputAction.CallbackContext context);
-            void OnRecenter(InputAction.CallbackContext context);
         }
     }
 }

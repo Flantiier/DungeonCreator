@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using _Scripts.Utilities.Florian;
 
-namespace _ScriptablesObjects.GameManagement
+namespace _ScriptableObjects.GameManagement
 {
     [CreateAssetMenu(fileName = "New GameSettings", menuName = "Scriptables/Game Management/Game Settings")]
     public class GameSettings : ScriptableObject

@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Look",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "d4d36912-9446-4df3-a300-108a92479d3f",
                     "expectedControlType": "",
                     "processors": "",
@@ -63,15 +63,6 @@
                     "name": "Skill",
                     "type": "Button",
                     "id": "11d8fabf-0a22-400e-83fc-8876713d6ad9",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Recenter",
-                    "type": "Button",
-                    "id": "3500fd9e-873d-40cd-b5c0-e9668c8c37ed",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -230,17 +221,6 @@
                     "processors": "",
                     "groups": "GamePad",
                     "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "74581b28-d029-4c1a-a723-3812622e7973",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MK",
-                    "action": "Recenter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

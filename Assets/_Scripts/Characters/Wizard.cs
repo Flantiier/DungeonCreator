@@ -1,10 +1,17 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using _Scripts.GameplayFeatures;
 
 namespace _Scripts.Characters
 {
 	public class Wizard : Character
 	{
+        #region Variables
+        [Header("Wizard properties")]
+        [SerializeField] private ScanArea scanAreaPrefab;
+        #endregion
+
         #region Inherited Methods
 
         #region Inputs
@@ -37,7 +44,15 @@ namespace _Scripts.Characters
             if (!SkillConditions())
                 return;
 
-            RPCAnimatorTrigger(Photon.Pun.RpcTarget.All, "SkillEnabled", true);
+            RPCAnimatorTrigger(RpcTarget.All, "SkillEnabled", true);
+        }
+
+        public void InstantiateScanArea()
+        {
+            if (!ViewIsMine() || !scanAreaPrefab)
+                return;
+
+            PhotonNetwork.Instantiate(scanAreaPrefab.name, transform.position, Quaternion.identity);
         }
         #endregion
     }

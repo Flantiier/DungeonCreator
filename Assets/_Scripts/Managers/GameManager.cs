@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Photon.Pun;
-using _ScriptablesObjects.GameManagement;
 using _Scripts.Utilities.Florian;
-using UnityEditor.AnimatedValues;
+using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {
@@ -14,10 +14,12 @@ namespace _Scripts.Managers
 
         [Header("Temporary")]
         [SerializeField] private int requiredPlayerNumber = 1;
+
+        public event Action OnBossFightReached;
+        public event Action OnBossFightStarted;
         #endregion
 
         #region Properties
-        public GameObject PlayerInstance { get; set; }
         public GameSettings GameSettings => gameSettings;
         public GameStatements GameStatement { get; private set; } = new GameStatements();
         public bool ValidGame { get; private set; } = false;
@@ -33,16 +35,6 @@ namespace _Scripts.Managers
             GameTime.RemainingTime = gameSettings.duration.GetTimeValue();
         }
 
-        public override void OnEnable()
-        {
-            TemporaryRooms.OnEntityCreated += ctx => PlayerInstance = ctx.gameObject;
-        }
-
-        public override void OnDisable()
-        {
-            TemporaryRooms.OnEntityCreated -= ctx => PlayerInstance = ctx.gameObject;
-        }
-
         private void Update()
         {
             if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
@@ -50,7 +42,7 @@ namespace _Scripts.Managers
 
             UpdateGameValidity();
 
-            if (!ValidGame)
+            if (!ValidGame || GameStatement.IsStateOf(GameStatements.Statements.Over) || GameStatement.IsStateOf(GameStatements.Statements.BossFight))
                 return;
 
             UpdateGameTime();
@@ -58,9 +50,12 @@ namespace _Scripts.Managers
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Indicates if the game can be played (much players)
+        /// </summary>
         private void UpdateGameValidity()
         {
-            if (GameStatement.IsStatementOf(GameStatements.Statements.Over))
+            if (GameStatement.IsStateOf(GameStatements.Statements.Over))
                 return;
 
             if (PhotonNetwork.PlayerList.Length >= requiredPlayerNumber)
@@ -76,6 +71,10 @@ namespace _Scripts.Managers
         }
 
         #region Game Duration
+        /// <summary>
+        /// Start the game timer and send it into a rpc
+        /// </summary>
+        /// <param name="time"></param>
         public void InitializeGameTime(float time)
         {
             StartGame();
@@ -84,6 +83,9 @@ namespace _Scripts.Managers
             RPCCall("SetGameTimeRPC", RpcTarget.Others, GameTime.RemainingTime);
         }
 
+        /// <summary>
+        /// Updates the game timer and indicates when it reached 0
+        /// </summary>
         private void UpdateGameTime()
         {
             if (GameTime.RemainingTime <= 0)
@@ -105,12 +107,18 @@ namespace _Scripts.Managers
         #endregion
 
         #region GameState
+        /// <summary>
+        /// Set the game state to Game
+        /// </summary>
         private void StartGame()
         {
             Debug.Log("The game begin !");
             RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.InGame);
         }
 
+        /// <summary>
+        /// Set the game state to over
+        /// </summary>
         private void GameEnded()
         {
             Debug.Log("The game is finished !");
@@ -124,18 +132,37 @@ namespace _Scripts.Managers
         }
         #endregion
 
+        #region BossFight Manager
+        /// <summary>
+        /// Called when the boss fight is reached
+        /// </summary>
+        public void BossFightReached()
+        {
+            GameStatement.CurrentState = GameStatements.Statements.BossFight;
+            OnBossFightReached?.Invoke();
+        }
+
+        /// <summary>
+        /// Starting the fight boss
+        /// </summary>
+        public void StartBossFight()
+        {
+            OnBossFightStarted?.Invoke();
+        }
+        #endregion
+
         #endregion
     }
 }
 
 #region GameStatements_Class
-[System.Serializable]
+[Serializable]
 public class GameStatements
 {
-    public enum Statements { Connecting, Waiting, InGame, Over }
+    public enum Statements { Connecting, Waiting, InGame, BossFight, Over }
     public Statements CurrentState = Statements.Connecting;
 
-    public bool IsStatementOf(Statements targetState)
+    public bool IsStateOf(Statements targetState)
     {
         return CurrentState == targetState;
     }
@@ -143,7 +170,7 @@ public class GameStatements
 #endregion
 
 #region GlobalGameTime_Class
-[System.Serializable]
+[Serializable]
 public class GlobalGameTime
 {
     private float _remainingTime;

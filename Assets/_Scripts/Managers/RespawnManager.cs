@@ -40,10 +40,10 @@ namespace _Scripts.Managers
         /// <param name="position"> Respawn position </param>
         private void RespawnPlayer(Vector3 position)
         {
-            if (!GameManager.Instance.PlayerInstance)
+            if (!PlayersManager.Instance.PlayerInstance)
                 return;
 
-            GameObject player = GameManager.Instance.PlayerInstance;
+            GameObject player = PlayersManager.Instance.PlayerInstance;
 
             player.SetActive(false);
             player.transform.position = position;

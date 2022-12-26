@@ -1,6 +1,6 @@
 using UnityEngine;
 using Cinemachine;
-using _ScriptablesObjects.Settings.Adventurer.Camera;
+using _ScriptableObjects.Settings.Adventurer.Camera;
 using _Scripts.Managers;
 
 namespace _Scripts.Characters.Cameras

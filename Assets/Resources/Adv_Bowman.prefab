@@ -52,21 +52,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 5761381986307864490}
   animator: {fileID: 2926649918972566654}
-  overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
-  characterDatas: {fileID: 11400000, guid: 12661380f2dd8fc409bc34863a1cc271, type: 2}
+  orientation: {fileID: 5761381986547825679}
   mesh: {fileID: 4155916893651615752}
   lookAt: {fileID: 5761381986665185933}
-  orientation: {fileID: 5761381986547825679}
   cameraPrefab: {fileID: 692204243115489490, guid: 17cee0aa023d22343a44a6e843832fda,
     type: 3}
-  playerHUD: {fileID: -8999326808795453283, guid: c8fa22bfe2d81ef4a9b35b7084f79f14,
-    type: 3}
+  inputSmoothing: 0.1
+  speedSmoothing: 0.15
+  rotationSmoothing: 0.1
   walkableMask:
     serializedVersion: 2
     m_Bits: 67108864
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.065
+  overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
+  characterDatas: {fileID: 11400000, guid: 12661380f2dd8fc409bc34863a1cc271, type: 2}
   defuseDistance: 3
   defuseLayers:
     serializedVersion: 2

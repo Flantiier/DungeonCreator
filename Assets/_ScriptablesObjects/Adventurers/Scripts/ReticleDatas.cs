@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _ScriptablesObjects.Settings.UI
+namespace _ScriptableObjects.Settings.UI
 {
     [CreateAssetMenu(fileName = "New ReticleDatas", menuName = "Scriptables/UI/Reticle")]
     public class ReticleDatas : ScriptableObject

@@ -17,9 +17,9 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     [SerializeField] private Transform spawnPositionMaster;
 
     [Header("Adventurer infos")]
-    [SerializeField] private SpawnAdventurerInfo warriorSpawn;
-    [SerializeField] private SpawnAdventurerInfo wizardSpawn;
-    [SerializeField] private SpawnAdventurerInfo bowmanSpawn;
+    [SerializeField] private CharacterSpawnInfo warriorSpawn;
+    [SerializeField] private CharacterSpawnInfo wizardSpawn;
+    [SerializeField] private CharacterSpawnInfo bowmanSpawn;
 
     public static event Action<GameObject> OnEntityCreated;
     #endregion
@@ -93,7 +93,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     /// <summary>
     /// Instantiate a new adventurer prefab over the network
     /// </summary>
-    public void InstantiateAdventurer(SpawnAdventurerInfo spawnInfo)
+    public void InstantiateAdventurer(CharacterSpawnInfo spawnInfo)
     {
         if (!spawnInfo.prefab)
         {
@@ -117,13 +117,3 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     }
     #endregion
 }
-
-
-#region SpawnAdventurer_Class
-[System.Serializable]
-public struct SpawnAdventurerInfo
-{
-    public GameObject prefab;
-    public Transform position;
-}
-#endregion

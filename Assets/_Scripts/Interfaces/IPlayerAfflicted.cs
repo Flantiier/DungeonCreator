@@ -1,4 +1,4 @@
-using _Scripts.GameplayFeatures.Afflictions;
+using _ScriptableObjects.Afflictions;
 
 namespace _Scripts.Interfaces
 {

@@ -57,7 +57,6 @@ namespace _Scripts.NetworkScript
                 return;
 
             Animator.Rebind();
-            Animator.Update(0f);
         }
         #endregion
 

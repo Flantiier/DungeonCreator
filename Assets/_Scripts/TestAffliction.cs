@@ -1,6 +1,6 @@
 using UnityEngine;
-using _Scripts.GameplayFeatures.Afflictions;
 using _Scripts.Interfaces;
+using _ScriptableObjects.Afflictions;
 
 public class TestAffliction : MonoBehaviour
 {

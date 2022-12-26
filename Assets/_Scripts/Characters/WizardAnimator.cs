@@ -5,7 +5,7 @@ namespace _Scripts.Characters.Animations
 	public class WizardAnimator : CharacterAnimator
 	{
         #region Properties
-        public Wizard MyWizard { get; private set; }
+        public Wizard Wizard { get; private set; }
         #endregion
 
         #region Builts_In
@@ -15,14 +15,14 @@ namespace _Scripts.Characters.Animations
                 return;
 
             base.Awake();
-            MyWizard = GetComponentInParent<Wizard>();
+            Wizard = GetComponentInParent<Wizard>();
         }
         #endregion
 
         #region Methods
         public void EnableScan()
         {
-            Debug.Log("Scan");
+            Wizard.InstantiateScanArea();
         }
         #endregion
     }
