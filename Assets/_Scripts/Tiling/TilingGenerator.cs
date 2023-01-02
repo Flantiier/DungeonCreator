@@ -1,46 +1,72 @@
 using UnityEngine;
+using UnityEditor;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.TrapSystem
 {
     public class TilingGenerator : MonoBehaviour
     {
-#if UNITY_EDITOR
         #region Tiling Variables
-        [Header("Tiling Variables")]
-        [SerializeField] private TilingSO tiling;
-        [SerializeField] private bool resetPosition = true;
+        [BoxGroup("Tiling")]
+        [Required, SerializeField] private TilingSO tiling;
+
+        [BoxGroup("Properties")]
         [SerializeField] private int xAmount = 5;
+        [BoxGroup("Properties")]
         [SerializeField] private int yAmount = 5;
-        [SerializeField] private float yOffset = 0.1f;
+        [BoxGroup("Properties")]
+        [SerializeField] private float yOffset = .01f;
+
         #endregion
 
         #region Tiling Creation Methods
         /// <summary>
         /// Creating tiling
         /// </summary>
-        public void CreateTiling()
+        [BoxGroup("Interactives")]
+        [Button("Create Tiling", ButtonSizes.Medium)]
+        private void CreateTiling()
         {
-            if (resetPosition)
-                transform.localPosition = Vector3.zero;
+            if (!tiling)
+                return;
 
-            Transform[] childs = transform.GetComponentsInChildren<Transform>();
+            //Destroying children
+            Transform[] children = transform.GetComponentsInChildren<Transform>();
 
-            if (childs != null)
+            if (children != null)
             {
-                for (int i = 1; i < childs.Length; i++)
-                    DestroyImmediate(childs[i].gameObject);
+                for (int i = 1; i < children.Length; i++)
+                    DestroyImmediate(children[i].gameObject);
             }
 
+            //Reset parent rotation
+            Quaternion baseRot = transform.rotation;
+            transform.rotation = Quaternion.identity;
+
+            //Loops to create tiling
             for (int i = 0; i < xAmount; i++)
             {
                 for (int j = 0; j < yAmount; j++)
                 {
-                    GameObject newTile = Instantiate(tiling.tilePrefab, transform);
-                    newTile.transform.position = transform.position + new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
+                    GameObject tile = Instantiate(tiling.tilePrefab, transform);
+                    Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
+                    tile.transform.position = transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
                 }
             }
+
+            //Return parent rotation
+            transform.rotation = baseRot;
         }
+
+        //GENERATEUR DE PANNEAUX SOLAIRES
+        /*for (int i = 0; i < xAmount; i++)
+        {
+            for (int j = 0; j < yAmount; j++)
+            {
+                GameObject newTile = Instantiate(tiling.tilePrefab, transform);
+                newTile.transform.position = transform.position + new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
+            }
+        }*/
         #endregion
-#endif
     }
 }
