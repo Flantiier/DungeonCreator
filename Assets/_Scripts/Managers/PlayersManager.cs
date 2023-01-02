@@ -64,7 +64,7 @@ namespace _Scripts.Managers
             Vector3 spawnPoint = !characters[index].position ? Vector3.zero : characters[index].position.position;
             PlayerInstance = playerToSpawn;
 
-            GameObject instance = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
+            PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
         }
 
         /// <summary>

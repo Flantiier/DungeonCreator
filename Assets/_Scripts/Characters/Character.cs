@@ -10,6 +10,7 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Adventurers;
 using _ScriptableObjects.Afflictions;
+using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
@@ -21,6 +22,9 @@ namespace _Scripts.Characters
         [Header("Stats references")]
         [SerializeField] protected CharactersOverallDatas overallDatas;
         [SerializeField] protected AdventurerDatas characterDatas;
+
+        [Header("UI references")]
+        [SerializeField] private PlayerHUD hud;
 
         protected AdventurerInputs _inputs;
         #endregion
@@ -57,6 +61,7 @@ namespace _Scripts.Characters
                 return;
 
             _inputs = new AdventurerInputs();
+            InstantiateHUD();
         }
 
         public override void OnEnable()
@@ -87,6 +92,17 @@ namespace _Scripts.Characters
             HandleGroundStateMachine();
             HandleStaminaRecuperation();
             UpdateAnimations();
+        }
+        #endregion
+
+        #region Temporary
+        private void InstantiateHUD()
+        {
+            if (!hud)
+                return;
+
+            PlayerHUD HUD = Instantiate(hud);
+            HUD.SetTargetCharacter(this);
         }
         #endregion
 
