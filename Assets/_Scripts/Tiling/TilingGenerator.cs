@@ -11,11 +11,11 @@ namespace _Scripts.TrapSystem
         [Required, SerializeField] private TilingSO tiling;
 
         [BoxGroup("Properties")]
-        [SerializeField] private int xAmount = 5;
+        [SerializeField, Min(1f)] private int xAmount = 5;
         [BoxGroup("Properties")]
-        [SerializeField] private int yAmount = 5;
+        [SerializeField, Min(1f)] private int yAmount = 5;
         [BoxGroup("Properties")]
-        [SerializeField] private float yOffset = .01f;
+        [SerializeField, Min(0.01f)] private float yOffset = .01f;
 
         #endregion
 
@@ -43,6 +43,11 @@ namespace _Scripts.TrapSystem
             Quaternion baseRot = transform.rotation;
             transform.rotation = Quaternion.identity;
 
+            //Get the middle of the grid
+            Vector3 gridX = transform.right * ((xAmount / 2f * tiling.lengthX)) - transform.right * tiling.lengthX / 2f;
+            Vector3 gridY = transform.forward * ((yAmount / 2f * tiling.lengthY)) - transform.forward * tiling.lengthY / 2f;
+            Vector3 startPos = transform.position - (gridX + gridY);
+
             //Loops to create tiling
             for (int i = 0; i < xAmount; i++)
             {
@@ -50,7 +55,7 @@ namespace _Scripts.TrapSystem
                 {
                     GameObject tile = Instantiate(tiling.tilePrefab, transform);
                     Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
-                    tile.transform.position = transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
+                    tile.transform.position = startPos + transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
                 }
             }
 
