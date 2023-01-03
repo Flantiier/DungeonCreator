@@ -6,6 +6,7 @@ using _Scripts.Multi.Connexion;
 
 public class QuickConnect : MonoBehaviourPunCallbacks
 {
+    public string scene = "Florian"; 
     public GameObject UI;
     public TextMeshProUGUI text;
 
@@ -44,6 +45,6 @@ public class QuickConnect : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient)
             return;
 
-        PhotonNetwork.LoadLevel("Florian");
+        PhotonNetwork.LoadLevel(scene);
     }
 }
