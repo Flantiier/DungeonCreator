@@ -36,6 +36,8 @@ namespace _Scripts.Multi.Connexion
         {
             PhotonNetwork.AutomaticallySyncScene = true;
 
+            PhotonNetwork.LocalPlayer.CustomProperties["role"] = Roles.Undefined;
+
             playButton.SetActive(false);
 
             errorText.text = "";
@@ -81,6 +83,7 @@ namespace _Scripts.Multi.Connexion
             {
                 if (advNumber >= 1 && dmNumber == 1)
                 {
+                    errorText.text = "";
                     playButton.SetActive(condition);
                 }
                 else
