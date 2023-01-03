@@ -13,8 +13,10 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (MyCharacter.PlayerSM.IsRunning)
-                MyCharacter.UsingStamina(MyCharacter.OverallDatas.staminaToRun * Time.deltaTime);
+            if (!MyCharacter.RunConditions())
+                return;
+
+            MyCharacter.UsingStamina(MyCharacter.OverallDatas.staminaToRun * Time.deltaTime);
         }
     }
 }

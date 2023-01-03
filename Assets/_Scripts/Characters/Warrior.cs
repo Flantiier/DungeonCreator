@@ -11,6 +11,7 @@ namespace _Scripts.Characters
 
         #region Properties
         public Shield Shield => shield;
+        public bool UsingShield { get; set; }
         #endregion
 
         #region Builts_In
@@ -21,7 +22,7 @@ namespace _Scripts.Characters
 
             base.OnEnable();
 
-            Shield.OnShieldDestroyed += InvokeSkillCooldown;
+            Shield.OnShieldDestroyed += SkillUsed;
             OnSkillRecovered += Shield.InitializeShield;
         }
 
@@ -32,7 +33,7 @@ namespace _Scripts.Characters
 
             base.OnEnable();
 
-            Shield.OnShieldDestroyed -= InvokeSkillCooldown;
+            Shield.OnShieldDestroyed -= SkillUsed;
             OnSkillRecovered -= Shield.InitializeShield;
         }
         #endregion
@@ -42,11 +43,19 @@ namespace _Scripts.Characters
         {
             base.UpdateAnimations();
 
-            PlayerSM.UsingSkill = SkillConditions() && _inputs.Gameplay.Skill.IsPressed();
-            _animator.SetBool("SkillEnabled", PlayerSM.UsingSkill);
+            UsingShield = SkillConditions() && _inputs.Gameplay.Skill.IsPressed();
+            Animator.SetBool("SkillEnabled", UsingShield);
 
-            PlayerSM.EnableLayers = PlayerSM.UsingSkill;
+            PlayerSM.EnableLayers = UsingShield;
             UpdateAnimationLayers();
+        }
+
+        public override bool RunConditions()
+        {
+            if (UsingShield)
+                return false;
+
+            return base.RunConditions();
         }
         #endregion
 

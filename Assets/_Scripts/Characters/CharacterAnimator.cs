@@ -18,7 +18,7 @@ namespace _Scripts.Characters.Animations
         [Header("Projectile properties")]
         [SerializeField] protected Transform throwPoint;
         [SerializeField] protected Projectile projectilePrefab;
-        [SerializeField] private float throwOffsetFromCamera = 5f;
+        [SerializeField] private float addOffset = 0.25f;
         [SerializeField] protected bool projectileMainAttack = false;
 
         protected Projectile _lastProjectile;
@@ -41,7 +41,8 @@ namespace _Scripts.Characters.Animations
         {
             try
             {
-                Gizmos.DrawSphere(Character.MainCamTransform.position + Character.MainCamTransform.forward * throwOffsetFromCamera, 0.1f);
+                float offset = (Character.transform.position - Character.MainCamTransform.position).magnitude;
+                Gizmos.DrawSphere(Character.MainCamTransform.position + Character.MainCamTransform.forward * offset, 0.1f);
             }
             catch { }
         }
@@ -130,7 +131,9 @@ namespace _Scripts.Characters.Animations
                 CreateProjectile();
 
             _lastProjectile.transform.SetParent(null);
-            _lastProjectile.transform.position = Character.MainCamTransform.position + Character.MainCamTransform.forward * throwOffsetFromCamera;
+
+            float offset = (Character.transform.position - Character.MainCamTransform.position).magnitude;
+            _lastProjectile.transform.position = Character.MainCamTransform.position + Character.MainCamTransform.forward * (offset + addOffset);
 
             _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
             _lastProjectile.ThrowProjectile(Character.MainCamTransform.forward);

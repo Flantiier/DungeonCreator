@@ -22,8 +22,8 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             float dodgeSpeed = _dodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
-            MyCharacter.UpdateSpeed(dodgeSpeed);
-            MyCharacter.MoveInMeshForward();
+            MyCharacter.UpdateCharacterSpeed(dodgeSpeed);
+            MyCharacter.MoveForwards();
         }
         #endregion
 

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using _Scripts.Utilities.Florian;
 
-namespace _ScriptablesObjects.GameManagement
+namespace _ScriptableObjects.GameManagement
 {
     [CreateAssetMenu(fileName = "New GameSettings", menuName = "Scriptables/Game Management/Game Settings")]
     public class GameSettings : ScriptableObject
@@ -39,7 +39,7 @@ public class TimeReference
         timeUnit = _unit;
     }
 
-    public float GetMyTime()
+    public float GetTimeValue()
     {
         return TimeFunctions.GetDurationInSeconds(duration, timeUnit);
     }

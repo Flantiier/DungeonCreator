@@ -59,11 +59,11 @@ namespace _Scripts.TrapSystem.Datas
 
             if (trapSO)
             {
-                player.TakeDamages(trapSO.damage);
+                player.SoftDamages(trapSO.damage);
             }
             else if (trapDamageableSO)
             {
-                player.TakeDamages(trapDamageableSO.damage);
+                player.SoftDamages(trapDamageableSO.damage);
             }
             //se trouve dans player HUD (script)
         }

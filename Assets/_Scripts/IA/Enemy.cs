@@ -7,10 +7,8 @@ namespace _Scripts.IA
 {
     public class Enemy : Entity, IDamageable
     {
-        #region Variables
         [Header("Enemy properties")]
-        [SerializeField] protected float health = 50f;
-        #endregion
+        [SerializeField] private float health = 50f;
 
         #region Builts_In
         public override void OnEnable()

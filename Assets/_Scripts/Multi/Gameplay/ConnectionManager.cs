@@ -19,6 +19,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log($"Connected to server at {Time.time}");
+        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.JoinRandomOrCreateRoom();
     }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using _ScriptablesObjects.Settings.UI;
+using _ScriptableObjects.Settings.UI;
 
 namespace _Scripts.UI.Gameplay
 {
