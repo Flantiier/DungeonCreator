@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 190909367444522957}
   - component: {fileID: 3821837115870431336}
   - component: {fileID: 1363768056082119842}
+  - component: {fileID: -6634562379102172136}
   m_Layer: 0
   m_Name: bordure_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-6634562379102172136
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715491396972387703}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8606546089115748616, guid: 911044b82bbc5ed47a4f50ac6eea40f4, type: 3}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1109263293749481634}
   - component: {fileID: 4092433422723473159}
   - component: {fileID: 2247236608607562701}
+  - component: {fileID: 928188477594534021}
   m_Layer: 0
   m_Name: sol_bassin_1_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &928188477594534021
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301518773857356312}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6204807378664586469, guid: 1e4b455dde519804693e4f0672f9ad38, type: 3}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4904302526065606371}
   - component: {fileID: 8331745882533785926}
   - component: {fileID: 6072182661620630924}
+  - component: {fileID: 6266740469801889262}
   m_Layer: 0
   m_Name: petit_plafond_angle_cadre_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6266740469801889262
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5711766666212320345}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1235918695750623892, guid: ad1cae6f532591748977e1603988d828, type: 3}

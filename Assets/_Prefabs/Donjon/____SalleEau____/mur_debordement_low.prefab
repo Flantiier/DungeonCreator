@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4260110403624576775}
   - component: {fileID: 914556463432738978}
   - component: {fileID: 3122647158812236904}
+  - component: {fileID: -57762830392355815}
   m_Layer: 0
   m_Name: mur_debordement_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-57762830392355815
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3482728901607521725}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7549095533913817664, guid: 055172215b81c4f429226162a007b2ac, type: 3}

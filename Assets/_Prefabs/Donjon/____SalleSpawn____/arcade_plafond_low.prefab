@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4326561980549128990}
   - component: {fileID: 839027049516002491}
   - component: {fileID: 3188590240600725617}
+  - component: {fileID: -8209075912250769909}
   m_Layer: 0
   m_Name: arcade_plafond_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-8209075912250769909
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981421343893043620}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8518671875250508803, guid: 4492517872f98e84dbefa587b10f8f72, type: 3}

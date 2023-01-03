@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5861685614991628043}
   - component: {fileID: 7419468832724015278}
   - component: {fileID: 4689312493074918500}
+  - component: {fileID: 4733811863912828043}
   m_Layer: 0
   m_Name: petit_plafond_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4733811863912828043
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490589410842086833}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4837693643117867636, guid: 88c0c982283ffe34ab0ac9f61ed7eec8, type: 3}

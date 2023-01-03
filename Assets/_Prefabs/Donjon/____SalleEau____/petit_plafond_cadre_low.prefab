@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 83160625545128302}
   - component: {fileID: 3929577251462817483}
   - component: {fileID: 1255482821094756865}
+  - component: {fileID: 5788815423073746774}
   m_Layer: 0
   m_Name: petit_plafond_cadre_low
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5788815423073746774
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751153948808377300}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9003903010949467424, guid: 4b220f0393ef3674d9ad88bc336f5784, type: 3}
