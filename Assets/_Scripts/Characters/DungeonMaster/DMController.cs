@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Cinemachine;
 using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
 using _Scripts.TrapSystem.Datas;
-using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine.UI;
 
 namespace _Scripts.DungeonMaster
 {
