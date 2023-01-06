@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using _Scripts.DungeonMaster;
+using _Scripts.Characters.DungeonMaster;
 using _Scripts.TrapSystem.Datas;
 
 namespace _Scripts.TrapSystem.UI

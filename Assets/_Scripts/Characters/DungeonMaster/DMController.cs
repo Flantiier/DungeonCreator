@@ -9,7 +9,7 @@ using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
 using _Scripts.TrapSystem.Datas;
 
-namespace _Scripts.DungeonMaster
+namespace _Scripts.Characters.DungeonMaster
 {
     public class DMController : MonoBehaviour
     {

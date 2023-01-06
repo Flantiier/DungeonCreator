@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using Photon.Pun;
 using UnityEngine;
-using InputsMaps;
 using UnityEngine.InputSystem;
+using InputsMaps;
+using Photon.Pun;
 using _Scripts.Utilities.Florian;
 using _Scripts.Managers;
 using _Scripts.Interfaces;

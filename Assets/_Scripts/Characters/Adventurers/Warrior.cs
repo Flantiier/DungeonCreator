@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Scripts.Characters
+namespace _Scripts.Characters.Adventurers
 {
     public class Warrior : Character
     {

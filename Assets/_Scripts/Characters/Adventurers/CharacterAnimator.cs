@@ -1,8 +1,8 @@
 using UnityEngine;
+using Photon.Pun;
 using _Scripts.NetworkScript;
 using _Scripts.Hitboxs;
 using _Scripts.Weapons.Projectiles;
-using Photon.Pun;
 
 namespace _Scripts.Characters.Animations
 {

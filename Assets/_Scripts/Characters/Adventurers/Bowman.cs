@@ -1,9 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.Interfaces;
 
-namespace _Scripts.Characters
+namespace _Scripts.Characters.Adventurers
 {
     public class Bowman : Character
     {

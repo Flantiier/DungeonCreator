@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.GameplayFeatures;
 
-namespace _Scripts.Characters
+namespace _Scripts.Characters.Adventurers
 {
 	public class Wizard : Character
 	{

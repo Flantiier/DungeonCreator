@@ -1,6 +1,5 @@
 using UnityEngine;
-using Photon.Pun;
-using _Scripts.Weapons.Projectiles;
+using _Scripts.Characters.Adventurers;
 
 namespace _Scripts.Characters.Animations
 {

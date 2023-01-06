@@ -19,18 +19,6 @@ namespace _Scripts.Characters.Cameras
             if (!ViewIsMine())
                 Destroy(gameObject);
         }
-
-        public virtual void Update()
-        {
-            try
-            {
-                CameraUpdate();
-            }
-            catch
-            {
-                Debug.LogError("Camera has a problem, maybe a missing reference ???");
-            }
-        }
         #endregion
 
         #region Inherited Methods
