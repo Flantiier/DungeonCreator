@@ -62,7 +62,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 60
+  field of view: 40
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -204,7 +204,6 @@ GameObject:
   m_Component:
   - component: {fileID: 755338254037725633}
   - component: {fileID: 692204243115489490}
-  - component: {fileID: 5959230039995895497}
   m_Layer: 0
   m_Name: Adv_TpsCamera
   m_TagString: Untagged
@@ -241,32 +240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3fe43549aea0304793d85ac205b1308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 5959230039995895497}
   mainCam: {fileID: 755338253078155099}
   cameraSettings: {fileID: 11400000, guid: 697cc432d58d63a4394b4770b7d07021, type: 2}
   tpsCam: {fileID: 3144908475439735606}
---- !u!114 &5959230039995895497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 755338254037725632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &6096745246954254362
 GameObject:
   m_ObjectHideFlags: 0

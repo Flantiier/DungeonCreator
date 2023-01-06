@@ -80,7 +80,7 @@ namespace _Scripts.Characters.DungeonMaster
             _inputs = GetComponent<PlayerInput>();
 
             _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
-            _myCamera.SetCameraInfos(orientation);
+            _myCamera.SetLookAtTarget(orientation);
             _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
             _currentMana = manaDM;
 

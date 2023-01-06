@@ -11,11 +11,11 @@ namespace _Scripts.Characters.Cameras
         #endregion
 
         #region Methods
-		public void SetCameraInfos(Transform target)
-		{
-			VCam.Follow = target;
-			VCam.LookAt = target;
-		}
+        public override void SetLookAtTarget(Transform target)
+        {
+            VCam.Follow = target;
+            VCam.LookAt = target;
+        }
         #endregion
     }
 }

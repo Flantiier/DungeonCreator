@@ -1,24 +1,13 @@
 using UnityEngine;
-using Photon.Pun;
-using _Scripts.NetworkScript;
 
 namespace _Scripts.Characters.Cameras
 {
-    [RequireComponent(typeof(PhotonView))]
-    public class CameraSetup : NetworkMonoBehaviour
+    public class CameraSetup : MonoBehaviour
     {
         #region Variables
         [Header("Camera references")]
         [SerializeField] protected Camera mainCam;
         public Camera MainCam => mainCam;
-        #endregion
-
-        #region Builts_In
-        public virtual void Awake()
-        {
-            if (!ViewIsMine())
-                Destroy(gameObject);
-        }
         #endregion
 
         #region Inherited Methods

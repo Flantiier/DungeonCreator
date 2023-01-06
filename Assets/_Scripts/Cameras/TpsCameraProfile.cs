@@ -20,21 +20,19 @@ namespace _Scripts.Characters.Cameras
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        private void Awake()
         {
-            base.Awake();
-
             _tpsBodyProperties = tpsCam.GetCinemachineComponent<CinemachineFramingTransposer>();
             _tpsAimProperties = tpsCam.GetCinemachineComponent<CinemachinePOV>();
             _inputProvider = tpsCam.GetComponent<CinemachineInputProvider>();
         }
 
-        public override void OnEnable()
+        private void OnEnable()
         {
             GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
         }
 
-        public override void OnDisable()
+        private void OnDisable()
         {
             GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
