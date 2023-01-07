@@ -57,7 +57,7 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateCW"",
+                    ""name"": ""TrapRotate_CW"",
                     ""type"": ""Button"",
                     ""id"": ""ab5d66ea-0f0a-4fa1-911f-913d86a92f66"",
                     ""expectedControlType"": ""Button"",
@@ -66,7 +66,7 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateACW"",
+                    ""name"": ""TrapRotate_ACW"",
                     ""type"": ""Button"",
                     ""id"": ""992a5758-4b99-4fc8-bfea-d039da944de8"",
                     ""expectedControlType"": ""Button"",
@@ -75,7 +75,7 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateCamCW"",
+                    ""name"": ""CamRotate_CW"",
                     ""type"": ""Button"",
                     ""id"": ""4953df66-372a-4ff7-a523-79a31c99add3"",
                     ""expectedControlType"": ""Button"",
@@ -84,22 +84,13 @@ namespace InputsMaps
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateCamACW"",
+                    ""name"": ""CamRotate_ACW"",
                     ""type"": ""Button"",
                     ""id"": ""73490d8e-b4b2-44e3-9fab-a8d41a716965"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""VerticalAngle"",
-                    ""type"": ""Value"",
-                    ""id"": ""e3511339-424c-47b1-90de-fc247aaf6631"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -121,7 +112,7 @@ namespace InputsMaps
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotateCW"",
+                    ""action"": ""TrapRotate_CW"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -132,40 +123,29 @@ namespace InputsMaps
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotateACW"",
+                    ""action"": ""TrapRotate_ACW"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""6b8d45e9-e0f2-41b5-8bf6-18901a91e7f4"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotateCamCW"",
+                    ""action"": ""CamRotate_CW"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""5d4c0f15-f9d7-4a83-b924-563c9c2b0b5d"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotateCamACW"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5ba1d60d-7c5c-46ee-9b7c-045cca40b7bf"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""VerticalAngle"",
+                    ""action"": ""CamRotate_ACW"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -262,11 +242,10 @@ namespace InputsMaps
             m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
             m_Gameplay_Mouse = m_Gameplay.FindAction("Mouse", throwIfNotFound: true);
             m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
-            m_Gameplay_RotateCW = m_Gameplay.FindAction("RotateCW", throwIfNotFound: true);
-            m_Gameplay_RotateACW = m_Gameplay.FindAction("RotateACW", throwIfNotFound: true);
-            m_Gameplay_RotateCamCW = m_Gameplay.FindAction("RotateCamCW", throwIfNotFound: true);
-            m_Gameplay_RotateCamACW = m_Gameplay.FindAction("RotateCamACW", throwIfNotFound: true);
-            m_Gameplay_VerticalAngle = m_Gameplay.FindAction("VerticalAngle", throwIfNotFound: true);
+            m_Gameplay_TrapRotate_CW = m_Gameplay.FindAction("TrapRotate_CW", throwIfNotFound: true);
+            m_Gameplay_TrapRotate_ACW = m_Gameplay.FindAction("TrapRotate_ACW", throwIfNotFound: true);
+            m_Gameplay_CamRotate_CW = m_Gameplay.FindAction("CamRotate_CW", throwIfNotFound: true);
+            m_Gameplay_CamRotate_ACW = m_Gameplay.FindAction("CamRotate_ACW", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -329,11 +308,10 @@ namespace InputsMaps
         private readonly InputAction m_Gameplay_Move;
         private readonly InputAction m_Gameplay_Mouse;
         private readonly InputAction m_Gameplay_Interact;
-        private readonly InputAction m_Gameplay_RotateCW;
-        private readonly InputAction m_Gameplay_RotateACW;
-        private readonly InputAction m_Gameplay_RotateCamCW;
-        private readonly InputAction m_Gameplay_RotateCamACW;
-        private readonly InputAction m_Gameplay_VerticalAngle;
+        private readonly InputAction m_Gameplay_TrapRotate_CW;
+        private readonly InputAction m_Gameplay_TrapRotate_ACW;
+        private readonly InputAction m_Gameplay_CamRotate_CW;
+        private readonly InputAction m_Gameplay_CamRotate_ACW;
         public struct GameplayActions
         {
             private @InputsDM m_Wrapper;
@@ -341,11 +319,10 @@ namespace InputsMaps
             public InputAction @Move => m_Wrapper.m_Gameplay_Move;
             public InputAction @Mouse => m_Wrapper.m_Gameplay_Mouse;
             public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
-            public InputAction @RotateCW => m_Wrapper.m_Gameplay_RotateCW;
-            public InputAction @RotateACW => m_Wrapper.m_Gameplay_RotateACW;
-            public InputAction @RotateCamCW => m_Wrapper.m_Gameplay_RotateCamCW;
-            public InputAction @RotateCamACW => m_Wrapper.m_Gameplay_RotateCamACW;
-            public InputAction @VerticalAngle => m_Wrapper.m_Gameplay_VerticalAngle;
+            public InputAction @TrapRotate_CW => m_Wrapper.m_Gameplay_TrapRotate_CW;
+            public InputAction @TrapRotate_ACW => m_Wrapper.m_Gameplay_TrapRotate_ACW;
+            public InputAction @CamRotate_CW => m_Wrapper.m_Gameplay_CamRotate_CW;
+            public InputAction @CamRotate_ACW => m_Wrapper.m_Gameplay_CamRotate_ACW;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -364,21 +341,18 @@ namespace InputsMaps
                     @Interact.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInteract;
                     @Interact.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInteract;
                     @Interact.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInteract;
-                    @RotateCW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCW;
-                    @RotateCW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCW;
-                    @RotateCW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCW;
-                    @RotateACW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateACW;
-                    @RotateACW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateACW;
-                    @RotateACW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateACW;
-                    @RotateCamCW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamCW;
-                    @RotateCamCW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamCW;
-                    @RotateCamCW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamCW;
-                    @RotateCamACW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamACW;
-                    @RotateCamACW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamACW;
-                    @RotateCamACW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateCamACW;
-                    @VerticalAngle.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVerticalAngle;
-                    @VerticalAngle.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVerticalAngle;
-                    @VerticalAngle.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVerticalAngle;
+                    @TrapRotate_CW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_CW;
+                    @TrapRotate_CW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_CW;
+                    @TrapRotate_CW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_CW;
+                    @TrapRotate_ACW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_ACW;
+                    @TrapRotate_ACW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_ACW;
+                    @TrapRotate_ACW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnTrapRotate_ACW;
+                    @CamRotate_CW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_CW;
+                    @CamRotate_CW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_CW;
+                    @CamRotate_CW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_CW;
+                    @CamRotate_ACW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
+                    @CamRotate_ACW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
+                    @CamRotate_ACW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
                 }
                 m_Wrapper.m_GameplayActionsCallbackInterface = instance;
                 if (instance != null)
@@ -392,21 +366,18 @@ namespace InputsMaps
                     @Interact.started += instance.OnInteract;
                     @Interact.performed += instance.OnInteract;
                     @Interact.canceled += instance.OnInteract;
-                    @RotateCW.started += instance.OnRotateCW;
-                    @RotateCW.performed += instance.OnRotateCW;
-                    @RotateCW.canceled += instance.OnRotateCW;
-                    @RotateACW.started += instance.OnRotateACW;
-                    @RotateACW.performed += instance.OnRotateACW;
-                    @RotateACW.canceled += instance.OnRotateACW;
-                    @RotateCamCW.started += instance.OnRotateCamCW;
-                    @RotateCamCW.performed += instance.OnRotateCamCW;
-                    @RotateCamCW.canceled += instance.OnRotateCamCW;
-                    @RotateCamACW.started += instance.OnRotateCamACW;
-                    @RotateCamACW.performed += instance.OnRotateCamACW;
-                    @RotateCamACW.canceled += instance.OnRotateCamACW;
-                    @VerticalAngle.started += instance.OnVerticalAngle;
-                    @VerticalAngle.performed += instance.OnVerticalAngle;
-                    @VerticalAngle.canceled += instance.OnVerticalAngle;
+                    @TrapRotate_CW.started += instance.OnTrapRotate_CW;
+                    @TrapRotate_CW.performed += instance.OnTrapRotate_CW;
+                    @TrapRotate_CW.canceled += instance.OnTrapRotate_CW;
+                    @TrapRotate_ACW.started += instance.OnTrapRotate_ACW;
+                    @TrapRotate_ACW.performed += instance.OnTrapRotate_ACW;
+                    @TrapRotate_ACW.canceled += instance.OnTrapRotate_ACW;
+                    @CamRotate_CW.started += instance.OnCamRotate_CW;
+                    @CamRotate_CW.performed += instance.OnCamRotate_CW;
+                    @CamRotate_CW.canceled += instance.OnCamRotate_CW;
+                    @CamRotate_ACW.started += instance.OnCamRotate_ACW;
+                    @CamRotate_ACW.performed += instance.OnCamRotate_ACW;
+                    @CamRotate_ACW.canceled += instance.OnCamRotate_ACW;
                 }
             }
         }
@@ -425,11 +396,10 @@ namespace InputsMaps
             void OnMove(InputAction.CallbackContext context);
             void OnMouse(InputAction.CallbackContext context);
             void OnInteract(InputAction.CallbackContext context);
-            void OnRotateCW(InputAction.CallbackContext context);
-            void OnRotateACW(InputAction.CallbackContext context);
-            void OnRotateCamCW(InputAction.CallbackContext context);
-            void OnRotateCamACW(InputAction.CallbackContext context);
-            void OnVerticalAngle(InputAction.CallbackContext context);
+            void OnTrapRotate_CW(InputAction.CallbackContext context);
+            void OnTrapRotate_ACW(InputAction.CallbackContext context);
+            void OnCamRotate_CW(InputAction.CallbackContext context);
+            void OnCamRotate_ACW(InputAction.CallbackContext context);
         }
     }
 }

@@ -19,11 +19,13 @@ namespace _Scripts.Characters.DungeonMaster
 
 		#region Motion
 		[Header("Motion variables")]
-		[SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
-        [Space, SerializeField] private float moveSpeed = 25f;
+        [SerializeField] private float moveSpeed = 25f;
+        [SerializeField] private float rotationSpeed = 100f;
+		[Space, SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
 
         private Vector2 _inputsVector;
 		private Vector3 _currentMovement;
+		private Vector2 _rotationInputs;
         #endregion
 
 		#endregion
@@ -87,17 +89,31 @@ namespace _Scripts.Characters.DungeonMaster
 		/// </summary>
 		private void SubscribeToInputs()
 		{
+			//Movements
 			_inputs.Gameplay.Move.performed += ctx => _inputsVector = ctx.ReadValue<Vector2>();
 			_inputs.Gameplay.Move.canceled += ctx => _inputsVector = Vector2.zero;
+
+			//Rotations
+			_inputs.Gameplay.CamRotate_CW.performed += ctx => _rotationInputs.x = ctx.ReadValue<float>();
+			_inputs.Gameplay.CamRotate_ACW.performed += ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_CW.canceled += ctx => _rotationInputs.x = 0f;
+            _inputs.Gameplay.CamRotate_ACW.canceled += ctx => _rotationInputs.y = 0f;
         }
 
         /// <summary>
         /// Unsubscribing to inputs events
         /// </summary>
         private void UnsubscribeToInputs()
-		{
+        {
+			//Movements
             _inputs.Gameplay.Move.performed -= ctx => _inputsVector = ctx.ReadValue<Vector2>();
 			_inputs.Gameplay.Move.canceled -= ctx => _inputsVector = Vector2.zero;
+
+            //Rotations
+            _inputs.Gameplay.CamRotate_CW.performed -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_ACW.performed -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_CW.canceled -= ctx => _rotationInputs.x = 0f;
+            _inputs.Gameplay.CamRotate_ACW.canceled -= ctx => _rotationInputs.y = 0f;
         }
         #endregion
 
@@ -107,12 +123,15 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private void HandleMovements()
 		{
+			//Rotation
+			float rotation = (_rotationInputs.x - _rotationInputs.y) * rotationSpeed * Time.deltaTime;
+            transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
+
 			//Motion
-			Vector3 movement = transform.forward * _inputsVector.y + transform.right * _inputsVector.x;
+			Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
 			_currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, smoothingMovements);
 			transform.Translate(_currentMovement * moveSpeed * Time.deltaTime);
 
-			//Rotation
 		}
         #endregion
 

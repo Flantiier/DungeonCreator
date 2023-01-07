@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateCW",
+                    "name": "TrapRotate_CW",
                     "type": "Button",
                     "id": "ab5d66ea-0f0a-4fa1-911f-913d86a92f66",
                     "expectedControlType": "Button",
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateACW",
+                    "name": "TrapRotate_ACW",
                     "type": "Button",
                     "id": "992a5758-4b99-4fc8-bfea-d039da944de8",
                     "expectedControlType": "Button",
@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateCamCW",
+                    "name": "CamRotate_CW",
                     "type": "Button",
                     "id": "4953df66-372a-4ff7-a523-79a31c99add3",
                     "expectedControlType": "Button",
@@ -60,22 +60,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateCamACW",
+                    "name": "CamRotate_ACW",
                     "type": "Button",
                     "id": "73490d8e-b4b2-44e3-9fab-a8d41a716965",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "VerticalAngle",
-                    "type": "Value",
-                    "id": "e3511339-424c-47b1-90de-fc247aaf6631",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -97,7 +88,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RotateCW",
+                    "action": "TrapRotate_CW",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -108,40 +99,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RotateACW",
+                    "action": "TrapRotate_ACW",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "6b8d45e9-e0f2-41b5-8bf6-18901a91e7f4",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RotateCamCW",
+                    "action": "CamRotate_CW",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "5d4c0f15-f9d7-4a83-b924-563c9c2b0b5d",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RotateCamACW",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5ba1d60d-7c5c-46ee-9b7c-045cca40b7bf",
-                    "path": "<Mouse>/scroll",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "VerticalAngle",
+                    "action": "CamRotate_ACW",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
