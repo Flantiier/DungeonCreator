@@ -43,7 +43,7 @@ namespace _Scripts.TrapSystem
             Quaternion baseRot = transform.rotation;
             transform.rotation = Quaternion.identity;
 
-            //Get the middle of the grid
+            //Get the middle of the grid                                        //Minus the half of the tile length
             Vector3 gridX = transform.right * ((xAmount / 2f * tiling.lengthX)) - transform.right * tiling.lengthX / 2f;
             Vector3 gridY = transform.forward * ((yAmount / 2f * tiling.lengthY)) - transform.forward * tiling.lengthY / 2f;
             Vector3 startPos = transform.position - (gridX + gridY);
@@ -56,6 +56,7 @@ namespace _Scripts.TrapSystem
                     GameObject tile = Instantiate(tiling.tilePrefab, transform);
                     Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
                     tile.transform.position = startPos + transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
+                    tile.transform.rotation = Quaternion.identity;
                 }
             }
 

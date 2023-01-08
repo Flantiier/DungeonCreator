@@ -91,6 +91,15 @@ namespace InputsMaps
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scrolling"",
+                    ""type"": ""Value"",
+                    ""id"": ""4f8445f8-e805-43a7-914c-41d0a9c08936"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -214,6 +223,17 @@ namespace InputsMaps
                     ""action"": ""Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3ed41f3-3288-4ffe-9034-3c8f562f7272"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": ""Clamp(min=-1,max=1)"",
+                    ""groups"": """",
+                    ""action"": ""Scrolling"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -246,6 +266,7 @@ namespace InputsMaps
             m_Gameplay_TrapRotate_ACW = m_Gameplay.FindAction("TrapRotate_ACW", throwIfNotFound: true);
             m_Gameplay_CamRotate_CW = m_Gameplay.FindAction("CamRotate_CW", throwIfNotFound: true);
             m_Gameplay_CamRotate_ACW = m_Gameplay.FindAction("CamRotate_ACW", throwIfNotFound: true);
+            m_Gameplay_Scrolling = m_Gameplay.FindAction("Scrolling", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -312,6 +333,7 @@ namespace InputsMaps
         private readonly InputAction m_Gameplay_TrapRotate_ACW;
         private readonly InputAction m_Gameplay_CamRotate_CW;
         private readonly InputAction m_Gameplay_CamRotate_ACW;
+        private readonly InputAction m_Gameplay_Scrolling;
         public struct GameplayActions
         {
             private @InputsDM m_Wrapper;
@@ -323,6 +345,7 @@ namespace InputsMaps
             public InputAction @TrapRotate_ACW => m_Wrapper.m_Gameplay_TrapRotate_ACW;
             public InputAction @CamRotate_CW => m_Wrapper.m_Gameplay_CamRotate_CW;
             public InputAction @CamRotate_ACW => m_Wrapper.m_Gameplay_CamRotate_ACW;
+            public InputAction @Scrolling => m_Wrapper.m_Gameplay_Scrolling;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -353,6 +376,9 @@ namespace InputsMaps
                     @CamRotate_ACW.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
                     @CamRotate_ACW.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
                     @CamRotate_ACW.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamRotate_ACW;
+                    @Scrolling.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScrolling;
+                    @Scrolling.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScrolling;
+                    @Scrolling.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScrolling;
                 }
                 m_Wrapper.m_GameplayActionsCallbackInterface = instance;
                 if (instance != null)
@@ -378,6 +404,9 @@ namespace InputsMaps
                     @CamRotate_ACW.started += instance.OnCamRotate_ACW;
                     @CamRotate_ACW.performed += instance.OnCamRotate_ACW;
                     @CamRotate_ACW.canceled += instance.OnCamRotate_ACW;
+                    @Scrolling.started += instance.OnScrolling;
+                    @Scrolling.performed += instance.OnScrolling;
+                    @Scrolling.canceled += instance.OnScrolling;
                 }
             }
         }
@@ -400,6 +429,7 @@ namespace InputsMaps
             void OnTrapRotate_ACW(InputAction.CallbackContext context);
             void OnCamRotate_CW(InputAction.CallbackContext context);
             void OnCamRotate_ACW(InputAction.CallbackContext context);
+            void OnScrolling(InputAction.CallbackContext context);
         }
     }
 }

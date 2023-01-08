@@ -7,7 +7,7 @@ using _Scripts.Characters;
 
 namespace _Scripts.Managers
 {
-    public class PlayersManager : MonoBehaviourSingleton<PlayersManager>
+    public class PlayersManager : NetworkMonoSingleton<PlayersManager>
     {
         #region Variables
         [Header("Spawn properties")]

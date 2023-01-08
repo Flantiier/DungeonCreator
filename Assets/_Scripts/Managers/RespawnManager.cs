@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Scripts.Managers
 {
-    public class RespawnManager : MonoBehaviourSingleton<RespawnManager>
+    public class RespawnManager : NetworkMonoSingleton<RespawnManager>
     {
         #region Properties
         public float RespawnTime { get; private set; }

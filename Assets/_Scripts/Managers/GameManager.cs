@@ -6,7 +6,7 @@ using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {
-    public class GameManager : MonoBehaviourSingleton<GameManager>
+    public class GameManager : NetworkMonoSingleton<GameManager>
     {
         #region Variables
         [Header("Game properties")]
