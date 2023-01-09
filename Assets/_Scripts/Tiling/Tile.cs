@@ -9,19 +9,20 @@ namespace _Scripts.TrapSystem
         [SerializeField] private Material baseMaterial;
         [SerializeField] private Material selectedMaterial;
         [SerializeField] private Material usedMaterial;
-        private Renderer _renderer;
 
-        public enum TileState { Deselected, Selected, Waiting, Used }
+        private Renderer _renderer;
+        #endregion
+
+        #region Properties
+        public enum TileState { Free, Selected, Used }
         public TileState CurrentTileState { get; private set; }
-        public bool IsUsed { get; private set; }
         #endregion
 
         #region Builts-In
         private void Awake()
         {
-            IsUsed = false;
             _renderer = GetComponent<Renderer>();
-            NewTileState(TileState.Deselected);
+            NewTileState(TileState.Free);
         }
         #endregion
 
@@ -32,52 +33,39 @@ namespace _Scripts.TrapSystem
 
             switch (newState)
             {
-                case TileState.Deselected:
-                    DeselectingState();
-                    break;
                 case TileState.Selected:
-                    SelectingState();
-                    break;
-                case TileState.Waiting:
-                    WaitingState();
+                    SetTileMaterial(selectedMaterial);
                     break;
                 case TileState.Used:
-                    UsingState();
+                    SetTileMaterial(usedMaterial);
+                    break;
+                default:
+                    SetTileMaterial(baseMaterial);
                     break;
             }
         }
 
         /// <summary>
-        /// Reset the tile to base state
+        /// Return if the tile is in used state
         /// </summary>
-        public void ResetTile()
+        /// <returns></returns>
+        public bool IsUsed()
         {
-            DeselectingState();
-            IsUsed = false;
+            return CurrentTileState == TileState.Used;
+        }
+
+        [ContextMenu("Use Tile")]
+        private void UseTile()
+        {
+            NewTileState(TileState.Used);
         }
 
         /// <summary>
-        /// If the tile is occuped by a trap
+        /// Set the material to the given one
         /// </summary>
-        private void UsingState()
+        private void SetTileMaterial(Material mat)
         {
-            _renderer.material = usedMaterial;
-            IsUsed = true;
-        }
-
-        private void DeselectingState()
-        {
-            _renderer.material = baseMaterial;
-        }
-
-        private void SelectingState()
-        {
-            _renderer.material = selectedMaterial;
-        }
-
-        private void WaitingState()
-        {
-            _renderer.material = usedMaterial;
+            _renderer.material = mat;
         }
         #endregion
     }

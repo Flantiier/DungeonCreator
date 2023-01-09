@@ -33,18 +33,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TrapRotate_CW",
+                    "name": "RotateTrap",
                     "type": "Button",
                     "id": "ab5d66ea-0f0a-4fa1-911f-913d86a92f66",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TrapRotate_ACW",
-                    "type": "Button",
-                    "id": "992a5758-4b99-4fc8-bfea-d039da944de8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -93,22 +84,11 @@
                 {
                     "name": "",
                     "id": "07fbfb64-a6f6-4cae-a31b-247f784cda01",
-                    "path": "<Keyboard>/ctrl",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TrapRotate_CW",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "355f05be-f6dd-4360-95c3-a1e376e4979a",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrapRotate_ACW",
+                    "action": "RotateTrap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
 using _Scripts.NetworkScript;
 using _Scripts.Characters.Cameras;
-using _Scripts.TrapSystem;
 using _Scripts.TrapSystem.Datas;
+using _Scripts.GameplayFeatures;
+using _Scripts.Weapons.Projectiles;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -16,7 +16,8 @@ namespace _Scripts.Characters.DungeonMaster
         #region References
         [Header("References")]
         [SerializeField] private TilingSO tiling;
-        [SerializeField] private Transform orientation;
+        [SerializeField] private Transform projection;
+        [SerializeField] private TilingInteractor interactor;
         [SerializeField] private SkyCameraSetup cameraPrefab;
 
         private InputsDM _inputs;
@@ -45,18 +46,15 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private string tilingLayer = "Tiling";
         [SerializeField] private LayerMask raycastMask;
         [SerializeField] private LayerMask trapPositioningMask;
+
         [SerializeField, Range(0f, 1f)] private float checkDistance = 0.5f;
         [SerializeField, Range(0f, 1f)] private float correctiveOffset = 0.6f;
         [SerializeField, Range(0f, 0.1f)] private float gridCorrection = 0.05f;
 
         public static TrapSO selectedTrap;
         public static Transform _selectedTrapInstance;
+
         private Transform _hittedTile;
-        private List<Tile> _reachedTiles = new List<Tile>();
-        private RaycastHit _rayHit;
-        private float _selectedTrapRotation;
-        private bool _isHitting;
-        private bool _canPlaceTrap;
         #endregion
 
         #endregion
@@ -140,6 +138,9 @@ namespace _Scripts.Characters.DungeonMaster
             _inputs.Gameplay.CamRotate_ACW.performed += ctx => _rotationInputs.y = ctx.ReadValue<float>();
             _inputs.Gameplay.CamRotate_CW.canceled += ctx => _rotationInputs.x = 0f;
             _inputs.Gameplay.CamRotate_ACW.canceled += ctx => _rotationInputs.y = 0f;
+
+            //Trap Inputs
+            _inputs.Gameplay.RotateTrap.started += RotateTrapClockwise;
         }
 
         /// <summary>
@@ -156,6 +157,9 @@ namespace _Scripts.Characters.DungeonMaster
             _inputs.Gameplay.CamRotate_ACW.performed -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
             _inputs.Gameplay.CamRotate_CW.canceled -= ctx => _rotationInputs.x = 0f;
             _inputs.Gameplay.CamRotate_ACW.canceled -= ctx => _rotationInputs.y = 0f;
+
+            //Trap Inputs
+            _inputs.Gameplay.RotateTrap.started -= RotateTrapClockwise;
         }
         #endregion
 
@@ -176,6 +180,19 @@ namespace _Scripts.Characters.DungeonMaster
         }
         #endregion
 
+        #region Trap Movements
+        /// <summary>
+        /// Rotate the trap projection clockwisely
+        /// </summary>
+        public void RotateTrapClockwise(InputAction.CallbackContext _)
+        {
+            //_currentRotation = _currentRotation + 90f >= 360f ? 0f : _currentRotation + 90f;
+
+            projection.rotation *= Quaternion.Euler(0f, 90f, 0f);
+            UpdateTiling();
+        }
+        #endregion
+
         #region RayShooting
         /// <summary>
         /// Shooting a ray to place the selected trap
@@ -185,19 +202,18 @@ namespace _Scripts.Characters.DungeonMaster
             Ray ray = _camSetup.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
 
-            if (Physics.Raycast(ray, out _rayHit, Mathf.Infinity, raycastMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hitting something else that the tiling
-                if (_rayHit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
+                if (hit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
                     return;
 
                 //Hitting the same tile that the last one
-                if (_hittedTile == _rayHit.transform)
+                if (_hittedTile == hit.transform)
                     return;
 
-                //Update tiling on new tile selectedq
-                ResetTiling();
-                _hittedTile = _rayHit.transform;
+                //Update tiling on new tile selected
+                SetProjectionPosition(hit.transform);
                 UpdateTiling();
             }
         }
@@ -205,14 +221,22 @@ namespace _Scripts.Characters.DungeonMaster
 
         #region Tiling Interactions
         /// <summary>
-        /// Reset tiling color on tile changed
+        /// Set the last object hitted and the projection position and rotation
         /// </summary>
-        private void ResetTiling()
+        /// <param name="hittedObj"></param>
+        private void SetProjectionPosition(Transform hittedObj)
         {
-            if (!_hittedTile)
-                return;
+            //Set position and rotation of the projection transform
+            _hittedTile = hittedObj;
+            projection.position = _hittedTile.position;
 
-            _hittedTile.GetComponent<Tile>().NewTileState(Tile.TileState.Deselected);
+            //Hit a different oriented tiling
+            if (projection.up != _hittedTile.up)
+            {
+                interactor.RefreshInteractor();
+                //projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
+                projection.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(projection.forward, _hittedTile.up));
+            }
         }
 
         /// <summary>
@@ -220,7 +244,14 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private void UpdateTiling()
         {
-            _hittedTile.GetComponent<Tile>().NewTileState(Tile.TileState.Selected);
+            //Get the trap position based on 
+            Vector3 Xpos = projection.right * ((1 - X % 2) * tiling.lengthX * 0.5f);
+            Vector3 Ypos = projection.forward * ((1 - Y % 2) * tiling.lengthY * 0.5f);
+            Vector3 projectedTrapPos = projection.position + (Xpos + Ypos);
+
+            mark2.position = projectedTrapPos;
+
+            /*_hittedTile.GetComponent<Tile>().NewTileState(Tile.TileState.Selected);
 
             //Get the grid bounds
             Vector3 gridX = orientation.right * ((X / 2f * tiling.lengthX) - (X % 2 * tiling.lengthX * correctiveOffset));
@@ -247,7 +278,7 @@ namespace _Scripts.Characters.DungeonMaster
                         Debug.Log("Found");
                     }
 
-                    /*if (Physics.Raycast(fullCast, -orientation.up, out RaycastHit hit, tilingLayer))
+                    *//*if (Physics.Raycast(fullCast, -orientation.up, out RaycastHit hit, tilingLayer))
                     {
                         if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed)
                             _reachedTiles.Add(tile);
@@ -255,11 +286,11 @@ namespace _Scripts.Characters.DungeonMaster
                             placeTrap = false;
                     }
                     else
-                        placeTrap = false;*/
+                        placeTrap = false;*//*
                 }
-            }
+            }*/
 
-            SetTrapPosition();
+            //SetTrapPosition();
         }
         #endregion
 
@@ -269,8 +300,8 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private void SetTrapPosition()
         {
-            Vector3 Xpos = orientation.right * ((1 - X % 2) * tiling.lengthX * 0.5f);
-            Vector3 Ypos = orientation.forward * ((1 - Y % 2) * tiling.lengthY * 0.5f);
+            Vector3 Xpos = projection.right * ((1 - X % 2) * tiling.lengthX * 0.5f);
+            Vector3 Ypos = projection.forward * ((1 - Y % 2) * tiling.lengthY * 0.5f);
             Vector3 trapPos = _hittedTile.position + (Xpos + Ypos);
 
             mark.position = trapPos;

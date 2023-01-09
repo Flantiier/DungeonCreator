@@ -53,7 +53,7 @@ namespace _Scripts.TrapSystem
             {
                 for (int j = 0; j < yAmount; j++)
                 {
-                    GameObject tile = Instantiate(tiling.tilePrefab, transform);
+                    GameObject tile = PrefabUtility.InstantiatePrefab(tiling.tilePrefab, transform) as GameObject;
                     Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
                     tile.transform.position = startPos + transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
                     tile.transform.rotation = Quaternion.identity;

@@ -320,7 +320,7 @@ namespace _Scripts.Characters.DungeonMaster
 
                     if (Physics.SphereCast(castOrigin, checkRadius, -_selectedTrapInstance.up, out RaycastHit hit, maxCheckDistance, tilesMask))
                     {
-                        if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed)
+                        if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed())
                             _reachedTiles.Add(tile);
                         else
                             placeTrap = false;
@@ -334,7 +334,7 @@ namespace _Scripts.Characters.DungeonMaster
 
             if (!placeTrap)
             {
-                ChangeTilesStates(Tile.TileState.Waiting);
+                ChangeTilesStates(Tile.TileState.Free);
                 return;
             }
 
@@ -359,7 +359,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private void ResetTilesList()
         {
-            ChangeTilesStates(Tile.TileState.Deselected);
+            ChangeTilesStates(Tile.TileState.Free);
 
             _reachedTiles.Clear();
         }
