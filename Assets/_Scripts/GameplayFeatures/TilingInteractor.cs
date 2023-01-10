@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using _Scripts.TrapSystem;
+using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
@@ -9,10 +9,11 @@ namespace _Scripts.GameplayFeatures
     [RequireComponent(typeof(Rigidbody))]
     public class TilingInteractor : MonoBehaviour
     {
-        #region Variables
-        [ShowInInspector] private List<Tile> _tiles = new List<Tile>();
+        #region Variables/Properties
+        private List<Tile> _tiles = new List<Tile>();
         private BoxCollider _collider;
 
+        public int Amount { get; set; }
         public List<Tile> Tiles => _tiles;
         #endregion
 
@@ -20,8 +21,30 @@ namespace _Scripts.GameplayFeatures
         private void Awake()
         {
             _collider = GetComponent<BoxCollider>();
+            DisableCollider();
         }
 
+        private void OnEnable()
+        {
+            DMController_Test.Instance.OnStartDrag += EnableCollider;
+            DMController_Test.Instance.OnEndDrag += DisableCollider;
+        }
+
+        private void OnDisable()
+        {
+            DMController_Test.Instance.OnStartDrag -= EnableCollider;
+            DMController_Test.Instance.OnEndDrag -= DisableCollider;
+        }
+
+        private void LateUpdate()
+        {
+            if (!_collider.enabled)
+                return;
+
+            RefreshTiling();
+        }
+
+        #region Trigger collisions
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent(out Tile tile))
@@ -45,7 +68,34 @@ namespace _Scripts.GameplayFeatures
         }
         #endregion
 
+        #endregion
+
         #region Methods
+        /// <summary>
+        /// Checks if there are such tiles in the tiles list
+        /// </summary>
+        public bool CheckTilesAmount()
+        {
+            return Tiles.Count >= Amount;
+        }
+
+        /// <summary>
+        /// Indicates if all the tiles detected are free
+        /// </summary>
+        public bool IsTilingFree()
+        {
+            foreach (Tile tile in Tiles)
+            {
+                if (tile.CurrentTileState != Tile.TileState.Used)
+                    continue;
+
+                return false;
+            }
+
+            return true;
+        }
+
+        #region Collider Methods
         /// <summary>
         /// Set the box collider bounds on X and Z
         /// </summary>
@@ -59,6 +109,29 @@ namespace _Scripts.GameplayFeatures
             _collider.size = new Vector3(sizeX, _collider.size.y, sizeZ);
         }
 
+        /// <summary>
+        /// Enable the collider
+        /// </summary>
+        private void EnableCollider()
+        {
+            if (!_collider)
+                return;
+
+            _collider.enabled = true;
+        }
+
+        /// <summary>
+        /// Disable the collider
+        /// </summary>
+        private void DisableCollider()
+        {
+            if (!_collider)
+                return;
+
+            _collider.enabled = false;
+        }
+        #endregion
+
         #region Tiles Interactions
         /// <summary>
         /// Add a tile to the list
@@ -69,7 +142,6 @@ namespace _Scripts.GameplayFeatures
                 return;
 
             Tiles.Add(tile);
-            SetTileNewState(tile, Tile.TileState.Selected);
         }
 
         /// <summary>
@@ -82,6 +154,17 @@ namespace _Scripts.GameplayFeatures
 
             SetTileNewState(tile, Tile.TileState.Free);
             Tiles.Remove(tile);
+        }
+
+        /// <summary>
+        /// Refresh all tiles in the list
+        /// </summary>
+        public void RefreshTiling()
+        {
+            if (!CheckTilesAmount() || !IsTilingFree())
+                SetAllTiles(Tile.TileState.Waiting);
+            else
+                SetAllTiles(Tile.TileState.Selected);
         }
 
         /// <summary>
@@ -113,15 +196,21 @@ namespace _Scripts.GameplayFeatures
         }
 
         /// <summary>
+        /// Reset completely the tiles list
+        /// </summary>
+        public void RefreshTilesList()
+        {
+            SetAllTiles(Tile.TileState.Free);
+            Tiles.Clear();
+        }
+
+        /// <summary>
         /// Set all available tiles to free and clear the tiles list
         /// </summary>
         public void RefreshInteractor()
         {
             _collider.enabled = false;
-
-            SetAllTiles(Tile.TileState.Free);
-            Tiles.Clear();
-
+            RefreshTilesList();
             _collider.enabled = true;
         }
         #endregion

@@ -14,7 +14,7 @@ namespace _Scripts.TrapSystem
         #endregion
 
         #region Properties
-        public enum TileState { Free, Selected, Used }
+        public enum TileState { Free, Selected, Waiting, Used }
         public TileState CurrentTileState { get; private set; }
         #endregion
 
@@ -37,6 +37,9 @@ namespace _Scripts.TrapSystem
                     SetTileMaterial(selectedMaterial);
                     break;
                 case TileState.Used:
+                    SetTileMaterial(usedMaterial);
+                    break;
+                case TileState.Waiting:
                     SetTileMaterial(usedMaterial);
                     break;
                 default:

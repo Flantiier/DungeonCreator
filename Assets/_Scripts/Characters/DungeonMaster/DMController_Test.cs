@@ -1,17 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
 using _Scripts.NetworkScript;
 using _Scripts.Characters.Cameras;
-using _Scripts.TrapSystem.Datas;
 using _Scripts.GameplayFeatures;
-using _Scripts.Weapons.Projectiles;
 
 namespace _Scripts.Characters.DungeonMaster
 {
-    public class DMController_Test : MonoBehaviour
+    public class DMController_Test : MonoBehaviourSingleton<DMController_Test>
     {
         #region Variables
+        public Transform ghostTrap;
 
         #region References
         [Header("References")]
@@ -28,43 +28,41 @@ namespace _Scripts.Characters.DungeonMaster
         [Header("Motion properties")]
         [SerializeField] private float moveSpeed = 25f;
         [SerializeField] private float rotationSpeed = 100f;
-        [Space, SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
-
-        [Header("Test")]
-        [SerializeField] private Transform mark;
-        [SerializeField] private Transform mark2;
-        [SerializeField] private int X = 2;
-        [SerializeField] private int Y = 2;
+        [SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
 
         private Vector2 _inputsVector;
         private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
         #endregion
 
-        #region RayShooting
+        #region RayShooting/Traps
         [Header("Raycast properties")]
         [SerializeField] private string tilingLayer = "Tiling";
         [SerializeField] private LayerMask raycastMask;
         [SerializeField] private LayerMask trapPositioningMask;
 
-        [SerializeField, Range(0f, 1f)] private float checkDistance = 0.5f;
-        [SerializeField, Range(0f, 1f)] private float correctiveOffset = 0.6f;
-        [SerializeField, Range(0f, 0.1f)] private float gridCorrection = 0.05f;
-
-        public static TrapSO selectedTrap;
-        public static Transform _selectedTrapInstance;
-
         private Transform _hittedTile;
+        private float _currentRotation;
         #endregion
 
+        #region Drag References
+        public event Action OnStartDrag;
+        public event Action OnEndDrag;
+        #endregion
+
+        #endregion
+
+        #region Properties
+        public bool IsDragging { get; set; }
+        public DraggableCard SelectedCard { get; private set; }
         #endregion
 
         #region Builts_In
-        private void Awake()
+        public override void Awake()
         {
-            _inputs = new InputsDM();
+            base.Awake();
 
-            InitializeMethod();
+            _inputs = new InputsDM();
             InstantiateCamera();
         }
 
@@ -88,14 +86,6 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Method runned at awake
-        /// </summary>
-        private void InitializeMethod()
-        {
-
-        }
-
         /// <summary>
         /// Instantiate sky camera
         /// </summary>
@@ -180,26 +170,17 @@ namespace _Scripts.Characters.DungeonMaster
         }
         #endregion
 
-        #region Trap Movements
-        /// <summary>
-        /// Rotate the trap projection clockwisely
-        /// </summary>
-        public void RotateTrapClockwise(InputAction.CallbackContext _)
-        {
-            //_currentRotation = _currentRotation + 90f >= 360f ? 0f : _currentRotation + 90f;
-
-            projection.rotation *= Quaternion.Euler(0f, 90f, 0f);
-            UpdateTiling();
-        }
-        #endregion
-
-        #region RayShooting
+        #region RayShooting/Tiling Interactions
         /// <summary>
         /// Shooting a ray to place the selected trap
         /// </summary>
         private void ShootingRaycast()
         {
-            Ray ray = _camSetup.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+            //If there is a trap card selected
+            if (!IsDragging || !SelectedCard)
+                return;
+
+            Ray ray = GetRayFromScreenPoint();
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
 
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
@@ -217,9 +198,15 @@ namespace _Scripts.Characters.DungeonMaster
                 UpdateTiling();
             }
         }
-        #endregion
 
-        #region Tiling Interactions
+        /// <summary>
+        /// Get a ray which starts from the center of the camera to the mouse screen position
+        /// </summary>
+        private Ray GetRayFromScreenPoint()
+        {
+            return _camSetup.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        }
+
         /// <summary>
         /// Set the last object hitted and the projection position and rotation
         /// </summary>
@@ -234,8 +221,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (projection.up != _hittedTile.up)
             {
                 interactor.RefreshInteractor();
-                //projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
-                projection.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(projection.forward, _hittedTile.up));
+                projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
             }
         }
 
@@ -245,66 +231,107 @@ namespace _Scripts.Characters.DungeonMaster
         private void UpdateTiling()
         {
             //Get the trap position based on 
-            Vector3 Xpos = projection.right * ((1 - X % 2) * tiling.lengthX * 0.5f);
-            Vector3 Ypos = projection.forward * ((1 - Y % 2) * tiling.lengthY * 0.5f);
+            Vector3 Xpos = projection.right * ((1 - SelectedCard.TrapReference.xAmount % 2) * tiling.lengthX * 0.5f);
+            Vector3 Ypos = projection.forward * ((1 - SelectedCard.TrapReference.yAmount % 2) * tiling.lengthY * 0.5f);
             Vector3 projectedTrapPos = projection.position + (Xpos + Ypos);
 
-            mark2.position = projectedTrapPos;
+            ghostTrap.position = projectedTrapPos;
+            interactor.transform.position = projectedTrapPos;
+        }
+        #endregion
 
-            /*_hittedTile.GetComponent<Tile>().NewTileState(Tile.TileState.Selected);
-
-            //Get the grid bounds
-            Vector3 gridX = orientation.right * ((X / 2f * tiling.lengthX) - (X % 2 * tiling.lengthX * correctiveOffset));
-            Vector3 gridY = orientation.forward * ((Y / 2f * tiling.lengthY) - (Y % 2 * tiling.lengthY * correctiveOffset));
-            Vector3 startPos = _hittedTile.position + (gridX + gridY);
-            mark2.position = startPos;
-
-            if (!Input.GetKey(KeyCode.Space))
-                return;
-
-            //Check the grid bounds
-            for (int i = 0; i < X; i++)
+        #region Dragging Methods
+        /// <summary>
+        /// Indicates if a trap can be place when drag is ending
+        /// </summary>
+        private bool IsPossibleToPlaceTrap()
+        {
+            //Shoot a ray to konw if the cursor is on a tile
+            if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
-                for (int j = 0; j < Y; j++)
-                {
-                    Vector3 origin = startPos + orientation.up * 0.25f;
-                    Vector3 cast = orientation.right * (-i * tiling.lengthX + gridCorrection) + orientation.forward * (-j * tiling.lengthY + gridCorrection);
-                    Vector3 fullCast = origin + cast;
+                //Hit something else that a tile
+                if (hit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
+                    return false;
 
-                    //Instantiate(mark2, fullCast, Quaternion.identity);
+                //Check if all tiles are free
+                if(!interactor.IsTilingFree())
+                    return false;
 
-                    if (Physics.Raycast(fullCast, -orientation.up, out RaycastHit hit, checkDistance, trapPositioningMask))
-                    {
-                        Debug.Log("Found");
-                    }
+                //Hit a tile
+                return true;
+            }
 
-                    *//*if (Physics.Raycast(fullCast, -orientation.up, out RaycastHit hit, tilingLayer))
-                    {
-                        if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed)
-                            _reachedTiles.Add(tile);
-                        else
-                            placeTrap = false;
-                    }
-                    else
-                        placeTrap = false;*//*
-                }
-            }*/
+            //Hitting nothing
+            return false;
+        }
 
-            //SetTrapPosition();
+        /// <summary>
+        /// Invoking start drag event
+        /// </summary>
+        public void StartDrag(DraggableCard cardRef)
+        {
+            //Set the dragged card
+            IsDragging = true;
+            SelectedCard = cardRef;
+
+            //Set required amount of tiles
+            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
+
+            //Set collider size
+            float amountX = SelectedCard.TrapReference.xAmount - 2f;
+            float amountY = SelectedCard.TrapReference.yAmount - 2f;
+            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f; 
+            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
+            interactor.SetColliderSize(X, Y);
+
+            //StartDrag event call
+            OnStartDrag?.Invoke();
+        }
+
+        /// <summary>
+        /// Invoking start drag event
+        /// </summary>
+        public void EndDrag()
+        {
+            //End drag
+            IsDragging = false;
+            _currentRotation = 0f;
+
+            //Place trap if it's possible
+            if (IsPossibleToPlaceTrap())
+                PlaceTrap();
+
+            //Refresh tiles list
+            interactor.RefreshTilesList();
+
+            OnEndDrag?.Invoke();
         }
         #endregion
 
         #region Trap Positioning
         /// <summary>
-        /// Set the trap position on the grid
+        /// PUts a trap on current tiled selected
         /// </summary>
-        private void SetTrapPosition()
+        private void PlaceTrap()
         {
-            Vector3 Xpos = projection.right * ((1 - X % 2) * tiling.lengthX * 0.5f);
-            Vector3 Ypos = projection.forward * ((1 - Y % 2) * tiling.lengthY * 0.5f);
-            Vector3 trapPos = _hittedTile.position + (Xpos + Ypos);
+            //Instantiate trap
+            Instantiate(SelectedCard.TrapReference.trapPrefab, interactor.transform.position, interactor.transform.rotation);
+            //Set all tiles on used
+            interactor.SetAllTiles(TrapSystem.Tile.TileState.Used);
+        }
 
-            mark.position = trapPos;
+        /// <summary>
+        /// Rotate the trap projection clockwisely
+        /// </summary>
+        public void RotateTrapClockwise(InputAction.CallbackContext _)
+        {
+            if (!IsDragging)
+                return;
+
+            _currentRotation = _currentRotation + 90f >= 360f ? 0f : _currentRotation + 90f;
+            projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
+
+            UpdateTiling();
         }
         #endregion
 
