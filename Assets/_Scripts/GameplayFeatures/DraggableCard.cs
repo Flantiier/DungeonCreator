@@ -24,10 +24,10 @@ namespace _Scripts.GameplayFeatures
         #region Builts_In
         private void Awake()
 		{
-			_rectTransform = transform as RectTransform;
-			_image = GetComponent<Image>();
+			//_rectTransform = transform as RectTransform;
+			//_image = GetComponent<Image>();
 
-            SetCardAnchor(_rectTransform.anchoredPosition);
+            SetCardAnchor(transform.position);
 		}
         #endregion
 
