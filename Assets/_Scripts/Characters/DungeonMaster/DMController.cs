@@ -377,7 +377,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (_selectedTrapInstance != null)
                 Destroy(_selectedTrapInstance.gameObject);
 
-            _selectedTrapInstance = Instantiate(selectedTrap.trapGhostPrefab, Vector3.up * 200f, Quaternion.identity).transform;
+            _selectedTrapInstance = Instantiate(selectedTrap.trapPrefab, Vector3.up * 200f, Quaternion.identity).transform;
         }
 
         /// <summary>

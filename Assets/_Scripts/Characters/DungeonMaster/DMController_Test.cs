@@ -41,8 +41,12 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private LayerMask raycastMask;
         [SerializeField] private LayerMask trapPositioningMask;
 
+        [Header("Positionning properties")]
+        [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
+
         private Transform _hittedTile;
         private float _currentRotation;
+        private Transform _trapInstance;
         #endregion
 
         #region Drag References
@@ -70,12 +74,20 @@ namespace _Scripts.Characters.DungeonMaster
         {
             EnableInputs(true);
             SubscribeToInputs();
+
+            OnStartDrag += StartDragListener;
+            OnEndDrag += EndDragListener;
+            OnStartDrag += GetSelectedTrap;
         }
 
         private void OnDisable()
         {
             EnableInputs(false);
             UnsubscribeToInputs();
+
+            OnStartDrag -= StartDragListener;
+            OnEndDrag -= EndDragListener;
+            OnStartDrag -= GetSelectedTrap;
         }
 
         private void Update()
@@ -99,6 +111,35 @@ namespace _Scripts.Characters.DungeonMaster
 
             _camSetup = Instantiate(cameraPrefab);
             _camSetup.SetLookAtTarget(transform);
+        }
+
+        private void StartDragListener()
+        {
+            //Set the position of  the projection transform off map
+            projection.position = offMapPosition;
+
+            //Set required amount of tiles
+            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
+
+            //Set collider size
+            float amountX = SelectedCard.TrapReference.xAmount - 2f;
+            float amountY = SelectedCard.TrapReference.yAmount - 2f;
+            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f;
+            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
+            interactor.SetColliderSize(X, Y);
+        }
+
+        private void EndDragListener()
+        {
+            //Reset last tile hitted
+            _hittedTile = null;
+
+            //Reset projection values
+            projection.position = offMapPosition;
+            _currentRotation = 0f;
+
+            //Reset interactor
+            interactor.RefreshInteractor();
         }
 
         #region Inputs
@@ -233,14 +274,44 @@ namespace _Scripts.Characters.DungeonMaster
             //Get the trap position based on 
             Vector3 Xpos = projection.right * ((1 - SelectedCard.TrapReference.xAmount % 2) * tiling.lengthX * 0.5f);
             Vector3 Ypos = projection.forward * ((1 - SelectedCard.TrapReference.yAmount % 2) * tiling.lengthY * 0.5f);
-            Vector3 projectedTrapPos = projection.position + (Xpos + Ypos);
+            Vector3 trapPosition = projection.position + (Xpos + Ypos);
 
-            ghostTrap.position = projectedTrapPos;
-            interactor.transform.position = projectedTrapPos;
+            interactor.transform.position = trapPosition;
+            _trapInstance.position = trapPosition;
         }
         #endregion
 
         #region Dragging Methods
+        /// <summary>
+        /// Invoking start drag event
+        /// </summary>
+        public void StartDrag(DraggableCard cardRef)
+        {
+            //Set the dragged card
+            IsDragging = true;
+            SelectedCard = cardRef;
+
+            //StartDrag event call
+            OnStartDrag?.Invoke();
+        }
+
+        /// <summary>
+        /// Invoking start drag event
+        /// </summary>
+        public void EndDrag()
+        {
+            //End drag
+            IsDragging = false;
+
+            //Place trap if it's possible
+            if (IsPossibleToPlaceTrap())
+                PlaceTrapOnGrid();
+            else
+                Destroy(_trapInstance.gameObject);
+
+            OnEndDrag?.Invoke();
+        }
+
         /// <summary>
         /// Indicates if a trap can be place when drag is ending
         /// </summary>
@@ -254,7 +325,7 @@ namespace _Scripts.Characters.DungeonMaster
                     return false;
 
                 //Check if all tiles are free
-                if(!interactor.IsTilingFree())
+                if (!interactor.EnoughTilesAmount() || !interactor.IsTilingFree())
                     return false;
 
                 //Hit a tile
@@ -264,58 +335,35 @@ namespace _Scripts.Characters.DungeonMaster
             //Hitting nothing
             return false;
         }
-
-        /// <summary>
-        /// Invoking start drag event
-        /// </summary>
-        public void StartDrag(DraggableCard cardRef)
-        {
-            //Set the dragged card
-            IsDragging = true;
-            SelectedCard = cardRef;
-
-            //Set required amount of tiles
-            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
-
-            //Set collider size
-            float amountX = SelectedCard.TrapReference.xAmount - 2f;
-            float amountY = SelectedCard.TrapReference.yAmount - 2f;
-            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f; 
-            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
-            interactor.SetColliderSize(X, Y);
-
-            //StartDrag event call
-            OnStartDrag?.Invoke();
-        }
-
-        /// <summary>
-        /// Invoking start drag event
-        /// </summary>
-        public void EndDrag()
-        {
-            //End drag
-            IsDragging = false;
-            _currentRotation = 0f;
-
-            //Place trap if it's possible
-            if (IsPossibleToPlaceTrap())
-                PlaceTrap();
-
-            //Refresh tiles list
-            interactor.RefreshTilesList();
-
-            OnEndDrag?.Invoke();
-        }
         #endregion
 
         #region Trap Positioning
         /// <summary>
+        /// Preview the trap on the grid before placing it
+        /// </summary>
+        private void GetSelectedTrap()
+        {
+            if (!SelectedCard)
+                return;
+
+            //Get ghost prefab
+            _trapInstance = Instantiate(SelectedCard.TrapReference.trapPrefab, projection).transform;
+            //Set material to preview mat
+            _trapInstance.GetComponentInChildren<Renderer>().material = SelectedCard.TrapReference.GetPreviewMaterial();
+        }
+
+        /// <summary>
         /// PUts a trap on current tiled selected
         /// </summary>
-        private void PlaceTrap()
+        private void PlaceTrapOnGrid()
         {
-            //Instantiate trap
-            Instantiate(SelectedCard.TrapReference.trapPrefab, interactor.transform.position, interactor.transform.rotation);
+            if (!SelectedCard || !_trapInstance)
+                return;
+            
+            //Set trap position
+            _trapInstance.SetParent(null);
+            //Set its material to base material
+            _trapInstance.GetComponentInChildren<Renderer>().material = SelectedCard.TrapReference.GetDefaultMaterial();
             //Set all tiles on used
             interactor.SetAllTiles(TrapSystem.Tile.TileState.Used);
         }

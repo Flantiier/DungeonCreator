@@ -74,7 +74,7 @@ namespace _Scripts.GameplayFeatures
         /// <summary>
         /// Checks if there are such tiles in the tiles list
         /// </summary>
-        public bool CheckTilesAmount()
+        public bool EnoughTilesAmount()
         {
             return Tiles.Count >= Amount;
         }
@@ -161,7 +161,7 @@ namespace _Scripts.GameplayFeatures
         /// </summary>
         public void RefreshTiling()
         {
-            if (!CheckTilesAmount() || !IsTilingFree())
+            if (!EnoughTilesAmount() || !IsTilingFree())
                 SetAllTiles(Tile.TileState.Waiting);
             else
                 SetAllTiles(Tile.TileState.Selected);
