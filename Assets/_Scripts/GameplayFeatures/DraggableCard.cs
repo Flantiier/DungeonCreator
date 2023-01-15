@@ -1,96 +1,120 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using _Scripts.TrapSystem.Datas;
 using _Scripts.Characters.DungeonMaster;
+using _ScriptablesObjects.Traps;
 
 namespace _Scripts.GameplayFeatures
 {
-	public class DraggableCard : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
-	{
-        #region Variables
+    public class DraggableCard : DraggableUIElement
+    {
+        #region Variables/Properties
+        [Header("References")]
         [SerializeField] private TrapSO trapReference;
+        [SerializeField] private GameObject card;
+        [SerializeField] private CardDesign design;
 
-		private RectTransform _rectTransform;
-		private Image _image;
-		private Vector3 _anchoredPosition;
-        private bool _isBeingDragged = false;
-        #endregion
-
-        #region Properties
+        private Image _raycaster;
         public TrapSO TrapReference => trapReference;
         #endregion
 
         #region Builts_In
-        private void Awake()
-		{
-			_rectTransform = transform as RectTransform;
-			_image = GetComponent<Image>();
+        public override void Awake()
+        {
+            base.Awake();
+            _raycaster = GetComponent<Image>();
 
-            SetCardAnchor(_rectTransform.anchoredPosition);
-		}
+            //Update card's informations
+            UpdateCardInformations(TrapReference);
+        }
+
+        private void OnEnable()
+        {
+            PointerZone.OnEnterPointerZone += EnableCard;
+            PointerZone.OnExitPointerZone += DisableCard;
+        }
+
+        private void OnDisable()
+        {
+            PointerZone.OnEnterPointerZone -= EnableCard;
+            PointerZone.OnExitPointerZone -= DisableCard;
+        }
         #endregion
 
         #region DragAndDropInterfaces
-        public void OnBeginDrag(PointerEventData eventData)
+        public override void OnBeginDrag(PointerEventData eventData)
         {
-            BeingDragged(true);
+            base.OnBeginDrag(eventData);
+            _raycaster.raycastTarget = false;
+
             DMController_Test.Instance.StartDrag(this);
         }
 
-        public void OnDrag(PointerEventData eventData)
-        {
-            //Modify this card position during drag
-            transform.position = eventData.position;
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
+        public override void OnEndDrag(PointerEventData eventData)
         {
             DMController_Test.Instance.EndDrag();
 
-            BeingDragged(false);
-            SetCardPosition();
+            base.OnEndDrag(eventData);
+            card.SetActive(true);
+            _raycaster.raycastTarget = true;
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Enable or disable the image component on the card
+        /// Update the different informations on the card
         /// </summary>
-        /// <param name="enabled"> Should be enable or not </param>
-        public void EnableCard(bool enabled)
-		{
-			_image.enabled = enabled;
-		}
-
-        /// <summary>
-        /// Set the anchored position variable
-        /// </summary>
-        public void SetCardAnchor(Vector3 anchored)
+        /// <param name="reference"> Trap reference </param>
+        private void UpdateCardInformations(TrapSO reference)
         {
-            _anchoredPosition = anchored;
+            if (!reference)
+            {
+                Debug.LogWarning("Missing trap reference");
+                return;
+            }
+
+            trapReference = reference;
+            design.imageField.sprite = reference.image;
+            design.nameField.SetText(reference.trapName + " :");
+            design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
+            design.damageField.SetText(reference.damages.ToString());
+            design.manaField.SetText(reference.manaCost.ToString());
         }
 
         /// <summary>
-        /// Set thsi obvject anchored position to  the last anchored position set
+        /// Enable card display
         /// </summary>
-        public void SetCardPosition()
+        private void EnableCard()
         {
-            if (!_rectTransform)
+            if (!IsDragged)
                 return;
 
-            _rectTransform.anchoredPosition = _anchoredPosition;
+            card.SetActive(true);
         }
 
         /// <summary>
-        /// Change drag state of this card
+        /// Disable card display
         /// </summary>
-        private void BeingDragged(bool dragging)
+        private void DisableCard()
         {
-            _isBeingDragged = dragging;
+            if (!IsDragged)
+                return;
 
-            _image.raycastTarget = !dragging;
+            card.SetActive(false);
         }
         #endregion
     }
 }
+
+#region CardDesign_Class
+[System.Serializable]
+public struct CardDesign
+{
+    public Image imageField;
+    public TextMeshProUGUI nameField;
+    public TextMeshProUGUI descriptionField;
+    public TextMeshProUGUI damageField;
+    public TextMeshProUGUI manaField;
+}
+#endregion

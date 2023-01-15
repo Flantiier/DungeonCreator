@@ -1,16 +1,15 @@
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.Interfaces;
-using _Scripts.Characters;
-using _Scripts.Characters.StateMachines;
+using _ScriptablesObjects.Traps;
 
 namespace _Scripts.TrapSystem.Datas
 {
     public class TrapManager : MonoBehaviourPunCallbacks
     {
-        [Header("Trap Info")]
+        /*[Header("Trap Info")]
         public TrapSO trapSO;
-        public TrapDamageableSO trapDamageableSO;
+        public DamagingTrapSO trapDamageableSO;
 
         private Animator _animator;
         private ParticleSystem _particle;
@@ -27,7 +26,7 @@ namespace _Scripts.TrapSystem.Datas
 
         private void OnCollisionEnter(Collision collision)
         {
-/*            if (!collision.TryGetComponent(out IDamageable damage))
+*//*            if (!collision.TryGetComponent(out IDamageable damage))
             {
                 return;
             }
@@ -39,33 +38,18 @@ namespace _Scripts.TrapSystem.Datas
                 {
                     Destroy(gameObject);
                 }
-            }*/
+            }*//*
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent(out IPlayerDamageable player)) return;
             if (trapSO) return;
-
-            if (trapDamageableSO.isPlayerTrapped == true)
-            {
-                _animator.SetBool("isCaged", true);                
-            }
         }
 
         private void OnTriggerStay(Collider other)
         {
             if (!other.TryGetComponent(out IPlayerDamageable player)) return;
-
-            if (trapSO)
-            {
-                player.SoftDamages(trapSO.damage);
-            }
-            else if (trapDamageableSO)
-            {
-                player.SoftDamages(trapDamageableSO.damage);
-            }
-            //se trouve dans player HUD (script)
         }
 
         private void PlayParticle()
@@ -73,5 +57,6 @@ namespace _Scripts.TrapSystem.Datas
             _particle = GetComponentInChildren<ParticleSystem>();
             _particle.Play();
         }
+    }*/
     }
 }

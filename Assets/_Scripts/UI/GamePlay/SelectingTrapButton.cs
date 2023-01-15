@@ -1,15 +1,15 @@
 using UnityEngine;
 using TMPro;
 using _Scripts.Characters.DungeonMaster;
-using _Scripts.TrapSystem.Datas;
+using _ScriptablesObjects.Traps;
 
 namespace _Scripts.TrapSystem.UI
 {
     public class SelectingTrapButton : MonoBehaviour
-    {
+    {/*
         [Header("Button infos")]
         [SerializeField] private TrapSO trapToSelect;
-        [SerializeField] private TrapDamageableSO trapDamageableToSelect;
+        [SerializeField] private DamagingTrapSO trapDamageableToSelect;
 
         public void Awake()
         {
@@ -42,6 +42,6 @@ namespace _Scripts.TrapSystem.UI
                 DMController.SelectingTrap(trapDamageableToSelect);
             }
         }
-
+*/
     }
 }

@@ -1,59 +1,38 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 #region TrapSO
-namespace _Scripts.TrapSystem.Datas
+namespace _ScriptablesObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Trap", menuName = "Scriptables/Trap")]
+    [CreateAssetMenu(fileName = "New Default Trap", menuName = "Scriptables/Traps/Default")]
     public class TrapSO : ScriptableObject
     {
-        [Header("Mesh properties")]
-        public GameObject trapPrefab;
-        public Material defaultMaterial;
-        public Material previewMaterial;
-
-        [Header("Trap informations")]
+        #region Variables
+        //INFORMATIONS
+        [TitleGroup("Informations")]
+        public Sprite image;
+        [TitleGroup("Informations")]
         public string trapName = "New trap";
-        public float damage;
-        public int manaCost;
-        public bool isStaminaLow;
+        [TitleGroup("Informations")]
+        [TextArea(3, 3)] public string description = "New description";
 
-        [TextArea(10, 10)] public string description = "New description";
-        [Range(1, 10)] public int xAmount = 5;
-        [Range(1, 10)] public int yAmount = 5;
+        //MESH AND MATERIALS
+        [TitleGroup("Mesh properties")]
+        public GameObject trapPrefab;
+        [TitleGroup("Mesh properties")]
+        public GameObject previewPrefab;
 
-        /// <summary>
-        /// Get the preview material
-        /// </summary>
-        /// <returns></returns>
-        public Material GetPreviewMaterial()
-        {
-            return GetMaterial(previewMaterial);
-        }
+        //PROPERTIES
+        [TitleGroup("Tiles")]
+        [Range(1, 3)] public int xAmount = 1;
+        [TitleGroup("Tiles")]
+        [Range(1, 3)] public int yAmount = 1;
 
-        /// <summary>
-        /// Get the preview material
-        /// </summary>
-        /// <returns></returns>
-        public Material GetDefaultMaterial()
-        {
-            return GetMaterial(defaultMaterial);
-        }
-
-        /// <summary>
-        /// Return the given material or a new instance if reference is missing
-        /// </summary>
-        /// <param name="mat"> Returned material </param>
-        private Material GetMaterial(Material mat)
-        {
-            if (!mat)
-            {
-                Material instance = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-                instance.color = Color.red;
-                return instance;
-            }
-
-            return mat;
-        }
+        [TitleGroup("Properties")]
+        public float manaCost = 10f;
+        [TitleGroup("Properties")]
+        public float damages = 30f;
+        #endregion
     }
 }
 #endregion

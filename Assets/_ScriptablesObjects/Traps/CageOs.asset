@@ -9,19 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f2f35b619a6e054786ba13b402eb3c4, type: 3}
+  m_Script: {fileID: 11500000, guid: f59a780561e7dfa43900dc54522ad715, type: 3}
   m_Name: CageOs
   m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: fd098fb4cf57bad419701c802e442b7e, type: 3}
+  trapName: Cage d'os
+  description: "Une cage destructible pi\xE8geant les joueurs \xE0 l'int\xE9rieur."
   trapPrefab: {fileID: 4413572524461186908, guid: 898693d1a3c1fa94780f1b3f765b38f0,
     type: 3}
-  trapGhostPrefab: {fileID: 4413572524461186908, guid: 3de2ee7a45965c94998e0b5f2c179704,
+  previewPrefab: {fileID: 4413572524461186908, guid: 3de2ee7a45965c94998e0b5f2c179704,
     type: 3}
-  trapName: Cage d'Os
-  damage: 0.02
-  manaCost: 10
-  isStaminaLow: 0
-  description: Une cage qui ne vous laissera pas partir...
   xAmount: 3
   yAmount: 3
-  health: 10
-  isPlayerTrapped: 1
+  manaCost: 10
+  damages: 0
+  health: 50

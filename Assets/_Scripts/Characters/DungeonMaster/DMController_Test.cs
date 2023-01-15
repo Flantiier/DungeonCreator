@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
-using _Scripts.NetworkScript;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
 
@@ -46,7 +45,7 @@ namespace _Scripts.Characters.DungeonMaster
 
         private Transform _hittedTile;
         private float _currentRotation;
-        private Transform _trapInstance;
+        private GameObject _trapInstance;
         #endregion
 
         #region Drag References
@@ -75,9 +74,7 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(true);
             SubscribeToInputs();
 
-            OnStartDrag += StartDragListener;
-            OnEndDrag += EndDragListener;
-            OnStartDrag += GetSelectedTrap;
+            PointerZone.OnEnterPointerZone += EnterPointerZone;
         }
 
         private void OnDisable()
@@ -85,9 +82,7 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(false);
             UnsubscribeToInputs();
 
-            OnStartDrag -= StartDragListener;
-            OnEndDrag -= EndDragListener;
-            OnStartDrag -= GetSelectedTrap;
+            PointerZone.OnEnterPointerZone -= EnterPointerZone;
         }
 
         private void Update()
@@ -113,9 +108,9 @@ namespace _Scripts.Characters.DungeonMaster
             _camSetup.SetLookAtTarget(transform);
         }
 
-        private void StartDragListener()
+        private void HandleStartDrag()
         {
-            //Set the position of  the projection transform off map
+            //Set the position of the projection transform off map
             projection.position = offMapPosition;
 
             //Set required amount of tiles
@@ -127,19 +122,19 @@ namespace _Scripts.Characters.DungeonMaster
             float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f;
             float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
             interactor.SetColliderSize(X, Y);
+
+            //StartDrag event call
+            OnStartDrag?.Invoke();
         }
 
-        private void EndDragListener()
+        private void HandleDragEnd()
         {
-            //Reset last tile hitted
             _hittedTile = null;
-
-            //Reset projection values
             projection.position = offMapPosition;
             _currentRotation = 0f;
 
-            //Reset interactor
             interactor.RefreshInteractor();
+            OnEndDrag?.Invoke();
         }
 
         #region Inputs
@@ -277,7 +272,7 @@ namespace _Scripts.Characters.DungeonMaster
             Vector3 trapPosition = projection.position + (Xpos + Ypos);
 
             interactor.transform.position = trapPosition;
-            _trapInstance.position = trapPosition;
+            _trapInstance.transform.position = trapPosition;
         }
         #endregion
 
@@ -291,8 +286,8 @@ namespace _Scripts.Characters.DungeonMaster
             IsDragging = true;
             SelectedCard = cardRef;
 
-            //StartDrag event call
-            OnStartDrag?.Invoke();
+            HandleStartDrag();
+            GetSelectedTrap();
         }
 
         /// <summary>
@@ -306,10 +301,11 @@ namespace _Scripts.Characters.DungeonMaster
             //Place trap if it's possible
             if (IsPossibleToPlaceTrap())
                 PlaceTrapOnGrid();
-            else
-                Destroy(_trapInstance.gameObject);
 
-            OnEndDrag?.Invoke();
+            if(_trapInstance)
+                Destroy(_trapInstance);
+
+            HandleDragEnd();
         }
 
         /// <summary>
@@ -335,6 +331,15 @@ namespace _Scripts.Characters.DungeonMaster
             //Hitting nothing
             return false;
         }
+
+        /// <summary>
+        /// Executed when entering in the card pointer zone
+        /// </summary>
+        private void EnterPointerZone()
+        {
+            _hittedTile = null;
+            projection.position = offMapPosition;
+        }
         #endregion
 
         #region Trap Positioning
@@ -347,9 +352,7 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
 
             //Get ghost prefab
-            _trapInstance = Instantiate(SelectedCard.TrapReference.trapPrefab, projection).transform;
-            //Set material to preview mat
-            _trapInstance.GetComponentInChildren<Renderer>().material = SelectedCard.TrapReference.GetPreviewMaterial();
+            _trapInstance = Instantiate(SelectedCard.TrapReference.previewPrefab, projection);
         }
 
         /// <summary>
@@ -359,12 +362,8 @@ namespace _Scripts.Characters.DungeonMaster
         {
             if (!SelectedCard || !_trapInstance)
                 return;
-            
-            //Set trap position
-            _trapInstance.SetParent(null);
-            //Set its material to base material
-            _trapInstance.GetComponentInChildren<Renderer>().material = SelectedCard.TrapReference.GetDefaultMaterial();
-            //Set all tiles on used
+
+            Instantiate(SelectedCard.TrapReference.trapPrefab, _trapInstance.transform.position, _trapInstance.transform.rotation);
             interactor.SetAllTiles(TrapSystem.Tile.TileState.Used);
         }
 
