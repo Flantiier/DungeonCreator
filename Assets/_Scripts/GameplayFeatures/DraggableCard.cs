@@ -87,21 +87,21 @@ namespace _Scripts.GameplayFeatures
         /// </summary>
         private void EnableCard()
         {
-            if (!IsDragged)
+            if (!card || !IsDragged)
                 return;
 
             card.SetActive(true);
         }
 
         /// <summary>
-        /// Disable card display
+        /// Enable card display
         /// </summary>
         private void DisableCard()
         {
-            if (!IsDragged)
+            if (!card || !IsDragged)
                 return;
 
-            card.SetActive(false);
+                card.SetActive(false);
         }
         #endregion
     }
