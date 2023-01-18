@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
-using Unity.VisualScripting;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -47,7 +46,6 @@ namespace _Scripts.Characters.DungeonMaster
         private Transform _hittedTile;
         private float _currentRotation;
         private GameObject _trapInstance;
-        private RaycastHit _hitInfo;
         #endregion
 
         #region Drag References
@@ -220,31 +218,21 @@ namespace _Scripts.Characters.DungeonMaster
 
             Ray ray = GetRayFromScreenPoint();
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
-            bool hitting = IsHittingTiling(ray);
 
-            if (!hitting || _hittedTile == _hitInfo.transform)
-                return;
-
-            //Update tiling on new tile selected
-            SetProjectionPosition(_hitInfo.transform);
-            UpdateTiling();
-        }
-
-        /// <summary>
-        /// Indicates if the raycast hits the tiling
-        /// </summary>
-        private bool IsHittingTiling(Ray ray)
-        {
-            if (Physics.Raycast(ray, out _hitInfo, raycastMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hitting something else that the tiling
-                if (_hitInfo.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
-                    return false;
+                if (hit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
+                    return;
 
-                return true;
+                //Hitting the same tile that the last one
+                if (_hittedTile == hit.transform)
+                    return;
+
+                //Update tiling on new tile selected
+                SetProjectionPosition(hit.transform);
+                UpdateTiling();
             }
-
-            return false;
         }
 
         /// <summary>
@@ -314,7 +302,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (IsPossibleToPlaceTrap())
                 PlaceTrapOnGrid();
 
-            if (_trapInstance)
+            if(_trapInstance)
                 Destroy(_trapInstance);
 
             HandleDragEnd();
