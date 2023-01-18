@@ -52,7 +52,7 @@ public class Shield : NetworkMonoBehaviour, IPlayerDamageable
     #endregion
 
     #region Interfaces Methods
-    public void SoftDamages(float damages)
+    public void DealDamage(float damages)
     {
         if (!ViewIsMine())
             return;
@@ -67,6 +67,6 @@ public class Shield : NetworkMonoBehaviour, IPlayerDamageable
         OnShieldDestroyed?.Invoke();
     }
 
-    public void HardDamages(float damages, Vector3 hitPoint) {}
+    public void KnockbackDamages(float damages, Vector3 hitPoint) {}
     #endregion
 }

@@ -10,7 +10,7 @@ namespace _ScriptableObjects.Afflictions
 
 		public override void UpdateEffect(Character target)
 		{
-            target.SoftDamages(strength * Time.deltaTime);
+            target.DealDamage(strength * Time.deltaTime);
 		}
 	}
 }

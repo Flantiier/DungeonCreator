@@ -179,12 +179,12 @@ namespace _Scripts.Characters
         #endregion
 
         #region Interfaces Implementations
-        public void SoftDamages(float damages)
+        public void DealDamage(float damages)
         {
             HandleEntityHealth(damages);
         }
 
-        public void HardDamages(float damages, Vector3 hitPoint)
+        public void KnockbackDamages(float damages, Vector3 hitPoint)
         {
             HandleEntityHealth(damages);
             HardHit(hitPoint);

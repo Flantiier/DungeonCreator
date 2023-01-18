@@ -1,7 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-#region TrapSO
 namespace _ScriptablesObjects.Traps
 {
     [CreateAssetMenu(fileName = "New Default Trap", menuName = "Scriptables/Traps/Default")]
@@ -30,9 +29,8 @@ namespace _ScriptablesObjects.Traps
 
         [TitleGroup("Properties")]
         public float manaCost = 10f;
-        [TitleGroup("Properties")]
+        [TitleGroup("Default Properties")]
         public float damages = 30f;
         #endregion
     }
 }
-#endregion

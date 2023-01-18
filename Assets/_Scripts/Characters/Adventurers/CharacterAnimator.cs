@@ -35,6 +35,7 @@ namespace _Scripts.Characters.Animations
                 return;
 
             Character = GetComponentInParent<Character>();
+            SetHitboxsReferences(Character);
         }
 
         private void OnDrawGizmos()
@@ -77,6 +78,24 @@ namespace _Scripts.Characters.Animations
         #region Methods
 
         #region Hitboxs
+        /// <summary>
+        /// Set the character reference in all the hitboxs in the hitbox array
+        /// </summary>
+        /// <param name="character"> Character reference </param>
+        private void SetHitboxsReferences(Character character)
+        {
+            if (!character && hitboxs.Length <= 0)
+                return;
+
+            foreach(CharacterHitbox hitbox in hitboxs)
+            {
+                if (!hitbox)
+                    continue;
+
+                hitbox.character = character;
+            }
+        }
+
         /// <summary>
         /// Indicates if the selected index isn't out of hitbox's array bounds
         /// </summary>
