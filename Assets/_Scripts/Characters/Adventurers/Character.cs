@@ -181,23 +181,32 @@ namespace _Scripts.Characters
         #region Interfaces Implementations
         public void DealDamage(float damages)
         {
+            if (!ViewIsMine())
+                return;
+
             HandleEntityHealth(damages);
         }
 
         public void KnockbackDamages(float damages, Vector3 hitPoint)
         {
+            if (!ViewIsMine())
+                return;
+
             HandleEntityHealth(damages);
             HardHit(hitPoint);
         }
 
         public void TrapDamages(float damages)
         {
+            if (!ViewIsMine())
+                return;
+
             HandleEntityHealth(damages);
         }
 
         public void TouchedByAffliction(AfflictionStatus status)
         {
-            if (CurrentAffliction != null)
+            if (!ViewIsMine() || CurrentAffliction != null)
                 return;
 
             StartAfflictionEffect(status);
@@ -207,7 +216,7 @@ namespace _Scripts.Characters
         #region Health Methods
         protected override void HandleEntityHealth(float damages)
         {
-            if (!ViewIsMine() || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
@@ -306,7 +315,6 @@ namespace _Scripts.Characters
         private void StartAfflictionEffect(AfflictionStatus status)
         {
             CurrentAffliction = status;
-            Debug.LogWarning(status);
             _afflictionRoutine = StartCoroutine("AfflictionRoutine");
         }
 

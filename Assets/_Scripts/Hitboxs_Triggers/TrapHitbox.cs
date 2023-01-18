@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 
-namespace _Scripts.Hitboxs
+namespace _Scripts.Hitboxs_Triggers.Hitboxs
 {
     public class TrapHitbox : EnemyHitbox
     {
@@ -27,14 +27,6 @@ namespace _Scripts.Hitboxs
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Enable or disable the collider
-        /// </summary>
-        public void EnableCollider(bool enabled)
-        {
-            Collider.enabled = enabled;
-        }
-
         /// <summary>
         /// Function to deal damages with the trap
         /// </summary>

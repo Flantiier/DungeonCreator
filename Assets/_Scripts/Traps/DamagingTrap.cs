@@ -1,7 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptablesObjects.Traps;
-using _Scripts.Hitboxs;
+using _Scripts.Hitboxs_Triggers.Hitboxs;
 
 namespace _Scripts.GameplayFeatures.Traps
 {

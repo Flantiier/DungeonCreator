@@ -1,7 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace _Scripts.Hitboxs
+namespace _Scripts.Hitboxs_Triggers.Hitboxs
 {
     public class Hitbox : MonoBehaviour
     {
@@ -23,6 +23,16 @@ namespace _Scripts.Hitboxs
             }
 
             Collider.isTrigger = true;
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Enable or disable the collider
+        /// </summary>
+        public void EnableCollider(bool enabled)
+        {
+            Collider.enabled = enabled;
         }
         #endregion
     }

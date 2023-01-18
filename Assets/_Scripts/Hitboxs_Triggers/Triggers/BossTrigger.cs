@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using _Scripts.Managers;
+using _Scripts.Characters;
 
-namespace _Scripts.GameplayFeatures
+namespace _Scripts.Hitboxs_Triggers.Triggers
 {
-    public class BossTrigger : Trigger
+    public class BossTrigger : ListingTrigger<Character>
     {
         [Header("Trigger properties")]
         [SerializeField] private int requiredNumb = 3;
@@ -18,7 +19,7 @@ namespace _Scripts.GameplayFeatures
 
         private void TriggerBossFight()
         {
-            if (_charactersInTrigger.Count < requiredNumb)
+            if (_triggerList.Count < requiredNumb)
                 return;
 
             gameObject.SetActive(false);

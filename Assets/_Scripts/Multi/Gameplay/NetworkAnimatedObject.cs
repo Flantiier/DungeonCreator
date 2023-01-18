@@ -3,6 +3,7 @@ using Photon.Pun;
 
 namespace _Scripts.NetworkScript
 {
+    [RequireComponent(typeof(PhotonAnimatorView))]
     public class NetworkAnimatedObject : NetworkMonoBehaviour
     {
         #region Properties

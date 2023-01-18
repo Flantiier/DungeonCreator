@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.NetworkScript;
-using _Scripts.Hitboxs;
+using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.Weapons.Projectiles;
 
 namespace _Scripts.Characters.Animations

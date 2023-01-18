@@ -4,6 +4,7 @@ using Photon.Pun;
 
 namespace _Scripts.NetworkScript
 {
+    [RequireComponent(typeof(PhotonView))]
     public class NetworkMonoBehaviour : MonoBehaviourPunCallbacks
     {
         #region Variables

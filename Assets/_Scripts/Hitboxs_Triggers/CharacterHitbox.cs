@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using _Scripts.Characters;
 using _Scripts.Interfaces;
 
-namespace _Scripts.Hitboxs
+namespace _Scripts.Hitboxs_Triggers.Hitboxs
 {
     public class CharacterHitbox : Hitbox
     {
@@ -14,8 +14,9 @@ namespace _Scripts.Hitboxs
         #endregion
 
         #region Builts_In
-        public void Awake()
+        public override void Awake()
         {
+            base.Awake();
             Collider.enabled = false;
         }
 

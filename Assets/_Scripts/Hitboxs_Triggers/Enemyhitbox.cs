@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 
-namespace _Scripts.Hitboxs
+namespace _Scripts.Hitboxs_Triggers.Hitboxs
 {
     public class EnemyHitbox : Hitbox
     {

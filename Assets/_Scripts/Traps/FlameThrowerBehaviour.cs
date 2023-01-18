@@ -6,16 +6,16 @@ using Photon.Pun;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-	public class FlameThrowerBehaviour : DamagingTrap
-	{
+    public class FlameThrowerBehaviour : DamagingTrap
+    {
         #region Variables
         [TitleGroup("FlameThrower properties")]
         [SerializeField] private float sprayDuration = 5f;
         [SerializeField] private float waitTime = 5f;
         [SerializeField] private VisualEffect fx;
-		[SerializeField] private Transform rayStart;
-		[SerializeField] private float maxDistance = 2.5f;
-		[SerializeField] private float detectRadius = 0.5f;
+        [SerializeField] private Transform rayStart;
+        [SerializeField] private float maxDistance = 2.5f;
+        [SerializeField] private float detectRadius = 0.5f;
         [SerializeField] private LayerMask rayMask;
 
         private float _rayLength;
@@ -54,28 +54,27 @@ namespace _Scripts.GameplayFeatures.Traps
         /// Starts vfx and enable the hitbox
         /// </summary>
         [PunRPC]
-        private void ThrowFlamesRPC()
+        private void FlameThrowerBehaviourRPC(bool state)
         {
-            fx.Play();
-            hitbox.EnableCollider(true);
-        }
+            hitbox.EnableCollider(state);
 
-        /// <summary>
-        /// /// Stop vfx and disable the hitbox
-        /// </summary>
-        [PunRPC]
-        private void StopFlamesRPC()
-        {
-            fx.Stop();
-            hitbox.EnableCollider(false);
+            //False
+            if (!state)
+            {
+                fx.Stop();
+                return;
+            }
+
+            //True
+            fx.Play();
         }
 
         private IEnumerable ThrowRoutine()
         {
-            RPCCall("ThrowFlamesRPC", RpcTarget.All);
+            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, true);
             yield return new WaitForSecondsRealtime(sprayDuration);
 
-            RPCCall("StopFlamesRPC", RpcTarget.All);
+            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, false);
             yield return new WaitForSecondsRealtime(waitTime);
 
             StartCoroutine("ThrowRoutine");
