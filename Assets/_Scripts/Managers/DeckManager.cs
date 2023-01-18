@@ -2,8 +2,6 @@
 using UnityEngine;
 using _ScriptablesObjects.Traps;
 using _ScriptablesObjects._UserDatas;
-using System.Threading;
-using _ScriptablesObjects.UserDatas;
 
 namespace _Scripts.Managers
 {
