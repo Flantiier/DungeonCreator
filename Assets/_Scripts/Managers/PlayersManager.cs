@@ -4,6 +4,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using _Scripts.Multi.Connexion;
 using _Scripts.Characters;
+using System.Collections;
+using UnityEditor;
+using System;
 
 namespace _Scripts.Managers
 {
@@ -12,6 +15,7 @@ namespace _Scripts.Managers
         #region Variables
         [Header("Spawn properties")]
         [SerializeField] private CharacterSpawnInfo[] characters;
+        [SerializeField] private CharacterSpawnInfo dungeonMaster;
         [SerializeField] private CharacterSpawnInfo bossInfo;
         #endregion
 
@@ -34,37 +38,34 @@ namespace _Scripts.Managers
 
         private void Start()
         {
-            SpawnCharacter((int)PhotonNetwork.LocalPlayer.CustomProperties["character"]);
-
-            if (!PhotonNetwork.IsMasterClient)
-                return;
-
-            SpawnBoss();
+            SpawnCharacter((ListPlayersRoom.Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"]);
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Indicates if there is atleast one adventurer in the room 
-        /// </summary>
-        /// <returns></returns>
-        public bool IsOneAdventurer()
-        {
-            return Adventurers.Count <= 0;
-        }
 
         #region Spawn Methods
         /// <summary>
         /// Instantiates a prefab of character set in the array
         /// </summary>
-        /// <param name="index"> Prefab index to instantiate </param>
-        private void SpawnCharacter(int index)
+        /// <param name="role"> Player role </param>
+        private void SpawnCharacter(ListPlayersRoom.Roles role)
         {
-            GameObject playerToSpawn = characters[index].prefab;
-            Vector3 spawnPoint = !characters[index].position ? Vector3.zero : characters[index].position.position;
-            PlayerInstance = playerToSpawn;
+            switch (role)
+            {
+                case ListPlayersRoom.Roles.DM:
+                    PlayerInstance = Instantiate(dungeonMaster.prefab, dungeonMaster.spawnPoint.position, Quaternion.identity);
+                    SpawnBoss();
+                    break;
 
-            PlayerInstance = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
+                default:
+                    int index = (int)PhotonNetwork.LocalPlayer.CustomProperties["character"];
+                    GameObject playerToSpawn = characters[index].prefab;
+                    Vector3 spawnPoint = !characters[index].spawnPoint ? Vector3.zero : characters[index].spawnPoint.position;
+                    PlayerInstance = playerToSpawn;
+                    PlayerInstance = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
+                    break;
+            }
         }
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace _Scripts.Managers
                 return;
 
             GameObject instance = bossInfo.prefab;
-            Vector3 point = bossInfo.position.position;
+            Vector3 point = bossInfo.spawnPoint.position;
             BossInstance = instance;
 
             PhotonNetwork.Instantiate(instance.name, point, Quaternion.identity);
@@ -127,6 +128,6 @@ namespace _Scripts.Managers
 public struct CharacterSpawnInfo
 {
     public GameObject prefab;
-    public Transform position;
+    public Transform spawnPoint;
 }
 #endregion

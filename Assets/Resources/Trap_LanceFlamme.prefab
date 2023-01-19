@@ -67,6 +67,41 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trap_LanceFlamme
       objectReference: {fileID: 0}
+    - target: {fileID: 2584265419118847335, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_InitialEventName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2584265419118847335, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_InitialEventNameOverriden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910354314901350068, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910354314901350068, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910354314901350068, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910354314901350068, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910354314901350068, guid: 0ecf53116a172a4479d2429758dd915d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ecf53116a172a4479d2429758dd915d, type: 3}
 --- !u!2083052967 &1997755271725583669 stripped
@@ -81,6 +116,29 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4063465539932629074}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &851360045784221805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997755272262633799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6532690534190370509}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &5413162843220929228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,29 +165,6 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 33554432
---- !u!114 &851360045784221805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1997755272262633799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 6532690534190370509}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &6532690534190370509
 MonoBehaviour:
   m_ObjectHideFlags: 0

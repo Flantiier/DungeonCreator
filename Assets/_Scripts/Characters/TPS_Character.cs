@@ -68,6 +68,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            Debug.Log("coucou");
             InstantiateCamera();
         }
         public override void OnEnable()
@@ -112,7 +113,7 @@ namespace _Scripts.Characters
                 return;
             }
 
-            TpsCameraProfile instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<TpsCameraProfile>();
+            TpsCameraProfile instance = Instantiate(cameraPrefab, transform.position, Quaternion.identity).GetComponent<TpsCameraProfile>();
             instance.SetLookAtTarget(lookAt);
 
             _tpsCamera = instance;

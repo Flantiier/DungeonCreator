@@ -5,12 +5,9 @@ using _Scripts.TrapSystem;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-	public class TrapClass1 : NetworkMonoBehaviour
+	public class TrapClass1 : NetworkAnimatedObject
 	{
         #region Variables/Properties
-        [TitleGroup("References")]
-        [SerializeField] protected Animator animator;
-
         [TitleGroup("Default properties")]
 		[SerializeField] protected Tile.TilingType type;
         #endregion

@@ -50,6 +50,17 @@ namespace _Scripts.GameplayFeatures.Traps
             }
         }
 
+        private IEnumerator ThrowRoutine()
+        {
+            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, true);
+            yield return new WaitForSecondsRealtime(sprayDuration);
+
+            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, false);
+            yield return new WaitForSecondsRealtime(waitTime);
+
+            StartCoroutine("ThrowRoutine");
+        }
+
         /// <summary>
         /// Starts vfx and enable the hitbox
         /// </summary>
@@ -67,17 +78,6 @@ namespace _Scripts.GameplayFeatures.Traps
 
             //True
             fx.Play();
-        }
-
-        private IEnumerable ThrowRoutine()
-        {
-            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, true);
-            yield return new WaitForSecondsRealtime(sprayDuration);
-
-            RPCCall("FlameThrowerBehaviourRPC", RpcTarget.All, false);
-            yield return new WaitForSecondsRealtime(waitTime);
-
-            StartCoroutine("ThrowRoutine");
         }
         #endregion
     }

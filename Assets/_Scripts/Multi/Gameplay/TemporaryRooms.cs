@@ -83,7 +83,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        GameObject instance = PhotonNetwork.Instantiate(masterPrefab.name, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
+        GameObject instance = Instantiate(masterPrefab, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
         RaiseEntityEvent(instance);
 
         if(masterUI)
@@ -101,7 +101,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        GameObject instance = PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.position), Quaternion.identity);
+        GameObject instance = PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.spawnPoint), Quaternion.identity);
         RaiseEntityEvent(instance);
     }
 

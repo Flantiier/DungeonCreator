@@ -8,13 +8,13 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 	public abstract class ListingTrigger<T> : NetworkMonoBehaviour
 	{
 		#region Variables
-		protected List<T> _triggerList;
+		public List<T> List { get; private set; }
 		#endregion
 
 		#region Builts_In
 		private void Awake()
 		{
-			_triggerList = new List<T>();
+			List = new List<T>();
 		}
 
 		public virtual void OnTriggerEnter(Collider other)
@@ -37,18 +37,18 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 		#region Methods
 		protected virtual void AddItem(T item)
 		{
-			if (_triggerList.Contains(item))
+			if (List.Contains(item))
 				return;
 
-			_triggerList.Add(item);
+			List.Add(item);
 		}
 
         protected virtual void RemoveItem(T item)
 		{
-            if (!_triggerList.Contains(item))
+            if (!List.Contains(item))
                 return;
 
-            _triggerList.Remove(item);
+            List.Remove(item);
         }
 		#endregion
 	}

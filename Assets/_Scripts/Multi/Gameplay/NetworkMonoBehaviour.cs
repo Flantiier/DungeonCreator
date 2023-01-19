@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.NetworkScript
 {
@@ -8,7 +9,7 @@ namespace _Scripts.NetworkScript
     public class NetworkMonoBehaviour : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [Header("Network requirements")]
+        [TitleGroup("Network requirements")]
         [SerializeField] private PhotonView view;
 
         public PhotonView View => view;

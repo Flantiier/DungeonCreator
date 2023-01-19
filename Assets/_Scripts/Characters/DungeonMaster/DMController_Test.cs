@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
+using Photon.Pun;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -363,7 +364,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (!SelectedCard || !_trapInstance)
                 return;
 
-            Instantiate(SelectedCard.TrapReference.trapPrefab, _trapInstance.transform.position, _trapInstance.transform.rotation);
+            PhotonNetwork.Instantiate(SelectedCard.TrapReference.trapPrefab.name, _trapInstance.transform.position, _trapInstance.transform.rotation);
             interactor.SetAllTiles(TrapSystem.Tile.TileState.Used);
         }
 

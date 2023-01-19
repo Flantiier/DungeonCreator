@@ -19,7 +19,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 
         private void TriggerBossFight()
         {
-            if (_triggerList.Count < requiredNumb)
+            if (List.Count < requiredNumb)
                 return;
 
             gameObject.SetActive(false);
