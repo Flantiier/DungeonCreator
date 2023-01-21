@@ -2,6 +2,6 @@
 {
     public interface IDetectable
     {
-        public void GetDetected();
+        public void GetDetected(float duration);
     }
 }

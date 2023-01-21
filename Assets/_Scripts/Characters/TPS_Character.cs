@@ -68,7 +68,6 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            Debug.Log("coucou");
             InstantiateCamera();
         }
         public override void OnEnable()

@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using InputsMaps;
+using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
-using Photon.Pun;
 
 namespace _Scripts.Characters.DungeonMaster
 {

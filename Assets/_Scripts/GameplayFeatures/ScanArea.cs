@@ -11,8 +11,9 @@ namespace _Scripts.GameplayFeatures
 		#region Variables
 		[Header("Area properties")]
 		[SerializeField] private float remainTime = 2f;
+		[SerializeField] private float scanDuration = 5f;
 
-		[Header("Feedback")]
+        [Header("Feedback")]
 		[SerializeField] private Color feedbackColor = new Color(0f, 255f, 255f, 50f);
 		#endregion
 
@@ -30,7 +31,7 @@ namespace _Scripts.GameplayFeatures
 			if (!other.TryGetComponent(out IDetectable detectable))
 				return;
 
-			detectable.GetDetected();
+			detectable.GetDetected(scanDuration);
 		}
 
 		private void OnDrawGizmos()
