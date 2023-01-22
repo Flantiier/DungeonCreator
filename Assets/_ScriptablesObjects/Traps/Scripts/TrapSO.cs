@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using _Scripts.TrapSystem;
 
 namespace _ScriptablesObjects.Traps
 {
@@ -27,6 +28,8 @@ namespace _ScriptablesObjects.Traps
         [TitleGroup("Tiles")]
         [Range(1, 3)] public int yAmount = 1;
 
+        [TitleGroup("Properties")]
+        public Tile.TilingType type;
         [TitleGroup("Properties")]
         public float manaCost = 10f;
         [TitleGroup("Default Properties")]

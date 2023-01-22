@@ -6,6 +6,7 @@ using InputsMaps;
 using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
+using _Scripts.TrapSystem;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -45,7 +46,7 @@ namespace _Scripts.Characters.DungeonMaster
         [Header("Positionning properties")]
         [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
 
-        private Transform _hittedTile;
+        private Transform _hittedTransform;
         private float _currentRotation;
         private GameObject _trapInstance;
         #endregion
@@ -53,6 +54,7 @@ namespace _Scripts.Characters.DungeonMaster
         #region Drag References
         public event Action OnStartDrag;
         public event Action OnEndDrag;
+        public event Action<Tile.TilingType> OnSelectedCard;
         #endregion
 
         #endregion
@@ -127,11 +129,12 @@ namespace _Scripts.Characters.DungeonMaster
 
             //StartDrag event call
             OnStartDrag?.Invoke();
+            OnSelectedCard?.Invoke(SelectedCard.TrapReference.type);
         }
 
         private void HandleDragEnd()
         {
-            _hittedTile = null;
+            _hittedTransform = null;
             projection.position = offMapPosition;
             _currentRotation = 0f;
 
@@ -228,11 +231,18 @@ namespace _Scripts.Characters.DungeonMaster
                     return;
 
                 //Hitting the same tile that the last one
-                if (_hittedTile == hit.transform)
+                if (_hittedTransform == hit.transform)
                     return;
 
                 //Update tiling on new tile selected
-                SetProjectionPosition(hit.transform);
+                _hittedTransform = hit.transform;
+
+                //Check if the tiling type is correct
+                if (!GetTileType(_hittedTransform.GetComponent<Tile>()))
+                    return;
+
+                //Update tiling
+                SetProjectionPosition();
                 UpdateTiling();
             }
         }
@@ -246,20 +256,27 @@ namespace _Scripts.Characters.DungeonMaster
         }
 
         /// <summary>
+        /// Indicates if the tile is the same tiling type that the trap
+        /// </summary>
+        private bool GetTileType(Tile tile)
+        {
+            return SelectedCard.TrapReference.type == Tile.TilingType.Both || SelectedCard.TrapReference.type == tile.TileType;
+        }
+
+        /// <summary>
         /// Set the last object hitted and the projection position and rotation
         /// </summary>
         /// <param name="hittedObj"></param>
-        private void SetProjectionPosition(Transform hittedObj)
+        private void SetProjectionPosition()
         {
             //Set position and rotation of the projection transform
-            _hittedTile = hittedObj;
-            projection.position = _hittedTile.position;
+            projection.position = _hittedTransform.position;
 
             //Hit a different oriented tiling
-            if (projection.up != _hittedTile.up)
+            if (projection.up != _hittedTransform.up)
             {
                 interactor.RefreshInteractor();
-                projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
+                projection.rotation = _hittedTransform.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
             }
         }
 
@@ -339,7 +356,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private void EnterPointerZone()
         {
-            _hittedTile = null;
+            _hittedTransform = null;
             projection.position = offMapPosition;
         }
         #endregion
@@ -378,7 +395,7 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
 
             _currentRotation = _currentRotation + 90f >= 360f ? 0f : _currentRotation + 90f;
-            projection.rotation = _hittedTile.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
+            projection.rotation = _hittedTransform.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
 
             UpdateTiling();
         }

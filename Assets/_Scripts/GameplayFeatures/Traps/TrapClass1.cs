@@ -1,21 +1,16 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using _Scripts.NetworkScript;
-using _Scripts.TrapSystem;
 using _Scripts.Interfaces;
+using UnityEngine.Tilemaps;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
 	public class TrapClass1 : NetworkAnimatedObject, IDetectable
 	{
-        #region Variables/Properties
-        [TitleGroup("Default properties")]
-		[SerializeField] protected Tile.TilingType type;
-        #endregion
-
         #region Properties
-        public Tile.TilingType Type => type;
+        public List<Tile> OccupedTiles { get; set; }
         #endregion
 
         #region Detection Interaction
@@ -41,11 +36,6 @@ namespace _Scripts.GameplayFeatures.Traps
             float time = Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             int hash = Animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
             RPCSynchronizeAnimator(Photon.Pun.RpcTarget.OthersBuffered, hash, layer, time);
-        }
-
-        protected virtual IEnumerator DetectedRoutine(float duration)
-        {
-            yield return new WaitForSeconds(duration);
         }
         #endregion
     }
