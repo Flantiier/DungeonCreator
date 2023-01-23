@@ -16,6 +16,10 @@ namespace _Scripts.TrapSystem
         [SerializeField, Min(1f)] private int yAmount = 5;
         [BoxGroup("Properties")]
         [SerializeField, Min(0.01f)] private float yOffset = .01f;
+        [BoxGroup("Properties")]
+        [SerializeField] private Tile.TilingType type;
+        [BoxGroup("Properties")]
+        [SerializeField, Range(0, 31)] private int layer = 0;
 
         #endregion
 
@@ -55,8 +59,12 @@ namespace _Scripts.TrapSystem
                 {
                     GameObject tile = PrefabUtility.InstantiatePrefab(tiling.tilePrefab, transform) as GameObject;
                     Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
+                    //Set position/rotations
                     tile.transform.position = startPos + transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
                     tile.transform.rotation = Quaternion.identity;
+                    //Set layer and type
+                    tile.layer = layer;
+                    tile.GetComponent<Tile>().TileType = type;
                 }
             }
 

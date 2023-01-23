@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 525513465056368736}
   - component: {fileID: 525513465056368737}
+  - component: {fileID: 568080629264335750}
   m_Layer: 0
   m_Name: DM
   m_TagString: Untagged
@@ -88,11 +89,26 @@ MonoBehaviour:
   tilingLayer: Tiling
   raycastMask:
     serializedVersion: 2
-    m_Bits: 1073742048
-  trapPositioningMask:
+    m_Bits: 1074790592
+  collisionMask:
     serializedVersion: 2
-    m_Bits: 1073741824
+    m_Bits: 192
   offMapPosition: {x: 0, y: -100, z: 0}
+--- !u!114 &568080629264335750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525513465056368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5e2c8718325f84ea82cce78e125ef1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disabledOnStart: 1
+  groundLayer: GroundTiling
+  wallLayer: WallTiling
 --- !u!1 &525513465721892767
 GameObject:
   m_ObjectHideFlags: 0

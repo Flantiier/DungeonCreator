@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 using InputsMaps;
 using Photon.Pun;
+using Sirenix.OdinInspector;
+using Personnal.Florian;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
@@ -16,7 +17,7 @@ namespace _Scripts.Characters.DungeonMaster
         public Transform ghostTrap;
 
         #region References
-        [Header("References")]
+        [TitleGroup("References")]
         [SerializeField] private TilingSO tiling;
         [SerializeField] private Transform projection;
         [SerializeField] private TilingInteractor interactor;
@@ -27,7 +28,7 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region Motion
-        [Header("Motion properties")]
+        [TitleGroup("Motion properties")]
         [SerializeField] private float moveSpeed = 25f;
         [SerializeField] private float rotationSpeed = 100f;
         [SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
@@ -38,12 +39,11 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region RayShooting/Traps
-        [Header("Raycast properties")]
-        [SerializeField] private string tilingLayer = "Tiling";
+        [TitleGroup("Raycast properties")]
         [SerializeField] private LayerMask raycastMask;
-        [SerializeField] private LayerMask trapPositioningMask;
+        [SerializeField] private LayerMask collisionMask;
 
-        [Header("Positionning properties")]
+        [TitleGroup("Positionning")]
         [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
 
         private Transform _hittedTransform;
@@ -201,13 +201,13 @@ namespace _Scripts.Characters.DungeonMaster
         private void HandleMovements()
         {
             //Rotation
-            float rotation = (_rotationInputs.x - _rotationInputs.y) * rotationSpeed * Time.deltaTime;
+            float rotation = (_rotationInputs.x - _rotationInputs.y) * rotationSpeed * UnityEngine.Time.deltaTime;
             transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
 
             //Motion
             Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
             _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, smoothingMovements);
-            transform.Translate(_currentMovement * moveSpeed * Time.deltaTime);
+            transform.Translate(_currentMovement * moveSpeed * UnityEngine.Time.deltaTime);
         }
         #endregion
 
@@ -227,23 +227,25 @@ namespace _Scripts.Characters.DungeonMaster
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hitting something else that the tiling
-                if (hit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
+                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return;
 
+                Debug.Log("Layer OK");
+
                 //Hitting the same tile that the last one
-                if (_hittedTransform == hit.transform)
+                //Check if the tiling type is correct
+                if (_hittedTransform == hit.transform || !GetTileType(hit.collider.GetComponent<Tile>()))
                     return;
 
                 //Update tiling on new tile selected
                 _hittedTransform = hit.transform;
 
-                //Check if the tiling type is correct
-                if (!GetTileType(_hittedTransform.GetComponent<Tile>()))
-                    return;
+                Debug.Log("Tiles OK");
 
                 //Update tiling
                 SetProjectionPosition();
                 UpdateTiling();
+
             }
         }
 
@@ -336,7 +338,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hit something else that a tile
-                if (hit.collider.gameObject.layer != LayerMask.NameToLayer(tilingLayer))
+                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return false;
 
                 //Check if all tiles are free

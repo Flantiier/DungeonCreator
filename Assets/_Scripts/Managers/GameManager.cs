@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Photon.Pun;
-using _Scripts.Utilities.Florian;
+using Personnal.Florian;
 using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
@@ -197,7 +197,7 @@ public class GlobalGameTime
     /// <param name="time"> Remaining time </param>
     public void SetMinuts(float time)
     {
-        RemainingMinuts = (int)TimeFunctions.GetConvertedTime(time, TimeFunctions.TimeUnit.Minuts);
+        RemainingMinuts = (int)PersonnalUtilities.Time.GetConvertedTime(time, PersonnalUtilities.Time.TimeUnit.Minuts);
     }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using _Scripts.Characters.DungeonMaster;
 using UnityEngine;
 
 namespace _Scripts.TrapSystem
@@ -18,8 +19,12 @@ namespace _Scripts.TrapSystem
 
         #region Properties
         public enum TileState { Free, Selected, Waiting, Used }
-        public TileState CurrentTileState { get; private set; }
-        public TilingType TileType => tileType;
+        public TileState CurrentTileState { get; set; }
+        public TilingType TileType
+        {
+            get => tileType;
+            set { tileType = value; }
+        }
         #endregion
 
         #region Builts-In

@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using _Scripts.Utilities.Florian;
+using Personnal.Florian;
 
 namespace _ScriptableObjects.GameManagement
 {
@@ -8,8 +8,8 @@ namespace _ScriptableObjects.GameManagement
     public class GameSettings : ScriptableObject
     {
         [Header("Game info")]
-        public TimeReference startTempo = new TimeReference(30f, TimeFunctions.TimeUnit.Seconds);
-        public TimeReference duration = new TimeReference(20f, TimeFunctions.TimeUnit.Minuts);
+        public TimeReference startTempo = new TimeReference(30f, PersonnalUtilities.Time.TimeUnit.Seconds);
+        public TimeReference duration = new TimeReference(20f, PersonnalUtilities.Time.TimeUnit.Minuts);
 
         [Header("Respawns Table")]
         public RespawnUnit[] respawnUnits;
@@ -31,9 +31,9 @@ public struct RespawnUnit
 public class TimeReference
 {
     public float duration = 20f;
-    public TimeFunctions.TimeUnit timeUnit = TimeFunctions.TimeUnit.Seconds;
+    public PersonnalUtilities.Time.TimeUnit timeUnit = PersonnalUtilities.Time.TimeUnit.Seconds;
 
-    public TimeReference(float _duration, TimeFunctions.TimeUnit _unit)
+    public TimeReference(float _duration, PersonnalUtilities.Time.TimeUnit _unit)
     {
         duration = _duration;
         timeUnit = _unit;
@@ -41,7 +41,7 @@ public class TimeReference
 
     public float GetTimeValue()
     {
-        return TimeFunctions.GetDurationInSeconds(duration, timeUnit);
+        return PersonnalUtilities.Time.GetDurationInSeconds(duration, timeUnit);
     }
 }
 #endregion

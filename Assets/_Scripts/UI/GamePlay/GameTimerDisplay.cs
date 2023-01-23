@@ -1,8 +1,6 @@
 using UnityEngine;
 using _Scripts.UI.Gameplay;
 using _Scripts.Managers;
-using _Scripts.Utilities.Florian;
-using JetBrains.Annotations;
 
 namespace _Scripts.UI
 {

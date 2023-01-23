@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
-using _Scripts.Utilities.Florian;
+using Personnal.Florian;
 using _Scripts.Managers;
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
@@ -394,9 +394,9 @@ namespace _Scripts.Characters
             float currentWeight = Animator.GetLayerWeight(1);
             float updatedWeight = Mathf.Lerp(currentWeight, targetWeight, 0.05f);
 
-            if (PersonnalUtilities.MathFunctions.ApproximationRange(updatedWeight, 0f, 0.05f))
+            if (PersonnalUtilities.Math.ApproximationRange(updatedWeight, 0f, 0.05f))
                 updatedWeight = 0f;
-            else if (PersonnalUtilities.MathFunctions.ApproximationRange(updatedWeight, 1f, 0.05f))
+            else if (PersonnalUtilities.Math.ApproximationRange(updatedWeight, 1f, 0.05f))
                 updatedWeight = 1f;
 
             SetLowerBodyWeight(updatedWeight);

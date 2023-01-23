@@ -1,5 +1,5 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 namespace _Scripts.UI.Gameplay
 {
