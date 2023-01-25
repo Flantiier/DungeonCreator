@@ -22,6 +22,11 @@ PrefabInstance:
       propertyPath: m_CookingOptions
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2260712855584059338, guid: 05bf5fd65a26816488d450df43267bc2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3769563548873240619, guid: 05bf5fd65a26816488d450df43267bc2,
         type: 3}
       propertyPath: m_Name
@@ -82,14 +87,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2218686212564410672, guid: 05bf5fd65a26816488d450df43267bc2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 05bf5fd65a26816488d450df43267bc2, type: 3}
+--- !u!23 &2256561658037207805 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2260712855584059338, guid: 05bf5fd65a26816488d450df43267bc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 4293051760258359}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3773856583452564764 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3769563548873240619, guid: 05bf5fd65a26816488d450df43267bc2,
     type: 3}
   m_PrefabInstance: {fileID: 4293051760258359}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &3259115150679423027
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3773856583452564764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 0
+  m_Mesh: {fileID: -1799370671242732104, guid: 905ac5ced395ab44f8dc77b8c34e271b, type: 3}
 --- !u!114 &2275563363569089461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +131,8 @@ MonoBehaviour:
   view: {fileID: 7142128784793543715}
   animator: {fileID: 0}
   health: 50
-  cage: {fileID: 5414701423915646680}
+  meshRenderer: {fileID: 2256561658037207805}
+  meshCollider: {fileID: 3259115150679423027}
   triggerBox: {fileID: 6110328302638666897}
 --- !u!114 &6110328302638666897
 MonoBehaviour:
@@ -165,9 +192,3 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!1 &5414701423915646680 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5416601938339238895, guid: 05bf5fd65a26816488d450df43267bc2,
-    type: 3}
-  m_PrefabInstance: {fileID: 4293051760258359}
-  m_PrefabAsset: {fileID: 0}

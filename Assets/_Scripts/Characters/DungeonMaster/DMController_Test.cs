@@ -8,9 +8,12 @@ using Personnal.Florian;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
+using _Scripts.GameplayFeatures.Traps;
 
 namespace _Scripts.Characters.DungeonMaster
 {
+    [RequireComponent(typeof(ManaHandler))]
+    [RequireComponent(typeof(TilingCulling))]
     public class DMController_Test : MonoBehaviourSingleton<DMController_Test>
     {
         #region Variables
@@ -62,6 +65,7 @@ namespace _Scripts.Characters.DungeonMaster
         #region Properties
         public bool IsDragging { get; set; }
         public DraggableCard SelectedCard { get; private set; }
+        public ManaHandler ManaHandler { get; private set; }
         #endregion
 
         #region Builts_In
@@ -70,6 +74,7 @@ namespace _Scripts.Characters.DungeonMaster
             base.Awake();
 
             _inputs = new InputsDM();
+            ManaHandler = GetComponent<ManaHandler>();
             InstantiateCamera();
         }
 
@@ -334,6 +339,9 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private bool IsPossibleToPlaceTrap()
         {
+            if (!ManaHandler.HasMuchMana(SelectedCard.TrapReference.manaCost))
+                return false;
+
             //Shoot a ray to konw if the cursor is on a tile
             if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
@@ -384,8 +392,13 @@ namespace _Scripts.Characters.DungeonMaster
             if (!SelectedCard || !_trapInstance)
                 return;
 
-            PhotonNetwork.Instantiate(SelectedCard.TrapReference.trapPrefab.name, _trapInstance.transform.position, _trapInstance.transform.rotation);
-            interactor.SetAllTiles(TrapSystem.Tile.TileState.Used);
+            GameObject instance = PhotonNetwork.Instantiate(SelectedCard.TrapReference.trapPrefab.name, _trapInstance.transform.position, _trapInstance.transform.rotation);
+            instance.GetComponent<TrapClass1>().OccupedTiles = interactor.Tiles.ToArray();
+
+            //Set tiles that will be occuped
+            interactor.SetAllTiles(Tile.TileState.Used);
+            //Decrease Mana
+            ManaHandler.UseMana(SelectedCard.TrapReference.manaCost);
         }
 
         /// <summary>

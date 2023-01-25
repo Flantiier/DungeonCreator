@@ -9,7 +9,10 @@ namespace _Scripts.GameplayFeatures.Traps
     {
         #region Variables
         [TitleGroup("References")]
-        [SerializeField] private GameObject cage;
+        [SerializeField] private MeshRenderer meshRenderer;
+        [TitleGroup("References")]
+        [SerializeField] private Collider meshCollider;
+        [TitleGroup("References")]
         [SerializeField] private DetectionBox triggerBox;
         #endregion
 
@@ -35,7 +38,7 @@ namespace _Scripts.GameplayFeatures.Traps
             if (!triggerBox || !triggerBox.IsDetecting())
                 return;
 
-            if (cage.activeSelf)
+            if (meshRenderer.enabled)
                 return;
 
             EnableCage(true);
@@ -46,13 +49,9 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         private void EnableCage(bool enabled)
         {
-            cage.SetActive(enabled);
+            meshRenderer.enabled = enabled;
+            meshCollider.enabled = enabled;
             triggerBox.Enabled = !enabled;
-        }
-
-        protected override void HandleTrapDestruction()
-        {
-            PhotonNetwork.Destroy(gameObject);
         }
         #endregion
     }

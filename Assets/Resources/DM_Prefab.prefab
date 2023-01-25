@@ -41,8 +41,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 525513465056368736}
-  - component: {fileID: 525513465056368737}
-  - component: {fileID: 568080629264335750}
+  - component: {fileID: 3692227814472150096}
+  - component: {fileID: 8909582285095017470}
+  - component: {fileID: 1056657070654585433}
   m_Layer: 0
   m_Name: DM
   m_TagString: Untagged
@@ -65,7 +66,7 @@ Transform:
   m_Father: {fileID: 401638861889740889}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &525513465056368737
+--- !u!114 &3692227814472150096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,10 +84,9 @@ MonoBehaviour:
   interactor: {fileID: 525513465721892764}
   cameraPrefab: {fileID: 7270350787745830913, guid: 782fe958c44f3f047a0f308aa58d1f3a,
     type: 3}
-  moveSpeed: 30
+  moveSpeed: 25
   rotationSpeed: 100
   smoothingMovements: 0.1
-  tilingLayer: Tiling
   raycastMask:
     serializedVersion: 2
     m_Bits: 1074790592
@@ -94,7 +94,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   offMapPosition: {x: 0, y: -100, z: 0}
---- !u!114 &568080629264335750
+--- !u!114 &8909582285095017470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525513465056368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4c0c92fd41a9044b52d88d6c5c14b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMana: 100
+  recovery: 5
+--- !u!114 &1056657070654585433
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -30,6 +30,7 @@ namespace _Scripts.GameplayFeatures.Traps
             if (!ViewIsMine())
                 return;
 
+            Debug.Log($"{gameObject} got damaged by {damages} damages");
             HandleDamages(damages);
         }
         #endregion
@@ -72,7 +73,10 @@ namespace _Scripts.GameplayFeatures.Traps
         /// <summary>
         /// Called when the current health is at 0
         /// </summary>
-        protected virtual void HandleTrapDestruction() { }
+        protected virtual void HandleTrapDestruction()
+        {
+            gameObject.SetActive(false);
+        }
         #endregion
     }
 }
