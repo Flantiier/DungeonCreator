@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.Interfaces;
-using _ScriptablesObjects.Traps;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.TrapSystem.Datas
 {

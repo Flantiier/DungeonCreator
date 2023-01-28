@@ -2,23 +2,24 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
 using Sirenix.OdinInspector;
-using Photon.Pun;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
     public class FlameThrowerBehaviour : DamagingTrap
     {
         #region Variables
-        [TitleGroup("FlameThrower properties")]
-        [SerializeField] private float sprayDuration = 5f;
-        [SerializeField] private float waitTime = 5f;
-        [SerializeField] private VisualEffect fx;
+        [FoldoutGroup("References")]
         [SerializeField] private Transform rayStart;
-        [SerializeField] private float maxDistance = 2.5f;
-        [SerializeField] private float detectRadius = 0.5f;
-        [SerializeField] private LayerMask rayMask;
+        [FoldoutGroup("References")]
+        [SerializeField] private VisualEffect fx;
 
-        private float _rayLength;
+        [BoxGroup("Properties")]
+        [SerializeField] private LayerMask rayMask;
+        [BoxGroup("Properties")]
+        [Required, SerializeField] private FlameThrowerDatas datas;
+
+        private float _currentRayLength;
         #endregion
 
         #region Builts_In
@@ -34,26 +35,27 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         private void ShootRayTowards()
         {
-            Vector3 start = rayStart.position - rayStart.forward * (detectRadius);
-            float finalDistance = maxDistance + detectRadius;
+            float radius = datas.sprayRadius;
+            Vector3 start = rayStart.position - rayStart.forward * radius;
+            float finalDistance = datas.sprayDistance + radius;
 
             Ray ray = new Ray(start, rayStart.forward);
             Debug.DrawRay(rayStart.position, ray.direction * finalDistance, Color.cyan);
 
-            if (Physics.SphereCast(ray, detectRadius, out RaycastHit hit, finalDistance, rayMask, QueryTriggerInteraction.Collide))
+            if (Physics.SphereCast(ray, radius, out RaycastHit hit, finalDistance, rayMask, QueryTriggerInteraction.Collide))
             {
-                _rayLength = Vector3.Distance(rayStart.position, hit.point);
-                Debug.DrawRay(rayStart.position, ray.direction * _rayLength, Color.red);
+                _currentRayLength = Vector3.Distance(rayStart.position, hit.point);
+                Debug.DrawRay(rayStart.position, ray.direction * _currentRayLength, Color.red);
             }
         }
 
-        private IEnumerator ThrowRoutine()
+        private IEnumerator FlamesRoutine()
         {
             ThrowFlames(true);
-            yield return new WaitForSecondsRealtime(sprayDuration);
+            yield return new WaitForSecondsRealtime(datas.sprayDuration);
 
             ThrowFlames(false);
-            yield return new WaitForSecondsRealtime(waitTime);
+            yield return new WaitForSecondsRealtime(datas.waitTime);
 
             StartCoroutine("ThrowRoutine");
         }

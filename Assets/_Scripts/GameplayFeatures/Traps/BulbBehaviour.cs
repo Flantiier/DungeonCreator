@@ -2,22 +2,24 @@
 using UnityEngine;
 using UnityEngine.VFX;
 using Sirenix.OdinInspector;
-using _Scripts.Interfaces;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.PhysicsAdds;
-using _ScriptableObjects.Afflictions;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
     public class BulbBehaviour : DestructibleTrap
     {
         #region Variables
-        [TitleGroup("Bulb Properties")]
-        [SerializeField] private AfflictionSetup afflictionSetup;
+        [FoldoutGroup("References")]
+        [SerializeField] private AfflictionHitbox hitbox;
+        [FoldoutGroup("References")]
         [SerializeField] private DetectionBox detectionBox;
+        [FoldoutGroup("References")]
         [SerializeField] private VisualEffect fx;
-        [SerializeField] private float sporesDuration = 5f;
-        [SerializeField] private float sporesDelay = 0.5f;
+
+        [BoxGroup("Stats")]
+        [Required, SerializeField] private BulbDatas datas;
 
         private bool _IsAttacking;
         #endregion
@@ -25,23 +27,23 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Builts_In
         private void Awake()
         {
-            afflictionSetup.Initialize();
-        }
-
-        public override void OnEnable()
-        {
-            base.OnEnable();
-            afflictionSetup.hitbox.EnableCollider(false);
-
-            if (!ViewIsMine())
-                return;
-
-            SyncAnimator(0);
+            hitbox.affliction = datas.affliction;
         }
 
         private void Update()
         {
             HandleBulbBehaviour();
+        }
+        #endregion
+
+        #region Inherited Methods
+        protected override void InitializeTrap()
+        {
+            if (!ViewIsMine())
+                return;
+
+            SetTrapHealth(datas.health);
+            SyncAnimator(0);
         }
         #endregion
 
@@ -76,31 +78,14 @@ namespace _Scripts.GameplayFeatures.Traps
         private IEnumerator SporesRoutine()
         {
             fx.Play();
-            afflictionSetup.hitbox.EnableCollider(true);
-            yield return new WaitForSecondsRealtime(sporesDuration);
-            afflictionSetup.hitbox.EnableCollider(false);
+            hitbox.EnableCollider(true);
+            yield return new WaitForSecondsRealtime(datas.sporesDuration);
+            hitbox.EnableCollider(false);
             fx.Stop();
 
-            yield return new WaitForSecondsRealtime(sporesDelay);
+            yield return new WaitForSecondsRealtime(datas.waitTime);
             _IsAttacking = false;
         }
         #endregion
     }
 }
-
-#region AfflictionPack_Class
-namespace _Scripts.GameplayFeatures
-{
-    [System.Serializable]
-    public class AfflictionSetup
-    {
-        public AfflictionHitbox hitbox;
-        public AfflictionStatus affliction;
-
-        public void Initialize()
-        {
-            hitbox.affliction = affliction;
-        }
-    }
-}
-#endregion

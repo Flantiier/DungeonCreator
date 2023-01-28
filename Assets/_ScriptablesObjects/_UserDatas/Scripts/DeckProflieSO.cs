@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using _ScriptablesObjects.Traps;
+using _ScriptableObjects.Traps;
 
-namespace _ScriptablesObjects.UserDatas
+namespace _ScriptableObjects.UserDatas
 {
 	[CreateAssetMenu(fileName = "New Deck Profile", menuName = "Scriptables/Deck/DeckProfile")]
 	public class DeckProflieSO : ScriptableObject

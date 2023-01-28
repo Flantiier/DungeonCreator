@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using _ScriptablesObjects.Traps;
-using _ScriptablesObjects._UserDatas;
+using _ScriptableObjects.Traps;
+using _ScriptableObjects._UserDatas;
 using System.Threading;
-using _ScriptablesObjects.UserDatas;
+using _ScriptableObjects.UserDatas;
 
 namespace _Scripts.Managers
 {

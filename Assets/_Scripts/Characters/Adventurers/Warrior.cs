@@ -1,4 +1,5 @@
 using UnityEngine;
+using _Scripts.GameplayFeatures.Weapons;
 
 namespace _Scripts.Characters.Adventurers
 {

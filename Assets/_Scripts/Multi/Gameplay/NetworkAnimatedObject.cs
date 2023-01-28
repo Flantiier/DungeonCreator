@@ -7,7 +7,7 @@ namespace _Scripts.NetworkScript
     public class NetworkAnimatedObject : NetworkMonoBehaviour
     {
         #region Properties
-        [TitleGroup("References")]
+        [FoldoutGroup("References")]
         [SerializeField] private Animator animator;
 
         public Animator Animator => animator;

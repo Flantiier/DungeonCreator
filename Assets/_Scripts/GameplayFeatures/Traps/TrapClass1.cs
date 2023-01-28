@@ -13,6 +13,12 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Built_In
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            InitializeTrap();
+        }
+
         public override void OnDisable()
         {
             base.OnDisable();
@@ -37,6 +43,12 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Initialize some variables for the trap behaviour
+        /// Executed during OnEnable
+        /// </summary>
+        protected virtual void InitializeTrap() { }
+
         public virtual void EnableHitbox(int value) { }
 
         /// <summary>

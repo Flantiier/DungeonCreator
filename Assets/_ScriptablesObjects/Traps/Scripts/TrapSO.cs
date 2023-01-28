@@ -2,38 +2,43 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.TrapSystem;
 
-namespace _ScriptablesObjects.Traps
+namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Default Trap", menuName = "Scriptables/Traps/Default")]
     public class TrapSO : ScriptableObject
     {
         #region Variables
         //INFORMATIONS
-        [TitleGroup("Informations")]
+        [BoxGroup("Basic Informations"), HorizontalGroup("Basic Informations/G01", 75)]
+        [PreviewField(75), HideLabel]
         public Sprite image;
-        [TitleGroup("Informations")]
+        [BoxGroup("Basic Informations"), VerticalGroup("Basic Informations/G01/G02")]
+        [LabelText("Trap Name"), LabelWidth(75)]
         public string trapName = "New trap";
-        [TitleGroup("Informations")]
-        [TextArea(3, 3)] public string description = "New description";
+        [BoxGroup("Basic Informations"), VerticalGroup("Basic Informations/G01/G02"), TextArea(3, 3)]
+        public string description = "New description";
 
-        //MESH AND MATERIALS
-        [TitleGroup("Mesh properties")]
+        //MESHES
+        [FoldoutGroup("Gameplay")]
+        [BoxGroup("Gameplay/Meshes"), LabelWidth(100)]
         public GameObject trapPrefab;
-        [TitleGroup("Mesh properties")]
+        [BoxGroup("Gameplay/Meshes"), LabelWidth(100)]
         public GameObject previewPrefab;
 
-        //PROPERTIES
-        [TitleGroup("Tiles")]
+        //TILING PROPERTIES
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
+        [GUIColor(2, 0.5f, 0f)]
         [Range(1, 3)] public int xAmount = 1;
-        [TitleGroup("Tiles")]
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
+        [GUIColor(0f, 0.8f, 2)]
         [Range(1, 3)] public int yAmount = 1;
 
-        [TitleGroup("Properties")]
-        public Tile.TilingType type;
-        [TitleGroup("Properties")]
-        public float manaCost = 10f;
-        [TitleGroup("Default Properties")]
-        public float damages = 30f;
+        //PROPERTIES
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
+        [LabelText("Trap type")]
+        public Tile.TilingType type = Tile.TilingType.Ground;
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
+        [Range(10f, 40f), GUIColor(3, 1, 2)]
+        public int manaCost = 25;
         #endregion
     }
 }

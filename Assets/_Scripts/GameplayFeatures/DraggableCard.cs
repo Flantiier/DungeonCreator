@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using _Scripts.Characters.DungeonMaster;
-using _ScriptablesObjects.Traps;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures
 {
@@ -78,7 +78,7 @@ namespace _Scripts.GameplayFeatures
             design.imageField.sprite = reference.image;
             design.nameField.SetText(reference.trapName + " :");
             design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
-            design.damageField.SetText(reference.damages.ToString());
+            //design.damageField.SetText(reference.damages.ToString());
             design.manaField.SetText(reference.manaCost.ToString());
         }
 

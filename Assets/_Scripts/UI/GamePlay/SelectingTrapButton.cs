@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using _Scripts.Characters.DungeonMaster;
-using _ScriptablesObjects.Traps;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.TrapSystem.UI
 {

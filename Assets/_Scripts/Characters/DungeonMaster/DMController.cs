@@ -7,7 +7,7 @@ using Cinemachine;
 using Photon.Pun;
 using _Scripts.Characters.Cameras;
 using _Scripts.TrapSystem;
-using _ScriptablesObjects.Traps;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.Characters.DungeonMaster
 {

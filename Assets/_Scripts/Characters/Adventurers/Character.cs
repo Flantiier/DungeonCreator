@@ -325,7 +325,7 @@ namespace _Scripts.Characters
         private IEnumerator AfflictionRoutine()
         {
             float time = 0f;
-            float duration = CurrentAffliction.Duration;
+            float duration = CurrentAffliction.duration;
 
             while (time < duration)
             {

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Sirenix.OdinInspector;
 using Photon.Pun;
 using _Scripts.Interfaces;
 
@@ -7,21 +6,8 @@ namespace _Scripts.GameplayFeatures.Traps
 {
     public class DestructibleTrap : TrapClass1, IDamageable
     {
-        #region Variables
-        [TitleGroup("Properties")]
-        [SerializeField] protected float health = 50f;
-
+        #region Properties
         public float CurrentHealth { get; protected set; }
-        #endregion
-
-        #region Builts_In
-        public override void OnEnable()
-        {
-            if (!ViewIsMine())
-                return;
-
-            SetTrapHealth(health);
-        }
         #endregion
 
         #region Interfaces Implementation
