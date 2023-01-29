@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
+using Sirenix.OdinInspector;
 using Personnal.Florian;
 using _Scripts.Managers;
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
+using _ScriptableObjects.Characters;
 using _ScriptableObjects.Adventurers;
 using _ScriptableObjects.Afflictions;
 using _Scripts.UI.Interfaces;
@@ -19,9 +21,10 @@ namespace _Scripts.Characters
         #region Variables
 
         #region References
-        [Header("Stats references")]
-        [SerializeField] protected CharactersOverallDatas overallDatas;
-        [SerializeField] protected AdventurerDatas characterDatas;
+        [FoldoutGroup("Stats")]
+        [Required, SerializeField] protected CharacterOverallDatas overallDatas;
+        [FoldoutGroup("Stats")]
+        [Required, SerializeField] protected AdventurerDatas characterDatas;
 
         [Header("UI references")]
         [SerializeField] private PlayerHUD hud;
@@ -43,7 +46,7 @@ namespace _Scripts.Characters
         #endregion
 
         #region Properties
-        public CharactersOverallDatas OverallDatas => overallDatas;
+        public CharacterOverallDatas OverallDatas => overallDatas;
         public AdventurerDatas CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
         public AfflictionStatus CurrentAffliction { get; set; }
@@ -257,7 +260,7 @@ namespace _Scripts.Characters
         /// </summary>
         private IEnumerator HealthRecuperation()
         {
-            yield return new WaitForSecondsRealtime(overallDatas.healthRecupTime);
+            yield return new WaitForSecondsRealtime(overallDatas.healthRecupDelay);
 
             while (CurrentHealth < characterDatas.health)
             {
@@ -352,10 +355,10 @@ namespace _Scripts.Characters
                     if (GroundSM.IsLanding)
                         return;
 
-                    SmoothingInputs(Inputs, inputSmoothing);
+                    SmoothingInputs(Inputs, overallDatas.inputSmoothing);
                     UpdateCharacterSpeed(GetMovementSpeed());
                     HandleCharacterMotion();
-                    HandleCharacterRotation();
+                    HandleCharacterRotation(overallDatas.rotationSmoothing);
                     break;
             }
         }
@@ -458,7 +461,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Setting mesh rotations based on current inputs
         /// </summary>
-        protected override void HandleCharacterRotation()
+        protected override void HandleCharacterRotation(float smooth)
         {
             if (!mesh)
                 return;
@@ -472,9 +475,14 @@ namespace _Scripts.Characters
             if (Inputs.magnitude >= 0.1f)
             {
                 float angle = Mathf.Atan2(Inputs.x, Inputs.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
-                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, overallDatas.rotationSmoothing);
+                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, smooth);
                 mesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
             }
+        }
+
+        public override void UpdateCharacterSpeed(float speed)
+        {
+            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, speed, ref _smoothSpeedRef, overallDatas.speedSmoothing);
         }
         #endregion
 

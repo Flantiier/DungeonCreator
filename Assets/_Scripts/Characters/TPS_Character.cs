@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Photon.Pun;
+using Sirenix.OdinInspector;
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
@@ -15,10 +16,13 @@ namespace _Scripts.Characters
         #region Variables
 
         #region References
-        [Header("Character references")]
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform orientation;
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform mesh;
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform lookAt;
+        [TitleGroup("References/Character References")]
         [SerializeField] private TpsCameraProfile cameraPrefab;
 
         protected CharacterController _cc;
@@ -26,11 +30,6 @@ namespace _Scripts.Characters
         #endregion
 
         #region Motion
-        [Header("Motion properties")]
-        [SerializeField, Range(0f, 0.2f)] protected float inputSmoothing = 0.1f;
-        [SerializeField, Range(0f, 0.2f)] protected float speedSmoothing = 0.15f;
-        [SerializeField, Range(0f, 0.2f)] protected float rotationSmoothing = 0.1f;
-
         protected Vector2 _currentInputs;
         protected Vector3 _movement;
         protected Vector2 _smoothInputsRef;
@@ -39,13 +38,18 @@ namespace _Scripts.Characters
         #endregion
 
         #region Physics
-        [Header("Ground infos")]
+        [FoldoutGroup("Physics")]
         [SerializeField] private LayerMask walkableMask;
+        [FoldoutGroup("Physics")]
+        [Range(0.25f, 2f), GUIColor(0.3f, 2, 0.3f)]
         [SerializeField] private float maxGroundDistance = 1f;
-
-        [Header("Gravity properties")]
+        [FoldoutGroup("Physics")]
+        [Range(1f, 10f), GUIColor(3, 0.5f, 1)]
         [SerializeField] private float appliedGravity = 5f;
-        [SerializeField, Range(0f, 0.1f)] private float fallSmoothing = 0.05f;
+        [FoldoutGroup("Physics")]
+        [Range(0f, 0.1f), GUIColor(2, 2, 2)]
+        [SerializeField] private float fallSmoothing = 0.05f;
+
         protected float _airTime;
         #endregion
 
@@ -224,9 +228,9 @@ namespace _Scripts.Characters
         /// <summary>
         /// Smoothly updating character motion speed
         /// </summary>
-        public void UpdateCharacterSpeed(float speed)
+        public virtual void UpdateCharacterSpeed(float speed)
         {
-            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, speed, ref _smoothSpeedRef, speedSmoothing);
+            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, speed, ref _smoothSpeedRef, 0.1f);
         }
 
         /// <summary>
@@ -260,7 +264,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Setting mesh rotations based on current inputs
         /// </summary>
-        protected virtual void HandleCharacterRotation()
+        protected virtual void HandleCharacterRotation(float smooth)
         {
             if (!mesh)
                 return;
@@ -268,7 +272,7 @@ namespace _Scripts.Characters
             if (Inputs.magnitude >= 0.1f)
             {
                 float angle = Mathf.Atan2(Inputs.x, Inputs.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
-                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, rotationSmoothing);
+                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, smooth);
                 mesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
             }
         }
