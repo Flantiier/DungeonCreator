@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.PhysicsAdds;
@@ -17,31 +16,36 @@ namespace _Scripts.GameplayFeatures.Traps
 		[FoldoutGroup("References")]
 		[SerializeField] private SphericalFOV fov;
 		[FoldoutGroup("References")]
-		[SerializeField] private Transform projectilePoint;
+		[SerializeField] private Transform projectileParent;
 
 		[BoxGroup("Stats")]
 		[Required, SerializeField] private BallistaDatas datas;
 
-        private bool _isReloaded = true;
+		private Projectile _lastProjectile;
+		private bool _isReloaded;
 		#endregion
 
 		#region Builts_In
-		public override void OnEnable()
+		public override void OnDisable()
 		{
-			base.OnEnable();
-			_isReloaded = true;
+			base.OnDisable();
+
+			if (_lastProjectile)
+				Destroy(_lastProjectile);
 		}
 
 		private void Update()
 		{
 			HandleTurretRotation();
-			//HandleShootBehaviour();
+			HandleShootingBehaviour();
 		}
         #endregion
 
         #region Inherited Methods
         protected override void InitializeTrap()
         {
+            _isReloaded = false;
+
             if (!ViewIsMine())
                 return;
 
@@ -72,36 +76,48 @@ namespace _Scripts.GameplayFeatures.Traps
         }
 
 		/// <summary>
-		/// Handle turret shooting
+		/// Handle the behaviour to shoot projectiles
 		/// </summary>
-		[ContextMenu("Shoot")]
-		private void HandleShootBehaviour()
+		private void HandleShootingBehaviour()
 		{
-			/*if (!_isReloaded)
-				return;*/
+			if (!_isReloaded || !fov.IsDetecting())
+				return;
 
-			Projectile projectile = Instantiate(datas.projectilePrefab, projectilePoint.position, projectilePoint.rotation);
-			projectile.ThrowProjectile(projectile.transform.forward);
-			//StartCoroutine("ReloadCoroutine");
-		}
-
-		private IEnumerator ReloadCoroutine()
-		{
-			yield return new WaitForSecondsRealtime(datas.damage);
+			Animator.SetTrigger("Shoot");
 			_isReloaded = false;
-			StartCoroutine("ReloadCoroutine");
 		}
 
-        #region Animation Methods
 		/// <summary>
-		/// Indicates if the reload animation is finished
+		/// Indicates that the ballista is reloaded
 		/// </summary>
-		public void IsReloaded()
+		public void BallistaReloaded()
 		{
 			_isReloaded = true;
 		}
-        #endregion
 
+		/// <summary>
+		/// Create a new projectile
+		/// </summary>
+		public void InstantiateProjectile()
+        {
+			if (_lastProjectile)
+				return;
+
+            _lastProjectile = Instantiate(datas.projectilePrefab, projectileParent);
+        }
+
+		/// <summary>
+		/// Launch the last instantiated projectile
+		/// </summary>
+		public void LaunchProjectile()
+		{
+			if (!_lastProjectile)
+				return;
+
+			_lastProjectile.ThrowProjectile(_lastProjectile.transform.forward);
+			_lastProjectile.transform.SetParent(null);
+			_lastProjectile = null;
+		}
         #endregion
     }
 }
