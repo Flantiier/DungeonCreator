@@ -25,7 +25,7 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Builts_In
         private void Start()
         {
-            StartCoroutine("ThrowRoutine");
+            StartCoroutine("FlamesRoutine");
         }
         #endregion
 
@@ -49,6 +49,9 @@ namespace _Scripts.GameplayFeatures.Traps
             }
         }
 
+        /// <summary>
+        /// Throwing flames routine
+        /// </summary>
         private IEnumerator FlamesRoutine()
         {
             ThrowFlames(true);
@@ -57,7 +60,7 @@ namespace _Scripts.GameplayFeatures.Traps
             ThrowFlames(false);
             yield return new WaitForSecondsRealtime(datas.waitTime);
 
-            StartCoroutine("ThrowRoutine");
+            StartCoroutine("FlamesRoutine");
         }
 
         /// <summary>

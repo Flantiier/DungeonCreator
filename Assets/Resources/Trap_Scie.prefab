@@ -135,6 +135,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e20216e7fc447c4099ec7acc98ad212, type: 3}
+--- !u!1 &473426110583914060 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6379895215156197498, guid: 8e20216e7fc447c4099ec7acc98ad212,
+    type: 3}
+  m_PrefabInstance: {fileID: 6780171916635719222}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6402990436101838225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 487514178143392679, guid: 8e20216e7fc447c4099ec7acc98ad212,
+    type: 3}
+  m_PrefabInstance: {fileID: 6780171916635719222}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6753305329774710510 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 261363834623592664, guid: 8e20216e7fc447c4099ec7acc98ad212,
@@ -190,6 +202,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 869830718614460107}
   animator: {fileID: 7650685627095794471}
+  defaultLayer: Default
+  topLayer: RenderedOnTop
+  trapParts:
+  - {fileID: 6402990436101838225}
+  - {fileID: 473426110583914060}
   hitbox: {fileID: 7869830557055572556}
   datas: {fileID: 11400000, guid: a053f00ca07f135419507191f40cffc9, type: 2}
 --- !u!114 &8089061389963586053

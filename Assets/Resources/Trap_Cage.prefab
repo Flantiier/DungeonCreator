@@ -130,9 +130,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 7142128784793543715}
   animator: {fileID: 0}
+  defaultLayer: Default
+  topLayer: RenderedOnTop
+  trapParts:
+  - {fileID: 5414701423915646680}
   triggerBox: {fileID: 6110328302638666897}
   meshRenderer: {fileID: 2256561658037207805}
-  meshCollider: {fileID: 0}
+  meshCollider: {fileID: 6991591211958265819}
   datas: {fileID: 11400000, guid: af92ba4011b709e48b02398f3474f6c2, type: 2}
 --- !u!114 &6110328302638666897
 MonoBehaviour:
@@ -192,3 +196,9 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!1 &5414701423915646680 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5416601938339238895, guid: 05bf5fd65a26816488d450df43267bc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 4293051760258359}
+  m_PrefabAsset: {fileID: 0}

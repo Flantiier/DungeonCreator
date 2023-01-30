@@ -153,6 +153,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 851360045784221805}
   animator: {fileID: 0}
+  defaultLayer: Default
+  topLayer: RenderedOnTop
+  trapParts:
+  - {fileID: 7001495582014280796}
   hitbox: {fileID: 2026706766620995574}
   rayStart: {fileID: 6891196485242271037}
   fx: {fileID: 1997755271725583669}
@@ -191,6 +195,12 @@ MonoBehaviour:
 --- !u!4 &6891196485242271037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7477706906441653615, guid: 0ecf53116a172a4479d2429758dd915d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4063465539932629074}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7001495582014280796 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6435110895471574030, guid: 0ecf53116a172a4479d2429758dd915d,
     type: 3}
   m_PrefabInstance: {fileID: 4063465539932629074}
   m_PrefabAsset: {fileID: 0}

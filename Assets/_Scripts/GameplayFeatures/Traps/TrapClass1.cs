@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using _Scripts.NetworkScript;
 using _Scripts.Interfaces;
 using _Scripts.TrapSystem;
@@ -8,7 +9,14 @@ namespace _Scripts.GameplayFeatures.Traps
 {
     public class TrapClass1 : NetworkAnimatedObject, IDetectable
     {
-        #region Properties
+        #region Variables/Properties
+        [FoldoutGroup("Trap references")]
+        [SerializeField] private string defaultLayer = "Default";
+        [FoldoutGroup("Trap references")]
+        [SerializeField] private string topLayer = "RenderedOnTop";
+        [FoldoutGroup("Trap references")]
+        [SerializeField] protected GameObject[] trapParts;
+
         public Tile[] OccupedTiles { get; set; }
         #endregion
 
@@ -22,6 +30,7 @@ namespace _Scripts.GameplayFeatures.Traps
         public override void OnDisable()
         {
             base.OnDisable();
+            ChangeTrapPartsLayer(defaultLayer);
 
             if (!ViewIsMine())
                 return;
@@ -33,12 +42,32 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Detection Interaction
         public void GetDetected(float duration)
         {
-            //StartCoroutine("DetectionRoutine");
+            if (trapParts.Length <= 0)
+                return;
+
+            StartCoroutine(DetectionRoutine(duration));
+        }
+
+        /// <summary>
+        /// Change the layer on each part of the trap
+        /// </summary>
+        /// <param name="layer"> Layer name </param>
+        protected void ChangeTrapPartsLayer(string layer)
+        {
+            foreach (GameObject item in trapParts)
+            {
+                if (!item)
+                    continue;
+
+                item.layer = LayerMask.NameToLayer(layer);
+            }
         }
 
         protected virtual IEnumerator DetectionRoutine(float duration)
         {
+            ChangeTrapPartsLayer(topLayer);
             yield return new WaitForSecondsRealtime(duration);
+            ChangeTrapPartsLayer(defaultLayer);
         }
         #endregion
 

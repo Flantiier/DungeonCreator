@@ -141,6 +141,18 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 3699959781936947560}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2312643887376148937 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1387333592578640033, guid: f87c26ae43c07964285b62b2ec72cecc,
+    type: 3}
+  m_PrefabInstance: {fileID: 3699959781936947560}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2332373704683057112 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1370963831803416240, guid: f87c26ae43c07964285b62b2ec72cecc,
+    type: 3}
+  m_PrefabInstance: {fileID: 3699959781936947560}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2400331825714069954 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1303603811282444458, guid: f87c26ae43c07964285b62b2ec72cecc,
@@ -167,6 +179,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 4632678491467595463}
   animator: {fileID: 557549229055365225}
+  defaultLayer: Default
+  topLayer: RenderedOnTop
+  trapParts:
+  - {fileID: 2332373704683057112}
+  - {fileID: 2312643887376148937}
   hitbox: {fileID: 8371471708550049574}
   datas: {fileID: 11400000, guid: 87b155390db4cba4495c15bdedc3a51d, type: 2}
 --- !u!114 &3869068279184776644
