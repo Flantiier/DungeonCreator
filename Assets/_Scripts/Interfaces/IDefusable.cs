@@ -8,6 +8,6 @@ namespace _Scripts.Interfaces
         public float DefuseDuration { get; }
         public bool IsDisabled { get; set; }
 
-        public void HasBeenDefused();
+        public void IsDefused();
     }
 }

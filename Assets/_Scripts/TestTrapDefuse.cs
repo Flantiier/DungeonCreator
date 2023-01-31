@@ -18,7 +18,7 @@ public class TestTrapDefuse : MonoBehaviour, IDefusable
     #endregion
 
     #region Methods
-    public void HasBeenDefused()
+    public void IsDefused()
     {
         StartCoroutine(DisabledCooldownRoutine());
     }

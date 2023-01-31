@@ -71,6 +71,10 @@ namespace _Scripts.GameplayFeatures.Traps
         }
         #endregion
 
+        #region Defuse Interaction
+        protected virtual IEnumerator GetDefused() { yield return null; }
+        #endregion
+
         #region Methods
         /// <summary>
         /// Initialize some variables for the trap behaviour
