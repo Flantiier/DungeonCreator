@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
@@ -9,63 +10,59 @@ using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
 using _Scripts.GameplayFeatures.Traps;
+using _ScriptableObjects.DM;
 
 namespace _Scripts.Characters.DungeonMaster
 {
-    [RequireComponent(typeof(ManaHandler))]
     [RequireComponent(typeof(TilingCulling))]
     public class DMController_Test : MonoBehaviourSingleton<DMController_Test>
     {
         #region Variables
-        public Transform ghostTrap;
 
         #region References
-        [TitleGroup("References")]
+        [FoldoutGroup("References")]
         [SerializeField] private TilingSO tiling;
+        [FoldoutGroup("References")]
         [SerializeField] private Transform projection;
+        [FoldoutGroup("References")]
         [SerializeField] private TilingInteractor interactor;
+        [FoldoutGroup("References")]
         [SerializeField] private SkyCameraSetup cameraPrefab;
 
         private InputsDM _inputs;
         private SkyCameraSetup _camSetup;
         #endregion
 
-        #region Motion
-        [TitleGroup("Motion properties")]
-        [SerializeField] private float moveSpeed = 25f;
-        [SerializeField] private float rotationSpeed = 100f;
-        [SerializeField, Range(0f, 0.2f)] private float smoothingMovements = 0.1f;
-
+        [FoldoutGroup("Stats")]
+        [Required, SerializeField] private DMDatas datas;
+        //Motion
         private Vector2 _inputsVector;
         private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
-        #endregion
-
-        #region RayShooting/Traps
-        [TitleGroup("Raycast properties")]
+        private Coroutine _manaRoutine;
+        //RAYCAST
+        [FoldoutGroup("Raycast properties")]
         [SerializeField] private LayerMask raycastMask;
+        [FoldoutGroup("Raycast properties")]
         [SerializeField] private LayerMask collisionMask;
-
-        [TitleGroup("Positionning")]
+        [FoldoutGroup("Raycast properties")]
         [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
 
         private Transform _hittedTransform;
         private float _currentRotation;
         private GameObject _trapInstance;
-        #endregion
-
-        #region Drag References
+        //DRAG & DROP
         public event Action OnStartDrag;
         public event Action OnEndDrag;
         public event Action<Tile.TilingType> OnSelectedCard;
-        #endregion
 
         #endregion
 
         #region Properties
+        public DMDatas Datas => datas;
         public bool IsDragging { get; set; }
         public DraggableCard SelectedCard { get; private set; }
-        public ManaHandler ManaHandler { get; private set; }
+        public float CurrentMana { get; private set; }
         #endregion
 
         #region Builts_In
@@ -74,7 +71,7 @@ namespace _Scripts.Characters.DungeonMaster
             base.Awake();
 
             _inputs = new InputsDM();
-            ManaHandler = GetComponent<ManaHandler>();
+            CurrentMana = datas.manaAmount;
             InstantiateCamera();
         }
 
@@ -98,6 +95,14 @@ namespace _Scripts.Characters.DungeonMaster
         {
             HandleMovements();
             ShootingRaycast();
+        }
+
+        private void LateUpdate()
+        {
+            if (CurrentMana >= datas.manaAmount || _manaRoutine != null)
+                return;
+
+            _manaRoutine = StartCoroutine("RecoveryRoutine");
         }
         #endregion
 
@@ -206,15 +211,57 @@ namespace _Scripts.Characters.DungeonMaster
         private void HandleMovements()
         {
             //Rotation
-            float rotation = (_rotationInputs.x - _rotationInputs.y) * rotationSpeed * UnityEngine.Time.deltaTime;
+            float rotation = (_rotationInputs.x - _rotationInputs.y) * datas.rotationSpeed * Time.deltaTime;
             transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
 
             //Motion
             Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
-            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, smoothingMovements);
-            transform.Translate(_currentMovement * moveSpeed * UnityEngine.Time.deltaTime);
+            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, datas.smoothingMotion);
+            transform.Translate(_currentMovement * datas.motionSpeed * UnityEngine.Time.deltaTime);
         }
         #endregion
+
+        #region Mana Methods
+        /// <summary>
+        /// Decrease the amount from the current mana
+        /// </summary>
+        /// <param name="amount"> Used mana amount </param>
+        public void UseMana(float amount)
+        {
+            if (!HasMuchMana(amount))
+                return;
+
+            CurrentMana -= amount;
+        }
+
+        /// <summary>
+        /// Returns if the amount can be decreased from current mana
+        /// </summary>
+        /// <param name="amount"> Used mana </param>
+        public bool HasMuchMana(float amount)
+        {
+            return CurrentMana - amount >= 0;
+        }
+
+        /// <summary>
+        /// Increase the current mana coroutine
+        /// </summary>
+        private IEnumerator RecoveryRoutine()
+        {
+            while (CurrentMana < datas.manaAmount)
+            {
+                CurrentMana += datas.manaRecovery * Time.deltaTime;
+                yield return null;
+            }
+
+            CurrentMana = datas.manaAmount;
+            _manaRoutine = null;
+        }
+        #endregion
+
+        #endregion
+
+        #region Trap Interactions Methods
 
         #region RayShooting/Tiling Interactions
         /// <summary>
@@ -339,7 +386,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private bool IsPossibleToPlaceTrap()
         {
-            if (!ManaHandler.HasMuchMana(SelectedCard.TrapReference.manaCost))
+            if (!HasMuchMana(SelectedCard.TrapReference.manaCost))
                 return false;
 
             //Shoot a ray to konw if the cursor is on a tile
@@ -398,7 +445,7 @@ namespace _Scripts.Characters.DungeonMaster
             //Set tiles that will be occuped
             interactor.SetAllTiles(Tile.TileState.Used);
             //Decrease Mana
-            ManaHandler.UseMana(SelectedCard.TrapReference.manaCost);
+            UseMana(SelectedCard.TrapReference.manaCost);
         }
 
         /// <summary>
