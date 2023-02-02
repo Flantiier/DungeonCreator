@@ -48,6 +48,16 @@ namespace _Scripts.GameplayFeatures.Traps
             StartCoroutine(DetectionRoutine(duration));
         }
 
+        [ContextMenu("Detected")]
+        public void GetDetected()
+        {
+            if (trapParts.Length <= 0)
+                return;
+
+            StartCoroutine(DetectionRoutine(5f));
+        }
+
+
         /// <summary>
         /// Change the layer on each part of the trap
         /// </summary>

@@ -5,8 +5,6 @@ using Photon.Realtime;
 using _Scripts.Multi.Connexion;
 using _Scripts.Characters;
 using System.Collections;
-using UnityEditor;
-using System;
 
 namespace _Scripts.Managers
 {

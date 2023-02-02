@@ -5,7 +5,7 @@ namespace _ScriptableObjects.Traps
 {
     [CreateAssetMenu(fileName = "New Spikes Datas", menuName = "Scriptables/Traps/Spikes Datas")]
     [InlineEditor]
-    public class SpikesDatas : TrapSO
+    public class PikesDatas : TrapSO
     {
         #region Variables
         [FoldoutGroup("Properties")]

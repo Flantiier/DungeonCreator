@@ -25,7 +25,8 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
             if (!other.TryGetComponent(out IDamageable player))
                 return;
 
-            player.Damage(character.CharacterDatas.GetAttackDamages(IsMainAttack));
+            float damages = character.CharacterDatas.GetAttackDamages(IsMainAttack);
+            player.Damage(damages);
         }
         #endregion
     }

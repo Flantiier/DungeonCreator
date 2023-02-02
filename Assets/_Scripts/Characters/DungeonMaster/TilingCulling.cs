@@ -11,10 +11,10 @@ namespace _Scripts.Characters.DungeonMaster
 		[SerializeField] private bool disabledOnStart = false;
 		[SerializeField] private string groundLayer = "GroundTiling";
 		[SerializeField] private string wallLayer = "WallTiling";
-		#endregion
+        #endregion
 
-		#region Builts_In
-		private void Start()
+        #region Builts_In
+        private void Start()
 		{
 			if (!disabledOnStart)
 				return;
@@ -55,7 +55,7 @@ namespace _Scripts.Characters.DungeonMaster
                     PersonnalUtilities.Layers.ShowLayer(wallLayer);
                     break;
 
-			}
+            }
 		}
 
 		/// <summary>

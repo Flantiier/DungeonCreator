@@ -15,7 +15,7 @@ namespace _ScriptableObjects.Traps
         public int health = 50;
         [BoxGroup("Properties/Stats"), LabelWidth(100)]
         [Range(10, 50), GUIColor(2, 0.5f, 0.3f)]
-        public int damage = 25;
+        public int damages = 25;
         [BoxGroup("Properties/Stats"), LabelWidth(100)]
         [Range(0f, 0.2f), GUIColor(3, 2, 0.5f)] 
         public float smoothRotation = 0.125f;
@@ -25,6 +25,9 @@ namespace _ScriptableObjects.Traps
         
         [TitleGroup("Properties/Projectile"), LabelWidth(100)]
         public Projectile projectilePrefab;
+        [TitleGroup("Properties/Projectile"), LabelWidth(100)]
+        [Range(5f, 30f), GUIColor(3f, 3f, 2f)]
+        public float throwForce = 20f;
         #endregion
     }
 }

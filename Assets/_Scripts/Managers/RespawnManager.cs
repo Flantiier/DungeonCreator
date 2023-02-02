@@ -1,6 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
+using _Scripts.Characters;
 
 namespace _Scripts.Managers
 {
@@ -13,12 +14,12 @@ namespace _Scripts.Managers
         #region Builts_In
         public override void OnEnable()
         {
-            Characters.Character.OnCharacterDeath += StartRespawnDelay;
+            Character.OnCharacterDeath += StartRespawnDelay;
         }
 
         public override void OnDisable()
         {
-            Characters.Character.OnCharacterDeath -= StartRespawnDelay;
+            Character.OnCharacterDeath -= StartRespawnDelay;
         }
         #endregion
 
@@ -26,41 +27,41 @@ namespace _Scripts.Managers
         /// <summary>
         /// Start a coroutine to respawn the player
         /// </summary>
-        private void StartRespawnDelay()
+        private void StartRespawnDelay(Character character)
         {
-            float duration = GetRespawnTime();
+            //float duration = GetRespawnTime();
+            float duration = 5f;
             Vector3 respawnPosition = Vector3.zero;
 
-            StartCoroutine(RespawnRoutine(duration, respawnPosition));
+            StartCoroutine(RespawnRoutine(character, respawnPosition, duration));
         }
 
         /// <summary>
         /// Set the player position to a target position
         /// </summary>
         /// <param name="position"> Respawn position </param>
-        private void RespawnPlayer(Vector3 position)
+        private void RespawnPlayer(Character character, Vector3 position)
         {
-            if (!PlayersManager.Instance.PlayerInstance)
+            if (!character)
                 return;
 
-            GameObject player = PlayersManager.Instance.PlayerInstance;
-
-            player.SetActive(false);
-            player.transform.position = position;
-            player.SetActive(true);
+            character.gameObject.SetActive(false);
+            character.transform.position = position;
+            character.gameObject.SetActive(true);
         }
 
         /// <summary>
         /// Respawn coroutine
         /// </summary>
-        /// <param name="duration"> Coroutine duration </param>
+        /// <param name="character"> Character to respawn </param>
         /// <param name="position"> Respawn position </param>
-        private IEnumerator RespawnRoutine(float duration, Vector3 position)
+        /// <param name="duration"> Respawn duration </param>
+        private IEnumerator RespawnRoutine(Character character, Vector3 position, float duration)
         {
             yield return new WaitForSecondsRealtime(duration);
 
             Debug.LogWarning("Coucou");
-            RespawnPlayer(position);
+            RespawnPlayer(character, position);
         }
 
         /// <summary>

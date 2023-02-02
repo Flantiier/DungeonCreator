@@ -29,6 +29,14 @@ namespace _Scripts.GameplayFeatures.Traps
         }
         #endregion
 
+        #region Inherited Methods
+        protected override void InitializeTrap()
+        {
+            base.InitializeTrap();
+            SetHitboxDamages(datas.damages);
+        }
+        #endregion
+
         #region Methods
         /// <summary>
         /// Shoot a ray and detect is smth is colliding towards the flame point

@@ -8,7 +8,9 @@ namespace _ScriptableObjects.Traps
     public class FlameThrowerDatas : TrapSO
     {
         #region Variables
-        [FoldoutGroup("Properties")]
+        [FoldoutGroup("Properties"), LabelWidth(100)]
+        [Range(10, 50), GUIColor(2, 0.5f, 0.3f)]
+        public int damages = 10;
         [BoxGroup("Properties/Stats"), LabelWidth(100)]
         [Range(3f, 10f), GUIColor(3, 3, 0.5f)]
         public float sprayDuration = 5f;

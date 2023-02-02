@@ -33,7 +33,7 @@ namespace _Scripts.Characters
         #endregion
 
         #region Character
-        public static event Action OnCharacterDeath;
+        public static event Action<Character> OnCharacterDeath;
 
         private Coroutine _healthRecupRoutinee;
         private Coroutine _afflictionRoutine;
@@ -278,7 +278,7 @@ namespace _Scripts.Characters
         private void InvokeDeathEvent()
         {
             PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Dead;
-            OnCharacterDeath?.Invoke();
+            OnCharacterDeath?.Invoke(this);
         }
         #endregion
 

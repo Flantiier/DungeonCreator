@@ -1,4 +1,3 @@
-using _Scripts.Characters.DungeonMaster;
 using UnityEngine;
 
 namespace _Scripts.TrapSystem

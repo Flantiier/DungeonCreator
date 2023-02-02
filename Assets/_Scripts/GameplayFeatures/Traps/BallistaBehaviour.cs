@@ -19,6 +19,9 @@ namespace _Scripts.GameplayFeatures.Traps
 		[SerializeField] private Transform projectileParent;
 
 		[BoxGroup("Stats")]
+		[SerializeField, Range(0.2f, 1.5f)] 
+		private float Yoffset = 1f;
+		[BoxGroup("Stats")]
 		[Required, SerializeField] private BallistaDatas datas;
 
 		private Projectile _lastProjectile;
@@ -68,10 +71,12 @@ namespace _Scripts.GameplayFeatures.Traps
 				return;
 
 			//Horizontal
-			horizontalPart.rotation = Quaternion.Slerp(horizontalPart.rotation, Quaternion.LookRotation(target.position - horizontalPart.position, transform.up), datas.smoothRotation);
+			Vector3 targetX = target.position - horizontalPart.position + new Vector3(0f, Yoffset, 0f);
+			Vector3 targetY = target.position - verticalPart.position + new Vector3(0f, Yoffset, 0f);
+            horizontalPart.rotation = Quaternion.Slerp(horizontalPart.rotation, Quaternion.LookRotation(targetX, transform.up), datas.smoothRotation);
 			horizontalPart.localEulerAngles = new Vector3(0f, horizontalPart.localEulerAngles.y, 0f);
             //Vertical
-            verticalPart.rotation = Quaternion.Slerp(verticalPart.rotation, Quaternion.LookRotation(target.position - verticalPart.position, transform.up), datas.smoothRotation);
+            verticalPart.rotation = Quaternion.Slerp(verticalPart.rotation, Quaternion.LookRotation(targetY, transform.up), datas.smoothRotation);
             verticalPart.localEulerAngles = new Vector3(verticalPart.localEulerAngles.x, 0f, 0f);
         }
 
@@ -114,8 +119,8 @@ namespace _Scripts.GameplayFeatures.Traps
 			if (!_lastProjectile)
 				return;
 
-			_lastProjectile.ThrowProjectile(_lastProjectile.transform.forward);
 			_lastProjectile.transform.SetParent(null);
+			_lastProjectile.OverrideThrowForce(_lastProjectile.transform.forward, datas.throwForce);
 			_lastProjectile = null;
 		}
         #endregion

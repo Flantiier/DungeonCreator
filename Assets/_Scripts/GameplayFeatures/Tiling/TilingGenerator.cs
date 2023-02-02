@@ -19,7 +19,9 @@ namespace _Scripts.TrapSystem
         [BoxGroup("Properties")]
         [SerializeField] private Tile.TilingType type;
         [BoxGroup("Properties")]
-        [SerializeField, Range(0, 31)] private int layer = 0;
+        [SerializeField] private string groundLayer = "GroundTiling";
+        [BoxGroup("Properties")]
+        [SerializeField] private string wallLayer = "WallTiling";
 
         #endregion
 
@@ -59,11 +61,13 @@ namespace _Scripts.TrapSystem
                 {
                     GameObject tile = PrefabUtility.InstantiatePrefab(tiling.tilePrefab, transform) as GameObject;
                     Vector3 _tiling = new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
+
                     //Set position/rotations
                     tile.transform.position = startPos + transform.right * _tiling.x + transform.up * _tiling.y + transform.forward * _tiling.z;
                     tile.transform.rotation = Quaternion.identity;
+
                     //Set layer and type
-                    tile.layer = layer;
+                    tile.layer = type == Tile.TilingType.Ground ? LayerMask.NameToLayer(groundLayer) : LayerMask.NameToLayer(wallLayer);
                     tile.GetComponent<Tile>().TileType = type;
                 }
             }

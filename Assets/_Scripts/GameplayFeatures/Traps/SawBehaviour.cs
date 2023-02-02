@@ -20,10 +20,11 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Inherited Methods
         protected override void InitializeTrap()
         {
+            SetHitboxDamages(datas.damages);
+
             if (!ViewIsMine())
                 return;
 
-            SetHitboxDamages(datas.damages);
             SyncAnimator(0);
         }
         #endregion

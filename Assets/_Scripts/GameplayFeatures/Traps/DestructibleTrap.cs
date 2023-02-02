@@ -13,9 +13,6 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Interfaces Implementation
         public void Damage(float damages)
         {
-            if (!ViewIsMine())
-                return;
-
             Debug.Log($"{gameObject} got damaged by {damages} damages");
             HandleDamages(damages);
         }
@@ -37,6 +34,9 @@ namespace _Scripts.GameplayFeatures.Traps
         public void SetTrapHealthRPC(float healthAmount)
         {
             CurrentHealth = healthAmount;
+
+            if (CurrentHealth <= 0)
+                HandleTrapDestruction();
         }
 
         /// <summary>
@@ -45,15 +45,7 @@ namespace _Scripts.GameplayFeatures.Traps
         protected virtual void HandleDamages(float damages)
         {
             CurrentHealth = CurrentHealth - damages <= 0 ? 0f : CurrentHealth - damages;
-
-            if (CurrentHealth <= 0)
-            {
-                HandleTrapDestruction();
-                return;
-            }
-
             SetTrapHealth(CurrentHealth);
-
         }
 
         /// <summary>
