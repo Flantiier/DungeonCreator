@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
-using _ScriptableObjects.UserDatas;
 
-namespace _ScriptableObjects._UserDatas
+namespace _ScriptableObjects.UserDatas
 {
     [CreateAssetMenu(fileName = "New User Datas", menuName = "Scriptables/Game Management/User Datas")]
     public class UserDatas : ScriptableObject

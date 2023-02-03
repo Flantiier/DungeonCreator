@@ -1,19 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
-using _ScriptableObjects._UserDatas;
-using System.Threading;
 using _ScriptableObjects.UserDatas;
+using _Scripts.GameplayFeatures;
+using NUnit.Framework;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using Photon.Chat.Demo;
 
 namespace _Scripts.Managers
 {
     public class DeckManager : MonoBehaviourSingleton<DeckManager>
     {
         #region Variables
-        [Header("References")]
-        [SerializeField] private UserDatas userDatas;
-
-        private List<TrapSO> _cards = new List<TrapSO>();
+        [TitleGroup("References")]
+        [Required, SerializeField] private DeckProflieSO deck;
+        [TitleGroup("References")]
+        [Required, SerializeField] private DraggableCard cardPrefab;
+        [TitleGroup("References")]
+        [Required, SerializeField] private Transform cardZone;
+        [TitleGroup("References")]
+        [Required, SerializeField] private Transform storageZone;
         #endregion
 
         #region Builts_In
@@ -21,44 +29,97 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
-            //Create an shuffled instance of the current deck used
-            _cards = NewDeckInstance<TrapSO>(userDatas.currentDeck.cards);
+            InstantiateDeck();
         }
         #endregion
 
         #region Methods
-        [ContextMenu("Shuffle")]
-        private void DebugList()
+        /// <summary>
+        /// Creates every card in the deck
+        /// </summary>
+        private void InstantiateDeck()
         {
-            foreach (var item in userDatas.currentDeck.cards)
-                Debug.Log(item.name + '\n');
+            if (!deck || deck.cards.Length <= 0)
+                return;
 
-            Debug.Log("---------------------------------");
+            foreach (TrapSO trapDatas in deck.cards)
+            {
+                if (!trapDatas)
+                    continue;
 
-            List<TrapSO> list = NewDeckInstance<TrapSO>(userDatas.currentDeck.cards);
+                //Create all the cards and put it in the storage zone
+                DraggableCard instance = Instantiate(cardPrefab, storageZone);
+                instance.name = $"Card : {trapDatas.trapName}";
+                instance.UpdateCardInformations(trapDatas);
+                instance.gameObject.SetActive(false);
+            }
 
-            foreach (var item in list)
-                Debug.Log(item.name + '\n');
-
-            Debug.Log("---------------------------------");
+            ShuffleDeck(storageZone);
         }
 
         /// <summary>
-        /// Creates a new instance of the deck profile and shuffle it
+        /// Shuffle the children of a given transform
         /// </summary>
-        private List<T> NewDeckInstance<T>(List<T> baseList)
+        /// <param name="parent"> Transform to shuffle children from </param>
+        private void ShuffleDeck(Transform parent)
         {
-            List<T> list = new List<T>(baseList);
+            int[] rnd = NewIntArray(parent.childCount);
+            Shuffle(rnd);
 
-            for (int i = 0; i < list.Count - 1; i++)
+            int index = 0;
+            for (int i = 0; i < parent.childCount; i++)
             {
-                T temp = list[i];
-                int random = Random.Range(1, list.Count);
-                list[i] = list[random];
-                list[random] = temp;
+                parent.GetChild(i).SetSiblingIndex(rnd[index]);
+                index++;
             }
+        }
 
-            return list;
+        /// <summary>
+        /// Shuffle a array based on the Yates algorythm
+        /// </summary>
+        /// <typeparam name="T"> Array type </typeparam>
+        /// <param name="array"> array to shuffle </param>
+        private void Shuffle<T>(T[] array)
+        {
+            int range = array.Length;
+
+            for (int i = range-1; i > 0; i--)
+            {
+                //Get the random index and the last item
+                int rnd = Random.Range(0, i);
+                T temp = array[i];
+                //Exchange the random selected number and the last one of the array
+                array[i] = array[rnd];
+                array[rnd] = temp;
+            }
+        }
+
+        [ContextMenu("Shuffle")]
+        private void ShuffleTest()
+        {
+            int[] array = { 1, 2, 3, 4, 5 };
+            Debug.Log($"Before suffle : {array[0]} {array[1]} {array[2]} {array[3]} {array[4]}");
+            Shuffle(array);
+            Debug.Log($"After suffle : {array[0]} {array[1]} {array[2]} {array[3]} {array[4]}");
+        }
+
+        [ContextMenu("Shuffle stroage")]
+        private void ShuffleStorage()
+        {
+            ShuffleDeck(storageZone);
+        }
+
+        /// <summary>
+        /// Returns a random array from 0 to given length
+        /// </summary>
+        private int[] NewIntArray(int length)
+        {
+            int[] array = new int[length];
+
+            for (int i = 0; i < array.Length; i++)
+                array[i] = i;
+
+            return array;
         }
         #endregion
     }

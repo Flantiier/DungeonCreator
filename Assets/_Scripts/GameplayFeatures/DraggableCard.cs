@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 using _Scripts.Characters.DungeonMaster;
 using _ScriptableObjects.Traps;
 
@@ -10,10 +11,15 @@ namespace _Scripts.GameplayFeatures
     public class DraggableCard : DraggableUIElement
     {
         #region Variables/Properties
-        [Header("References")]
-        [SerializeField] private TrapSO trapReference;
+        [FoldoutGroup("References")]
         [SerializeField] private GameObject card;
+        [FoldoutGroup("References")]
         [SerializeField] private CardDesign design;
+        [FoldoutGroup("References")]
+        [SerializeField] private TrapSO trapReference;
+
+        [TitleGroup("Helpers")]
+        [SerializeField] private bool updateOnStart = false;
 
         private Image _raycaster;
         public TrapSO TrapReference => trapReference;
@@ -24,6 +30,9 @@ namespace _Scripts.GameplayFeatures
         {
             base.Awake();
             _raycaster = GetComponent<Image>();
+
+            if (!updateOnStart)
+                return;
 
             //Update card's informations
             UpdateCardInformations(TrapReference);
@@ -66,7 +75,7 @@ namespace _Scripts.GameplayFeatures
         /// Update the different informations on the card
         /// </summary>
         /// <param name="reference"> Trap reference </param>
-        private void UpdateCardInformations(TrapSO reference)
+        public void UpdateCardInformations(TrapSO reference)
         {
             if (!reference)
             {
