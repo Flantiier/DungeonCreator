@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
 using _ScriptableObjects.UserDatas;
 using _Scripts.GameplayFeatures;
-using NUnit.Framework;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using Photon.Chat.Demo;
 
 namespace _Scripts.Managers
 {
@@ -22,6 +18,9 @@ namespace _Scripts.Managers
         [Required, SerializeField] private Transform cardZone;
         [TitleGroup("References")]
         [Required, SerializeField] private Transform storageZone;
+
+        [TitleGroup("Gameplay properties")]
+        [SerializeField] private int cardInHand = 3;
         #endregion
 
         #region Builts_In
@@ -30,6 +29,15 @@ namespace _Scripts.Managers
             base.Awake();
 
             InstantiateDeck();
+            DrawMultiple(cardInHand);
+        }
+        #endregion
+
+        #region Test Methods
+        [ContextMenu("Shuffle stroage")]
+        private void ShuffleStorage()
+        {
+            ShuffleDeck(storageZone);
         }
         #endregion
 
@@ -75,6 +83,56 @@ namespace _Scripts.Managers
         }
 
         /// <summary>
+        /// Draw the first card in the storage zone
+        /// </summary>
+        private void Draw()
+        {
+            if (!storageZone || !cardZone)
+            {
+                Debug.LogWarning("Missing reference in the deck manager");
+                return;
+            }
+
+            if (storageZone.childCount <= 0)
+                return;
+
+            //Get the first child
+            Transform card = storageZone.GetChild(0);
+            //Set its parent and child index
+            card.SetParent(cardZone);
+            card.SetAsLastSibling();
+            card.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Draw multiples card loop
+        /// </summary>
+        /// <param name="amount"> Draw amount </param>
+        private void DrawMultiple(int amount)
+        {
+            for (int i = 0; i < amount; i++)
+                Draw();
+        }
+
+        /// <summary>
+        /// Disable the object and set its parent to the storage zone
+        /// </summary>
+        /// <param name="transform"> Transform to set parent </param>
+        public void SendToStorageZone(Transform transform)
+        {
+            if (!transform)
+                return;
+
+            //Send the used card to the storage
+            transform.gameObject.SetActive(false);
+            transform.SetParent(storageZone);
+            transform.SetAsLastSibling();
+
+            //Draw a new card
+            Draw();
+        }
+
+        /// <summary>
         /// Shuffle a array based on the Yates algorythm
         /// </summary>
         /// <typeparam name="T"> Array type </typeparam>
@@ -83,7 +141,7 @@ namespace _Scripts.Managers
         {
             int range = array.Length;
 
-            for (int i = range-1; i > 0; i--)
+            for (int i = range - 1; i > 0; i--)
             {
                 //Get the random index and the last item
                 int rnd = Random.Range(0, i);
@@ -92,21 +150,6 @@ namespace _Scripts.Managers
                 array[i] = array[rnd];
                 array[rnd] = temp;
             }
-        }
-
-        [ContextMenu("Shuffle")]
-        private void ShuffleTest()
-        {
-            int[] array = { 1, 2, 3, 4, 5 };
-            Debug.Log($"Before suffle : {array[0]} {array[1]} {array[2]} {array[3]} {array[4]}");
-            Shuffle(array);
-            Debug.Log($"After suffle : {array[0]} {array[1]} {array[2]} {array[3]} {array[4]}");
-        }
-
-        [ContextMenu("Shuffle stroage")]
-        private void ShuffleStorage()
-        {
-            ShuffleDeck(storageZone);
         }
 
         /// <summary>

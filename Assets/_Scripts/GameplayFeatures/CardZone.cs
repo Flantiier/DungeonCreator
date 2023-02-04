@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
-	public class PointerZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+	public class CardZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
         #region Variables
         public static Action OnEnterPointerZone;

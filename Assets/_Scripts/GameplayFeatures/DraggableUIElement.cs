@@ -1,14 +1,33 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.GameplayFeatures
 {
-    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         #region Variables/Properties
+        [TitleGroup("UI Elements")]
+        [SerializeField] protected float selectedOffset = 70f;
+
         protected RectTransform _rectTransform;
         protected Vector2 _previousPosition;
+        #endregion
+
+        #region Properties
         public bool IsDragged { get; protected set; }
+        public bool CanBeDragged { get; protected set; } = true;
+        public bool PointerOn
+        {
+            get { return PointerOn; }
+            set
+            {
+                if (value)
+                    SetPositionOnSelected(selectedOffset);
+                else
+                    SetPositionOnSelected(-selectedOffset);
+            }
+        }
         #endregion
 
         #region Builts_In
@@ -18,29 +37,65 @@ namespace _Scripts.GameplayFeatures
         }
         #endregion
 
-        #region Interfaces Implementation
-        //Begin drag interface
+        #region Drag/Drop Interfaces
+        //Begin drag
         public virtual void OnBeginDrag(PointerEventData eventData)
-        { 
+        {
+            if (!CanBeDragged)
+                return;
+
+            //Reset Card selection
+            SetPointerState(false);
+            //Start Drag
             BeingDrag(true);
             SetAnchoredPosition(_rectTransform.anchoredPosition);
         }
 
-        //Dragging interface
+        //Dragging
         public virtual void OnDrag(PointerEventData eventData)
-        { 
+        {
+            if (!IsDragged)
+                return;
+
             FollowPointer(eventData.position);
         }
 
-        //End drag interface
+        //End drag
         public virtual void OnEndDrag(PointerEventData eventData)
-        { 
+        {
+            if (!IsDragged)
+                return;
+
             BeingDrag(false);
             ResetToPreviousPosition();
         }
         #endregion
 
-        #region Methods
+        #region Pointer Interfaces
+        public virtual void OnPointerEnter(PointerEventData eventData) { SetPointerState(true); }
+
+        public virtual void OnPointerExit(PointerEventData eventData) { SetPointerState(false); }
+
+        /// <summary>
+        /// Indicates if the pointer is on/off the object
+        /// </summary>
+        /// <param name="state"></param>
+        protected void SetPointerState(bool state)
+        {
+            PointerOn = state;
+        }
+
+        /// <summary>
+        /// Set the position on the Y axis
+        /// </summary>
+        /// <param name="offset"> Y offset </param>
+        protected void SetPositionOnSelected(float offset)
+        {
+            _rectTransform.localPosition += new Vector3(0f, offset, 0f);
+        }
+        #endregion
+
+        #region Drag Methods
         /// <summary>
         /// Indicates if this UI element is dragged1
         /// </summary>

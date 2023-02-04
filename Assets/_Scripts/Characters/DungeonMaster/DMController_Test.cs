@@ -6,6 +6,8 @@ using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using Personnal.Florian;
+//
+using _Scripts.Managers;
 using _Scripts.Characters.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
@@ -80,7 +82,7 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(true);
             SubscribeToInputs();
 
-            PointerZone.OnEnterPointerZone += EnterPointerZone;
+            CardZone.OnEnterPointerZone += EnterPointerZone;
         }
 
         private void OnDisable()
@@ -88,7 +90,7 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(false);
             UnsubscribeToInputs();
 
-            PointerZone.OnEnterPointerZone -= EnterPointerZone;
+            CardZone.OnEnterPointerZone -= EnterPointerZone;
         }
 
         private void Update()
@@ -446,6 +448,8 @@ namespace _Scripts.Characters.DungeonMaster
             interactor.SetAllTiles(Tile.TileState.Used);
             //Decrease Mana
             UseMana(SelectedCard.TrapReference.manaCost);
+            //Rotate the card
+            DeckManager.Instance.SendToStorageZone(SelectedCard.transform);
         }
 
         /// <summary>

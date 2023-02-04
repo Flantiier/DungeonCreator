@@ -5,17 +5,20 @@ using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 using _Scripts.Characters.DungeonMaster;
 using _ScriptableObjects.Traps;
+using System.Runtime.CompilerServices;
 
 namespace _Scripts.GameplayFeatures
 {
     public class DraggableCard : DraggableUIElement
     {
         #region Variables/Properties
-        [FoldoutGroup("References")]
+        [TitleGroup("References")]
         [SerializeField] private GameObject card;
-        [FoldoutGroup("References")]
+        [TitleGroup("References")]
+        [SerializeField] private GameObject cardMask;
+        [TitleGroup("References")]
         [SerializeField] private CardDesign design;
-        [FoldoutGroup("References")]
+        [TitleGroup("References")]
         [SerializeField] private TrapSO trapReference;
 
         [TitleGroup("Helpers")]
@@ -38,30 +41,41 @@ namespace _Scripts.GameplayFeatures
             UpdateCardInformations(TrapReference);
         }
 
+        private void LateUpdate()
+        {
+            UpdateDraggedState();
+        }
+
         private void OnEnable()
         {
-            PointerZone.OnEnterPointerZone += EnableCard;
-            PointerZone.OnExitPointerZone += DisableCard;
+            CardZone.OnEnterPointerZone += EnableCard;
+            CardZone.OnExitPointerZone += DisableCard;
         }
 
         private void OnDisable()
         {
-            PointerZone.OnEnterPointerZone -= EnableCard;
-            PointerZone.OnExitPointerZone -= DisableCard;
+            CardZone.OnEnterPointerZone -= EnableCard;
+            CardZone.OnExitPointerZone -= DisableCard;
         }
         #endregion
 
         #region DragAndDropInterfaces
         public override void OnBeginDrag(PointerEventData eventData)
         {
-            base.OnBeginDrag(eventData);
-            _raycaster.raycastTarget = false;
+            if (!CanBeDragged)
+                return;
 
+            base.OnBeginDrag(eventData);
+
+            _raycaster.raycastTarget = false;
             DMController_Test.Instance.StartDrag(this);
         }
 
         public override void OnEndDrag(PointerEventData eventData)
         {
+            if (!IsDragged)
+                return;
+
             DMController_Test.Instance.EndDrag();
 
             base.OnEndDrag(eventData);
@@ -89,6 +103,22 @@ namespace _Scripts.GameplayFeatures
             design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
             //design.damageField.SetText(reference.damages.ToString());
             design.manaField.SetText(reference.manaCost.ToString());
+        }
+
+        /// <summary>
+        /// Disable the drag and drop when the the mana is too low
+        /// </summary>
+        private void UpdateDraggedState()
+        {
+            if (!trapReference)
+            {
+                CanBeDragged = false;
+                return;
+            }
+
+            float mana = DMController_Test.Instance.CurrentMana;
+            CanBeDragged = mana >= trapReference.manaCost;
+            cardMask.SetActive(!CanBeDragged);
         }
 
         /// <summary>
