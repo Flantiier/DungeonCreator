@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.DM
 {
-    [CreateAssetMenu(fileName = "New DM Datas", menuName = "Scriptables/DM")]
+    [CreateAssetMenu(fileName = "New DM Datas", menuName = "Scriptables/DM/DM")]
     [InlineEditor]
 	public class DMDatas : ScriptableObject
 	{

@@ -68,7 +68,7 @@ namespace _Scripts.GameplayFeatures
             base.OnBeginDrag(eventData);
 
             _raycaster.raycastTarget = false;
-            DMController_Test.Instance.StartDrag(this);
+            DMController.Instance.StartDrag(this);
         }
 
         public override void OnEndDrag(PointerEventData eventData)
@@ -76,7 +76,7 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
-            DMController_Test.Instance.EndDrag();
+            DMController.Instance.EndDrag();
 
             base.OnEndDrag(eventData);
             card.SetActive(true);
@@ -116,7 +116,7 @@ namespace _Scripts.GameplayFeatures
                 return;
             }
 
-            float mana = DMController_Test.Instance.CurrentMana;
+            float mana = DMController.Instance.CurrentMana;
             CanBeDragged = mana >= trapReference.manaCost;
             cardMask.SetActive(!CanBeDragged);
         }

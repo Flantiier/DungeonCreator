@@ -86,13 +86,12 @@ namespace _Scripts.Characters
             GameUIManager.Instance.OnOptionsMenuChanged -= ctx => InputsEnabled(!ctx);
         }
 
-        public virtual void Update()
+        protected override void Update()
         {
             if (!ViewIsMine())
                 return;
 
-            SetOrientation();
-            HandleGroundStateMachine();
+            base.Update();
             HandleStaminaRecuperation();
             UpdateAnimations();
         }
@@ -168,8 +167,6 @@ namespace _Scripts.Characters
         /// </summary>
         protected override void UnsubscribeInputActions()
         {
-            _inputs.Disable();
-
             _inputs.Gameplay.Move.performed -= ctx => Inputs = ctx.ReadValue<Vector2>();
             _inputs.Gameplay.Move.canceled -= ctx => Inputs = Vector2.zero;
             _inputs.Gameplay.Roll.started -= HandleDodge;

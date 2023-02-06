@@ -16,7 +16,7 @@ namespace _Scripts.GameplayFeatures
         #region Interfaces Implementations
         public virtual void OnPointerEnter(PointerEventData eventData)
 		{
-            if (!DMController_Test.Instance.IsDragging)
+            if (!DMController.Instance.IsDragging)
                 return;
 
             OnEnterPointerZone?.Invoke();
@@ -24,7 +24,7 @@ namespace _Scripts.GameplayFeatures
 
 		public virtual void OnPointerExit(PointerEventData eventData)
         {
-            if (!DMController_Test.Instance.IsDragging)
+            if (!DMController.Instance.IsDragging)
                 return;
 
             OnExitPointerZone?.Invoke();

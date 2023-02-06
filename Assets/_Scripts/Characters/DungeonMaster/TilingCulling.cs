@@ -24,14 +24,14 @@ namespace _Scripts.Characters.DungeonMaster
 
 		private void OnEnable()
 		{
-			DMController_Test.Instance.OnSelectedCard += EnableLayers;
-			DMController_Test.Instance.OnEndDrag += DisableAll;
+			DMController.Instance.OnSelectedCard += EnableLayers;
+			DMController.Instance.OnEndDrag += DisableAll;
         }
 
 		private void OnDisable()
         {
-            DMController_Test.Instance.OnSelectedCard -= EnableLayers;
-            DMController_Test.Instance.OnEndDrag -= DisableAll;
+            DMController.Instance.OnSelectedCard -= EnableLayers;
+            DMController.Instance.OnEndDrag -= DisableAll;
         }
         #endregion
 

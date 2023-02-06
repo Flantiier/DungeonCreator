@@ -26,14 +26,14 @@ namespace _Scripts.GameplayFeatures
 
         private void OnEnable()
         {
-            DMController_Test.Instance.OnStartDrag += EnableCollider;
-            DMController_Test.Instance.OnEndDrag += DisableCollider;
+            DMController.Instance.OnStartDrag += EnableCollider;
+            DMController.Instance.OnEndDrag += DisableCollider;
         }
 
         private void OnDisable()
         {
-            DMController_Test.Instance.OnStartDrag -= EnableCollider;
-            DMController_Test.Instance.OnEndDrag -= DisableCollider;
+            DMController.Instance.OnStartDrag -= EnableCollider;
+            DMController.Instance.OnEndDrag -= DisableCollider;
         }
 
         private void LateUpdate()

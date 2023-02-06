@@ -2,6 +2,7 @@
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
+//
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
@@ -74,6 +75,7 @@ namespace _Scripts.Characters
 
             InstantiateCamera();
         }
+
         public override void OnEnable()
         {
             if (!ViewIsMine())
@@ -99,6 +101,15 @@ namespace _Scripts.Characters
 
             if (_tpsCamera.MainCam)
                 PhotonNetwork.Destroy(_tpsCamera.MainCam.gameObject);
+        }
+
+        protected virtual void Update()
+        {
+            if (!ViewIsMine())
+                return;
+
+            SetOrientation();
+            HandleGroundStateMachine();
         }
         #endregion
 
@@ -195,6 +206,7 @@ namespace _Scripts.Characters
         /// Handle the character behaviour in each state
         /// </summary>
         protected virtual void HandleCharacterStateMachine() { }
+
         #endregion
 
         #region Motion Methods

@@ -1,442 +1,470 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using Cinemachine;
+using InputsMaps;
 using Photon.Pun;
+using Sirenix.OdinInspector;
+using Personnal.Florian;
+//
+using _Scripts.Managers;
 using _Scripts.Characters.Cameras;
+using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
-using _ScriptableObjects.Traps;
+using _Scripts.GameplayFeatures.Traps;
+using _ScriptableObjects.DM;
 
 namespace _Scripts.Characters.DungeonMaster
 {
-    public class DMController : MonoBehaviour
+    [RequireComponent(typeof(TilingCulling))]
+    public class DMController : MonoBehaviourSingleton<DMController>
     {
         #region Variables
-        [Header("References")]
+
+        #region References
+        [FoldoutGroup("References")]
+        [SerializeField] private TilingSO tiling;
+        [FoldoutGroup("References")]
+        [SerializeField] private Transform projection;
+        [FoldoutGroup("References")]
+        [SerializeField] private TilingInteractor interactor;
+        [FoldoutGroup("References")]
         [SerializeField] private SkyCameraSetup cameraPrefab;
-        [SerializeField] private GameObject dmHUD;
-        [SerializeField] private Transform orientation;
-        [SerializeField] private Transform projectedTransform;
 
-        [SerializeField] private float manaDM = 100;
-        [SerializeField] private float manaRegen = 1;
+        private InputsDM _inputs;
+        private SkyCameraSetup _camSetup;
+        #endregion
 
-        private GameObject _manaBar;
-        private float _currentMana;
-        private PlayerInput _inputs;
-        private SkyCameraSetup _myCamera;
-        private CinemachineTransposer _transposer;
-        private PhotonView _view;
-
-        #region Motion
-        [Header("Inputs")]
-        [SerializeField] private float moveSpeed = 20f;
-        [SerializeField] private float rotateSpeed = 75f;
-
+        [FoldoutGroup("Stats")]
+        [Required, SerializeField] private DMDatas datas;
+        //Motion
+        private Vector2 _inputsVector;
+        private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
-        private Vector3 _targetAngle;
-        private float _scrollStep;
+        private Coroutine _manaRoutine;
+        //RAYCAST
+        [FoldoutGroup("Raycast properties")]
+        [SerializeField] private LayerMask raycastMask;
+        [FoldoutGroup("Raycast properties")]
+        [SerializeField] private LayerMask collisionMask;
+        [FoldoutGroup("Raycast properties")]
+        [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
 
-        [Header("Camera angle")]
-        [SerializeField] private float scrollSteps = 10f;
-        [SerializeField, Range(0f, 0.1f)] private float scrollSmoothing = 0.05f;
-        [SerializeField] private Vector3 zoomRatio = new Vector3(20f, 35f, 50f);
-        [SerializeField] private Vector3 distanceRatio = new Vector3(5f, 10f, 20f);
-        #endregion
-
-        #region RayCasting Variables
-        [Header("Tiling Infos")]
-        [SerializeField] private TilingSO tilingInfos;
-        [SerializeField] private float checkRadius = 0.25f;
-        [SerializeField] private float maxCheckDistance = 2f;
-        [SerializeField] private LayerMask tilesMask;
-
-        public static TrapSO selectedTrap;
-        public static Transform _selectedTrapInstance;
-        private Transform _lastTileHitted;
-        private List<Tile> _reachedTiles = new List<Tile>();
-        private RaycastHit _rayHit;
-        private float _selectedTrapRotation;
-        private bool _isHitting;
-        private bool _canPlaceTrap;
-        #endregion
+        private Transform _hittedTransform;
+        private float _currentRotation;
+        private GameObject _trapInstance;
+        //DRAG & DROP
+        public event Action OnStartDrag;
+        public event Action OnEndDrag;
+        public event Action<Tile.TilingType> OnSelectedCard;
 
         #endregion
 
         #region Properties
-        public Vector2 InputsVector { get; private set; }
+        public DMDatas Datas => datas;
+        public bool IsDragging { get; set; }
+        public DraggableCard SelectedCard { get; private set; }
+        public float CurrentMana { get; private set; }
         #endregion
 
         #region Builts_In
-        private void Awake()
+        public override void Awake()
         {
-            _view = GetComponent<PhotonView>();
+            base.Awake();
 
-            if (!_view.IsMine)
-                return;
-
-            _inputs = GetComponent<PlayerInput>();
-
-            _myCamera = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<SkyCameraSetup>();
-            _myCamera.SetLookAtTarget(orientation);
-            _transposer = _myCamera.VCam.GetCinemachineComponent<CinemachineTransposer>();
-            _currentMana = manaDM;
-
-            InstantiateUI();
-        }
-
-        private void Start()
-        {
-            _manaBar = GameObject.Find("ManaBarImage");
+            _inputs = new InputsDM();
+            CurrentMana = datas.manaAmount;
+            InstantiateCamera();
         }
 
         private void OnEnable()
         {
-            if (!_view.IsMine)
-                return;
-
+            EnableInputs(true);
             SubscribeToInputs();
+
+            CardZone.OnEnterPointerZone += EnterPointerZone;
         }
 
         private void OnDisable()
         {
-            if (!_view.IsMine)
-                return;
-
+            EnableInputs(false);
             UnsubscribeToInputs();
+
+            CardZone.OnEnterPointerZone -= EnterPointerZone;
         }
 
         private void Update()
         {
-            if (!_view.IsMine)
+            HandleMovements();
+            ShootingRaycast();
+        }
+
+        private void LateUpdate()
+        {
+            if (CurrentMana >= datas.manaAmount || _manaRoutine != null)
                 return;
 
-            HandleCameraMovements();
-            ShootTileRay();
-            UpdateCameraAngle();
-            RegenMana();
+            _manaRoutine = StartCoroutine("RecoveryRoutine");
         }
         #endregion
 
         #region Methods
-        private void InstantiateUI()
+        /// <summary>
+        /// Instantiate sky camera
+        /// </summary>
+        private void InstantiateCamera()
         {
-            if (!dmHUD)
+            if (!cameraPrefab)
+            {
+                Debug.LogWarning("Missing camera prefab");
                 return;
+            }
 
-            Instantiate(dmHUD);
+            _camSetup = Instantiate(cameraPrefab);
+            _camSetup.SetLookAtTarget(transform);
+        }
+
+        private void HandleStartDrag()
+        {
+            //Set the position of the projection transform off map
+            projection.position = offMapPosition;
+
+            //Set required amount of tiles
+            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
+
+            //Set collider size
+            float amountX = SelectedCard.TrapReference.xAmount - 2f;
+            float amountY = SelectedCard.TrapReference.yAmount - 2f;
+            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f;
+            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
+            interactor.SetColliderSize(X, Y);
+
+            //StartDrag event call
+            OnStartDrag?.Invoke();
+            OnSelectedCard?.Invoke(SelectedCard.TrapReference.type);
+        }
+
+        private void HandleDragEnd()
+        {
+            _hittedTransform = null;
+            projection.position = offMapPosition;
+            _currentRotation = 0f;
+
+            interactor.RefreshInteractor();
+            OnEndDrag?.Invoke();
         }
 
         #region Inputs
         /// <summary>
-        /// Subscribe to inputs actions
+        /// Enable or disable inputs based on given parameter
+        /// </summary>
+        /// <param name="enabled"></param>
+        public void EnableInputs(bool enabled)
+        {
+            if (enabled)
+                _inputs.Enable();
+            else
+                _inputs.Disable();
+        }
+
+        /// <summary>
+        /// Subscribing to inputs events
         /// </summary>
         private void SubscribeToInputs()
         {
-            _inputs.ActivateInput();
+            //Movements
+            _inputs.Gameplay.Move.performed += ctx => _inputsVector = ctx.ReadValue<Vector2>();
+            _inputs.Gameplay.Move.canceled += ctx => _inputsVector = Vector2.zero;
 
-            _inputs.actions["Move"].performed += ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled += ctx => InputsVector = Vector2.zero;
+            //Rotations
+            _inputs.Gameplay.CamRotate_CW.performed += ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_ACW.performed += ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_CW.canceled += ctx => _rotationInputs.x = 0f;
+            _inputs.Gameplay.CamRotate_ACW.canceled += ctx => _rotationInputs.y = 0f;
 
-            _inputs.actions["RotateCamCW"].started += ctx => _rotationInputs.x = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamCW"].canceled += ctx => _rotationInputs.x = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamACW"].started += ctx => _rotationInputs.y = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamACW"].canceled += ctx => _rotationInputs.y = ctx.ReadValue<float>();
-
-            _inputs.actions["VerticalAngle"].started += SetScrollValue;
-
-            _inputs.actions["Interact"].performed += InstantiateTrap;
-            _inputs.actions["RotateCW"].performed += RotateClockwise;
-            _inputs.actions["RotateACW"].performed += RotateAntiClockwise;
+            //Trap Inputs
+            _inputs.Gameplay.RotateTrap.started += RotateTrapClockwise;
         }
 
         /// <summary>
-        /// Unsubscribe to inputs actions
+        /// Unsubscribing to inputs events
         /// </summary>
         private void UnsubscribeToInputs()
         {
-            _inputs.DeactivateInput();
+            //Movements
+            _inputs.Gameplay.Move.performed -= ctx => _inputsVector = ctx.ReadValue<Vector2>();
+            _inputs.Gameplay.Move.canceled -= ctx => _inputsVector = Vector2.zero;
 
-            _inputs.actions["Move"].performed -= ctx => InputsVector = ctx.ReadValue<Vector2>();
-            _inputs.actions["Move"].canceled -= ctx => InputsVector = Vector2.zero;
+            //Rotations
+            _inputs.Gameplay.CamRotate_CW.performed -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_ACW.performed -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
+            _inputs.Gameplay.CamRotate_CW.canceled -= ctx => _rotationInputs.x = 0f;
+            _inputs.Gameplay.CamRotate_ACW.canceled -= ctx => _rotationInputs.y = 0f;
 
-            _inputs.actions["RotateCamCW"].started -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamCW"].canceled -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamACW"].started -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
-            _inputs.actions["RotateCamACW"].canceled -= ctx => _rotationInputs.y = ctx.ReadValue<float>();
-
-            _inputs.actions["VerticalAngle"].started -= SetScrollValue;
-
-            _inputs.actions["Interact"].performed -= InstantiateTrap;
-            _inputs.actions["RotateCW"].performed -= RotateClockwise;
-            _inputs.actions["RotateACW"].performed -= RotateAntiClockwise;
-        }
-
-        /// <summary>
-        /// Set the scrolling step
-        /// </summary>
-        private void SetScrollValue(InputAction.CallbackContext ctx)
-        {
-            _scrollStep += ctx.ReadValue<Vector2>().y / 120f;
-            _scrollStep = Mathf.Clamp(_scrollStep, -scrollSteps, scrollSteps);
+            //Trap Inputs
+            _inputs.Gameplay.RotateTrap.started -= RotateTrapClockwise;
         }
         #endregion
 
-        #region Motion
+        #region Movements
         /// <summary>
-        /// Moving the orientation point of the camera (Camera follows orientation movements and rotations)
+        /// Movements control method
         /// </summary>
-        private void HandleCameraMovements()
+        private void HandleMovements()
         {
-            orientation.rotation = Quaternion.Euler(0f, orientation.eulerAngles.y + (-_rotationInputs.y + _rotationInputs.x) * rotateSpeed * Time.deltaTime, 0f);
+            //Rotation
+            float rotation = (_rotationInputs.x - _rotationInputs.y) * datas.rotationSpeed * Time.deltaTime;
+            transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
 
-            Vector3 direction = Quaternion.Euler(0f, -orientation.eulerAngles.y, 0f) * (orientation.forward * InputsVector.y + orientation.right * InputsVector.x);
-            orientation.Translate((direction.normalized) * moveSpeed * Time.deltaTime);
-        }
-
-        /// <summary>
-        /// Update camera YZ position based on scroll steps
-        /// </summary>
-        private void UpdateCameraAngle()
-        {
-            float stepPerc = _scrollStep / scrollSteps;
-            float minAngle = zoomRatio.y - zoomRatio.x;
-            float maxAngle = zoomRatio.z - zoomRatio.y;
-            float _minDistance = distanceRatio.z - distanceRatio.y;
-            float _maxDistance = distanceRatio.y - distanceRatio.x;
-
-            _targetAngle.y = _scrollStep >= 0 ? stepPerc * maxAngle : stepPerc * minAngle;
-            _targetAngle.y += zoomRatio.y;
-
-            _targetAngle.z = -distanceRatio.y;
-            _targetAngle.z += _scrollStep >= 0 ? -stepPerc * _maxDistance : stepPerc * _minDistance;
-
-            _transposer.m_FollowOffset = Vector3.Slerp(_transposer.m_FollowOffset, _targetAngle, scrollSmoothing);
+            //Motion
+            Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
+            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, datas.smoothingMotion);
+            transform.Translate(_currentMovement * datas.motionSpeed * UnityEngine.Time.deltaTime);
         }
         #endregion
 
-        #region TrapCreation
+        #region Mana Methods
+        /// <summary>
+        /// Decrease the amount from the current mana
+        /// </summary>
+        /// <param name="amount"> Used mana amount </param>
+        public void UseMana(float amount)
+        {
+            if (!HasMuchMana(amount))
+                return;
 
-        #region RayShooting
+            CurrentMana -= amount;
+        }
+
+        /// <summary>
+        /// Returns if the amount can be decreased from current mana
+        /// </summary>
+        /// <param name="amount"> Used mana </param>
+        public bool HasMuchMana(float amount)
+        {
+            return CurrentMana - amount >= 0;
+        }
+
+        /// <summary>
+        /// Increase the current mana coroutine
+        /// </summary>
+        private IEnumerator RecoveryRoutine()
+        {
+            while (CurrentMana < datas.manaAmount)
+            {
+                CurrentMana += datas.manaRecovery * Time.deltaTime;
+                yield return null;
+            }
+
+            CurrentMana = datas.manaAmount;
+            _manaRoutine = null;
+        }
+        #endregion
+
+        #endregion
+
+        #region Trap Interactions Methods
+
+        #region RayShooting/Tiling Interactions
         /// <summary>
         /// Shooting a ray to place the selected trap
         /// </summary>
-        private void ShootTileRay()
+        private void ShootingRaycast()
         {
-            Ray ray = _myCamera.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+            //If there is a trap card selected
+            if (!IsDragging || !SelectedCard)
+                return;
+
+            Ray ray = GetRayFromScreenPoint();
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.cyan);
 
-            if (selectedTrap == null)
-                return;
-
-            if (Physics.Raycast(ray, out _rayHit, Mathf.Infinity, tilesMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
-                _isHitting = true;
-                Transform hittedTile = !_lastTileHitted ? _rayHit.transform : _lastTileHitted == _rayHit.transform ? _lastTileHitted : _rayHit.transform;
-
-                if (hittedTile == _lastTileHitted)
+                //Hitting something else that the tiling
+                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return;
 
-                _lastTileHitted = hittedTile;
+                Debug.Log("Layer OK");
+
+                //Hitting the same tile that the last one
+                //Check if the tiling type is correct
+                if (_hittedTransform == hit.transform || !GetTileType(hit.collider.GetComponent<Tile>()))
+                    return;
+
+                //Update tiling on new tile selected
+                _hittedTransform = hit.transform;
+
+                Debug.Log("Tiles OK");
+
+                //Update tiling
+                SetProjectionPosition();
                 UpdateTiling();
+
             }
-            else
+        }
+
+        /// <summary>
+        /// Get a ray which starts from the center of the camera to the mouse screen position
+        /// </summary>
+        private Ray GetRayFromScreenPoint()
+        {
+            return _camSetup.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        }
+
+        /// <summary>
+        /// Indicates if the tile is the same tiling type that the trap
+        /// </summary>
+        private bool GetTileType(Tile tile)
+        {
+            return SelectedCard.TrapReference.type == Tile.TilingType.Both || SelectedCard.TrapReference.type == tile.TileType;
+        }
+
+        /// <summary>
+        /// Set the last object hitted and the projection position and rotation
+        /// </summary>
+        /// <param name="hittedObj"></param>
+        private void SetProjectionPosition()
+        {
+            //Set position and rotation of the projection transform
+            projection.position = _hittedTransform.position;
+
+            //Hit a different oriented tiling
+            if (projection.up != _hittedTransform.up)
             {
-                _isHitting = false;
+                interactor.RefreshInteractor();
+                projection.rotation = _hittedTransform.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
             }
+        }
+
+        /// <summary>
+        /// Update the grid color based on the selected trap
+        /// </summary>
+        private void UpdateTiling()
+        {
+            //Get the trap position based on 
+            Vector3 Xpos = projection.right * ((1 - SelectedCard.TrapReference.xAmount % 2) * tiling.lengthX * 0.5f);
+            Vector3 Ypos = projection.forward * ((1 - SelectedCard.TrapReference.yAmount % 2) * tiling.lengthY * 0.5f);
+            Vector3 trapPosition = projection.position + (Xpos + Ypos);
+
+            interactor.transform.position = trapPosition;
+            _trapInstance.transform.position = trapPosition;
         }
         #endregion
 
-        #region Tiling Logics Methods
+        #region Dragging Methods
         /// <summary>
-        /// Differents steps to place a trap
+        /// Invoking start drag event
         /// </summary>
-        public void UpdateTiling()
+        public void StartDrag(DraggableCard cardRef)
         {
-            //Step 1, D�finir la position du piege
-            GetPivotPosition(_rayHit.transform.position, _rayHit.normal);
+            //Set the dragged card
+            IsDragging = true;
+            SelectedCard = cardRef;
+
+            HandleStartDrag();
+            GetSelectedTrap();
         }
 
         /// <summary>
-        /// Calculating the pivotPosition
+        /// Invoking start drag event
         /// </summary>
-        public void GetPivotPosition(Vector3 hitPosition, Vector3 hitNormal)
+        public void EndDrag()
         {
-            Quaternion targetRotation;
+            //End drag
+            IsDragging = false;
 
-            if (hitNormal == Vector3.up)
-                targetRotation = Quaternion.Euler(0f, _selectedTrapRotation, 0f);
-            else if (hitNormal == -Vector3.forward)
-                targetRotation = Quaternion.Euler(_selectedTrapRotation, -90f, 90f);
-            else if (hitNormal == Vector3.forward)
-                targetRotation = Quaternion.Euler(_selectedTrapRotation, 90f, 90f);
-            else if (hitNormal == Vector3.right)
-                targetRotation = Quaternion.Euler(_selectedTrapRotation, 0f, -90f);
-            else
-                targetRotation = Quaternion.Euler(_selectedTrapRotation, 0f, 90f);
+            //Place trap if it's possible
+            if (IsPossibleToPlaceTrap())
+                PlaceTrapOnGrid();
 
-            float pivotX = Mathf.FloorToInt(selectedTrap.xAmount / 2) * tilingInfos.lengthX;
-            float pivotZ = Mathf.FloorToInt(selectedTrap.yAmount / 2) * tilingInfos.lengthY;
+            if(_trapInstance)
+                Destroy(_trapInstance);
 
-            projectedTransform.position = hitPosition;
-            Vector3 pivotPosition = projectedTransform.position + projectedTransform.right * pivotX + projectedTransform.forward * pivotZ;
-
-            projectedTransform.rotation = targetRotation;
-            _selectedTrapInstance.rotation = projectedTransform.rotation;
-
-            //Step 2, PreVisualisation du piege a sa position
-            SetTrapPosition(pivotPosition);
+            HandleDragEnd();
         }
 
         /// <summary>
-        /// Place the Trap at the calculated pivot position
+        /// Indicates if a trap can be place when drag is ending
         /// </summary>
-        public void SetTrapPosition(Vector3 pivotPosition)
+        private bool IsPossibleToPlaceTrap()
         {
-            Vector3 trapPosition = pivotPosition - projectedTransform.right * ((selectedTrap.xAmount - 1) * tilingInfos.lengthX * 0.5f) -
-                                        projectedTransform.forward * ((selectedTrap.yAmount - 1) * tilingInfos.lengthY * 0.5f);
+            if (!HasMuchMana(SelectedCard.TrapReference.manaCost))
+                return false;
 
-            _selectedTrapInstance.position = trapPosition;
-
-            //Step 3, Mettre en couleur les tiles utilisees
-            ShowRangedTiles(pivotPosition);
-        }
-
-        /// <summary>
-        /// Showing Trap Tiling
-        /// </summary>
-        private void ShowRangedTiles(Vector3 pivotPosition)
-        {
-            ResetTilesList();
-            bool placeTrap = true;
-
-            for (int i = 0; i < selectedTrap.xAmount; i++)
+            //Shoot a ray to konw if the cursor is on a tile
+            if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
-                for (int j = 0; j < selectedTrap.yAmount; j++)
-                {
-                    Vector3 castOrigin = pivotPosition - projectedTransform.right * (i * tilingInfos.lengthX) - projectedTransform.forward * (j * tilingInfos.lengthY) + _selectedTrapInstance.up;
+                //Hit something else that a tile
+                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
+                    return false;
 
-                    if (Physics.SphereCast(castOrigin, checkRadius, -_selectedTrapInstance.up, out RaycastHit hit, maxCheckDistance, tilesMask))
-                    {
-                        if (hit.collider.TryGetComponent(out Tile tile) && !tile.IsUsed())
-                            _reachedTiles.Add(tile);
-                        else
-                            placeTrap = false;
-                    }
-                    else
-                        placeTrap = false;
-                }
+                //Check if all tiles are free
+                if (!interactor.EnoughTilesAmount() || !interactor.IsTilingFree())
+                    return false;
+
+                //Hit a tile
+                return true;
             }
 
-            _canPlaceTrap = placeTrap;
+            //Hitting nothing
+            return false;
+        }
 
-            if (!placeTrap)
-            {
-                ChangeTilesStates(Tile.TileState.Free);
-                return;
-            }
-
-            ChangeTilesStates(Tile.TileState.Selected);
-
+        /// <summary>
+        /// Executed when entering in the card pointer zone
+        /// </summary>
+        private void EnterPointerZone()
+        {
+            _hittedTransform = null;
+            projection.position = offMapPosition;
         }
         #endregion
 
-        #region Tiles Selection
+        #region Trap Positioning
         /// <summary>
-        /// Changing the state of each tile in the reached tiles List
+        /// Preview the trap on the grid before placing it
         /// </summary>
-        /// <param name="newState"> Tile's new state </param>
-        private void ChangeTilesStates(Tile.TileState newState)
+        private void GetSelectedTrap()
         {
-            foreach (Tile tile in _reachedTiles)
-                tile.NewTileState(newState);
-        }
-
-        /// <summary>
-        /// Clearing the hitted tiles List
-        /// </summary>
-        private void ResetTilesList()
-        {
-            ChangeTilesStates(Tile.TileState.Free);
-
-            _reachedTiles.Clear();
-        }
-        #endregion
-
-        #region Trap Methods
-        /// <summary>
-        /// Selecting a new trap
-        /// </summary>
-        /// <param name="targetTrap"> Selected trap </param>
-        public static void SelectingTrap(TrapSO targetTrap)
-        {
-            selectedTrap = targetTrap;
-
-            if (_selectedTrapInstance != null)
-                Destroy(_selectedTrapInstance.gameObject);
-
-            _selectedTrapInstance = Instantiate(selectedTrap.trapPrefab, Vector3.up * 200f, Quaternion.identity).transform;
-        }
-
-        /// <summary>
-        /// Instantiate a trap
-        /// </summary>
-        private void InstantiateTrap(InputAction.CallbackContext _)
-        {
-            if (!_canPlaceTrap || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            if (!SelectedCard)
                 return;
 
-            if (_currentMana >= selectedTrap.manaCost)
-            {
-                PhotonNetwork.Instantiate(selectedTrap.trapPrefab.name, _selectedTrapInstance.position, projectedTransform.rotation);
-                ChangeTilesStates(Tile.TileState.Used);
-
-                _currentMana -= selectedTrap.manaCost;
-                _manaBar.GetComponent<Image>().fillAmount = _currentMana / manaDM;
-
-                _selectedTrapRotation = 0f;
-                _reachedTiles.Clear();
-            }
-        }
-
-        private void RegenMana()
-        {
-            if(_currentMana >= manaDM)
-                return;
-
-            _currentMana += Time.deltaTime * manaRegen;
-            _manaBar.GetComponent<Image>().fillAmount = _currentMana / manaDM;
+            //Get ghost prefab
+            _trapInstance = Instantiate(SelectedCard.TrapReference.previewPrefab, projection);
         }
 
         /// <summary>
-        /// Rotating the trap clockwise (angle between 0 and 360)
+        /// PUts a trap on current tiled selected
         /// </summary>
-        public void RotateClockwise(InputAction.CallbackContext _)
+        private void PlaceTrapOnGrid()
         {
-            if (!_isHitting)
+            if (!SelectedCard || !_trapInstance)
                 return;
 
-            _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation + 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
-            _lastTileHitted = null;
+            GameObject instance = PhotonNetwork.Instantiate(SelectedCard.TrapReference.trapPrefab.name, _trapInstance.transform.position, _trapInstance.transform.rotation);
+            instance.GetComponent<TrapClass1>().OccupedTiles = interactor.Tiles.ToArray();
+
+            //Set tiles that will be occuped
+            interactor.SetAllTiles(Tile.TileState.Used);
+            //Decrease Mana
+            UseMana(SelectedCard.TrapReference.manaCost);
+            //Rotate the card
+            DeckManager.Instance.SendToStorageZone(SelectedCard.transform);
+        }
+
+        /// <summary>
+        /// Rotate the trap projection clockwisely
+        /// </summary>
+        public void RotateTrapClockwise(InputAction.CallbackContext _)
+        {
+            if (!IsDragging)
+                return;
+
+            _currentRotation = _currentRotation + 90f >= 360f ? 0f : _currentRotation + 90f;
+            projection.rotation = _hittedTransform.rotation * Quaternion.Euler(0f, _currentRotation, 0f);
+
             UpdateTiling();
         }
-
-        /// <summary>
-        /// Rotating the trap antiClockwise (angle between -360 and 0)
-        /// </summary>
-        public void RotateAntiClockwise(InputAction.CallbackContext _)
-        {
-            if (!_isHitting)
-                return;
-
-            _selectedTrapRotation = Mathf.RoundToInt((((_selectedTrapRotation - 90) * Mathf.Deg2Rad) % (2 * Mathf.PI)) * Mathf.Rad2Deg);
-            _lastTileHitted = null;
-            UpdateTiling();
-        }
-        #endregion
-
         #endregion
 
         #endregion
