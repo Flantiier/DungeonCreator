@@ -16,7 +16,7 @@ using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
-    public class Character : TPS_Character, ITrapDamageable, IPlayerDamageable, IPlayerAfflicted
+    public class Character : TPS_Character, ITrapDamageable, IPlayerDamageable, IPlayerAfflicted, IPlayerStunable
     {
         #region Variables
 
@@ -37,7 +37,8 @@ namespace _Scripts.Characters
 
         private Coroutine _healthRecupRoutinee;
         private Coroutine _afflictionRoutine;
-
+        private Coroutine _stunRoutine;
+        
         protected Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
@@ -93,7 +94,6 @@ namespace _Scripts.Characters
 
             base.Update();
             HandleStaminaRecuperation();
-            UpdateAnimations();
         }
         #endregion
 
@@ -206,10 +206,21 @@ namespace _Scripts.Characters
 
         public void TouchedByAffliction(AfflictionStatus status)
         {
-            if (!ViewIsMine() || CurrentAffliction != null)
+            if (!ViewIsMine() || CurrentAffliction != status)
                 return;
 
             StartAfflictionEffect(status);
+        }
+
+        public void Stunned(float duration)
+        {
+            if (!ViewIsMine() || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+                return;
+
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
+                return;
+
+            _stunRoutine = StartCoroutine(StunRoutine(duration));
         }
         #endregion
 
@@ -239,14 +250,7 @@ namespace _Scripts.Characters
             base.HandleEntityDeath();
             InvokeDeathEvent();
 
-            if (_healthRecupRoutinee != null)
-                StopCoroutine(_healthRecupRoutinee);
-
-            if (_skillCoroutine != null)
-                StopCoroutine(_skillCoroutine);
-
-            if (_afflictionRoutine != null)
-                StopCoroutine(_afflictionRoutine);
+            StopAllCoroutines();
 
             if (CurrentAffliction != null)
                 CurrentAffliction = null;
@@ -337,6 +341,13 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
             _afflictionRoutine = null;
         }
+
+        private IEnumerator StunRoutine(float duration)
+        {
+            RPCAnimatorTrigger(RpcTarget.All, "stunned", true);
+            yield return new WaitForSecondsRealtime(duration);
+            RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
+        }
         #endregion
 
         #region StateMachines Methods
@@ -365,9 +376,9 @@ namespace _Scripts.Characters
         /// <summary>
         /// Set player animations
         /// </summary>
-        protected virtual void UpdateAnimations()
+        protected override void UpdateAnimations()
         {
-            if (!Animator)
+            if (!Animator || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Stunned))
                 return;
 
             Animator.SetFloat("CurrentStateTime", Animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
@@ -390,6 +401,9 @@ namespace _Scripts.Characters
         /// </summary>
         protected void UpdateAnimationLayers()
         {
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Stunned))
+                return;
+
             float targetWeight = PlayerSM.EnableLayers ? 1f : 0f;
             float currentWeight = Animator.GetLayerWeight(1);
             float updatedWeight = Mathf.Lerp(currentWeight, targetWeight, 0.05f);
@@ -509,7 +523,7 @@ namespace _Scripts.Characters
         /// </summary>
         private bool DodgeCondition()
         {
-            if (!PlayerSM.CanDodge || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+            if (!PlayerSM.CanDodge || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Stunned))
                 return false;
 
             if (CurrentStamina < overallDatas.staminaToDodge)
@@ -552,7 +566,7 @@ namespace _Scripts.Characters
             if (!GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded) && !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk))
                 return false;
 
-            if (PlayerSM.WaitAttack != null)
+            if (PlayerSM.WaitAttack != null || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Stunned))
                 return false;
 
             return PlayerSM.CanAttack && !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll);
@@ -599,10 +613,10 @@ namespace _Scripts.Characters
         /// <returns></returns>
         protected virtual bool SkillConditions()
         {
-            if (_skillCoroutine != null || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Attack))
+            if (_skillCoroutine != null || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
-            return !PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll);
+            return PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk);
         }
         #endregion
 
@@ -628,7 +642,7 @@ namespace _Scripts.Characters.StateMachines
     public class PlayerStateMachine
     {
         #region Properties
-        public enum PlayerStates { Walk, Roll, Attack, Knocked, OffBalanced, Dead }
+        public enum PlayerStates { Walk, Roll, Attack, Knocked, Stunned, Dead }
         public PlayerStates CurrentState { get; set; }
         public bool UsingStamina { get; set; }
         public bool CanDodge { get; set; }

@@ -2,20 +2,20 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class WizardSkillState : NetworkStateMachine
+	public class WizardSkillState : CharacterStateMachine
 	{
 		#region Inherited Methods
 		protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			MyCharacter.SkillUsed();
-			MyCharacter.PlayerSM.CanAttack = false;
-			MyCharacter.PlayerSM.CanDodge = false;
+			Character.SkillUsed();
+			Character.PlayerSM.CanAttack = false;
+			Character.PlayerSM.CanDodge = false;
         }
 
 		protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-            MyCharacter.PlayerSM.CanAttack = true;
-            MyCharacter.PlayerSM.CanDodge = true;
+            Character.PlayerSM.CanAttack = true;
+            Character.PlayerSM.CanDodge = true;
         }
         #endregion
     }

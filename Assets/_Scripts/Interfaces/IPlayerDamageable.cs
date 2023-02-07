@@ -1,5 +1,5 @@
-using _ScriptableObjects.Afflictions;
 using UnityEngine;
+using _ScriptableObjects.Afflictions;
 
 namespace _Scripts.Interfaces
 {
@@ -17,5 +17,10 @@ namespace _Scripts.Interfaces
     public interface IPlayerAfflicted
     {
         public void TouchedByAffliction(AfflictionStatus status);
+    }
+
+    public interface IPlayerStunable
+    {
+        public void Stunned(float duration);
     }
 }

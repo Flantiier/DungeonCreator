@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class ResetLayers : NetworkStateMachine
+	public class ResetLayers : CharacterStateMachine
 	{
 		#region Methods
 		protected override void StateMachineEnter(Animator animator, int stateMachinePathHash)
 		{
-			MyCharacter.PlayerSM.EnableLayers = false;
+			Character.PlayerSM.EnableLayers = false;
 		}
 		#endregion
 	}

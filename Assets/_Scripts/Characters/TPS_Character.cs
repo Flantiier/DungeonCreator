@@ -110,6 +110,7 @@ namespace _Scripts.Characters
 
             SetOrientation();
             HandleGroundStateMachine();
+            UpdateAnimations();
         }
         #endregion
 
@@ -206,6 +207,11 @@ namespace _Scripts.Characters
         /// Handle the character behaviour in each state
         /// </summary>
         protected virtual void HandleCharacterStateMachine() { }
+
+        /// <summary>
+        /// Update animator parameters
+        /// </summary>
+        protected virtual void UpdateAnimations() { }
 
         #endregion
 

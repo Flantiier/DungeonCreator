@@ -46,6 +46,24 @@ namespace InputsMaps
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ability01"",
+                    ""type"": ""Button"",
+                    ""id"": ""2949574a-d4f5-402a-8161-ef9a668b44b8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ability02"",
+                    ""type"": ""Button"",
+                    ""id"": ""bea864b7-c21c-40cd-aaf0-8de2b8965dab"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -114,6 +132,28 @@ namespace InputsMaps
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""35596fab-d76a-4b7a-b9c3-3722461febd3"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability01"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""374762fe-eefd-41cb-959e-2144a3051d27"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability02"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -124,6 +164,8 @@ namespace InputsMaps
             m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
             m_Gameplay_Motion = m_Gameplay.FindAction("Motion", throwIfNotFound: true);
             m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
+            m_Gameplay_Ability01 = m_Gameplay.FindAction("Ability01", throwIfNotFound: true);
+            m_Gameplay_Ability02 = m_Gameplay.FindAction("Ability02", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -185,12 +227,16 @@ namespace InputsMaps
         private IGameplayActions m_GameplayActionsCallbackInterface;
         private readonly InputAction m_Gameplay_Motion;
         private readonly InputAction m_Gameplay_Attack;
+        private readonly InputAction m_Gameplay_Ability01;
+        private readonly InputAction m_Gameplay_Ability02;
         public struct GameplayActions
         {
             private @BossInputs m_Wrapper;
             public GameplayActions(@BossInputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @Motion => m_Wrapper.m_Gameplay_Motion;
             public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
+            public InputAction @Ability01 => m_Wrapper.m_Gameplay_Ability01;
+            public InputAction @Ability02 => m_Wrapper.m_Gameplay_Ability02;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -206,6 +252,12 @@ namespace InputsMaps
                     @Attack.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
                     @Attack.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
                     @Attack.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
+                    @Ability01.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility01;
+                    @Ability01.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility01;
+                    @Ability01.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility01;
+                    @Ability02.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
+                    @Ability02.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
+                    @Ability02.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
                 }
                 m_Wrapper.m_GameplayActionsCallbackInterface = instance;
                 if (instance != null)
@@ -216,6 +268,12 @@ namespace InputsMaps
                     @Attack.started += instance.OnAttack;
                     @Attack.performed += instance.OnAttack;
                     @Attack.canceled += instance.OnAttack;
+                    @Ability01.started += instance.OnAbility01;
+                    @Ability01.performed += instance.OnAbility01;
+                    @Ability01.canceled += instance.OnAbility01;
+                    @Ability02.started += instance.OnAbility02;
+                    @Ability02.performed += instance.OnAbility02;
+                    @Ability02.canceled += instance.OnAbility02;
                 }
             }
         }
@@ -224,6 +282,8 @@ namespace InputsMaps
         {
             void OnMotion(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
+            void OnAbility01(InputAction.CallbackContext context);
+            void OnAbility02(InputAction.CallbackContext context);
         }
     }
 }

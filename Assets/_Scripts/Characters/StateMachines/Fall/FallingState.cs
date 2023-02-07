@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-    public class FallingState : NetworkStateMachine
+    public class FallingState : CharacterStateMachine
     {
         #region Inherited Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -12,7 +12,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            MyCharacter.ResetAirTime();
+            Character.ResetAirTime();
             animator.SetBool("IsFalling", false);
         }
         #endregion

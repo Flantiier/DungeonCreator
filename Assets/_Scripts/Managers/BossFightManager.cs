@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using _Scripts.NetworkScript;
 using _Scripts.Characters;
+using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.Managers
 {
@@ -15,11 +16,13 @@ namespace _Scripts.Managers
 		#region Builts_In
 		public override void OnEnable()
 		{
+			BossController.OnBossDefeated += DebugBoss;
 			//GameManager.Instance.OnBossFightReached += TeleportPlayerInArea;
 		}
 
 		public override void OnDisable()
 		{
+			BossController.OnBossDefeated -= DebugBoss;
             //GameManager.Instance.OnBossFightReached -= TeleportPlayerInArea;
         }
         #endregion
@@ -42,6 +45,11 @@ namespace _Scripts.Managers
 
 				character.GetTeleported(combatPoints[i].position);
             }
+		}
+
+		private void DebugBoss()
+		{
+			Debug.Log("Boss Defeated");
 		}
 		#endregion
 	}

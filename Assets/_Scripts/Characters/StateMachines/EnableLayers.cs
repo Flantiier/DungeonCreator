@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-    public class EnableLayers : NetworkStateMachine
+    public class EnableLayers : CharacterStateMachine
     {
         #region Inherited Methods
         protected override void StateMachineEnter(Animator animator, int stateMachinePathHash)
         {
-            MyCharacter.PlayerSM.CurrentState = Characters.StateMachines.PlayerStateMachine.PlayerStates.Walk;
-            MyCharacter.PlayerSM.EnableLayers = true;
+            Character.PlayerSM.CurrentState = Characters.StateMachines.PlayerStateMachine.PlayerStates.Walk;
+            Character.PlayerSM.EnableLayers = true;
         }
         #endregion
     }

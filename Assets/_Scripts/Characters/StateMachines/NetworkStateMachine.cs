@@ -1,26 +1,22 @@
-using UnityEngine;
+﻿using UnityEngine;
+using Photon.Pun;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
     public class NetworkStateMachine : StateMachineBehaviour
     {
-        #region Variables
-        protected Character MyCharacter { get; private set; }
-        #endregion
-
         #region Builts_In
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
         {
-            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
+            if (!ViewIsMine(animator))
                 return;
 
-            GetCharacter(animator);
             StateMachineEnter(animator, stateMachinePathHash);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
         {
-            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
+            if (!ViewIsMine(animator))
                 return;
 
             StateMachineExit(animator, stateMachinePathHash);
@@ -28,16 +24,15 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
+            if (!ViewIsMine(animator))
                 return;
 
-            GetCharacter(animator);
             StateEnter(animator, stateInfo, layerIndex);
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
+            if (!ViewIsMine(animator))
                 return;
 
             StateUpdate(animator, stateInfo, layerIndex);
@@ -45,7 +40,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (!animator.GetComponent<CharacterAnimator>().ViewIsMine())
+            if (!ViewIsMine(animator))
                 return;
 
             StateExit(animator, stateInfo, layerIndex);
@@ -54,14 +49,11 @@ namespace _Scripts.Characters.Animations.StateMachines
 
         #region Inherited Methods
         /// <summary>
-        /// Get the player character refrences
+        /// Indicate if the photonView is the local one
         /// </summary>
-        protected void GetCharacter(Animator animator)
+        protected bool ViewIsMine(Animator animator)
         {
-            if (MyCharacter)
-                return;
-
-            MyCharacter = animator.GetComponent<CharacterAnimator>().Character;
+            return animator.TryGetComponent(out PhotonView view) ? view.IsMine : false;
         }
 
         /// <summary>

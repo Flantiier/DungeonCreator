@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class GetUpState : NetworkStateMachine
+	public class GetUpState : CharacterStateMachine
 	{
 		protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			MyCharacter.PlayerSM.CurrentState = Characters.StateMachines.PlayerStateMachine.PlayerStates.Walk;
+			Character.PlayerSM.CurrentState = Characters.StateMachines.PlayerStateMachine.PlayerStates.Walk;
 		}
 	}
 }

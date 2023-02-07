@@ -2,21 +2,21 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-    public class LandState : NetworkStateMachine
+    public class LandState : CharacterStateMachine
     {
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (MyCharacter.AirTime >= 1f)
+            if (Character.AirTime >= 1f)
             {
-                MyCharacter.GroundSM.IsLanding = true;
+                Character.GroundSM.IsLanding = true;
                 animator.SetBool("Landing", true);
-                MyCharacter.ResetCharacterVelocity();
+                Character.ResetCharacterVelocity();
             }
         }
 
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            MyCharacter.GroundSM.IsLanding = false;
+            Character.GroundSM.IsLanding = false;
             animator.SetBool("Landing", false);
         }
     }

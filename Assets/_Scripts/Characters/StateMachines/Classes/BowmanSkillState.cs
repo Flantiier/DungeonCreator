@@ -3,7 +3,7 @@ using _Scripts.Characters.Adventurers;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-    public class BowmanSkillState : NetworkStateMachine
+    public class BowmanSkillState : CharacterStateMachine
     {
         #region Variables
         private Bowman _bowman;
@@ -13,12 +13,12 @@ namespace _Scripts.Characters.Animations.StateMachines
         #region Inherited Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            _bowman = MyCharacter.GetComponent<Bowman>();
+            _bowman = Character.GetComponent<Bowman>();
             _bowman.IsDefusing = true;
 
-            MyCharacter.ResetCharacterVelocity();
-            MyCharacter.LookTowardsOrientation();
-            MyCharacter.PlayerSM.CanAttack = false;
+            Character.ResetCharacterVelocity();
+            Character.LookTowardsOrientation();
+            Character.PlayerSM.CanAttack = false;
 
             _defuseWait = false;
             _bowman.CurrentDefuseTime = 0f;
@@ -32,7 +32,7 @@ namespace _Scripts.Characters.Animations.StateMachines
         protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             _bowman.IsDefusing = false;
-            MyCharacter.PlayerSM.CanAttack = true;
+            Character.PlayerSM.CanAttack = true;
         }
         #endregion
 
