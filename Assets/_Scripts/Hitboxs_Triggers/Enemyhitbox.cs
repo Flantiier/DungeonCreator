@@ -9,6 +9,10 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
         #region Variables
         [TitleGroup("Properties")]
         [SerializeField] private bool enabledOnStart = false;
+        [TitleGroup("Properties")]
+        [SerializeField] private bool initDamagesOnStart = true;
+        [TitleGroup("Properties"), ShowIf("initDamagesOnStart")]
+        [SerializeField] private float damages = 25f;
         public float Damages { get; set; }
         #endregion
 
@@ -17,6 +21,9 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
         {
             base.Awake();
             Collider.enabled = enabledOnStart;
+
+            if (initDamagesOnStart)
+                Damages = damages;
         }
 
         public virtual void OnTriggerEnter(Collider other)
@@ -24,6 +31,7 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
             if (!other.TryGetComponent(out IPlayerDamageable player))
                 return;
 
+            Debug.LogWarning("Touched");
             player.DealDamage(Damages);
         }
         #endregion

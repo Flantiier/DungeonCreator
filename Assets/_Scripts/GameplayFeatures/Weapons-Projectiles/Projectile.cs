@@ -10,12 +10,14 @@ namespace _Scripts.GameplayFeatures.Projectiles
     {
         #region Variables
         [TitleGroup("References")]
-        [SerializeField] private Rigidbody rb;
         [SerializeField] private Collider projCollider;
 
         [Header("Projectile properties")]
         [SerializeField] protected float damages = 10f;
         [SerializeField] protected float speed = 10f;
+        [SerializeField] protected bool enabledOnStart = false;
+
+        private Rigidbody _rb;
         #endregion
 
         #region Properties
@@ -30,10 +32,23 @@ namespace _Scripts.GameplayFeatures.Projectiles
         #endregion
 
         #region Builts_In
+        protected virtual void Awake()
+        {
+            _rb = GetComponent<Rigidbody>();
+
+            if (!projCollider)
+            {
+                if (TryGetComponent(out Collider collider))
+                    projCollider = collider;
+                else
+                    Debug.LogError($"Missing collider reference on {gameObject}");
+            }
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
-            projCollider.enabled = false;
+            projCollider.enabled = enabledOnStart;
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -51,7 +66,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
         {
             projCollider.enabled = true;
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
-            rb.AddForce(direction * speed, ForceMode.Impulse);
+            _rb.AddForce(direction * speed, ForceMode.Impulse);
         }
 
         /// <summary>
@@ -62,7 +77,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
         {
             projCollider.enabled = true;
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
-            rb.AddForce(direction * force, ForceMode.Impulse);
+            _rb.AddForce(direction * force, ForceMode.Impulse);
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
     {
         #region Variables
         [TitleGroup("Properties")]
-        [SerializeField, Required, InfoBox("This has to be in trigger to run the script")] 
+        [SerializeField, Required, InfoBox("This has to be in trigger to run the script")]
         private Collider hitboxCollider;
 
         public Collider Collider => hitboxCollider;
@@ -18,8 +18,10 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
         {
             if (!Collider)
             {
-                Debug.LogWarning($"Missing collider reference on {gameObject}!");
-                return;
+                if (!TryGetComponent(out Collider collider))
+                    Debug.LogWarning($"Missing collider reference on {gameObject}!");
+                else
+                    hitboxCollider = collider;
             }
 
             Collider.isTrigger = true;

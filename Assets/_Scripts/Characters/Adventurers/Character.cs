@@ -291,7 +291,7 @@ namespace _Scripts.Characters
         {
             PlayerSM.UsingStamina = PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Roll) || RunConditions();
 
-            if (!PlayerSM.UsingStamina || CurrentStamina > characterDatas.stamina)
+            if (PlayerSM.UsingStamina || CurrentStamina > characterDatas.stamina)
                 return;
 
             CurrentStamina += overallDatas.staminaRecup * Time.deltaTime;

@@ -26,6 +26,8 @@ namespace _Scripts.TrapSystem
         #endregion
 
         #region Tiling Creation Methods
+
+#if UNITY_EDITOR
         /// <summary>
         /// Creating tiling
         /// </summary>
@@ -85,6 +87,8 @@ namespace _Scripts.TrapSystem
                 newTile.transform.position = transform.position + new Vector3(tiling.lengthX * i, yOffset, tiling.lengthY * j);
             }
         }*/
+#endif
+
         #endregion
     }
 }

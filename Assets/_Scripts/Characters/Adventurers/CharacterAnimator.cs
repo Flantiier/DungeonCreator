@@ -11,7 +11,7 @@ namespace _Scripts.Characters.Animations
     [RequireComponent(typeof(PhotonAnimatorView))]
     public class CharacterAnimator : NetworkMonoBehaviour
     {
-        #region Variables     
+        #region Variables
         [Header("Hitboxs")]
         [SerializeField] protected CharacterHitbox[] hitboxs;
 
@@ -21,6 +21,9 @@ namespace _Scripts.Characters.Animations
         [SerializeField] private float addOffset = 0.25f;
         [SerializeField] protected bool projectileMainAttack = false;
 
+        [Header("Helpers")]
+        [SerializeField] private bool showHelpers = false;
+        
         protected Projectile _lastProjectile;
         #endregion
 
@@ -38,8 +41,11 @@ namespace _Scripts.Characters.Animations
             SetHitboxsReferences(Character);
         }
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
+            if (!showHelpers)
+                return;
+
             try
             {
                 float offset = (Character.transform.position - Character.MainCamTransform.position).magnitude;

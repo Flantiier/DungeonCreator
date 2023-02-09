@@ -60,7 +60,6 @@ namespace _Scripts.Managers
         {
             yield return new WaitForSecondsRealtime(duration);
 
-            Debug.LogWarning("Coucou");
             RespawnPlayer(character, position);
         }
 

@@ -57,9 +57,6 @@ MonoBehaviour:
   lookAt: {fileID: 5761381986665185933}
   cameraPrefab: {fileID: 692204243115489490, guid: 17cee0aa023d22343a44a6e843832fda,
     type: 3}
-  inputSmoothing: 0.1
-  speedSmoothing: 0.15
-  rotationSmoothing: 0.1
   walkableMask:
     serializedVersion: 2
     m_Bits: 67108864
@@ -204,6 +201,11 @@ PrefabInstance:
       propertyPath: view
       value: 
       objectReference: {fileID: 5761381986307864490}
+    - target: {fileID: 7029420084165448488, guid: 8f74922fcf409674dadadcbc825e4ce3,
+        type: 3}
+      propertyPath: hitboxCollider
+      value: 
+      objectReference: {fileID: 7089032758413288223}
     - target: {fileID: 8070990847821842822, guid: 8f74922fcf409674dadadcbc825e4ce3,
         type: 3}
       propertyPath: m_RootOrder
@@ -275,6 +277,12 @@ Animator:
 --- !u!4 &4155916893651615752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8070990847821842822, guid: 8f74922fcf409674dadadcbc825e4ce3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5308938084547545486}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7089032758413288223 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 3156019155328248465, guid: 8f74922fcf409674dadadcbc825e4ce3,
     type: 3}
   m_PrefabInstance: {fileID: 5308938084547545486}
   m_PrefabAsset: {fileID: 0}
