@@ -1,5 +1,5 @@
 using UnityEngine;
-using Personnal.Florian;
+using Utils;
 using _Scripts.TrapSystem;
 
 namespace _Scripts.Characters.DungeonMaster
@@ -45,14 +45,14 @@ namespace _Scripts.Characters.DungeonMaster
 			switch (type)
 			{
 				default:
-                    PersonnalUtilities.Layers.ShowLayer(groundLayer);
-                    PersonnalUtilities.Layers.ShowLayer(wallLayer);
+                    Utils.Utilities.Layers.ShowLayer(groundLayer);
+                    Utils.Utilities.Layers.ShowLayer(wallLayer);
                     break;
 				case Tile.TilingType.Ground:
-                    PersonnalUtilities.Layers.ShowLayer(groundLayer);
+                    Utils.Utilities.Layers.ShowLayer(groundLayer);
                     break;
 				case Tile.TilingType.Wall:
-                    PersonnalUtilities.Layers.ShowLayer(wallLayer);
+                    Utils.Utilities.Layers.ShowLayer(wallLayer);
                     break;
 
             }
@@ -63,8 +63,8 @@ namespace _Scripts.Characters.DungeonMaster
 		/// </summary>
 		private void DisableAll()
         {
-            PersonnalUtilities.Layers.HideLayer(groundLayer);
-            PersonnalUtilities.Layers.HideLayer(wallLayer);
+            Utils.Utilities.Layers.HideLayer(groundLayer);
+            Utils.Utilities.Layers.HideLayer(wallLayer);
         }
         #endregion
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Photon.Pun;
-using Personnal.Florian;
+using Utils;
 using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
@@ -11,19 +11,13 @@ namespace _Scripts.Managers
         #region Variables
         [Header("Game properties")]
         [SerializeField] private GameSettings gameSettings;
-
-        [Header("Temporary")]
-        [SerializeField] private int requiredPlayerNumber = 1;
-
-        public event Action OnBossFightReached;
-        public event Action OnBossFightStarted;
         #endregion
 
         #region Properties
         public GameSettings GameSettings => gameSettings;
         public GameStatements GameStatement { get; private set; } = new GameStatements();
         public bool ValidGame { get; private set; } = false;
-        public GlobalGameTime GameTime { get; private set; }
+        public GlobalGameTime GameTime { get; private set; }        
         #endregion
 
         #region Builts_In
@@ -37,7 +31,7 @@ namespace _Scripts.Managers
 
         private void Update()
         {
-            if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
+            /*if (!PhotonNetwork.IsConnected || !PhotonNetwork.IsMasterClient)
                 return;
 
             UpdateGameValidity();
@@ -45,7 +39,7 @@ namespace _Scripts.Managers
             if (!ValidGame || GameStatement.IsStateOf(GameStatements.Statements.Over) || GameStatement.IsStateOf(GameStatements.Statements.BossFight))
                 return;
 
-            UpdateGameTime();
+            UpdateGameTime();*/
         }
         #endregion
 
@@ -58,7 +52,7 @@ namespace _Scripts.Managers
             if (GameStatement.IsStateOf(GameStatements.Statements.Over))
                 return;
 
-            if (PhotonNetwork.PlayerList.Length >= requiredPlayerNumber)
+            if (PlayersManager.Instance.HasDungeonMaster() && PlayersManager.Instance.HasAdventurers())
             {
                 ValidGame = true;
                 RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.InGame);
@@ -132,25 +126,6 @@ namespace _Scripts.Managers
         }
         #endregion
 
-        #region BossFight Manager
-        /// <summary>
-        /// Called when the boss fight is reached
-        /// </summary>
-        public void BossFightReached()
-        {
-            GameStatement.CurrentState = GameStatements.Statements.BossFight;
-            OnBossFightReached?.Invoke();
-        }
-
-        /// <summary>
-        /// Starting the fight boss
-        /// </summary>
-        public void StartBossFight()
-        {
-            OnBossFightStarted?.Invoke();
-        }
-        #endregion
-
         #endregion
     }
 }
@@ -197,7 +172,7 @@ public class GlobalGameTime
     /// <param name="time"> Remaining time </param>
     public void SetMinuts(float time)
     {
-        RemainingMinuts = (int)PersonnalUtilities.Time.GetConvertedTime(time, PersonnalUtilities.Time.TimeUnit.Minuts);
+        RemainingMinuts = (int)Utils.Utilities.Time.GetConvertedTime(time, Utils.Utilities.Time.TimeUnit.Minuts);
     }
 
     /// <summary>

@@ -28,7 +28,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
                 return;
 
             Debug.Log("Boss can be trigered");
-            GameManager.Instance.BossFightReached();
+            BossFightManager.BossFightReached();
         }
     }
 }

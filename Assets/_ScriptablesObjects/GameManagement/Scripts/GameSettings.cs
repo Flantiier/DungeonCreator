@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
-using Personnal.Florian;
+using Utils;
+using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.GameManagement
 {
@@ -8,8 +9,8 @@ namespace _ScriptableObjects.GameManagement
     public class GameSettings : ScriptableObject
     {
         [Header("Game info")]
-        public TimeReference startTempo = new TimeReference(30f, PersonnalUtilities.Time.TimeUnit.Seconds);
-        public TimeReference duration = new TimeReference(20f, PersonnalUtilities.Time.TimeUnit.Minuts);
+        public TimeReference startTempo = new TimeReference(30f, Utils.Utilities.Time.TimeUnit.Seconds);
+        public TimeReference duration = new TimeReference(20f, Utils.Utilities.Time.TimeUnit.Minuts);
 
         [Header("Respawns Table")]
         public RespawnUnit[] respawnUnits;
@@ -20,7 +21,9 @@ namespace _ScriptableObjects.GameManagement
 [Serializable]
 public struct RespawnUnit
 {
+    [HorizontalGroup("Time Bounds"), LabelText("Time Bounds")]
     public float minBound;
+    [HorizontalGroup("Time Bounds"), HideLabel, LabelWidth(40)]
     public float maxBound;
     public float respawnDelay;
 }
@@ -31,9 +34,9 @@ public struct RespawnUnit
 public class TimeReference
 {
     public float duration = 20f;
-    public PersonnalUtilities.Time.TimeUnit timeUnit = PersonnalUtilities.Time.TimeUnit.Seconds;
+    public Utils.Utilities.Time.TimeUnit timeUnit = Utils.Utilities.Time.TimeUnit.Seconds;
 
-    public TimeReference(float _duration, PersonnalUtilities.Time.TimeUnit _unit)
+    public TimeReference(float _duration, Utils.Utilities.Time.TimeUnit _unit)
     {
         duration = _duration;
         timeUnit = _unit;
@@ -41,7 +44,7 @@ public class TimeReference
 
     public float GetTimeValue()
     {
-        return PersonnalUtilities.Time.GetDurationInSeconds(duration, timeUnit);
+        return Utils.Utilities.Time.GetDurationInSeconds(duration, timeUnit);
     }
 }
 #endregion

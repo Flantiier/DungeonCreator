@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.NetworkScript;
@@ -11,18 +12,19 @@ namespace _Scripts.Managers
 		#region Variables
 		[Header("Fight references")]
 		[SerializeField] private Transform[] combatPoints;
-		#endregion
 
-		#region Builts_In
-		public override void OnEnable()
+        public static event Action OnBossFightReached;
+        public static event Action OnBossFightStarted;
+        #endregion
+
+        #region Builts_In
+        public override void OnEnable()
 		{
-			BossController.OnBossDefeated += DebugBoss;
 			//GameManager.Instance.OnBossFightReached += TeleportPlayerInArea;
 		}
 
 		public override void OnDisable()
 		{
-			BossController.OnBossDefeated -= DebugBoss;
             //GameManager.Instance.OnBossFightReached -= TeleportPlayerInArea;
         }
         #endregion
@@ -45,12 +47,24 @@ namespace _Scripts.Managers
 
 				character.GetTeleported(combatPoints[i].position);
             }
-		}
+        }
 
-		private void DebugBoss()
-		{
-			Debug.Log("Boss Defeated");
-		}
+        /// <summary>
+        /// Called when the boss fight is reached
+        /// </summary>
+        public static void BossFightReached()
+        {
+            GameManager.Instance.GameStatement.CurrentState = GameStatements.Statements.BossFight;
+            OnBossFightReached?.Invoke();
+        }
+
+        /// <summary>
+        /// Starting the fight boss
+        /// </summary>
+        public static void StartBossFight()
+        {
+            OnBossFightStarted?.Invoke();
+        }
 		#endregion
 	}
 }

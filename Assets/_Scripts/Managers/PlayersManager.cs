@@ -28,6 +28,12 @@ namespace _Scripts.Managers
         #region Builts_In
         public override void Awake()
         {
+            if (!PhotonNetwork.IsConnected)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             base.Awake();
             Adventurers = new List<Player>();
 
@@ -41,6 +47,20 @@ namespace _Scripts.Managers
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Indicates if there is a dungeon master
+        /// </summary>
+        public bool HasDungeonMaster()
+        {
+            return DungeonMaster != null;
+        }
+        /// <summary>
+        /// Indicates if there is atleast one adventurer
+        /// </summary>
+        public bool HasAdventurers()
+        {
+            return Adventurers.Count > 0;
+        }
 
         #region Spawn Methods
         /// <summary>

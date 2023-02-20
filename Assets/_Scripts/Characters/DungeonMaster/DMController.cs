@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using Personnal.Florian;
+using Utils;
 //
 using _Scripts.Managers;
 using _Scripts.Characters.Cameras;
@@ -281,7 +281,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hitting something else that the tiling
-                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
+                if (Utils.Utilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return;
 
                 Debug.Log("Layer OK");
@@ -395,7 +395,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
             {
                 //Hit something else that a tile
-                if (PersonnalUtilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
+                if (Utils.Utilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return false;
 
                 //Check if all tiles are free
