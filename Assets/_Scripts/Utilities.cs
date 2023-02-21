@@ -1,4 +1,6 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Utils
 {
@@ -10,6 +12,23 @@ namespace Utils
         public static float RandomValue(float min, float max)
         {
             return Random.Range(min, max);
+        }
+
+        /// <summary>
+        /// Indicates if the given scene exists and is set up in the build settings
+        /// </summary>
+        /// <param name="name">Scene name to check</param>
+        public static bool ExistingScene(string name)
+        {
+            foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+            {
+                if (name != AssetDatabase.LoadAssetAtPath(scene.path, typeof(SceneAsset)).name)
+                    continue;
+                else
+                    return true;
+            }
+
+            return false;
         }
 
         public abstract class Math
