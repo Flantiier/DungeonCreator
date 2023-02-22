@@ -108,7 +108,7 @@ namespace _Scripts.Characters.DungeonMaster
 
             GameObject instance = PhotonNetwork.Instantiate(projectile.name, throwPoint.position, transform.rotation);
             EnemiesProjectile proj = instance.GetComponent<EnemiesProjectile>();
-            proj.ThrowProjectile(Boss.MainCamTransform.forward);
+            proj.ThrowProjectile(Boss.MainCamera.forward);
         }
         #endregion
     }

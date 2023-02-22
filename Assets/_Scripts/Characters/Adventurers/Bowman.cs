@@ -69,7 +69,7 @@ namespace _Scripts.Characters.Adventurers
             if (!SkillConditions())
                 return;
 
-            if (!Physics.Raycast(MainCamTransform.position, MainCamTransform.forward, out RaycastHit hit, _tpsCamera.CameraDistance + defuseDistance, defuseLayers))
+            if (!Physics.Raycast(MainCamera.position, MainCamera.forward, out RaycastHit hit, defuseDistance, defuseLayers))
                 return;
 
             if (!hit.collider.TryGetComponent(out IDefusable trap) || trap.IsDisabled)

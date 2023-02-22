@@ -49,19 +49,6 @@ namespace _Scripts.Managers
         /// </summary>
         private void UpdateGameValidity()
         {
-            if (GameStatement.IsStateOf(GameStatements.Statements.Over))
-                return;
-
-            if (PlayersManager.Instance.HasDungeonMaster() && PlayersManager.Instance.HasAdventurers())
-            {
-                ValidGame = true;
-                RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.InGame);
-            }
-            else
-            {
-                ValidGame = false;
-                RPCCall("SetGameStateRPC", RpcTarget.AllBuffered, GameStatements.Statements.Waiting);
-            }
         }
 
         #region Game Duration

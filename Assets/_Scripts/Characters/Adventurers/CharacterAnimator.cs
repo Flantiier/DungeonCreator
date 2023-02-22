@@ -48,8 +48,8 @@ namespace _Scripts.Characters.Animations
 
             try
             {
-                float offset = (Character.transform.position - Character.MainCamTransform.position).magnitude;
-                Gizmos.DrawSphere(Character.MainCamTransform.position + Character.MainCamTransform.forward * offset, 0.1f);
+                float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
+                Gizmos.DrawSphere(Character.MainCamera.position + Character.MainCamera.forward * offset, 0.1f);
             }
             catch { }
         }
@@ -157,11 +157,11 @@ namespace _Scripts.Characters.Animations
 
             _lastProjectile.transform.SetParent(null);
 
-            float offset = (Character.transform.position - Character.MainCamTransform.position).magnitude;
-            _lastProjectile.transform.position = Character.MainCamTransform.position + Character.MainCamTransform.forward * (offset + addOffset);
+            float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
+            _lastProjectile.transform.position = Character.MainCamera.position + Character.MainCamera.forward * (offset + addOffset);
 
             _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
-            _lastProjectile.ThrowProjectile(Character.MainCamTransform.forward);
+            _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
             _lastProjectile = null;
         }
         #endregion

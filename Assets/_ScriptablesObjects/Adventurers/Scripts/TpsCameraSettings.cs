@@ -4,7 +4,7 @@ using Cinemachine;
 
 namespace _ScriptableObjects.Settings.Adventurer.Camera
 {
-    [CreateAssetMenu(fileName = "New CameraSettings", menuName = "Scriptables/Adventurers/Camera")]
+    [CreateAssetMenu(fileName = "New Camera Settings", menuName = "Scriptables/Camera/TpsCam Settings")]
     public class TpsCameraSettings : ScriptableObject
     {
         #region Variables

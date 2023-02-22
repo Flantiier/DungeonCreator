@@ -2,7 +2,6 @@
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-//
 using _Scripts.Characters.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
@@ -10,7 +9,6 @@ using static _Scripts.Characters.StateMachines.GroundStateMachine;
 namespace _Scripts.Characters
 {
     [RequireComponent(typeof(CharacterController))]
-    [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
     public class TPS_Character : Entity
     {
@@ -24,18 +22,9 @@ namespace _Scripts.Characters
         [TitleGroup("References/Character References")]
         [SerializeField] protected Transform lookAt;
         [TitleGroup("References/Character References")]
-        [SerializeField] private TpsCameraProfile cameraPrefab;
+        [SerializeField] private TpsCamera tpsCameraPrefab;
 
         protected CharacterController _cc;
-        protected TpsCameraProfile _tpsCamera;
-        #endregion
-
-        #region Motion
-        protected Vector2 _currentInputs;
-        protected Vector3 _movement;
-        protected Vector2 _smoothInputsRef;
-        protected float _smoothSpeedRef;
-        protected float _smoothMeshTurnRef;
         #endregion
 
         #region Physics
@@ -54,11 +43,16 @@ namespace _Scripts.Characters
         protected float _airTime;
         #endregion
 
+        protected Vector2 _currentInputs;
+        protected Vector3 _movement;
+        protected Vector2 _smoothInputsRef;
+        protected float _smoothSpeedRef;
+        protected float _smoothMeshTurnRef;
         #endregion
 
         #region Properties
         public GroundStateMachine GroundSM { get; protected set; }
-        public Transform MainCamTransform => _tpsCamera.MainCam.transform;
+        public Transform MainCamera => Camera.main.transform;
         public Transform Orientation => orientation;
         public Vector2 Inputs { get; protected set; }
         public float CurrentSpeed { get; set; }
@@ -73,7 +67,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InstantiateCamera();
+            InstantiateTPSCamera();
         }
 
         public override void OnEnable()
@@ -94,15 +88,6 @@ namespace _Scripts.Characters
             UnsubscribeInputActions();
         }
 
-        public virtual void OnDestroy()
-        {
-            if (!ViewIsMine())
-                return;
-
-            if (_tpsCamera.MainCam)
-                PhotonNetwork.Destroy(_tpsCamera.MainCam.gameObject);
-        }
-
         protected virtual void Update()
         {
             if (!ViewIsMine())
@@ -120,18 +105,16 @@ namespace _Scripts.Characters
         /// <summary>
         /// Instantiate a camera for the player
         /// </summary>
-        protected virtual void InstantiateCamera()
+        protected virtual void InstantiateTPSCamera()
         {
-            if (!cameraPrefab)
+            if (!tpsCameraPrefab)
             {
                 Debug.LogError("Missing camera prefab");
                 return;
             }
 
-            TpsCameraProfile instance = Instantiate(cameraPrefab, transform.position, Quaternion.identity).GetComponent<TpsCameraProfile>();
+            TpsCamera instance = Instantiate(tpsCameraPrefab, transform.position, Quaternion.identity);
             instance.SetLookAtTarget(lookAt);
-
-            _tpsCamera = instance;
         }
         #endregion
 
@@ -267,7 +250,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void SetOrientation()
         {
-            orientation.rotation = Quaternion.Euler(0f, MainCamTransform.eulerAngles.y, 0f);
+            orientation.rotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
         }
 
         /// <summary>

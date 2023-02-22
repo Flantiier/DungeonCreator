@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2385219136934178564}
   - component: {fileID: 2385219136934178570}
-  - component: {fileID: 2385219136934178565}
   m_Layer: 0
   m_Name: PlayersManagers
   m_TagString: Untagged
@@ -45,39 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3bd15a2becccb543bac82fb0e968462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 2385219136934178565}
-  characters:
-  - prefab: {fileID: 8532399384521047927, guid: 94334cc77b482704daedbd1d32f4659e,
-      type: 3}
-    position: {fileID: 0}
-  - prefab: {fileID: 2029296496209362982, guid: 50d3b1570b282684882213a61bb35514,
-      type: 3}
-    position: {fileID: 0}
-  - prefab: {fileID: 5761381986307864492, guid: f64a873688c25e44999c31379a18e271,
-      type: 3}
-    position: {fileID: 0}
-  - prefab: {fileID: 1643132849922697506, guid: 933a28e28dff0a54397c28b0145a91e2,
-      type: 3}
-    position: {fileID: 0}
---- !u!114 &2385219136934178565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385219136934178567}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
+  characters: {fileID: 11400000, guid: 9ba79f7e1fd70fd4fb0affd9c417c3dd, type: 2}
+  adventurersSpawn:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  masterSpawn: {fileID: 0}
+  bossSpawn: {fileID: 0}
+  backUpRole: 1

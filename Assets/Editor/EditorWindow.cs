@@ -17,7 +17,6 @@ namespace Assets.Editor
             var tree = new OdinMenuTree();
 
             tree.AddAssetAtPath("Game Launcher", "Assets/Editor/GameLauncherTool.asset", typeof(GameLauncher));
-            tree.AddAssetAtPath("Scene Navigator", "Assets/Editor/NavigatorTool.asset", typeof(SceneNavigator));
 
             return tree;
         }
