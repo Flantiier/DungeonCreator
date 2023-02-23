@@ -12,22 +12,12 @@ namespace _Scripts.Characters.Cameras
         [Required, SerializeField] private CinemachineVirtualCamera vCam; 
         [Required, SerializeField] private CinemachineInputProvider inputProvider;
 
-        [TitleGroup("Properties")]
-        [SerializeField] private bool inputEnableAtStart = true;
-
         [TitleGroup("Settings")]
-        [SerializeField] private TpsCameraSettings cameraSettings;
+        [SerializeField] private VirtualCameraSettings cameraSettings;
         #endregion
 
         #region Properties
-        public TpsCameraSettings CameraSettings => cameraSettings;
-        #endregion
-
-        #region Builts_In
-        private void Start()
-        {
-            EnableInputProvider(inputEnableAtStart);
-        }
+        public VirtualCameraSettings CameraSettings => cameraSettings;
         #endregion
 
         #region Camera Methods

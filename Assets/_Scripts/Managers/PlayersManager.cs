@@ -19,6 +19,10 @@ namespace _Scripts.Managers
         [SerializeField] private ListPlayersRoom.Roles backUpRole = ListPlayersRoom.Roles.Warrior;
         #endregion
 
+        #region Properties
+        public static ListPlayersRoom.Roles Role { get; private set; }
+        #endregion
+
         #region Builts_In
         private void Awake()
         {
@@ -56,23 +60,29 @@ namespace _Scripts.Managers
                 role = backUpRole;
             }
 
+            Role = role;
+
             switch (role)
             {
                 case ListPlayersRoom.Roles.DM:
                     Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);
+                    Instantiate(characters.dungeonMaster.UI);
                     InstantiateBoss();
                     break;
 
                 case ListPlayersRoom.Roles.Warrior:
                     PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation);
+                    Instantiate(characters.warrior.UI);
                     break;
 
                 case ListPlayersRoom.Roles.Archer:
                     PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation);
+                    Instantiate(characters.archer.UI);
                     break;
 
                 case ListPlayersRoom.Roles.Wizard:
                     PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation);
+                    Instantiate(characters.wizard.UI);
                     break;
             }
         }

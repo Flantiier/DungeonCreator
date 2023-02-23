@@ -87,7 +87,7 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region Inputs
-        protected override void InputsEnabled(bool state)
+        protected override void EnableInputs(bool state)
         {
             if (state)
                 _inputs.Enable();

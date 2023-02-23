@@ -55,7 +55,9 @@ public class CharacterDatas
     public string characterName;
     [VerticalGroup("Horizontal/Vert"), TextArea(3, 3)]
     public string description;
-    [LabelText("Gameplay prefab"), LabelWidth(140)]
+    [TitleGroup("Gameplay properties"), LabelWidth(140)]
     public GameObject prefab;
+    [TitleGroup("Gameplay properties"), LabelWidth(140)]
+    public GameObject UI;
 }
 #endregion

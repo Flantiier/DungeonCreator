@@ -75,7 +75,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InputsEnabled(true);
+            EnableInputs(true);
             SubscribeInputActions();
         }
 
@@ -84,7 +84,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InputsEnabled(false);
+            EnableInputs(false);
             UnsubscribeInputActions();
         }
 
@@ -130,7 +130,7 @@ namespace _Scripts.Characters
 
         protected override void HandleEntityDeath()
         {
-            InputsEnabled(false);
+            EnableInputs(false);
             ResetCharacterVelocity();
 
             RPCAnimatorTrigger(RpcTarget.All, "Dead", true);
@@ -141,7 +141,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Enable and disable inputs based on the given parameter
         /// </summary>
-        protected virtual void InputsEnabled(bool enabled) { }
+        protected virtual void EnableInputs(bool enabled) { }
 
         /// <summary>
         /// Subscribe to the given action events to update inputs vector

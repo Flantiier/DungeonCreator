@@ -74,7 +74,7 @@ namespace _Scripts.Characters
 
             base.OnEnable();
             InitializeCharacter();
-            GameUIManager.Instance.OnOptionsMenuChanged += ctx => InputsEnabled(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
         }
 
         public override void OnDisable()
@@ -83,7 +83,7 @@ namespace _Scripts.Characters
                 return;
 
             base.OnDisable();
-            GameUIManager.Instance.OnOptionsMenuChanged -= ctx => InputsEnabled(!ctx);
+            GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
 
         protected override void Update()
@@ -113,7 +113,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void GetTeleported(Vector3 position)
         {
-            InputsEnabled(false);
+            EnableInputs(false);
             ResetCharacterVelocity();
 
             transform.position = position;
@@ -125,7 +125,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected virtual void InitializeCharacter()
         {
-            InputsEnabled(true);
+            EnableInputs(true);
 
             GroundSM = new GroundStateMachine();
             PlayerSM = new PlayerStateMachine();
@@ -138,7 +138,7 @@ namespace _Scripts.Characters
         }
 
         #region Inputs
-        protected override void InputsEnabled(bool state)
+        protected override void EnableInputs(bool state)
         {
             if (state)
                 _inputs.Enable();
