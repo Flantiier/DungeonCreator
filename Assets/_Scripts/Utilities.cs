@@ -97,7 +97,7 @@ namespace Utils
             /// <param name="targetUnit"></param>
             public static float ConvertTime(float time, TimeUnit baseUnit, TimeUnit targetUnit)
             {
-                return GetConvertedTime(GetDurationInSeconds(time, baseUnit), targetUnit);
+                return GetConvertedTime(GetTimeInSeconds(time, baseUnit), targetUnit);
             }
 
             /// <summary>
@@ -105,7 +105,7 @@ namespace Utils
             /// </summary>
             /// <param name="time"> Duration value </param>
             /// <param name="unit"> Duration's time unit </param>
-            public static float GetDurationInSeconds(float time, TimeUnit unit)
+            public static float GetTimeInSeconds(float time, TimeUnit unit)
             {
                 switch (unit)
                 {

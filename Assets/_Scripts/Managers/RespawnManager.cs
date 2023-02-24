@@ -67,7 +67,7 @@ namespace _Scripts.Managers
         /// Get the corresponding respawn delay between time bounds set inthe game settings
         /// </summary>
         /// <returns></returns>
-        private float GetRespawnTime()
+        /*private float GetRespawnTime()
         {
             RespawnUnit[] units = GameManager.Instance.GameSettings.respawnUnits;
 
@@ -88,7 +88,7 @@ namespace _Scripts.Managers
             }
 
             return units[0].respawnDelay;
-        }
+        }*/
         #endregion
     }
 }

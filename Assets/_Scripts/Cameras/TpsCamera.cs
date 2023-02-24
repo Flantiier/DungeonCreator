@@ -9,16 +9,22 @@ namespace _Scripts.Characters.Cameras
     {
         #region Variables
         [TitleGroup("Cinmeachine References")]
-        [Required, SerializeField] private CinemachineVirtualCamera vCam; 
+        [Required, SerializeField] private CinemachineVirtualCamera vCam;
         [Required, SerializeField] private CinemachineInputProvider inputProvider;
 
-        [TitleGroup("Settings")]
-        [SerializeField] private VirtualCameraSettings cameraSettings;
+        [TitleGroup("Camera Properties")]
+        [SerializeField] private TpsCameraProperties cameraProperties;
+        [ShowIf("cameraProperties")]
+        [SerializeField] private bool updateInEditor = true;
         #endregion
 
-        #region Properties
-        public VirtualCameraSettings CameraSettings => cameraSettings;
-        #endregion
+        private void Update()
+        {
+            if (!updateInEditor || !vCam || !cameraProperties)
+                return;
+
+            cameraProperties.SetCameraProperties(vCam);
+        }
 
         #region Camera Methods
         /// <summary>

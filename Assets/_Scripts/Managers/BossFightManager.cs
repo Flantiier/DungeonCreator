@@ -22,8 +22,8 @@ namespace _Scripts.Managers
         /// Called when the boss fight is reached
         /// </summary>
         public static void BossFightReached()
-        {
-            GameManager.Instance.GameStatement.CurrentState = GameStatements.Statements.BossFight;
+        {/*
+            GameManager.Instance.GameStatement.CurrentState = GameStatements.Statements.BossFight;*/
             OnBossFightReached?.Invoke();
         }
 
