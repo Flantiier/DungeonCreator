@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 using Utils;
 //
 using _Scripts.Managers;
-using _Scripts.Characters.Cameras;
+using _Scripts.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
 using _Scripts.GameplayFeatures.Traps;
@@ -29,10 +29,10 @@ namespace _Scripts.Characters.DungeonMaster
         [FoldoutGroup("References")]
         [SerializeField] private TilingInteractor interactor;
         [FoldoutGroup("References")]
-        [SerializeField] private SkyCameraSetup cameraPrefab;
+        [SerializeField] private TopCamera cameraPrefab;
 
         private InputsDM _inputs;
-        private SkyCameraSetup _camSetup;
+        private TopCamera _camSetup;
         #endregion
 
         [FoldoutGroup("Stats")]
@@ -121,7 +121,7 @@ namespace _Scripts.Characters.DungeonMaster
             }
 
             _camSetup = Instantiate(cameraPrefab);
-            _camSetup.SetLookAtTarget(transform);
+            _camSetup.SetLookAt(transform);
         }
 
         private void HandleStartDrag()
@@ -308,7 +308,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private Ray GetRayFromScreenPoint()
         {
-            return _camSetup.MainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+            return Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 755338254037725633}
-  - component: {fileID: 692204243115489490}
+  - component: {fileID: 5064636043449884397}
   - component: {fileID: 714038366729380486}
   - component: {fileID: 4557668761319529282}
   - component: {fileID: 356473049780820642}
@@ -36,7 +36,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &692204243115489490
+--- !u!114 &5064636043449884397
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,9 +49,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vCam: {fileID: 714038366729380486}
+  updateInEditMode: 0
   inputProvider: {fileID: 356473049780820642}
-  cameraProperties: {fileID: 11400000, guid: d09499ba6ffc6ae438087b9c60f6f2c2, type: 2}
-  updateInEditor: 1
+  cameraProperties: {fileID: 11400000, guid: 9ec3b4faa8cd1bf45865939cfee4074a, type: 2}
 --- !u!114 &714038366729380486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,13 +198,13 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_XDamping: 0
-  m_YDamping: 0
-  m_ZDamping: 0
+  m_XDamping: 1
+  m_YDamping: 1
+  m_ZDamping: 1
   m_TargetMovementOnly: 1
-  m_ScreenX: 0.45
+  m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 4
+  m_CameraDistance: 10
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_SoftZoneHeight: 0.8
   m_BiasX: 0
   m_BiasY: 0
-  m_CenterOnActivate: 1
+  m_CenterOnActivate: 0
   m_GroupFramingMode: 2
   m_AdjustmentMode: 0
   m_GroupFramingSize: 0.8

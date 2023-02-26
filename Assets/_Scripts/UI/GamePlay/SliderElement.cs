@@ -6,11 +6,11 @@ namespace _Scripts.UI.Gameplay
 	public class SliderElement : MonoBehaviour
 	{
 		[SerializeField] private Slider slider;
-		[SerializeField] private ClampedFloatVariable variable;
+		[SerializeField] private FloatVariable variable;
 
 		private void Start()
 		{
-			slider.maxValue = variable.maxValue;
+			slider.maxValue = variable.value;
 			SetSliderValue();
 		}
 

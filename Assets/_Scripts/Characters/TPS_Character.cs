@@ -2,7 +2,7 @@
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using _Scripts.Characters.Cameras;
+using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
 
@@ -114,7 +114,7 @@ namespace _Scripts.Characters
             }
 
             TpsCamera instance = Instantiate(tpsCameraPrefab, transform.position, Quaternion.identity);
-            instance.SetLookAtTarget(lookAt);
+            instance.SetLookAt(lookAt);
         }
         #endregion
 

@@ -1,49 +1,35 @@
 using UnityEngine;
 using Cinemachine;
-using _ScriptableObjects.Settings.Adventurer.Camera;
 using Sirenix.OdinInspector;
+using _ScriptableObjects.Cinemachine;
 
-namespace _Scripts.Characters.Cameras
+namespace _Scripts.Cameras
 {
-    public class TpsCamera : MonoBehaviour
+    public class TpsCamera : GameplayCamera
     {
-        #region Variables
-        [TitleGroup("Cinmeachine References")]
-        [Required, SerializeField] private CinemachineVirtualCamera vCam;
+        [TitleGroup("References")]
         [Required, SerializeField] private CinemachineInputProvider inputProvider;
-
-        [TitleGroup("Camera Properties")]
+        [TitleGroup("Edit properties")]
         [SerializeField] private TpsCameraProperties cameraProperties;
-        [ShowIf("cameraProperties")]
-        [SerializeField] private bool updateInEditor = true;
-        #endregion
-
-        private void Update()
-        {
-            if (!updateInEditor || !vCam || !cameraProperties)
-                return;
-
-            cameraProperties.SetCameraProperties(vCam);
-        }
-
-        #region Camera Methods
-        /// <summary>
-        /// Set the lookAtTarget of the virtual camera
-        /// </summary>
-        /// <param name="target"> Target to look at </param>
-        public void SetLookAtTarget(Transform target)
-        {
-            vCam.LookAt = target;
-            vCam.Follow = target;
-        }
 
         /// <summary>
         /// Enable or disable input provider
         /// </summary>
-        private void EnableInputProvider(bool state)
+        public void EnableInputProvider(bool state)
         {
             inputProvider.enabled = state;
         }
-        #endregion
+
+        /// <summary>
+        /// Configures the virtual camera properties with scriptableObjects
+        /// </summary>
+        protected override void SetCameraProperties()
+        {
+            if (!cameraProperties)
+                return;
+
+            cameraProperties.framingTranposer.SetFramingTranposer(vCam.GetCinemachineComponent<CinemachineFramingTransposer>());
+            cameraProperties.pov.SetPOV(vCam.GetCinemachineComponent<CinemachinePOV>());
+        }
     }
 }
