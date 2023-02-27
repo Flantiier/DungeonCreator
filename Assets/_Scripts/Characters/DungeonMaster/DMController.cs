@@ -10,9 +10,7 @@ using _Scripts.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
 using _Scripts.GameplayFeatures.Traps;
-using _ScriptableObjects.DM;
-using Photon.Pun.Demo.Cockpit;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using _ScriptableObjects.Characters;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -30,7 +28,7 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private TilingInteractor interactor;
         [FoldoutGroup("References")]
         [SerializeField] private TopCamera cameraPrefab;
-        
+
         [TitleGroup("References/Variables")]
         [SerializeField] private FloatVariable mana;
         [TitleGroup("References/Events")]
@@ -40,9 +38,6 @@ namespace _Scripts.Characters.DungeonMaster
 
         private InputsDM _inputs;
         #endregion
-
-        [FoldoutGroup("Stats")]
-        [Required, SerializeField] private DMDatas datas;
 
         #region Motion
         private Vector2 _inputsVector;
@@ -62,6 +57,8 @@ namespace _Scripts.Characters.DungeonMaster
         private GameObject _trapInstance;
         #endregion
 
+        [LabelText("DM Properties")]
+        [Required, SerializeField] private DMProperties dmProperties;
         #endregion
 
         #region Properties
@@ -112,7 +109,7 @@ namespace _Scripts.Characters.DungeonMaster
         {
             _inputs = new InputsDM();
             InstantiateCamera();
-            mana.value = datas.manaAmount;
+            mana.value = dmProperties.manaAmount;
         }
 
         /// <summary>
@@ -189,13 +186,13 @@ namespace _Scripts.Characters.DungeonMaster
         private void HandleMovements()
         {
             //Rotation
-            float rotation = (_rotationInputs.x - _rotationInputs.y) * datas.rotationSpeed * Time.deltaTime;
+            float rotation = (_rotationInputs.x - _rotationInputs.y) * dmProperties.rotationSpeed * Time.deltaTime;
             transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
 
             //Motion
             Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
-            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, datas.smoothingMotion);
-            transform.Translate(_currentMovement * datas.motionSpeed * UnityEngine.Time.deltaTime);
+            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, dmProperties.smoothingMotion);
+            transform.Translate(_currentMovement * dmProperties.motionSpeed * UnityEngine.Time.deltaTime);
         }
         #endregion
 
@@ -229,13 +226,13 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private IEnumerator ManaRecoveryRoutine()
         {
-            while (mana.value < datas.manaAmount)
+            while (mana.value < dmProperties.manaAmount)
             {
-                mana.value += datas.manaRecovery * Time.deltaTime;
+                mana.value += dmProperties.manaRecovery * Time.deltaTime;
                 yield return null;
             }
 
-            mana.value = datas.manaAmount;
+            mana.value = dmProperties.manaAmount;
             _manaRoutine = null;
         }
         #endregion
