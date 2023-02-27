@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
-using _Scripts.Characters.DungeonMaster;
 using _ScriptableObjects.Traps;
-using System.Runtime.CompilerServices;
+using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
@@ -21,8 +20,12 @@ namespace _Scripts.GameplayFeatures
         [TitleGroup("References")]
         [SerializeField] private TrapSO trapReference;
 
-        [TitleGroup("Helpers")]
-        [SerializeField] private bool updateOnStart = false;
+        [TitleGroup("Variables_Events")]
+        [SerializeField] private FloatVariable mana;
+        [TitleGroup("Variables_Events")]
+        [SerializeField] private GameEvent dragEvent, dropEvent;
+        [TitleGroup("Variables_Events")]
+        [SerializeField] private GameEvent pointerEnter, pointerExit;
 
         private Image _raycaster;
         public TrapSO TrapReference => trapReference;
@@ -33,42 +36,44 @@ namespace _Scripts.GameplayFeatures
         {
             base.Awake();
             _raycaster = GetComponent<Image>();
+        }
 
-            if (!updateOnStart)
-                return;
+        public void Start()
+        {
+            if(trapReference)
+                UpdateCardInformations(TrapReference);
+        }
 
-            //Update card's informations
-            UpdateCardInformations(TrapReference);
+        private void OnEnable()
+        {
+            pointerEnter.responses.AddListener(EnableCard);
+            pointerExit.responses.AddListener(DisableCard);
+        }
+
+        private void OnDisable()
+        {
+            pointerEnter.responses.RemoveListener(EnableCard);
+            pointerExit.responses.RemoveListener(DisableCard);
         }
 
         private void LateUpdate()
         {
             UpdateDraggedState();
         }
-
-        private void OnEnable()
-        {
-            CardZone.OnEnterPointerZone += EnableCard;
-            CardZone.OnExitPointerZone += DisableCard;
-        }
-
-        private void OnDisable()
-        {
-            CardZone.OnEnterPointerZone -= EnableCard;
-            CardZone.OnExitPointerZone -= DisableCard;
-        }
         #endregion
 
-        #region DragAndDropInterfaces
+        #region Interfaces Implementation
         public override void OnBeginDrag(PointerEventData eventData)
         {
             if (!CanBeDragged)
                 return;
-
+            //Drag
             base.OnBeginDrag(eventData);
-
             _raycaster.raycastTarget = false;
-            DMController.Instance.StartDrag(this);
+
+            //DRAG EVENT CALL
+            DMController.SelectedCard = this;
+            dragEvent.Raise();
         }
 
         public override void OnEndDrag(PointerEventData eventData)
@@ -76,8 +81,10 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
-            DMController.Instance.EndDrag();
+            //DROP EVENT CALL
+            dropEvent.Raise();
 
+            //Drop
             base.OnEndDrag(eventData);
             card.SetActive(true);
             _raycaster.raycastTarget = true;
@@ -115,9 +122,13 @@ namespace _Scripts.GameplayFeatures
                 CanBeDragged = false;
                 return;
             }
+            else if (!mana)
+            {
+                CanBeDragged = true;
+                return;
+            }
 
-            float mana = DMController.Instance.CurrentMana;
-            CanBeDragged = mana >= trapReference.manaCost;
+            CanBeDragged = mana.value >= trapReference.manaCost;
             cardMask.SetActive(!CanBeDragged);
         }
 

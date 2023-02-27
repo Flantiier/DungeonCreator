@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 1799644374689546679}
   - component: {fileID: 1799644374689546676}
   m_Layer: 5
-  m_Name: Card_Inst
+  m_Name: Trap Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -273,15 +273,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedOffset: 70
   card: {fileID: 1799644376203145374}
+  cardMask: {fileID: 42828269699287977}
   design:
     imageField: {fileID: 1799644375585445134}
     nameField: {fileID: 1799644375910211125}
     descriptionField: {fileID: 1799644374626897539}
     damageField: {fileID: 1799644374882330225}
     manaField: {fileID: 1799644375928826061}
-  cardMask: {fileID: 42828269699287977}
-  trapReference: {fileID: 11400000, guid: dd2855b92bf17f2418b157abef2bb57a, type: 2}
-  updateOnStart: 0
+  trapReference: {fileID: 0}
+  mana: {fileID: 11400000, guid: 842ecbe32b7488246a2169f9d15e7ab4, type: 2}
+  dragEvent: {fileID: 11400000, guid: 8c418f1402027c74aaab578b8c0d50a2, type: 2}
+  dropEvent: {fileID: 11400000, guid: 851957c4418c39542a24fb5580df87a1, type: 2}
+  pointerEnter: {fileID: 11400000, guid: 1fb96469236b046418ced338365b7c4d, type: 2}
+  pointerExit: {fileID: 11400000, guid: 5feed0fc31c3b58499e701224e1af348, type: 2}
 --- !u!114 &1799644374689546676
 MonoBehaviour:
   m_ObjectHideFlags: 0

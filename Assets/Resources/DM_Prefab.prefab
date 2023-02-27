@@ -82,6 +82,10 @@ MonoBehaviour:
   interactor: {fileID: 525513465721892764}
   cameraPrefab: {fileID: 8831872463359966136, guid: ceaa714e750be0e44b11c01555254de0,
     type: 3}
+  mana: {fileID: 11400000, guid: 842ecbe32b7488246a2169f9d15e7ab4, type: 2}
+  dragEvent: {fileID: 11400000, guid: 8c418f1402027c74aaab578b8c0d50a2, type: 2}
+  dropEvent: {fileID: 11400000, guid: 851957c4418c39542a24fb5580df87a1, type: 2}
+  cardZoneEnter: {fileID: 11400000, guid: 1fb96469236b046418ced338365b7c4d, type: 2}
   datas: {fileID: 11400000, guid: 5adb64486b9b6c247a669f22053ab70c, type: 2}
   raycastMask:
     serializedVersion: 2
@@ -105,6 +109,8 @@ MonoBehaviour:
   disabledOnStart: 1
   groundLayer: GroundTiling
   wallLayer: WallTiling
+  dragEvent: {fileID: 11400000, guid: 8c418f1402027c74aaab578b8c0d50a2, type: 2}
+  dropEvent: {fileID: 11400000, guid: 851957c4418c39542a24fb5580df87a1, type: 2}
 --- !u!1 &525513465721892767
 GameObject:
   m_ObjectHideFlags: 0

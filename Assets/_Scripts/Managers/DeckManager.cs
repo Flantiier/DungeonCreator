@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
 using _ScriptableObjects.UserDatas;

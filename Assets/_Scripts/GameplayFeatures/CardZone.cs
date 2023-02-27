@@ -1,7 +1,5 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Sirenix.OdinInspector;
 using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
@@ -9,25 +7,25 @@ namespace _Scripts.GameplayFeatures
 	public class CardZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
         #region Variables
-        public static Action OnEnterPointerZone;
-		public static Action OnExitPointerZone;
+        [SerializeField] private GameEvent pointerEnterEvent;
+        [SerializeField] private GameEvent pointerExitEvent;
         #endregion
 
         #region Interfaces Implementations
         public virtual void OnPointerEnter(PointerEventData eventData)
 		{
-            if (!DMController.Instance.IsDragging)
+            if (!DMController.IsDragging)
                 return;
 
-            OnEnterPointerZone?.Invoke();
+            pointerEnterEvent.Raise();
 		}
 
 		public virtual void OnPointerExit(PointerEventData eventData)
         {
-            if (!DMController.Instance.IsDragging)
+            if (!DMController.IsDragging)
                 return;
 
-            OnExitPointerZone?.Invoke();
+            pointerExitEvent.Raise();
         }
         #endregion
     }

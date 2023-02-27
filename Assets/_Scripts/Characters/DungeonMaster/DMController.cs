@@ -5,19 +5,19 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using Utils;
-//
 using _Scripts.Managers;
 using _Scripts.Cameras;
 using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
 using _Scripts.GameplayFeatures.Traps;
 using _ScriptableObjects.DM;
+using Photon.Pun.Demo.Cockpit;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 namespace _Scripts.Characters.DungeonMaster
 {
     [RequireComponent(typeof(TilingCulling))]
-    public class DMController : MonoBehaviourSingleton<DMController>
+    public class DMController : MonoBehaviour
     {
         #region Variables
 
@@ -30,51 +30,49 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private TilingInteractor interactor;
         [FoldoutGroup("References")]
         [SerializeField] private TopCamera cameraPrefab;
+        
+        [TitleGroup("References/Variables")]
+        [SerializeField] private FloatVariable mana;
+        [TitleGroup("References/Events")]
+        [SerializeField] private GameEvent dragEvent, dropEvent;
+        [TitleGroup("References/Events")]
+        [SerializeField] private GameEvent cardZoneEnter;
 
         private InputsDM _inputs;
-        private TopCamera _camSetup;
         #endregion
 
         [FoldoutGroup("Stats")]
         [Required, SerializeField] private DMDatas datas;
-        //Motion
+
+        #region Motion
         private Vector2 _inputsVector;
         private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
         private Coroutine _manaRoutine;
-        //RAYCAST
+        #endregion
+
+        #region Raycast & Traps
         [FoldoutGroup("Raycast properties")]
-        [SerializeField] private LayerMask raycastMask;
-        [FoldoutGroup("Raycast properties")]
-        [SerializeField] private LayerMask collisionMask;
+        [SerializeField] private LayerMask raycastMask, collisionMask;
         [FoldoutGroup("Raycast properties")]
         [SerializeField] private Vector3 offMapPosition = new Vector3(0f, -100f, 0f);
 
         private Transform _hittedTransform;
         private float _currentRotation;
         private GameObject _trapInstance;
-        //DRAG & DROP
-        public event Action OnStartDrag;
-        public event Action OnEndDrag;
-        public event Action<Tile.TilingType> OnSelectedCard;
+        #endregion
 
         #endregion
 
         #region Properties
-        public DMDatas Datas => datas;
-        public bool IsDragging { get; set; }
-        public DraggableCard SelectedCard { get; private set; }
-        public float CurrentMana { get; private set; }
+        public static bool IsDragging { get; set; }
+        public static DraggableCard SelectedCard { get; set; }
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public void Awake()
         {
-            base.Awake();
-
-            _inputs = new InputsDM();
-            CurrentMana = datas.manaAmount;
-            InstantiateCamera();
+            InitializeCharacter();
         }
 
         private void OnEnable()
@@ -82,7 +80,10 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(true);
             SubscribeToInputs();
 
-            CardZone.OnEnterPointerZone += EnterPointerZone;
+            //Events
+            dragEvent.responses.AddListener(HandleStartDrag);
+            dropEvent.responses.AddListener(HandleDragEnd);
+            cardZoneEnter.responses.AddListener(EnterPointerZone);
         }
 
         private void OnDisable()
@@ -90,7 +91,10 @@ namespace _Scripts.Characters.DungeonMaster
             EnableInputs(false);
             UnsubscribeToInputs();
 
-            CardZone.OnEnterPointerZone -= EnterPointerZone;
+            //Events
+            dragEvent.responses.RemoveListener(HandleStartDrag);
+            dropEvent.responses.RemoveListener(HandleDragEnd);
+            cardZoneEnter.responses.RemoveListener(EnterPointerZone);
         }
 
         private void Update()
@@ -98,17 +102,19 @@ namespace _Scripts.Characters.DungeonMaster
             HandleMovements();
             ShootingRaycast();
         }
-
-        private void LateUpdate()
-        {
-            if (CurrentMana >= datas.manaAmount || _manaRoutine != null)
-                return;
-
-            _manaRoutine = StartCoroutine("RecoveryRoutine");
-        }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Create the inputs, the camera and sets variables
+        /// </summary>
+        private void InitializeCharacter()
+        {
+            _inputs = new InputsDM();
+            InstantiateCamera();
+            mana.value = datas.manaAmount;
+        }
+
         /// <summary>
         /// Instantiate sky camera
         /// </summary>
@@ -120,38 +126,8 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
             }
 
-            _camSetup = Instantiate(cameraPrefab);
-            _camSetup.SetLookAt(transform);
-        }
-
-        private void HandleStartDrag()
-        {
-            //Set the position of the projection transform off map
-            projection.position = offMapPosition;
-
-            //Set required amount of tiles
-            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
-
-            //Set collider size
-            float amountX = SelectedCard.TrapReference.xAmount - 2f;
-            float amountY = SelectedCard.TrapReference.yAmount - 2f;
-            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f;
-            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
-            interactor.SetColliderSize(X, Y);
-
-            //StartDrag event call
-            OnStartDrag?.Invoke();
-            OnSelectedCard?.Invoke(SelectedCard.TrapReference.type);
-        }
-
-        private void HandleDragEnd()
-        {
-            _hittedTransform = null;
-            projection.position = offMapPosition;
-            _currentRotation = 0f;
-
-            interactor.RefreshInteractor();
-            OnEndDrag?.Invoke();
+            TopCamera camera = Instantiate(cameraPrefab);
+            camera.SetLookAt(transform);
         }
 
         #region Inputs
@@ -233,7 +209,10 @@ namespace _Scripts.Characters.DungeonMaster
             if (!HasMuchMana(amount))
                 return;
 
-            CurrentMana -= amount;
+            mana.value -= amount;
+
+            if (_manaRoutine == null)
+                _manaRoutine = StartCoroutine("ManaRecoveryRoutine");
         }
 
         /// <summary>
@@ -242,25 +221,109 @@ namespace _Scripts.Characters.DungeonMaster
         /// <param name="amount"> Used mana </param>
         public bool HasMuchMana(float amount)
         {
-            return CurrentMana - amount >= 0;
+            return mana.value - amount >= 0;
         }
 
         /// <summary>
         /// Increase the current mana coroutine
         /// </summary>
-        private IEnumerator RecoveryRoutine()
+        private IEnumerator ManaRecoveryRoutine()
         {
-            while (CurrentMana < datas.manaAmount)
+            while (mana.value < datas.manaAmount)
             {
-                CurrentMana += datas.manaRecovery * Time.deltaTime;
+                mana.value += datas.manaRecovery * Time.deltaTime;
                 yield return null;
             }
 
-            CurrentMana = datas.manaAmount;
+            mana.value = datas.manaAmount;
             _manaRoutine = null;
         }
         #endregion
 
+        #endregion
+
+        #region Drag&Drop
+        /// <summary>
+        /// Set the trap preview position
+        /// </summary>
+        private void HandleStartDrag()
+        {
+            IsDragging = true;
+
+            //Set the position of the projection transform off map
+            projection.position = offMapPosition;
+
+            //Set required amount of tiles
+            interactor.Amount = SelectedCard.TrapReference.xAmount * SelectedCard.TrapReference.yAmount;
+
+            //Set collider size
+            float amountX = SelectedCard.TrapReference.xAmount - 2f;
+            float amountY = SelectedCard.TrapReference.yAmount - 2f;
+            float X = amountX <= 0f ? tiling.lengthX / 2f : amountX * tiling.lengthX + 0.5f;
+            float Y = amountY <= 0f ? tiling.lengthY / 2f : amountY * tiling.lengthX + 0.5f;
+            interactor.SetColliderSize(X, Y);
+
+            //Instantiate the selected trap reference
+            GetSelectedTrap();
+        }
+
+        /// <summary>
+        /// Puts the trap is possible, reset the projection transform and the interactor
+        /// </summary>
+        private void HandleDragEnd()
+        {
+            IsDragging = false;
+
+            //Place trap if it's possible
+            if (IsPossibleToPlaceTrap())
+                PlaceTrapOnGrid();
+
+            if (_trapInstance)
+                Destroy(_trapInstance);
+
+            //Reset projection transform
+            _hittedTransform = null;
+            projection.position = offMapPosition;
+            _currentRotation = 0f;
+            //Refresh interactor
+            interactor.RefreshInteractor();
+        }
+
+        /// <summary>
+        /// Indicates if a trap can be place when drag is ending
+        /// </summary>
+        private bool IsPossibleToPlaceTrap()
+        {
+            if (!HasMuchMana(SelectedCard.TrapReference.manaCost))
+                return false;
+
+            //Shoot a ray to konw if the cursor is on a tile
+            if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
+            {
+                //Hit something else that a tile
+                if (Utils.Utilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
+                    return false;
+
+                //Check if all tiles are free
+                if (!interactor.EnoughTilesAmount() || !interactor.IsTilingFree())
+                    return false;
+
+                //Hit a tile
+                return true;
+            }
+
+            //Hitting nothing
+            return false;
+        }
+
+        /// <summary>
+        /// Executed when entering in the card pointer zone
+        /// </summary>
+        private void EnterPointerZone()
+        {
+            _hittedTransform = null;
+            projection.position = offMapPosition;
+        }
         #endregion
 
         #region Trap Interactions Methods
@@ -348,75 +411,6 @@ namespace _Scripts.Characters.DungeonMaster
 
             interactor.transform.position = trapPosition;
             _trapInstance.transform.position = trapPosition;
-        }
-        #endregion
-
-        #region Dragging Methods
-        /// <summary>
-        /// Invoking start drag event
-        /// </summary>
-        public void StartDrag(DraggableCard cardRef)
-        {
-            //Set the dragged card
-            IsDragging = true;
-            SelectedCard = cardRef;
-
-            HandleStartDrag();
-            GetSelectedTrap();
-        }
-
-        /// <summary>
-        /// Invoking start drag event
-        /// </summary>
-        public void EndDrag()
-        {
-            //End drag
-            IsDragging = false;
-
-            //Place trap if it's possible
-            if (IsPossibleToPlaceTrap())
-                PlaceTrapOnGrid();
-
-            if(_trapInstance)
-                Destroy(_trapInstance);
-
-            HandleDragEnd();
-        }
-
-        /// <summary>
-        /// Indicates if a trap can be place when drag is ending
-        /// </summary>
-        private bool IsPossibleToPlaceTrap()
-        {
-            if (!HasMuchMana(SelectedCard.TrapReference.manaCost))
-                return false;
-
-            //Shoot a ray to konw if the cursor is on a tile
-            if (Physics.Raycast(GetRayFromScreenPoint(), out RaycastHit hit, Mathf.Infinity, raycastMask))
-            {
-                //Hit something else that a tile
-                if (Utils.Utilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
-                    return false;
-
-                //Check if all tiles are free
-                if (!interactor.EnoughTilesAmount() || !interactor.IsTilingFree())
-                    return false;
-
-                //Hit a tile
-                return true;
-            }
-
-            //Hitting nothing
-            return false;
-        }
-
-        /// <summary>
-        /// Executed when entering in the card pointer zone
-        /// </summary>
-        private void EnterPointerZone()
-        {
-            _hittedTransform = null;
-            projection.position = offMapPosition;
         }
         #endregion
 
