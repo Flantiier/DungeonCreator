@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
 
@@ -9,14 +8,20 @@ namespace _Scripts.Managers
     public class PlayersManager : MonoBehaviourPunCallbacks
     {
         #region Variables
+        [TitleGroup("Off Connexion Role")]
+        [SerializeField] private ListPlayersRoom.Roles backUpRole = ListPlayersRoom.Roles.Warrior;
+
+        [TitleGroup("Spawn Properties")]
         [SerializeField] private CharactersList characters;
         [TitleGroup("Spawn Properties")]
         [SerializeField] private Transform[] adventurersSpawn;
+        [TitleGroup("Spawn Properties")]
         [SerializeField] private Transform masterSpawn;
+        [TitleGroup("Spawn Properties")]
         [SerializeField] private Transform bossSpawn;
 
-        [TitleGroup("Off Connexion Role")]
-        [SerializeField] private ListPlayersRoom.Roles backUpRole = ListPlayersRoom.Roles.Warrior;
+        [TitleGroup("Variables")]
+        [SerializeField] private Vector3Variable spawnPosition;
         #endregion
 
         #region Properties
@@ -45,7 +50,7 @@ namespace _Scripts.Managers
         }
         #endregion
 
-        #region Methods
+        #region Characters Initialization
         /// <summary>
         /// Instantiates any character based on the selected role
         /// </summary>
@@ -68,21 +73,25 @@ namespace _Scripts.Managers
                     Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);
                     Instantiate(characters.dungeonMaster.UI);
                     InstantiateBoss();
+                    spawnPosition.value = masterSpawn.position;
                     break;
 
                 case ListPlayersRoom.Roles.Warrior:
                     PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation);
                     Instantiate(characters.warrior.UI);
+                    spawnPosition.value = adventurersSpawn[0].position;
                     break;
 
                 case ListPlayersRoom.Roles.Archer:
                     PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation);
                     Instantiate(characters.archer.UI);
+                    spawnPosition.value = adventurersSpawn[1].position;
                     break;
 
                 case ListPlayersRoom.Roles.Wizard:
                     PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation);
                     Instantiate(characters.wizard.UI);
+                    spawnPosition.value = adventurersSpawn[2].position;
                     break;
             }
         }
@@ -96,6 +105,7 @@ namespace _Scripts.Managers
             instance.SetActive(false);
         }
         #endregion
+
     }
 }
 

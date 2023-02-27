@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2385219136934178564}
   - component: {fileID: 2385219136934178570}
+  - component: {fileID: 1902530603260528169}
   m_Layer: 0
   m_Name: PlayersManagers
   m_TagString: Untagged
@@ -44,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3bd15a2becccb543bac82fb0e968462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backUpRole: 4
   characters: {fileID: 11400000, guid: 9ba79f7e1fd70fd4fb0affd9c417c3dd, type: 2}
   adventurersSpawn:
   - {fileID: 0}
@@ -51,4 +53,18 @@ MonoBehaviour:
   - {fileID: 0}
   masterSpawn: {fileID: 0}
   bossSpawn: {fileID: 0}
-  backUpRole: 1
+  spawnPosition: {fileID: 11400000, guid: a15718e54c1ca3645a57221ae8406785, type: 2}
+--- !u!114 &1902530603260528169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385219136934178567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8033bb1c301c01643a64b54c8cd44218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnTime: {fileID: 11400000, guid: 35ae6af2d0a2ce84192d29e0a947f9da, type: 2}
+  respawnPosition: {fileID: 11400000, guid: a15718e54c1ca3645a57221ae8406785, type: 2}

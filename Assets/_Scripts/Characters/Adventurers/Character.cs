@@ -34,10 +34,7 @@ namespace _Scripts.Characters
         #region Character
         public static event Action<Character> OnCharacterDeath;
 
-        private Coroutine _healthRecupRoutinee;
-        private Coroutine _afflictionRoutine;
-        private Coroutine _stunRoutine;
-        
+        private Coroutine _healthRecupRoutine;        
         protected Coroutine _skillCoroutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
@@ -219,7 +216,7 @@ namespace _Scripts.Characters
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
                 return;
 
-            _stunRoutine = StartCoroutine(StunRoutine(duration));
+            StartCoroutine(StunRoutine(duration));
         }
         #endregion
 
@@ -234,10 +231,10 @@ namespace _Scripts.Characters
 
             if (CurrentHealth > 0)
             {
-                if (_healthRecupRoutinee != null)
-                    StopCoroutine(_healthRecupRoutinee);
+                if (_healthRecupRoutine != null)
+                    StopCoroutine(_healthRecupRoutine);
 
-                _healthRecupRoutinee = StartCoroutine(HealthRecuperation());
+                _healthRecupRoutine = StartCoroutine(HealthRecuperation());
                 return;
             }
 
@@ -269,7 +266,7 @@ namespace _Scripts.Characters
             }
 
             CurrentHealth = ClampedHealth(0f, 0f, characterDatas.health);
-            _healthRecupRoutinee = null;
+            _healthRecupRoutine = null;
         }
 
         /// <summary>
@@ -318,7 +315,7 @@ namespace _Scripts.Characters
         private void StartAfflictionEffect(AfflictionStatus status)
         {
             CurrentAffliction = status;
-            _afflictionRoutine = StartCoroutine("AfflictionRoutine");
+            StartCoroutine("AfflictionRoutine");
         }
 
         /// <summary>
@@ -338,7 +335,6 @@ namespace _Scripts.Characters
             }
 
             CurrentAffliction = null;
-            _afflictionRoutine = null;
         }
 
         private IEnumerator StunRoutine(float duration)
