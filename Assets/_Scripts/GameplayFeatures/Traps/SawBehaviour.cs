@@ -12,7 +12,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [BoxGroup("Properties")]
         [Required, SerializeField] private SawDatas datas;
 
-        public float DefuseDuration { get; }
+        public float DefuseDuration => datas.defuseDuration;
         public bool IsDisabled { get; set; }
         #endregion
 

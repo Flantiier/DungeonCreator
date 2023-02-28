@@ -6,6 +6,7 @@ namespace Utils
 {
     public static class Utilities
     {
+        #region Others
         /// <summary>
         /// Return a random value between a mininmum and a maximum
         /// </summary>
@@ -30,7 +31,9 @@ namespace Utils
 
             return false;
         }
+        #endregion
 
+        #region Math Class
         public abstract class Math
         {
             /// <summary>
@@ -44,7 +47,9 @@ namespace Utils
                 return (Mathf.Abs(a - b) < tolerance);
             }
         }
+        #endregion
 
+        #region Layers Class
         public abstract class Layers
         {
             /// <summary>
@@ -84,7 +89,9 @@ namespace Utils
                 return Camera.main.cullingMask ^= 1 << LayerMask.NameToLayer(layer);
             }
         }
+        #endregion
 
+        #region Time Class
         public abstract class Time
         {
             public enum TimeUnit { Seconds, Minuts, Hours }
@@ -140,7 +147,9 @@ namespace Utils
                 }
             }
         }
+        #endregion
 
+        #region Colors Class
         public abstract class ColorProperties
         {
             public static Color RandomColor(float min, float max)
@@ -151,6 +160,7 @@ namespace Utils
                 return new Color(r, g, b, 1);
             }
         }
+        #endregion
     }
 
 }

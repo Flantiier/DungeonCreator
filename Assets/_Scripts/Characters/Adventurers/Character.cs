@@ -25,8 +25,8 @@ namespace _Scripts.Characters
         [FoldoutGroup("Stats")]
         [Required, SerializeField] protected AdventurerDatas characterDatas;
 
-        [Header("UI references")]
-        [SerializeField] private PlayerHUD hud;
+        [TitleGroup("Variables")]
+        [SerializeField] protected FloatVariable skillCooldown;
 
         protected AdventurerInputs _inputs;
         #endregion
@@ -61,7 +61,6 @@ namespace _Scripts.Characters
                 return;
 
             _inputs = new AdventurerInputs();
-            InstantiateHUD();
         }
 
         public override void OnEnable()
@@ -90,17 +89,6 @@ namespace _Scripts.Characters
 
             base.Update();
             HandleStaminaRecuperation();
-        }
-        #endregion
-
-        #region Temporary
-        private void InstantiateHUD()
-        {
-            if (!hud)
-                return;
-
-            PlayerHUD HUD = Instantiate(hud);
-            HUD.SetTargetCharacter(this);
         }
         #endregion
 
@@ -596,9 +584,17 @@ namespace _Scripts.Characters
         /// </summary>
         private IEnumerator SkillCooldownRoutine()
         {
-            yield return new WaitForSecondsRealtime(characterDatas.skillCooldown);
+            skillCooldown.value = characterDatas.skillCooldown;
 
+            while (skillCooldown.value > 0)
+            {
+                skillCooldown.value -= Time.deltaTime;
+                yield return null;
+            }
+
+            skillCooldown.value = 0f;
             _skillCoroutine = null;
+            //Skill recovered
             OnSkillRecovered?.Invoke();
         }
 
