@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6851713507707752308}
   - component: {fileID: 1963387783943598652}
   - component: {fileID: 1503638685126038442}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Adv_Warrior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,11 +55,8 @@ MonoBehaviour:
   orientation: {fileID: 4044801599910046067}
   mesh: {fileID: 2953807293692968730}
   lookAt: {fileID: 4827582306762976749}
-  cameraPrefab: {fileID: 692204243115489490, guid: 17cee0aa023d22343a44a6e843832fda,
+  tpsCameraPrefab: {fileID: 5064636043449884397, guid: 17cee0aa023d22343a44a6e843832fda,
     type: 3}
-  inputSmoothing: 0.1
-  speedSmoothing: 0.15
-  rotationSmoothing: 0.1
   walkableMask:
     serializedVersion: 2
     m_Bits: 67108864
@@ -68,8 +65,8 @@ MonoBehaviour:
   fallSmoothing: 0.07
   overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
   characterDatas: {fileID: 11400000, guid: 393ca4f807d5ede4fa3d72137e351063, type: 2}
-  hud: {fileID: -8999326808795453283, guid: c8fa22bfe2d81ef4a9b35b7084f79f14, type: 3}
-  shield: {fileID: 0}
+  skillCooldown: {fileID: 11400000, guid: 4de750aa61d1e7846bfcbf67fa9cb61e, type: 2}
+  shield: {fileID: 7413140868289725481}
 --- !u!143 &6851713507707752308
 CharacterController:
   m_ObjectHideFlags: 0
@@ -196,7 +193,27 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7576599312497301863}
     m_Modifications:
-    - target: {fileID: -7900487972856089851, guid: 7563bf4ac0f075843899dbcc0d0df8f6,
+    - target: {fileID: 4501838501483110936, guid: 088a5d26c89cf3d48af13d216257a29a,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4501838501483110936, guid: 088a5d26c89cf3d48af13d216257a29a,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[14].Name
+      value: Knockback
+      objectReference: {fileID: 0}
+    - target: {fileID: 4501838501483110936, guid: 088a5d26c89cf3d48af13d216257a29a,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[14].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4840596876491976652, guid: 088a5d26c89cf3d48af13d216257a29a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.102
+      objectReference: {fileID: 0}
+    - target: {fileID: 5257964025084005466, guid: 088a5d26c89cf3d48af13d216257a29a,
         type: 3}
       propertyPath: ObservedComponents.Array.size
       value: 0
@@ -206,7 +223,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: guerriere_low_rigg
       objectReference: {fileID: 0}
-    - target: {fileID: 5224096082337737068, guid: 7563bf4ac0f075843899dbcc0d0df8f6,
+    - target: {fileID: 6032061313761166003, guid: 088a5d26c89cf3d48af13d216257a29a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6412562243580073993, guid: 088a5d26c89cf3d48af13d216257a29a,
         type: 3}
       propertyPath: m_RootOrder
       value: 0

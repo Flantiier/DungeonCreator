@@ -25,7 +25,8 @@ namespace _Scripts.Multi.Connexion
 
         public Player Player { get; private set; }
 
-        public enum Roles { Undefined, Adventurer, DM }
+        public enum Roles { Undefined, Warrior, Archer, Wizard, DM }
+
         public void Awake()
         {
             playerCharacterImage = GetComponent<Image>();
@@ -55,11 +56,11 @@ namespace _Scripts.Multi.Connexion
         {
             int playerChoiceCharacter = (int)PhotonNetwork.LocalPlayer.CustomProperties["playerCharacter"];
 
-            if(playerChoiceCharacter != dmIndex)
+            /*if(playerChoiceCharacter != dmIndex)
             {
                 UpdatePlayerCustomProperties(Roles.Adventurer);
                 return;
-            }
+            }*/
             UpdatePlayerCustomProperties(Roles.DM);
         }
 

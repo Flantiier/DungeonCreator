@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class WarriorThrowState : MeleeAttackState
+	public class WarriorThrowState : CharacterMeleeAttack
 	{
 		#region Variables
 		private WarriorAnimator _warrior;

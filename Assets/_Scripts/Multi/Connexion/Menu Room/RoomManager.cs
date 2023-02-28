@@ -58,7 +58,7 @@ namespace _Scripts.Multi.Connexion
             dmNumber = 0;
             advNumber = 0;
 
-            foreach(Player player in PhotonNetwork.PlayerList)
+            foreach (Player player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties["role"] == null) return;
 
@@ -68,11 +68,11 @@ namespace _Scripts.Multi.Connexion
                 {
                     case Roles.Undefined:
                         break;
-                    case Roles.Adventurer:
-                        advNumber++;
-                        break;
                     case Roles.DM:
                         dmNumber++;
+                        break;
+                    default:
+                        advNumber++;
                         break;
                 }
             }
@@ -109,7 +109,7 @@ namespace _Scripts.Multi.Connexion
         public void UpdateSelectedRole()
         {
             ReturnIfRoleNull();
-            
+
             selectedRole = (Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
 
             switch (selectedRole)
@@ -118,13 +118,13 @@ namespace _Scripts.Multi.Connexion
                     SetSelectedRole(Roles.Undefined);
                     break;
 
-                case Roles.Adventurer:
-                    SetSelectedRole(Roles.Adventurer);
-                    break;
-
                 case Roles.DM:
                     SetSelectedRole(Roles.DM);
                     break;
+
+                /*default:
+                    SetSelectedRole(Roles.Adventurer);
+                    break;*/
             }
 
             EnableStartGame();

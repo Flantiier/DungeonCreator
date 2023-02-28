@@ -6,6 +6,7 @@ using _Scripts.Multi.Connexion;
 
 public class QuickConnect : MonoBehaviourPunCallbacks
 {
+    public string scene = "Florian"; 
     public GameObject UI;
     public TextMeshProUGUI text;
 
@@ -25,18 +26,28 @@ public class QuickConnect : MonoBehaviourPunCallbacks
 
     public void SelectRole(int index)
     {
-        ListPlayersRoom.Roles role = index == 0 ? ListPlayersRoom.Roles.DM : ListPlayersRoom.Roles.Adventurer;
+        ListPlayersRoom.Roles role = GetRole(index);
 
         _hash["role"] = role;
         PhotonNetwork.SetPlayerCustomProperties(_hash);
+        text.text = role.ToString();
     }
 
-    public void SelectCharacter(int index)
+    private ListPlayersRoom.Roles GetRole(int index)
     {
-        _hash["character"] = index;
-        PhotonNetwork.SetPlayerCustomProperties(_hash);
-
-        text.text = $"Role : {_hash["role"]}, Character : {_hash["character"]}";
+        switch (index)
+        {
+            case 0:
+                return ListPlayersRoom.Roles.Warrior;
+            case 1:
+                return ListPlayersRoom.Roles.Archer;
+            case 2:
+                return ListPlayersRoom.Roles.Wizard;
+            case 3:
+                return ListPlayersRoom.Roles.DM;
+            default:
+                return ListPlayersRoom.Roles.Warrior;
+        }
     }
 
     public void StartGame()
@@ -44,6 +55,6 @@ public class QuickConnect : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient)
             return;
 
-        PhotonNetwork.LoadLevel("Florian");
+        PhotonNetwork.LoadLevel(scene);
     }
 }

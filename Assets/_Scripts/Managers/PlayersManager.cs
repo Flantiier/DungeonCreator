@@ -1,123 +1,121 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
+using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
+using _Scripts.UI.Interfaces;
 using _Scripts.Characters;
 
 namespace _Scripts.Managers
 {
-    public class PlayersManager : MonoBehaviourSingleton<PlayersManager>
+    public class PlayersManager : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [Header("Spawn properties")]
-        [SerializeField] private CharacterSpawnInfo[] characters;
-        [SerializeField] private CharacterSpawnInfo bossInfo;
+        [TitleGroup("Off Connexion Role")]
+        [SerializeField] private ListPlayersRoom.Roles backUpRole = ListPlayersRoom.Roles.Warrior;
+
+        [TitleGroup("Spawn Properties")]
+        [SerializeField] private CharactersList characters;
+        [TitleGroup("Spawn Properties")]
+        [SerializeField] private Transform[] adventurersSpawn;
+        [TitleGroup("Spawn Properties")]
+        [SerializeField] private Transform masterSpawn;
+        [TitleGroup("Spawn Properties")]
+        [SerializeField] private Transform bossSpawn;
+
+        [TitleGroup("Variables")]
+        [SerializeField] private Vector3Variable spawnPosition;
         #endregion
 
         #region Properties
-        public Player DungeonMaster { get; private set; }
-        public List<Player> Adventurers { get; private set; }
-        public GameObject PlayerInstance { get; private set; }
-        public GameObject BossInstance { get; private set; }
-        public List<Character> AdventurersInstances { get; private set; }
+        public static ListPlayersRoom.Roles Role { get; private set; }
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        private void Awake()
         {
-            base.Awake();
-            Adventurers = new List<Player>();
-
-            SetGameRoleOnJoined((ListPlayersRoom.Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"], PhotonNetwork.LocalPlayer);
-        }
-
-        private void Start()
-        {
-            SpawnCharacter((int)PhotonNetwork.LocalPlayer.CustomProperties["character"]);
-
-            if (!PhotonNetwork.IsMasterClient)
+            //Not connected to network
+            if (!PhotonNetwork.IsConnected)
                 return;
 
-            SpawnBoss();
+            //Spawn character
+            InstantiateCharacter();
+        }
+
+        public override void OnJoinedRoom()
+        {
+            //Not connected to network
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            //Spawn character
+            InstantiateCharacter();
         }
         #endregion
 
-        #region Methods
+        #region Characters Initialization
         /// <summary>
-        /// Indicates if there is atleast one adventurer in the room 
+        /// Instantiates any character based on the selected role
         /// </summary>
-        /// <returns></returns>
-        public bool IsOneAdventurer()
+        private void InstantiateCharacter()
         {
-            return Adventurers.Count <= 0;
-        }
+            ListPlayersRoom.Roles role;
 
-        #region Spawn Methods
-        /// <summary>
-        /// Instantiates a prefab of character set in the array
-        /// </summary>
-        /// <param name="index"> Prefab index to instantiate </param>
-        private void SpawnCharacter(int index)
-        {
-            GameObject playerToSpawn = characters[index].prefab;
-            Vector3 spawnPoint = !characters[index].position ? Vector3.zero : characters[index].position.position;
-            PlayerInstance = playerToSpawn;
+            try {
+                role = (ListPlayersRoom.Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
+            }
+            catch {
+                role = backUpRole;
+            }
 
-            PlayerInstance = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint, Quaternion.identity);
+            Role = role;
+
+            switch (role)
+            {
+                case ListPlayersRoom.Roles.DM:
+                    Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);
+                    Instantiate(characters.dungeonMaster.UI);
+                    InstantiateBoss();
+                    spawnPosition.value = masterSpawn.position;
+                    break;
+
+                case ListPlayersRoom.Roles.Warrior:
+                    Character warrior = PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.warrior.UI, warrior);
+                    spawnPosition.value = adventurersSpawn[0].position;
+                    break;
+
+                case ListPlayersRoom.Roles.Archer:
+                    Character archer = PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.archer.UI, archer);
+                    spawnPosition.value = adventurersSpawn[1].position;
+                    break;
+
+                case ListPlayersRoom.Roles.Wizard:
+                    Character wizard = PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.wizard.UI, wizard);
+                    spawnPosition.value = adventurersSpawn[2].position;
+                    break;
+            }
         }
 
         /// <summary>
         /// Spwan the boss prefab
         /// </summary>
-        private void SpawnBoss()
+        private void InstantiateBoss()
         {
-            if (!bossInfo.prefab)
-                return;
-
-            GameObject instance = bossInfo.prefab;
-            Vector3 point = bossInfo.position.position;
-            BossInstance = instance;
-
-            PhotonNetwork.Instantiate(instance.name, point, Quaternion.identity);
-        }
-        #endregion
-
-        #region Roles Initialization
-        private void SetGameRoleOnJoined(ListPlayersRoom.Roles role, Player player)
-        {
-            switch (role)
-            {
-                case ListPlayersRoom.Roles.DM:
-                    RPCCall("SetDungeonMasterPlayer", RpcTarget.AllBuffered, player);
-                    break;
-
-                case ListPlayersRoom.Roles.Adventurer:
-                    RPCCall("AddAdventurerPlayer", RpcTarget.AllBuffered, player);
-                    break;
-            }
+            GameObject instance = PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, Quaternion.identity);
+            instance.SetActive(false);
         }
 
-        [PunRPC]
-        public void SetDungeonMasterPlayer(Player player)
+        /// <summary>
+        /// Instantiate a character UI and reference the instance of it
+        /// </summary>
+        /// <param name="ui"> UI prefab </param>
+        /// <param name="character"> Character reference </param>
+        private void InstantiateCharacterHUD(GameObject ui, Character character)
         {
-            if (DungeonMaster != null)
-            {
-                Debug.LogWarning("There's already a dungeon master");
-                AddAdventurerPlayer(player);
-                return;
-            }
-
-            DungeonMaster = player;
+            Instantiate(ui).GetComponent<PlayerHUD>().SetTargetCharacter(character);
         }
-
-        [PunRPC]
-        public void AddAdventurerPlayer(Player player)
-        {
-            Adventurers.Add(player);
-        }
-        #endregion
-
         #endregion
     }
 }
@@ -127,6 +125,6 @@ namespace _Scripts.Managers
 public struct CharacterSpawnInfo
 {
     public GameObject prefab;
-    public Transform position;
+    public Transform spawnPoint;
 }
 #endregion

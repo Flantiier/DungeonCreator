@@ -1,28 +1,24 @@
 using UnityEngine;
-using _Scripts.UI.Gameplay;
-using _Scripts.Managers;
-using _Scripts.Utilities.Florian;
-using JetBrains.Annotations;
+using TMPro;
 
 namespace _Scripts.UI
 {
-	public class GameTimerDisplay : DisplayText
+	public class GameTimerDisplay : MonoBehaviour
 	{
-		#region Builts_In
+        [SerializeField] private TextMeshProUGUI textMeshPro;
+        [SerializeField] private FloatVariable timer;
+
 		private void Update()
 		{
 			UpdateText();
 		}
-        #endregion
 
-        #region Inherited Methods
-        public override void UpdateText()
+        public void UpdateText()
         {
-            float seconds = GameManager.Instance.GameTime.ClampedSeconds;
-            float minuts = GameManager.Instance.GameTime.RemainingMinuts;
-            string timer = string.Format("{0:0}:{1:00}", minuts, seconds);
-            textMesh.SetText(timer);
+            if (!timer || !textMeshPro)
+                return;
+
+            textMeshPro.text = timer.value.ToString();
         }
-        #endregion
     }
 }

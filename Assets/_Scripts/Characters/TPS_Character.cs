@@ -1,35 +1,47 @@
 ﻿using System;
 using UnityEngine;
 using Photon.Pun;
-using _Scripts.Characters.Cameras;
+using Sirenix.OdinInspector;
+using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
 
 namespace _Scripts.Characters
 {
     [RequireComponent(typeof(CharacterController))]
-    [RequireComponent(typeof(PhotonView))]
     [RequireComponent(typeof(PhotonTransformView))]
     public class TPS_Character : Entity
     {
         #region Variables
 
         #region References
-        [Header("Character references")]
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform orientation;
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform mesh;
+        [TitleGroup("References/Character References")]
         [SerializeField] protected Transform lookAt;
-        [SerializeField] private TpsCameraProfile cameraPrefab;
+        [TitleGroup("References/Character References")]
+        [SerializeField] private TpsCamera tpsCameraPrefab;
 
         protected CharacterController _cc;
-        protected TpsCameraProfile _tpsCamera;
         #endregion
 
-        #region Motion
-        [Header("Motion properties")]
-        [SerializeField, Range(0f, 0.2f)] protected float inputSmoothing = 0.1f;
-        [SerializeField, Range(0f, 0.2f)] protected float speedSmoothing = 0.15f;
-        [SerializeField, Range(0f, 0.2f)] protected float rotationSmoothing = 0.1f;
+        #region Physics
+        [FoldoutGroup("Physics")]
+        [SerializeField] private LayerMask walkableMask;
+        [FoldoutGroup("Physics")]
+        [Range(0.25f, 2f), GUIColor(0.3f, 2, 0.3f)]
+        [SerializeField] private float maxGroundDistance = 1f;
+        [FoldoutGroup("Physics")]
+        [Range(1f, 10f), GUIColor(3, 0.5f, 1)]
+        [SerializeField] private float appliedGravity = 5f;
+        [FoldoutGroup("Physics")]
+        [Range(0f, 0.1f), GUIColor(2, 2, 2)]
+        [SerializeField] private float fallSmoothing = 0.05f;
+
+        protected float _airTime;
+        #endregion
 
         protected Vector2 _currentInputs;
         protected Vector3 _movement;
@@ -38,22 +50,9 @@ namespace _Scripts.Characters
         protected float _smoothMeshTurnRef;
         #endregion
 
-        #region Physics
-        [Header("Ground infos")]
-        [SerializeField] private LayerMask walkableMask;
-        [SerializeField] private float maxGroundDistance = 1f;
-
-        [Header("Gravity properties")]
-        [SerializeField] private float appliedGravity = 5f;
-        [SerializeField, Range(0f, 0.1f)] private float fallSmoothing = 0.05f;
-        protected float _airTime;
-        #endregion
-
-        #endregion
-
         #region Properties
         public GroundStateMachine GroundSM { get; protected set; }
-        public Transform MainCamTransform => _tpsCamera.MainCam.transform;
+        public Transform MainCamera => Camera.main.transform;
         public Transform Orientation => orientation;
         public Vector2 Inputs { get; protected set; }
         public float CurrentSpeed { get; set; }
@@ -68,14 +67,15 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InstantiateCamera();
+            InstantiateTPSCamera();
         }
+
         public override void OnEnable()
         {
             if (!ViewIsMine())
                 return;
 
-            InputsEnabled(true);
+            EnableInputs(true);
             SubscribeInputActions();
         }
 
@@ -84,17 +84,18 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
-            InputsEnabled(false);
+            EnableInputs(false);
             UnsubscribeInputActions();
         }
 
-        public virtual void OnDestroy()
+        protected virtual void Update()
         {
             if (!ViewIsMine())
                 return;
 
-            if (_tpsCamera.MainCam)
-                PhotonNetwork.Destroy(_tpsCamera.MainCam.gameObject);
+            SetOrientation();
+            HandleGroundStateMachine();
+            UpdateAnimations();
         }
         #endregion
 
@@ -104,18 +105,16 @@ namespace _Scripts.Characters
         /// <summary>
         /// Instantiate a camera for the player
         /// </summary>
-        protected virtual void InstantiateCamera()
+        protected virtual void InstantiateTPSCamera()
         {
-            if (!cameraPrefab)
+            if (!tpsCameraPrefab)
             {
                 Debug.LogError("Missing camera prefab");
                 return;
             }
 
-            TpsCameraProfile instance = PhotonNetwork.Instantiate(cameraPrefab.name, transform.position, Quaternion.identity).GetComponent<TpsCameraProfile>();
-            instance.SetLookAtTarget(lookAt);
-
-            _tpsCamera = instance;
+            TpsCamera instance = Instantiate(tpsCameraPrefab, transform.position, Quaternion.identity);
+            instance.SetLookAt(lookAt);
         }
         #endregion
 
@@ -131,7 +130,7 @@ namespace _Scripts.Characters
 
         protected override void HandleEntityDeath()
         {
-            InputsEnabled(false);
+            EnableInputs(false);
             ResetCharacterVelocity();
 
             RPCAnimatorTrigger(RpcTarget.All, "Dead", true);
@@ -142,7 +141,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Enable and disable inputs based on the given parameter
         /// </summary>
-        protected virtual void InputsEnabled(bool enabled) { }
+        protected virtual void EnableInputs(bool enabled) { }
 
         /// <summary>
         /// Subscribe to the given action events to update inputs vector
@@ -191,6 +190,12 @@ namespace _Scripts.Characters
         /// Handle the character behaviour in each state
         /// </summary>
         protected virtual void HandleCharacterStateMachine() { }
+
+        /// <summary>
+        /// Update animator parameters
+        /// </summary>
+        protected virtual void UpdateAnimations() { }
+
         #endregion
 
         #region Motion Methods
@@ -224,9 +229,9 @@ namespace _Scripts.Characters
         /// <summary>
         /// Smoothly updating character motion speed
         /// </summary>
-        public void UpdateCharacterSpeed(float speed)
+        public virtual void UpdateCharacterSpeed(float speed)
         {
-            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, speed, ref _smoothSpeedRef, speedSmoothing);
+            CurrentSpeed = Mathf.SmoothDamp(CurrentSpeed, speed, ref _smoothSpeedRef, 0.1f);
         }
 
         /// <summary>
@@ -245,7 +250,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void SetOrientation()
         {
-            orientation.rotation = Quaternion.Euler(0f, MainCamTransform.eulerAngles.y, 0f);
+            orientation.rotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
         }
 
         /// <summary>
@@ -260,7 +265,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Setting mesh rotations based on current inputs
         /// </summary>
-        protected virtual void HandleCharacterRotation()
+        protected virtual void HandleCharacterRotation(float smooth)
         {
             if (!mesh)
                 return;
@@ -268,7 +273,7 @@ namespace _Scripts.Characters
             if (Inputs.magnitude >= 0.1f)
             {
                 float angle = Mathf.Atan2(Inputs.x, Inputs.y) * Mathf.Rad2Deg + orientation.eulerAngles.y;
-                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, rotationSmoothing);
+                float smoothAngle = Mathf.SmoothDampAngle(mesh.eulerAngles.y, angle, ref _smoothMeshTurnRef, smooth);
                 mesh.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
             }
         }

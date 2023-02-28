@@ -1,22 +1,44 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
+using _Scripts.TrapSystem;
 
-#region TrapSO
-namespace _Scripts.TrapSystem.Datas
+namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Trap", menuName = "Scriptables/Trap")]
     public class TrapSO : ScriptableObject
     {
-        [Header("Trap infos")]
-        public GameObject trapPrefab;
-        public GameObject trapGhostPrefab;
+        #region Variables
+        //INFORMATIONS
+        [BoxGroup("Basic Informations"), HorizontalGroup("Basic Informations/G01", 75)]
+        [PreviewField(75), HideLabel]
+        public Sprite image;
+        [BoxGroup("Basic Informations"), VerticalGroup("Basic Informations/G01/G02")]
+        [LabelText("Trap Name"), LabelWidth(75)]
         public string trapName = "New trap";
-        public float damage;
-        public int manaCost;
-        public bool isStaminaLow;
+        [BoxGroup("Basic Informations"), VerticalGroup("Basic Informations/G01/G02"), TextArea(3, 3)]
+        public string description = "New description";
 
-        [TextArea(10, 10)] public string description = "New description";
-        [Range(1, 10)] public int xAmount = 5;
-        [Range(1, 10)] public int yAmount = 5;
+        //MESHES
+        [FoldoutGroup("Gameplay")]
+        [BoxGroup("Gameplay/Meshes"), LabelWidth(100)]
+        public GameObject trapPrefab;
+        [BoxGroup("Gameplay/Meshes"), LabelWidth(100)]
+        public GameObject previewPrefab;
+
+        //TILING PROPERTIES
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
+        [GUIColor(2, 0.5f, 0f)]
+        [Range(1, 3)] public int xAmount = 1;
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
+        [GUIColor(0f, 0.8f, 2)]
+        [Range(1, 3)] public int yAmount = 1;
+
+        //PROPERTIES
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
+        [LabelText("Trap type")]
+        public Tile.TilingType type = Tile.TilingType.Ground;
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
+        [Range(10f, 40f), GUIColor(3, 1, 2)]
+        public int manaCost = 25;
+        #endregion
     }
 }
-#endregion

@@ -6,7 +6,7 @@ using Photon.Realtime;
 public class TemporaryRooms : MonoBehaviourPunCallbacks
 {
     #region Variables
-    public enum GameEntity { Warrior, Wizard, Bowman, DungeonMaster }
+    public enum GameEntity { Warrior, Wizard, Bowman, DungeonMaster, Boss }
 
     [Header("Connections infos")]
     [SerializeField] private GameEntity myEntity = GameEntity.Warrior;
@@ -20,6 +20,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     [SerializeField] private CharacterSpawnInfo warriorSpawn;
     [SerializeField] private CharacterSpawnInfo wizardSpawn;
     [SerializeField] private CharacterSpawnInfo bowmanSpawn;
+    [SerializeField] private CharacterSpawnInfo bossSpawn;
 
     public static event Action<GameObject> OnEntityCreated;
     #endregion
@@ -42,11 +43,6 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     #endregion
 
     #region Methods
-    public void RaiseEntityEvent(GameObject obj)
-    {
-        OnEntityCreated?.Invoke(obj);
-    }
-
     /// <summary>
     /// Instantiate the selected entity
     /// </summary>
@@ -66,6 +62,10 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
                 InstantiateAdventurer(bowmanSpawn);
                 break;
 
+            case GameEntity.Boss:
+                InstantiateAdventurer(bossSpawn);
+                break;
+
             case GameEntity.DungeonMaster:
                 InstantiateMaster();
                 break;
@@ -83,7 +83,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        GameObject instance = PhotonNetwork.Instantiate(masterPrefab.name, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
+        GameObject instance = Instantiate(masterPrefab, GetSpawnPosition(spawnPositionMaster), Quaternion.identity);
         RaiseEntityEvent(instance);
 
         if(masterUI)
@@ -101,8 +101,14 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
             return;
         }
 
-        GameObject instance = PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.position), Quaternion.identity);
+        Quaternion rotation = spawnInfo.spawnPoint ? spawnInfo.spawnPoint.rotation : Quaternion.identity;
+        GameObject instance = PhotonNetwork.Instantiate(spawnInfo.prefab.name, GetSpawnPosition(spawnInfo.spawnPoint), rotation);
         RaiseEntityEvent(instance);
+    }
+
+    public void RaiseEntityEvent(GameObject obj)
+    {
+        OnEntityCreated?.Invoke(obj);
     }
 
     /// <summary>
@@ -110,10 +116,7 @@ public class TemporaryRooms : MonoBehaviourPunCallbacks
     /// </summary>
     private Vector3 GetSpawnPosition(Transform target)
     {
-        if (target)
-            return target.position;
-
-        return transform.position;
+        return target ? target.position : transform.position;
     }
     #endregion
 }

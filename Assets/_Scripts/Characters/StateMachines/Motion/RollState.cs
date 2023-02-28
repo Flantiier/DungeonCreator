@@ -3,7 +3,7 @@ using _Scripts.Characters.StateMachines;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-    public class RollState : NetworkStateMachine
+    public class RollState : CharacterStateMachine
     {
         #region Variables
         private AnimationCurve _dodgeCurve;
@@ -12,18 +12,18 @@ namespace _Scripts.Characters.Animations.StateMachines
         #region Inherited Methods
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            MyCharacter.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
-            MyCharacter.SetOrientationToDodge();
-            MyCharacter.UsingStamina(MyCharacter.OverallDatas.staminaToDodge);
+            Character.PlayerSM.CurrentState = PlayerStateMachine.PlayerStates.Roll;
+            Character.SetOrientationToDodge();
+            Character.UsingStamina(Character.OverallDatas.staminaToDodge);
 
-            DynamicDodgeCurve(MyCharacter);
+            DynamicDodgeCurve(Character);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             float dodgeSpeed = _dodgeCurve.Evaluate(Mathf.Repeat(stateInfo.normalizedTime, 1f));
-            MyCharacter.UpdateCharacterSpeed(dodgeSpeed);
-            MyCharacter.MoveForwards();
+            Character.UpdateCharacterSpeed(dodgeSpeed);
+            Character.MoveForwards();
         }
         #endregion
 

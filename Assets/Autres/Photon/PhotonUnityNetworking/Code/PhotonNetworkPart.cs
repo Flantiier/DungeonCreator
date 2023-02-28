@@ -431,10 +431,10 @@ namespace Photon.Pun
                 return;
             }
 
-            if (PhotonNetwork.LogLevel >= PunLogLevel.Full)
+            /*if (PhotonNetwork.LogLevel >= PunLogLevel.Full)
             {
                 Debug.Log("Received RPC: " + inMethodName);
-            }
+            }*/
 
 
             // SetReceiving filtering
@@ -1208,10 +1208,10 @@ namespace Photon.Pun
                 Debug.LogError("Illegal view ID:" + view.ViewID + " method: " + methodName + " GO:" + view.gameObject.name);
             }
 
-            if (PhotonNetwork.LogLevel >= PunLogLevel.Full)
+            /*if (PhotonNetwork.LogLevel >= PunLogLevel.Full)
             {
                 Debug.Log("Sending RPC \"" + methodName + "\" to target: " + target + " or player:" + player + ".");
-            }
+            }*/
 
 
             //ts: changed RPCs to a one-level hashtable as described in internal.txt

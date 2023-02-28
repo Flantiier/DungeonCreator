@@ -1,13 +1,15 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.NetworkScript
 {
+    [RequireComponent(typeof(PhotonView))]
     public class NetworkMonoBehaviour : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [Header("Network requirements")]
+        [TitleGroup("Network requirements")]
         [SerializeField] private PhotonView view;
 
         public PhotonView View => view;

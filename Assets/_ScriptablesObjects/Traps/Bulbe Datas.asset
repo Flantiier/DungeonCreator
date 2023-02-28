@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98d0f53aeba29a46a2b983f0a4a9713, type: 3}
+  m_Name: Bulbe Datas
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: 5955491dc8dcecb4a993d9a008cf65a7, type: 3}
+  trapName: Bulbe
+  description: Venez respirer un ptit coup
+  trapPrefab: {fileID: 7034643951355465807, guid: 0e368d0ac24dbae46af03e5c698328bd,
+    type: 3}
+  previewPrefab: {fileID: 5527201782914100384, guid: 1a76ad0d88f5c364b94b39bcf0411f5a,
+    type: 3}
+  xAmount: 1
+  yAmount: 1
+  type: 2
+  manaCost: 25
+  health: 50
+  sporesDuration: 5.5
+  waitTime: 2
+  affliction: {fileID: 11400000, guid: 0d5bf889ae1b4154aa5dd8fc66852328, type: 2}

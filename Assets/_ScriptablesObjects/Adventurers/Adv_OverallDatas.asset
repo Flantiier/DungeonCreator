@@ -16,15 +16,15 @@ MonoBehaviour:
   speedSmoothing: 0.15
   rotationSmoothing: 0.1
   walkSpeed: 3
-  runSpeed: 7
+  runSpeed: 10
   aimSpeed: 1
-  dodgeSpeed: 10
+  dodgeSpeed: 8
   dodgeCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 3.7684205
+      value: 2.458542
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 0.45848128
-      value: 10
+      value: 8
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -42,7 +42,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 0.95
-      value: 3.7684205
+      value: 2.458542
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   healthRecup: 10
-  healthRecupTime: 3
-  staminaRecup: 50
+  healthRecupDelay: 3
+  staminaRecup: 5
   staminaToRun: 1
   staminaToDodge: 20

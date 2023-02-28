@@ -1,8 +1,9 @@
 using UnityEngine;
+using _Scripts.Characters.Adventurers;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {
-	public class WarriorSkillState : NetworkStateMachine
+	public class WarriorSkillState : CharacterStateMachine
 	{
         #region Variables
         private Warrior _warrior;
