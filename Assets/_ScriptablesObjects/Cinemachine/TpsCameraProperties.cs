@@ -8,7 +8,5 @@ namespace _ScriptableObjects.Cinemachine
     {
         [FoldoutGroup("Body Properties"), HideLabel, GUIColor(1.5f, 1, 0.5f)]
         public FramingTransposerProperties framingTranposer = new FramingTransposerProperties(0);
-        [FoldoutGroup("Aim Properties"), HideLabel]
-        public POVProperties pov = new POVProperties(0);
     }
 }

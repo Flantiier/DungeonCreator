@@ -12,6 +12,11 @@ namespace _Scripts.Cameras
         [TitleGroup("Edit properties")]
         [SerializeField] private TpsCameraProperties cameraProperties;
 
+        private void Start()
+        {
+            SetCameraProperties();
+        }
+
         /// <summary>
         /// Enable or disable input provider
         /// </summary>
@@ -29,7 +34,6 @@ namespace _Scripts.Cameras
                 return;
 
             cameraProperties.framingTranposer.SetFramingTranposer(vCam.GetCinemachineComponent<CinemachineFramingTransposer>());
-            cameraProperties.pov.SetPOV(vCam.GetCinemachineComponent<CinemachinePOV>());
         }
     }
 }

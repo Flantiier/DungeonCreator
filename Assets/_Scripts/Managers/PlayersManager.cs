@@ -2,6 +2,8 @@ using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
+using _Scripts.UI.Interfaces;
+using _Scripts.Characters;
 
 namespace _Scripts.Managers
 {
@@ -77,20 +79,20 @@ namespace _Scripts.Managers
                     break;
 
                 case ListPlayersRoom.Roles.Warrior:
-                    PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation);
-                    Instantiate(characters.warrior.UI);
+                    Character warrior = PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.warrior.UI, warrior);
                     spawnPosition.value = adventurersSpawn[0].position;
                     break;
 
                 case ListPlayersRoom.Roles.Archer:
-                    PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation);
-                    Instantiate(characters.archer.UI);
+                    Character archer = PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.archer.UI, archer);
                     spawnPosition.value = adventurersSpawn[1].position;
                     break;
 
                 case ListPlayersRoom.Roles.Wizard:
-                    PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation);
-                    Instantiate(characters.wizard.UI);
+                    Character wizard = PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation).GetComponent<Character>();
+                    InstantiateCharacterHUD(characters.wizard.UI, wizard);
                     spawnPosition.value = adventurersSpawn[2].position;
                     break;
             }
@@ -104,8 +106,17 @@ namespace _Scripts.Managers
             GameObject instance = PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, Quaternion.identity);
             instance.SetActive(false);
         }
-        #endregion
 
+        /// <summary>
+        /// Instantiate a character UI and reference the instance of it
+        /// </summary>
+        /// <param name="ui"> UI prefab </param>
+        /// <param name="character"> Character reference </param>
+        private void InstantiateCharacterHUD(GameObject ui, Character character)
+        {
+            Instantiate(ui).GetComponent<PlayerHUD>().SetTargetCharacter(character);
+        }
+        #endregion
     }
 }
 

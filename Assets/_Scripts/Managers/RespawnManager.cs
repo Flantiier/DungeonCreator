@@ -9,6 +9,16 @@ namespace _Scripts.Managers
         [SerializeField] private FloatVariable respawnTime;
         [SerializeField] private Vector3Variable respawnPosition;
 
+        private void OnEnable()
+        {
+            Character.OnCharacterDeath += StartRespawnDelay;
+        }
+
+        private void OnDisable()
+        {
+            Character.OnCharacterDeath -= StartRespawnDelay;
+        }
+
         /// <summary>
         /// Start a coroutine to respawn the player
         /// </summary>
@@ -27,6 +37,7 @@ namespace _Scripts.Managers
 
             character.gameObject.SetActive(false);
             character.transform.position = respawnPosition.value;
+            character.transform.rotation = Quaternion.identity;
             character.gameObject.SetActive(true);
         }
 
