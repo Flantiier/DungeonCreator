@@ -88,7 +88,7 @@ namespace _Scripts.Characters.Adventurers
             if (_currentTrap == null)
                 return;
 
-            _currentTrap.IsDefused();
+            _currentTrap.DefuseTrap();
             SkillUsed();
         }
         #endregion

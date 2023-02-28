@@ -12,9 +12,8 @@ namespace _Scripts.GameplayFeatures.Traps
         [BoxGroup("Properties")]
         [Required, SerializeField] private SawDatas datas;
 
-        public float DefuseDuration => throw new System.NotImplementedException();
-
-        public bool IsDisabled { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public float DefuseDuration { get; }
+        public bool IsDisabled { get; set; }
         #endregion
 
         #region Inherited Methods
@@ -31,7 +30,7 @@ namespace _Scripts.GameplayFeatures.Traps
 
         #region Defuse Interaction
         [ContextMenu("Defused")]
-        public void IsDefused()
+        public void DefuseTrap()
         {
             StartCoroutine("GetDefused");
         }

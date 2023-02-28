@@ -13,12 +13,12 @@ public class TestTrapDefuse : MonoBehaviour, IDefusable
     #endregion
 
     #region Properties
-    public float DefuseDuration { get =>  defuseDuration; }
+    public float DefuseDuration { get => defuseDuration; }
     public bool IsDisabled { get => _isDisabled; set => _isDisabled = value; }
     #endregion
 
     #region Methods
-    public void IsDefused()
+    public void DefuseTrap()
     {
         StartCoroutine(DisabledCooldownRoutine());
     }

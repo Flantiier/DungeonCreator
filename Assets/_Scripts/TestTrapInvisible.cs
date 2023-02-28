@@ -1,13 +1,13 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 using _Scripts.Interfaces;
 
-public class TestTrapInvisible : MonoBehaviour
+public class TestTrapInvisible : MonoBehaviour, IDetectable
 {
     [SerializeField] private GameObject canvasFeedback;
     [SerializeField] private float feedbackDuration = 4f;
 
-    public void GotDetected()
+    public void GetDetected(float duration)
     {
         if (!canvasFeedback)
             return;

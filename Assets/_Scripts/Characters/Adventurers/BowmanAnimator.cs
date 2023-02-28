@@ -5,9 +5,6 @@ namespace _Scripts.Characters.Animations
 {
 	public class BowmanAnimator : CharacterAnimator
 	{
-        #region Variables
-        #endregion
-
         #region Properties
         public Bowman MyBowman { get; private set; }
         #endregion
@@ -21,9 +18,6 @@ namespace _Scripts.Characters.Animations
             base.Awake();
             MyBowman = GetComponentInParent<Bowman>();
         }
-        #endregion
-
-        #region Methods
         #endregion
     }
 }

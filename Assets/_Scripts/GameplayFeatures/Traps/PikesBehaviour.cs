@@ -2,14 +2,18 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
+using _Scripts.Interfaces;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-    public class PikesBehaviour : DamagingTrap
+    public class PikesBehaviour : DamagingTrap, IDefusable
     {
         #region Variables
         [BoxGroup("Properties")]
         [Required, SerializeField] private PikesDatas datas;
+
+        public float DefuseDuration { get; }
+        public bool IsDisabled { get; set; }
         #endregion
 
         #region Inherited Methods
@@ -26,7 +30,7 @@ namespace _Scripts.GameplayFeatures.Traps
 
         #region Defuse Interaction
         [ContextMenu("Defused")]
-        public void IsDefused()
+        public void DefuseTrap()
         {
             StartCoroutine("GetDefused");
         }

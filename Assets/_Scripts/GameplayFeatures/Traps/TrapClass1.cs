@@ -45,6 +45,7 @@ namespace _Scripts.GameplayFeatures.Traps
             if (trapParts.Length <= 0)
                 return;
 
+            Debug.Log("Scanned");
             StartCoroutine(DetectionRoutine(duration));
         }
 
@@ -56,7 +57,6 @@ namespace _Scripts.GameplayFeatures.Traps
 
             StartCoroutine(DetectionRoutine(5f));
         }
-
 
         /// <summary>
         /// Change the layer on each part of the trap
