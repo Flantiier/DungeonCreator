@@ -7,7 +7,7 @@ namespace _Scripts.Characters.Animations.StateMachines
 		#region Inherited Methods
 		protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			Character.SkillUsed();
+			Character.PlayerSM.SkillUsed = true;
 			Character.PlayerSM.CanAttack = false;
 			Character.PlayerSM.CanDodge = false;
         }

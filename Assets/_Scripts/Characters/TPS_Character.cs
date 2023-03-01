@@ -25,6 +25,7 @@ namespace _Scripts.Characters
         [SerializeField] private TpsCamera tpsCameraPrefab;
 
         protected CharacterController _cc;
+        protected TpsCamera _camera;
         #endregion
 
         #region Physics
@@ -52,7 +53,7 @@ namespace _Scripts.Characters
 
         #region Properties
         public GroundStateMachine GroundSM { get; protected set; }
-        public Transform MainCamera => Camera.main.transform;
+        public Transform MainCamera => _camera.CameraTransform;
         public Transform Orientation => orientation;
         public Vector2 Inputs { get; protected set; }
         public float CurrentSpeed { get; set; }
@@ -113,8 +114,8 @@ namespace _Scripts.Characters
                 return;
             }
 
-            TpsCamera instance = Instantiate(tpsCameraPrefab, transform.position, Quaternion.identity);
-            instance.SetLookAt(lookAt);
+            _camera = Instantiate(tpsCameraPrefab, transform.position, Quaternion.identity);
+            _camera.SetLookAt(lookAt);
         }
         #endregion
 
@@ -250,7 +251,7 @@ namespace _Scripts.Characters
         /// </summary>
         protected void SetOrientation()
         {
-            orientation.rotation = Quaternion.Euler(0f, Camera.main.transform.eulerAngles.y, 0f);
+            orientation.rotation = Quaternion.Euler(0f, MainCamera.eulerAngles.y, 0f);
         }
 
         /// <summary>

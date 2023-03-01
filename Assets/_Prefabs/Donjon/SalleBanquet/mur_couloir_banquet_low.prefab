@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 1419362673743684810}
   - component: {fileID: 2602321103976131439}
   - component: {fileID: 286464596111204261}
-  m_Layer: 0
+  - component: {fileID: 2983403634646260253}
+  m_Layer: 6
   m_Name: mur_couloir_banquet_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2983403634646260253
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799547009422638704}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7761698418539615726, guid: 49b3306118b77994bafdbb8765ff4e92, type: 3}

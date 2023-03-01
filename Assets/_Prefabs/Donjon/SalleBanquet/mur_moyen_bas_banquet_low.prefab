@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 6337794769572031561}
   - component: {fileID: 6943289858385535980}
   - component: {fileID: 5169976375380317990}
-  m_Layer: 0
+  - component: {fileID: 4878776200279783906}
+  m_Layer: 6
   m_Name: mur_moyen_bas_banquet_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4878776200279783906
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6683216979720615667}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1340267159606632554, guid: 0cd277f727150ac4891ef32ed9118aee, type: 3}

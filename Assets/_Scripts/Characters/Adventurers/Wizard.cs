@@ -53,6 +53,7 @@ namespace _Scripts.Characters.Adventurers
                 return;
 
             PhotonNetwork.Instantiate(scanAreaPrefab.name, transform.position, Quaternion.identity);
+            SkillUsed();
         }
         #endregion
     }

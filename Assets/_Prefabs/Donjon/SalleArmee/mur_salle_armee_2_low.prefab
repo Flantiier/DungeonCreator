@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3835916451417743319}
   - component: {fileID: 185828619742597234}
   - component: {fileID: 2697873247911486648}
-  m_Layer: 0
+  - component: {fileID: 2844904132354163294}
+  m_Layer: 6
   m_Name: mur_salle_armee_2_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2844904132354163294
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4499158824332330349}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2313287928171932208, guid: c102a237fc947cb4aa3ec940fc42213e, type: 3}

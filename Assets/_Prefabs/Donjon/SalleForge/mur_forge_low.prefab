@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8894085563450204193}
   - component: {fileID: 5530974664671506308}
   - component: {fileID: 7720594105067035470}
-  m_Layer: 0
+  - component: {fileID: 4257083495755348153}
+  m_Layer: 6
   m_Name: mur_forge_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,3 +85,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4257083495755348153
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8081132420483611291}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8569733852637561183, guid: cc785af2045b6d844b28d16c947b0237, type: 3}

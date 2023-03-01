@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 273202369352187180}
   - component: {fileID: 3775502541170094729}
   - component: {fileID: 1405598928217818691}
-  m_Layer: 0
+  - component: {fileID: 2943576646263138972}
+  m_Layer: 26
   m_Name: sol_cuisine_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2943576646263138972
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612855373626894230}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2386208993655925419, guid: 60942047ea6a4274ea9cb71fb6163b1f, type: 3}
