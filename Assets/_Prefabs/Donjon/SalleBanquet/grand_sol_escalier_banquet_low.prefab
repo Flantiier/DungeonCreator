@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 5864722681821687469}
   - component: {fileID: 7407424824054079752}
   - component: {fileID: 4695146546360456642}
-  m_Layer: 0
+  - component: {fileID: 5134229712942735058}
+  m_Layer: 26
   m_Name: grand_sol_escalier_banquet_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5134229712942735058
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6496581654966449175}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1574513471049343834, guid: 5ba8c0493847da944a1bc0097c4e3c4a, type: 3}

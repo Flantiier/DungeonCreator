@@ -120,6 +120,8 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
 
             RPCCall("ResetAnimatorRPC", RpcTarget.All);
+
+            skillCooldown.value = 0f;
         }
 
         #region Inputs
@@ -594,6 +596,7 @@ namespace _Scripts.Characters
 
             skillCooldown.value = 0f;
             _skillCoroutine = null;
+            PlayerSM.SkillUsed = false;
             //Skill recovered
             OnSkillRecovered?.Invoke();
         }
@@ -604,7 +607,7 @@ namespace _Scripts.Characters
         /// <returns></returns>
         protected virtual bool SkillConditions()
         {
-            if (_skillCoroutine != null || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+            if (PlayerSM.SkillUsed || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
                 return false;
 
             return PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk);
@@ -641,6 +644,7 @@ namespace _Scripts.Characters.StateMachines
         public Coroutine WaitAttack { get; set; }
         public bool HoldAttack { get; set; }
         public bool EnableLayers { get; set; }
+        public bool SkillUsed { get; set; } = false;
         #endregion
 
         #region Methods

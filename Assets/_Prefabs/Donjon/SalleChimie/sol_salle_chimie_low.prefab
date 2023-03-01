@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3667917878910487540}
   - component: {fileID: 380787771176682577}
   - component: {fileID: 2498410634725322907}
-  m_Layer: 0
+  - component: {fileID: 213157561172780633}
+  m_Layer: 26
   m_Name: sol_salle_chimie_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &213157561172780633
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4155942073791664462}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1527453147567891036, guid: ce3a7f21ddaf7ff49b392734f34b47a2, type: 3}

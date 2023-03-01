@@ -8,9 +8,13 @@ namespace _Scripts.Cameras
     public class GameplayCamera : MonoBehaviour
     {
         [TitleGroup("References")]
+        [SerializeField] protected Camera cam;
+        [TitleGroup("References")]
         [SerializeField] protected CinemachineVirtualCamera vCam;
         [TitleGroup("Edit properties")]
         [SerializeField] private bool updateInEditMode = false;
+
+        public Transform CameraTransform => cam.transform;
 
         private void Update()
         {
