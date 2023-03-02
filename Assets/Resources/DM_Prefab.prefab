@@ -43,6 +43,9 @@ GameObject:
   - component: {fileID: 525513465056368736}
   - component: {fileID: 353385191410713115}
   - component: {fileID: 1056657070654585433}
+  - component: {fileID: 2633029608254340262}
+  - component: {fileID: 7410257083227332240}
+  - component: {fileID: 85155463}
   m_Layer: 0
   m_Name: DM
   m_TagString: Untagged
@@ -109,8 +112,119 @@ MonoBehaviour:
   disabledOnStart: 1
   groundLayer: GroundTiling
   wallLayer: WallTiling
-  dragEvent: {fileID: 11400000, guid: 8c418f1402027c74aaab578b8c0d50a2, type: 2}
-  dropEvent: {fileID: 11400000, guid: 851957c4418c39542a24fb5580df87a1, type: 2}
+--- !u!114 &2633029608254340262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525513465056368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 8c418f1402027c74aaab578b8c0d50a2, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 353385191410713115}
+        m_TargetAssemblyTypeName: _Scripts.Characters.DungeonMaster.DMController,
+          Assembly-CSharp
+        m_MethodName: HandleStartDrag
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1056657070654585433}
+        m_TargetAssemblyTypeName: _Scripts.Characters.DungeonMaster.TilingCulling,
+          Assembly-CSharp
+        m_MethodName: EnableLayers
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7410257083227332240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525513465056368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 851957c4418c39542a24fb5580df87a1, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 353385191410713115}
+        m_TargetAssemblyTypeName: _Scripts.Characters.DungeonMaster.DMController,
+          Assembly-CSharp
+        m_MethodName: HandleDragEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1056657070654585433}
+        m_TargetAssemblyTypeName: _Scripts.Characters.DungeonMaster.TilingCulling,
+          Assembly-CSharp
+        m_MethodName: DisableAll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &85155463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525513465056368738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 1fb96469236b046418ced338365b7c4d, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 353385191410713115}
+        m_TargetAssemblyTypeName: _Scripts.Characters.DungeonMaster.DMController,
+          Assembly-CSharp
+        m_MethodName: EnterPointerZone
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &525513465721892767
 GameObject:
   m_ObjectHideFlags: 0

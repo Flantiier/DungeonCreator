@@ -14,7 +14,10 @@ namespace Utils
         {
             return Random.Range(min, max);
         }
+        #endregion
 
+#if UNITY_EDITOR
+        #region Editor
         /// <summary>
         /// Indicates if the given scene exists and is set up in the build settings
         /// </summary>
@@ -32,6 +35,7 @@ namespace Utils
             return false;
         }
         #endregion
+#endif
 
         #region Math Class
         public abstract class Math

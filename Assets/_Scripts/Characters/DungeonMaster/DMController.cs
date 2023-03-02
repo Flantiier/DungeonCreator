@@ -76,22 +76,12 @@ namespace _Scripts.Characters.DungeonMaster
         {
             EnableInputs(true);
             SubscribeToInputs();
-
-            //Events
-            dragEvent.responses.AddListener(HandleStartDrag);
-            dropEvent.responses.AddListener(HandleDragEnd);
-            cardZoneEnter.responses.AddListener(EnterPointerZone);
         }
 
         private void OnDisable()
         {
             EnableInputs(false);
             UnsubscribeToInputs();
-
-            //Events
-            dragEvent.responses.RemoveListener(HandleStartDrag);
-            dropEvent.responses.RemoveListener(HandleDragEnd);
-            cardZoneEnter.responses.RemoveListener(EnterPointerZone);
         }
 
         private void Update()
@@ -243,7 +233,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// <summary>
         /// Set the trap preview position
         /// </summary>
-        private void HandleStartDrag()
+        public void HandleStartDrag()
         {
             IsDragging = true;
 
@@ -267,7 +257,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// <summary>
         /// Puts the trap is possible, reset the projection transform and the interactor
         /// </summary>
-        private void HandleDragEnd()
+        public void HandleDragEnd()
         {
             IsDragging = false;
 
@@ -316,7 +306,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// <summary>
         /// Executed when entering in the card pointer zone
         /// </summary>
-        private void EnterPointerZone()
+        public void EnterPointerZone()
         {
             _hittedTransform = null;
             projection.position = offMapPosition;

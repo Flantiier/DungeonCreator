@@ -34,19 +34,12 @@ namespace _Scripts.Managers
         private void Awake()
         {
             //Not connected to network
-            if (!PhotonNetwork.IsConnected)
-                return;
-
-            //Spawn character
-            InstantiateCharacter();
+            if (PhotonNetwork.IsConnectedAndReady)
+                InstantiateCharacter();
         }
 
         public override void OnJoinedRoom()
         {
-            //Not connected to network
-            if (!PhotonNetwork.IsConnected)
-                return;
-
             //Spawn character
             InstantiateCharacter();
         }
@@ -60,10 +53,12 @@ namespace _Scripts.Managers
         {
             ListPlayersRoom.Roles role;
 
-            try {
+            try
+            {
                 role = (ListPlayersRoom.Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
             }
-            catch {
+            catch
+            {
                 role = backUpRole;
             }
 

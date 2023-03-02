@@ -24,8 +24,6 @@ namespace _Scripts.GameplayFeatures
         [SerializeField] private FloatVariable mana;
         [TitleGroup("Variables_Events")]
         [SerializeField] private GameEvent dragEvent, dropEvent;
-        [TitleGroup("Variables_Events")]
-        [SerializeField] private GameEvent pointerEnter, pointerExit;
 
         private Image _raycaster;
         public TrapSO TrapReference => trapReference;
@@ -42,18 +40,6 @@ namespace _Scripts.GameplayFeatures
         {
             if(trapReference)
                 UpdateCardInformations(TrapReference);
-        }
-
-        private void OnEnable()
-        {
-            pointerEnter.responses.AddListener(EnableCard);
-            pointerExit.responses.AddListener(DisableCard);
-        }
-
-        private void OnDisable()
-        {
-            pointerEnter.responses.RemoveListener(EnableCard);
-            pointerExit.responses.RemoveListener(DisableCard);
         }
 
         private void LateUpdate()
@@ -135,7 +121,7 @@ namespace _Scripts.GameplayFeatures
         /// <summary>
         /// Enable card display
         /// </summary>
-        private void EnableCard()
+        public void EnableCard()
         {
             if (!IsDragged)
                 return;
@@ -146,7 +132,7 @@ namespace _Scripts.GameplayFeatures
         /// <summary>
         /// Disable card display
         /// </summary>
-        private void DisableCard()
+        public void DisableCard()
         {
             if (!IsDragged)
                 return;

@@ -12,9 +12,6 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private bool disabledOnStart = false;
         [SerializeField] private string groundLayer = "GroundTiling";
         [SerializeField] private string wallLayer = "WallTiling";
-
-        [TitleGroup("Events")]
-        [SerializeField] private GameEvent dragEvent, dropEvent;
         #endregion
 
         #region Builts_In
@@ -25,25 +22,13 @@ namespace _Scripts.Characters.DungeonMaster
 
             DisableAll();
         }
-
-        private void OnEnable()
-        {
-            dragEvent.responses.AddListener(EnableLayers);
-            dropEvent.responses.AddListener(DisableAll);
-        }
-
-        private void OnDisable()
-        {
-            dragEvent.responses.RemoveListener(EnableLayers);
-            dropEvent.responses.RemoveListener(DisableAll);
-        }
         #endregion
 
         #region Methods
         /// <summary>
         /// Enable the culling mask layer based on the given tiling type
         /// </summary>
-        private void EnableLayers()
+        public void EnableLayers()
         {
             Tile.TilingType type = DMController.SelectedCard.TrapReference.type;
 
@@ -66,7 +51,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// <summary>
         /// Disable the ground and wall layer
         /// </summary>
-        private void DisableAll()
+        public void DisableAll()
         {
             HideLayer(groundLayer);
             HideLayer(wallLayer);
