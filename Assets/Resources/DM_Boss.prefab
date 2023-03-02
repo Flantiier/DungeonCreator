@@ -281,20 +281,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 59.107
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8733427592136743997, guid: 55ec39e5ec3012a4db7f5d911ddb91c2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 55ec39e5ec3012a4db7f5d911ddb91c2, type: 3}
---- !u!114 &7124799374482911817 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8733427592136743997, guid: 55ec39e5ec3012a4db7f5d911ddb91c2,
+--- !u!65 &2054727850060304993 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 527164423550221333, guid: 55ec39e5ec3012a4db7f5d911ddb91c2,
     type: 3}
   m_PrefabInstance: {fileID: 2004947735892815476}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+--- !u!1 &2867406882084055907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4330230876651390231, guid: 55ec39e5ec3012a4db7f5d911ddb91c2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2004947735892815476}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7470666792880741259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867406882084055907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5a12b46c0d652a42868712b3e50f1eb, type: 3}
+  m_Script: {fileID: 11500000, guid: a65c79546b8ae61448e61d19ef4f3943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitboxCollider: {fileID: 2054727850060304993}
 --- !u!1001 &4286273860436620219
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -367,6 +381,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5465940246521907071, guid: 0645d43321700ec4fb1e3286527a914a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5465940246521907071, guid: 0645d43321700ec4fb1e3286527a914a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.062
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 0645d43321700ec4fb1e3286527a914a,
         type: 3}
       propertyPath: m_Controller
@@ -410,7 +434,7 @@ MonoBehaviour:
     type: 3}
   throwPoint: {fileID: 4074041387571659251}
   hitboxs:
-  - {fileID: 7124799374482911817}
+  - {fileID: 0}
 --- !u!114 &2857879948103938858
 MonoBehaviour:
   m_ObjectHideFlags: 0
