@@ -24,21 +24,19 @@ namespace _Scripts.Managers
         {
 			_uiInputs = new UIInputs();
 
-			EnableGameplayUI(false);
+			EnableGameplayUI(true);
             EnableUIElement(optionsMenuHUD, false);
         }
 
 		public override void OnEnable()
 		{
 			_uiInputs.Enable();
-
 			_uiInputs.InGameUI.Escape.started += HandleEscapeAction;
 		}
 
 		public override void OnDisable()
 		{
             _uiInputs.Disable();
-
             _uiInputs.InGameUI.Escape.started -= HandleEscapeAction;
         }
         #endregion

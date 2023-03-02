@@ -45,6 +45,8 @@ namespace _Scripts.Characters.DungeonMaster
             //Init class
             FirstAbility = new Ability();
             SecondAbility = new Ability();
+            //Camera
+            _camera.gameObject.SetActive(false);
         }
         #endregion
 
