@@ -5,19 +5,16 @@ using Sirenix.OdinInspector;
 public class VariableDisplayer : MonoBehaviour
 {
 
-    [SerializeField] private TextMeshProUGUI textMeshPro;
-    [SerializeField] private FloatVariable variable;
-    [SerializeField] private StringRound rounding;
-    [TitleGroup("String definition")]
-    [SerializeField] private string prefixe;
-    [SerializeField] private string suffixe;
+    [SerializeField] protected TextMeshProUGUI textMeshPro;
+    [SerializeField] protected FloatVariable variable;
+    [SerializeField] protected StringRound rounding;
 
     private void Update()
     {
         UpdateText();
     }
 
-    private void UpdateText()
+    protected virtual void UpdateText()
     {
         if (!textMeshPro)
             return;
@@ -25,7 +22,7 @@ public class VariableDisplayer : MonoBehaviour
         if (!variable)
             return;
 
-        textMeshPro.text = prefixe + rounding.RoundValueInString(variable.value) + suffixe;
+        textMeshPro.text = rounding.RoundValueInString(variable.value);
     }
 }
 
