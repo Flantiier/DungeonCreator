@@ -4,24 +4,19 @@ using _ScriptableObjects.Cinemachine;
 
 namespace _ScriptableObjects.Characters
 {
-    [CreateAssetMenu(fileName = "New DM Properties", menuName = "Scriptables/Characters/DM"), InlineEditor]
+    [CreateAssetMenu(fileName = "New DM Properties", menuName = "Characters/DM¨Properties"), InlineEditor]
 	public class DMProperties : ScriptableObject
 	{
-		[BoxGroup("Movements", CenterLabel = true)]
-		[Range(10f, 35f), GUIColor(1, 2, 1)]
+		[BoxGroup("Movements", CenterLabel = true), LabelWidth(120), Range(10, 40), GUIColor(2, 1, 0)]
 		public float motionSpeed = 25;
-        [BoxGroup("Movements")]
-        [Range(80f, 150f), GUIColor(3, 2, 0)]
+        [BoxGroup("Movements"), LabelWidth(120), Range(50, 200), GUIColor(2, 1, 0)]
         public float rotationSpeed = 100;
-        [BoxGroup("Movements")]
-        [Range(0f, 0.2f), GUIColor(1, 3, 2)]
+        [BoxGroup("Movements"), LabelWidth(120) , Range(0, 0.2f), GUIColor(2, 1, 0)]
         public float smoothingMotion = 0.1f;
 
-        [BoxGroup("Mana properties", CenterLabel = true)]
-        [Range(50f, 200f), GUIColor(3, 0.5f, 3)]
+        [BoxGroup("Mana properties", CenterLabel = true), LabelWidth(120), Range(50, 200), GUIColor(2, 0.5f, 2)]
         public int manaAmount = 100;
-        [BoxGroup("Mana properties")]
-        [Range(1f, 20f), GUIColor(0.5f, 1, 2)]
+        [BoxGroup("Mana properties"), LabelWidth(120), Range(1f, 20f), GUIColor(2, 0.5f, 2)]
         public float manaRecovery = 10f;
 
         [BoxGroup("Camera Properties", CenterLabel = true), HideLabel]

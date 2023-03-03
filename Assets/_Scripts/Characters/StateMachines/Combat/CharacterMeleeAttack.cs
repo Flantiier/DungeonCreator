@@ -1,6 +1,6 @@
 using UnityEngine;
 using _Scripts.Characters.StateMachines;
-using _ScriptableObjects.Curves;
+using _ScriptableObjects.Characters;
 
 namespace _Scripts.Characters.Animations.StateMachines
 {

@@ -9,8 +9,7 @@ namespace _ScriptableObjects.Traps
 	{
         #region Variables
         [FoldoutGroup("Properties")]
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(20, 150), GUIColor(1, 3, 1)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(20, 400), GUIColor(0, 2, 0.5f)]
         public int health = 50;
         #endregion
     }

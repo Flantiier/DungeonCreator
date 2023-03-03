@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Ability", menuName = "Scriptables/Ability")]
+[CreateAssetMenu(fileName = "New Ability", menuName = "Temporary/Ability")]
 public class Ability : ScriptableObject
 {
     public AnimationClip clip;

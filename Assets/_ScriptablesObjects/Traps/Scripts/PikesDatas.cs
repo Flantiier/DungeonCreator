@@ -9,13 +9,10 @@ namespace _ScriptableObjects.Traps
     {
         #region Variables
         [FoldoutGroup("Properties")]
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(10, 50), GUIColor(2, 0.5f, 0.3f)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(10, 150), GUIColor(0, 1.5f, 2)]
         public int damages = 25;
-
         [TitleGroup("Properties/Defuse")]
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(1, 12), GUIColor(2, 3, 0.3f)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(1, 12), GUIColor(1, 2, 3)]
         public float defuseDuration = 5f;
         #endregion
     }

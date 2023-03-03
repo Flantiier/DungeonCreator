@@ -4,20 +4,17 @@ using _ScriptableObjects.Afflictions;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Bulbe Datas", menuName = "Scriptables/Traps/Bulbe Datas")]
+    [CreateAssetMenu(fileName = "New Bulbe Datas", menuName = "Traps/Bulbe Properties")]
     [InlineEditor]
     public class BulbDatas : TrapSO
     {
         #region Variables
         [FoldoutGroup("Properties")]
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(20, 150), GUIColor(1, 3, 1)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(20, 400), GUIColor(0, 2, 0.5f)]
         public int health = 50;
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(2f, 8f), GUIColor(3, 1, 0.3f)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(1, 15), GUIColor(1, 2, 3)]
         public float sporesDuration = 5.5f;
-        [BoxGroup("Properties/Stats"), LabelWidth(100)]
-        [Range(0.5f, 5f), GUIColor(3, 3, 2)]
+        [BoxGroup("Properties/Stats"), LabelWidth(100), Range(0.5f, 6), GUIColor(1, 2, 3)]
         public float waitTime = 2f;
         [BoxGroup("Properties/Stats"), LabelWidth(100)]
         public AfflictionStatus affliction;

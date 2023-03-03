@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace _ScriptableObjects.Curves
+namespace _ScriptableObjects.Characters
 {
-	[CreateAssetMenu(fileName = "CombatCurves", menuName = "Scriptables/Curves")]
+	[CreateAssetMenu(fileName = "New Animations Curves", menuName = "Characters/Animation Curves")]
 	public class CombatCurve : ScriptableObject
 	{
 		public AnimationCurve[] curves;
