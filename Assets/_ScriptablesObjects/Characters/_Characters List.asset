@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d379df2a314bbf4aaa8e4d9f18f874b, type: 3}
+  m_Name: _Characters List
+  m_EditorClassIdentifier: 
+  warrior:
+    icon: {fileID: 21300000, guid: 58ce307c68364d74590deef279cc2d63, type: 3}
+    characterName: "Guerri\xE8re"
+    description: "Guerri\xE8re"
+    prefab: {fileID: 2029296496209362982, guid: 50d3b1570b282684882213a61bb35514,
+      type: 3}
+    UI: {fileID: 3111648633903626147, guid: c8fa22bfe2d81ef4a9b35b7084f79f14, type: 3}
+  archer:
+    icon: {fileID: 21300000, guid: 5b2c9843c2ffe6b41ac507279c0d9aa0, type: 3}
+    characterName: Archer
+    description: Archer
+    prefab: {fileID: 5761381986307864492, guid: 647c84ffa1476a549894d2212c0e267e,
+      type: 3}
+    UI: {fileID: 3111648633903626147, guid: c8fa22bfe2d81ef4a9b35b7084f79f14, type: 3}
+  wizard:
+    icon: {fileID: 21300000, guid: 39434f799b71cfe418c54777f9dfd1b0, type: 3}
+    characterName: Mage
+    description: Mage
+    prefab: {fileID: 8336870291832412006, guid: 0262986660b101e499fa7fe048b09492,
+      type: 3}
+    UI: {fileID: 3111648633903626147, guid: c8fa22bfe2d81ef4a9b35b7084f79f14, type: 3}
+  dungeonMaster:
+    icon: {fileID: 21300000, guid: 6357e814b92a26543b94763415df1cf5, type: 3}
+    characterName: Master
+    description: dungeon Master
+    prefab: {fileID: 3083181296896363754, guid: e54d96be525ba8c46b671d51a6fa5688,
+      type: 3}
+    UI: {fileID: 7569687184485671582, guid: 63085355dbbcb42438438144b01c4adf, type: 3}
+  boss:
+    icon: {fileID: 21300000, guid: 6357e814b92a26543b94763415df1cf5, type: 3}
+    characterName: Boss
+    description: Boss
+    prefab: {fileID: 3469841699574534071, guid: fd62dcd010b03414daa9884dbb10ae50,
+      type: 3}
+    UI: {fileID: 0}

@@ -9,9 +9,7 @@ using _Scripts.Managers;
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
-using _ScriptableObjects.Adventurers;
 using _ScriptableObjects.Afflictions;
-using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
@@ -21,9 +19,9 @@ namespace _Scripts.Characters
 
         #region References
         [FoldoutGroup("Stats")]
-        [Required, SerializeField] protected CharacterOverallDatas overallDatas;
+        [Required, SerializeField] protected CharactersProperties overallDatas;
         [FoldoutGroup("Stats")]
-        [Required, SerializeField] protected AdventurerDatas characterDatas;
+        [Required, SerializeField] protected AdventurerProperties characterDatas;
 
         [TitleGroup("Variables")]
         [SerializeField] protected FloatVariable skillCooldown;
@@ -43,8 +41,8 @@ namespace _Scripts.Characters
         #endregion
 
         #region Properties
-        public CharacterOverallDatas OverallDatas => overallDatas;
-        public AdventurerDatas CharacterDatas => characterDatas;
+        public CharactersProperties OverallDatas => overallDatas;
+        public AdventurerProperties CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
         public AfflictionStatus CurrentAffliction { get; set; }
         public Transform LookAt { get; private set; }
