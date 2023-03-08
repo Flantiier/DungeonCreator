@@ -10,7 +10,7 @@ namespace _Scripts.GameplayFeatures.Traps
     {
         #region Variables
         [BoxGroup("Properties")]
-        [Required, SerializeField] private PikesDatas datas;
+        [Required, SerializeField] private PikesProperties datas;
 
         public float DefuseDuration => datas.defuseDuration;
         public bool IsDisabled { get; set; }

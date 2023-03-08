@@ -19,7 +19,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [SerializeField] private VisualEffect fx;
 
         [BoxGroup("Stats")]
-        [Required, SerializeField] private BulbDatas datas;
+        [Required, SerializeField] private BulbProperties datas;
 
         private bool _IsAttacking;
         #endregion

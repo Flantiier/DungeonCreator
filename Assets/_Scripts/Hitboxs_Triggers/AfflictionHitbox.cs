@@ -16,6 +16,7 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
             if (!other.TryGetComponent(out IPlayerAfflicted player))
                 return;
 
+            Debug.LogWarning(player);
             player.TouchedByAffliction(affliction);
         }
         #endregion

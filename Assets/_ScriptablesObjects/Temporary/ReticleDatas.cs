@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _ScriptableObjects.Settings.UI
 {
-    [CreateAssetMenu(fileName = "New Reticle Properties", menuName = "UI_SO/Reticle")]
+    [CreateAssetMenu(fileName = "New Reticle Properties", menuName = "Gameplay/Reticle")]
     public class ReticleDatas : ScriptableObject
     {
         [BoxGroup("Properties")]

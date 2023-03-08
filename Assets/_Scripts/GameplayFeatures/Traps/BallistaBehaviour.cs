@@ -22,7 +22,7 @@ namespace _Scripts.GameplayFeatures.Traps
 		[SerializeField, Range(0.2f, 1.5f)] 
 		private float Yoffset = 1f;
 		[BoxGroup("Stats")]
-		[Required, SerializeField] private BallistaDatas datas;
+		[Required, SerializeField] private BallistaProperties datas;
 
 		private Projectile _lastProjectile;
 		private bool _isReloaded;

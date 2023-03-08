@@ -17,7 +17,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [BoxGroup("Properties")]
         [SerializeField] private LayerMask rayMask;
         [BoxGroup("Properties")]
-        [Required, SerializeField] private FlameThrowerDatas datas;
+        [Required, SerializeField] private FlameThrowerProperties datas;
 
         private float _currentRayLength;
         #endregion

@@ -16,7 +16,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [SerializeField] private Collider meshCollider;
 
         [BoxGroup("Stats")]
-        [Required, SerializeField] private CageDatas datas;
+        [Required, SerializeField] private CageProperties datas;
         #endregion
 
         #region Builts_In
