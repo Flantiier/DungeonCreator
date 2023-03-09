@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
+using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
@@ -17,17 +18,6 @@ namespace _Scripts.GameplayFeatures
         #region Properties
         public bool IsDragged { get; protected set; }
         public bool CanBeDragged { get; protected set; } = true;
-        public bool PointerOn
-        {
-            get { return PointerOn; }
-            set
-            {
-                if (value)
-                    SetPositionOnSelected(selectedOffset);
-                else
-                    SetPositionOnSelected(-selectedOffset);
-            }
-        }
         #endregion
 
         #region Builts_In
@@ -72,9 +62,17 @@ namespace _Scripts.GameplayFeatures
         #endregion
 
         #region Pointer Interfaces
-        public virtual void OnPointerEnter(PointerEventData eventData) { SetPointerState(true); }
+        public virtual void OnPointerEnter(PointerEventData eventData)
+        {
+            SetPointerState(true);
+            Debug.LogWarning("enter");
+        }
 
-        public virtual void OnPointerExit(PointerEventData eventData) { SetPointerState(false); }
+        public virtual void OnPointerExit(PointerEventData eventData)
+        {
+            SetPointerState(false);
+            Debug.LogWarning("exit");
+        }
 
         /// <summary>
         /// Indicates if the pointer is on/off the object
@@ -82,16 +80,7 @@ namespace _Scripts.GameplayFeatures
         /// <param name="state"></param>
         protected void SetPointerState(bool state)
         {
-            PointerOn = state;
-        }
 
-        /// <summary>
-        /// Set the position on the Y axis
-        /// </summary>
-        /// <param name="offset"> Y offset </param>
-        protected void SetPositionOnSelected(float offset)
-        {
-            _rectTransform.localPosition += new Vector3(0f, offset, 0f);
         }
         #endregion
 
