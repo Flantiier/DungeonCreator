@@ -7,7 +7,7 @@ namespace _ScriptableObjects.Traps
     public class CageProperties : TrapSO
 	{
         #region Variables
-        [FoldoutGroup("Properties"), LabelWidth(100), Range(20, 400), GUIColor(0, 2, 0.5f)]
+        [BoxGroup("Properties"), LabelWidth(100), Range(20, 400), GUIColor(0, 2, 0.5f)]
         public int health = 50;
         #endregion
     }
