@@ -8,28 +8,32 @@ namespace _Scripts.Editor
 	[CreateAssetMenu(fileName = "Folder Path", menuName = "Editor/Folder Path")]
 	public class FolderPath : ScriptableObject
 	{
-		[BoxGroup("Gameplay Resources", CenterLabel = true)]
+		[HorizontalGroup("Horizontal"), VerticalGroup("Horizontal/G1"), BoxGroup("Horizontal/G1/Box", LabelText = "Gameplay Resources", CenterLabel = true)]
 		[SerializeField] private FolderPathStruct resourcesFolder = new FolderPathStruct("Assets/Resources");
-		[BoxGroup("Gameplay Resources")]
-		[SerializeField] private FolderPathStruct prefabFolder = new FolderPathStruct("Assets/_Prefabs");
+        [VerticalGroup("Horizontal/G1"), BoxGroup("Horizontal/G1/Box")]
+        [SerializeField] private FolderPathStruct prefabFolder = new FolderPathStruct("Assets/_Prefabs");
+        [VerticalGroup("Horizontal/G1"), BoxGroup("Horizontal/G1/Box")]
+        [SerializeField] private FolderPathStruct scriptFolder = new FolderPathStruct("Assets/_Scripts");
+        [VerticalGroup("Horizontal/G1"), BoxGroup("Horizontal/G1/Box")]
+        [SerializeField] private FolderPathStruct scriptableObjects = new FolderPathStruct("Assets/_ScriptablesObjects");
 
-        [BoxGroup("Graphics Resources", CenterLabel = true)]
+        [VerticalGroup("Horizontal/G2"), BoxGroup("Horizontal/G2/Box", LabelText = "Graphics Resources", CenterLabel = true)]
         [SerializeField] private FolderPathStruct artworksFolder = new FolderPathStruct("Assets/_2DArts");
-        [BoxGroup("Graphics Resources")]
-		[SerializeField] private FolderPathStruct modelsFolder = new FolderPathStruct("Assets/_3DModels");
-        [BoxGroup("Graphics Resources")]
+        [VerticalGroup("Horizontal/G2"), BoxGroup("Horizontal/G2/Box", LabelText = "Graphics Resources")]
+        [SerializeField] private FolderPathStruct modelsFolder = new FolderPathStruct("Assets/_3DModels");
+        [VerticalGroup("Horizontal/G2"), BoxGroup("Horizontal/G2/Box", LabelText = "Graphics Resources")]
         [SerializeField] private FolderPathStruct materialsFolder = new FolderPathStruct("Assets/_Materials");
-        [BoxGroup("Graphics Resources")]
+        [VerticalGroup("Horizontal/G2"), BoxGroup("Horizontal/G2/Box", LabelText = "Graphics Resources")]
         [SerializeField] private FolderPathStruct texturesFolder = new FolderPathStruct("Assets/_Textures");
 
-        [BoxGroup("Customs Paths", CenterLabel = true)]
+        [TitleGroup("Custom Paths")]
         [SerializeField] private FolderPathStruct[] paths;
 	}
 
 	[Serializable, HideLabel]
 	public struct FolderPathStruct
 	{
-		[InlineButton("SelectFolder"), LabelWidth(100)]
+		[InlineButton("SelectFolder"), LabelWidth(100), LabelText("")]
         [SerializeField] private string folder;
 
 		public FolderPathStruct(string value)
