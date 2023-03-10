@@ -1,18 +1,16 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Sirenix.OdinInspector;
-using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
     public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         #region Variables/Properties
-        [TitleGroup("UI Elements")]
-        [SerializeField] protected float selectedOffset = 70f;
+        [SerializeField] private float offset = 70f;
 
         protected RectTransform _rectTransform;
-        protected Vector2 _previousPosition;
+        protected Vector2 _anchoredPoint;
         #endregion
 
         #region Properties
@@ -34,11 +32,8 @@ namespace _Scripts.GameplayFeatures
             if (!CanBeDragged)
                 return;
 
-            //Reset Card selection
-            SetPointerState(false);
             //Start Drag
             BeingDrag(true);
-            SetAnchoredPosition(_rectTransform.anchoredPosition);
         }
 
         //Dragging
@@ -47,7 +42,7 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
-            FollowPointer(eventData.position);
+            transform.position = eventData.position;
         }
 
         //End drag
@@ -56,31 +51,20 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
+            _rectTransform.anchoredPosition = _anchoredPoint;
             BeingDrag(false);
-            ResetToPreviousPosition();
         }
         #endregion
 
         #region Pointer Interfaces
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
-            SetPointerState(true);
-            Debug.LogWarning("enter");
+            _rectTransform.anchoredPosition = _anchoredPoint + new Vector2(0f, offset);
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            SetPointerState(false);
-            Debug.LogWarning("exit");
-        }
-
-        /// <summary>
-        /// Indicates if the pointer is on/off the object
-        /// </summary>
-        /// <param name="state"></param>
-        protected void SetPointerState(bool state)
-        {
-
+            _rectTransform.anchoredPosition = _anchoredPoint;
         }
         #endregion
 
@@ -93,36 +77,13 @@ namespace _Scripts.GameplayFeatures
             IsDragged = dragged;
         }
 
-        /// <summary>
-        /// SMoothly follow the mouse
-        /// </summary>
-        protected void FollowPointer(Vector2 position)
+        //Set the ui element parent
+        public IEnumerator SetElementParent(Transform parent)
         {
-            transform.position = position;
-        }
-
-        /// <summary>
-        /// Set the parent of this element
-        /// </summary>
-        public void SetElementParent(Transform parent)
-        {
-            transform.SetParent(parent);
-        }
-
-        /// <summary>
-        /// Set the last position of this UI element
-        /// </summary>
-        public void SetAnchoredPosition(Vector2 position)
-        {
-            _previousPosition = position;
-        }
-
-        /// <summary>
-        /// Reset the position of this UI element to the previous position sets
-        /// </summary>
-        public void ResetToPreviousPosition()
-        {
-            _rectTransform.anchoredPosition = _previousPosition;
+            _rectTransform.SetParent(parent);
+            _rectTransform.SetAsFirstSibling();
+            yield return new WaitForSeconds(0.1f);
+            _anchoredPoint = _rectTransform.anchoredPosition;
         }
         #endregion
     }

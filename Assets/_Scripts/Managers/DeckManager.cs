@@ -98,9 +98,8 @@ namespace _Scripts.Managers
             //Get the first child
             Transform card = storageZone.GetChild(0);
             //Set its parent and child index
-            card.SetParent(cardZone);
-            card.SetAsLastSibling();
             card.gameObject.SetActive(true);
+            StartCoroutine(card.GetComponent<DraggableUIElement>().SetElementParent(cardZone));
         }
 
         /// <summary>
