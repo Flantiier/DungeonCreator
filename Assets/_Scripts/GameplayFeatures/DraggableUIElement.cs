@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace _Scripts.GameplayFeatures
 {
-    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         #region Variables/Properties
         [SerializeField] private float offset = 70f;
@@ -34,6 +34,7 @@ namespace _Scripts.GameplayFeatures
 
             //Start Drag
             BeingDrag(true);
+            _anchoredPoint = _rectTransform.anchoredPosition;
         }
 
         //Dragging
@@ -56,18 +57,6 @@ namespace _Scripts.GameplayFeatures
         }
         #endregion
 
-        #region Pointer Interfaces
-        public virtual void OnPointerEnter(PointerEventData eventData)
-        {
-            _rectTransform.anchoredPosition = _anchoredPoint + new Vector2(0f, offset);
-        }
-
-        public virtual void OnPointerExit(PointerEventData eventData)
-        {
-            _rectTransform.anchoredPosition = _anchoredPoint;
-        }
-        #endregion
-
         #region Drag Methods
         /// <summary>
         /// Indicates if this UI element is dragged1
@@ -75,15 +64,6 @@ namespace _Scripts.GameplayFeatures
         protected void BeingDrag(bool dragged)
         {
             IsDragged = dragged;
-        }
-
-        //Set the ui element parent
-        public IEnumerator SetElementParent(Transform parent)
-        {
-            _rectTransform.SetParent(parent);
-            _rectTransform.SetAsFirstSibling();
-            yield return new WaitForSeconds(0.1f);
-            _anchoredPoint = _rectTransform.anchoredPosition;
         }
         #endregion
     }

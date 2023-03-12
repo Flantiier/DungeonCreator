@@ -13,8 +13,7 @@ namespace _Scripts.IA
         #region Builts_In
         public override void OnEnable()
         {
-            if (!ViewIsMine())
-                return;
+            base.OnEnable();
 
             InitializeEnemy();
         }
@@ -24,7 +23,6 @@ namespace _Scripts.IA
         /// <summary>
         /// Initializing script variables
         /// </summary>
-        [PunRPC]
         protected virtual void InitializeEnemy()
         {
             CurrentHealth = health;

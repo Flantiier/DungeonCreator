@@ -78,24 +78,6 @@ namespace _Scripts.GameplayFeatures
         }
         #endregion
 
-        #region Pointer Interface
-        public override void OnPointerEnter(PointerEventData eventData)
-        {
-            if (DMController.IsDragging)
-                return;
-
-            base.OnPointerEnter(eventData);
-        }
-
-        public override void OnPointerExit(PointerEventData eventData)
-        {
-            if (DMController.IsDragging || IsDragged)
-                return;
-
-            base.OnPointerExit(eventData);
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Update the different informations on the card
@@ -111,7 +93,7 @@ namespace _Scripts.GameplayFeatures
 
             trapReference = reference;
             design.imageField.sprite = reference.image;
-            design.nameField.SetText(reference.trapName + " :");
+            design.nameField.SetText(reference.trapName);
             design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
             design.damageField.SetText(reference.damages.ToString());
             design.manaField.SetText(reference.manaCost.ToString());

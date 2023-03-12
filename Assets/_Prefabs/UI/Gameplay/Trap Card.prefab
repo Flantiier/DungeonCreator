@@ -111,8 +111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -11.1}
-  m_SizeDelta: {x: 150, y: 41.3}
+  m_AnchoredPosition: {x: 0, y: -8}
+  m_SizeDelta: {x: 159.6, y: 58.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1799644374626897536
 CanvasRenderer:
@@ -142,8 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Baliste qui vise automatiquement le premier joueur \xE0 sa port\xE9e.
-    Le chien de L\xE9o est partit ce matin bboire un caf\xE9 sur la place de tourcoing."
+  m_text: "Baliste qui vise automatiquement le premier joueur \xE0 sa port\xE9e."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34a93b7c036f5774582ae5e668c8e01a, type: 2}
   m_sharedMaterial: {fileID: -3715838253209002205, guid: 34a93b7c036f5774582ae5e668c8e01a,
@@ -171,8 +170,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 12.75
+  m_fontSizeBase: 12.75
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -207,7 +206,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -5.7001953, y: 17.75679, z: -7.452301, w: -47.867546}
+  m_margin: {x: -5.7001953, y: 17.75679, z: -6.9787292, w: -41.580574}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -276,6 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571f42855c262854e921de2bd8af492f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: 70
   card: {fileID: 1799644376203145374}
   cardMask: {fileID: 42828269699287977}
   design:
@@ -793,8 +793,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -113.6}
-  m_SizeDelta: {x: 125, y: 125}
+  m_AnchoredPosition: {x: 0, y: -103.8}
+  m_SizeDelta: {x: 115, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1799644375585445135
 CanvasRenderer:
@@ -869,8 +869,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -3.1}
-  m_SizeDelta: {x: 125, y: 35}
+  m_AnchoredPosition: {x: 0, y: 11.3}
+  m_SizeDelta: {x: 151, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1799644375910211122
 CanvasRenderer:
@@ -928,8 +928,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.3
-  m_fontSizeBase: 19.3
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
