@@ -64,8 +64,6 @@ public class FieldOfView : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
                 float distanceToCurrent = Vector3.Distance(transform.position, currentTarget.position);
 
-                Debug.Log($"Current : {currentTarget} ({distanceToCurrent}) / Target : {target} ({distanceToTarget})");
-
                 if (Physics.Raycast(ray, distanceToTarget, obstructionMask))
                     continue;
 

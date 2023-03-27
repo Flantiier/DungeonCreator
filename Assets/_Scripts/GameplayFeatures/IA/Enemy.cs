@@ -1,13 +1,14 @@
 using UnityEngine;
 using Photon.Pun;
+using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 using _Scripts.Characters;
 
-namespace _Scripts.IA
+namespace _Scripts.GameplayFeatures.IA
 {
     public class Enemy : Entity, IDamageable
     {
-        [Header("Enemy properties")]
+        [TitleGroup("Enemy properties")]
         [SerializeField] private float health = 50f;
 
         #region Builts_In

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
-namespace _Scripts.IA
+namespace _Scripts.GameplayFeatures.IA
 {
 	public class TrainingEnemy : Enemy
 	{
