@@ -21,6 +21,9 @@ namespace Assets.Editor
             Handles.color = Color.yellow;
             Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.radius);
             Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
+
+            Handles.color = Color.green;
+            Handles.DrawWireDisc(enemy.StartPosition, Vector3.up, enemy.patrolRadius);
         }
 
         private Vector3 DirectionFromAngle(float eulerY, float angleInDegrees)
