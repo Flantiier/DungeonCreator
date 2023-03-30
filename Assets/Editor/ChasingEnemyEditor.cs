@@ -23,7 +23,7 @@ namespace Assets.Editor
             Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(enemy.StartPosition, Vector3.up, enemy.patrolRadius);
+            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.patrolRadius);
         }
 
         private Vector3 DirectionFromAngle(float eulerY, float angleInDegrees)

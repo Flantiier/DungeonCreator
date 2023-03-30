@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using System.Collections;
 using UnityEngineInternal;
+using static Utils.Utilities;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -12,22 +13,35 @@ namespace _Scripts.GameplayFeatures.IA
     public class ChasingEnemy : Enemy
     {
         #region Variables
+        public enum EnemyState { Patrol, Chase, Combat }
+        public enum PatrolState { BaseReturn, GetPoint, GoToPoint, Reached, Wait }
+
+        #region Chasing variables
         [TitleGroup("Chasing")]
         [SerializeField] private float smoothRotation = 0.1f;
         [TitleGroup("Chasing")]
         [SerializeField] protected float chaseSpeed = 3f;
+        [TitleGroup("Chasing")]
+        [SerializeField] protected float stoppingDistance = 1.5f;
+        #endregion
 
+        #region Patrol variables
         [TitleGroup("Patroling")]
         [SerializeField] private float patrolSpeed = 1f;
         [TitleGroup("Patroling")]
+        [SerializeField] private float returnSpeed = 2f;
+        [TitleGroup("Patroling")]
         public float patrolRadius = 3f;
         [TitleGroup("Patroling")]
-        [SerializeField] private float waitTime = 2f;
+        [SerializeField] private float patrolWait = 2f;
         [TitleGroup("Patroling")]
-        [SerializeField] private float wayPointDistance = 0.5f;
-        private bool _patrolWait;
+        [SerializeField] private float pointDistance = 0.5f;
+        private PatrolState _patrolState;
         private Vector3 _patrolPoint;
+        private bool _patrolWait;
+        #endregion
 
+        #region FOV varibales
         [TitleGroup("FOV")]
         public float radius = 10f;
         [TitleGroup("FOV"), Range(0, 360)]
@@ -36,14 +50,15 @@ namespace _Scripts.GameplayFeatures.IA
         [SerializeField] public LayerMask targetMask;
         [TitleGroup("FOV")]
         [SerializeField] public LayerMask obstructionMask;
+        #endregion
 
         protected NavMeshAgent _navMesh;
         #endregion
 
         #region Properties
-        public EnemyStateMachine SM { get; private set; }
+        public EnemyState CurrentState { get; set; }
         public Transform CurrentTarget { get; private set; }
-        public Vector3 StartPosition { get; private set; }
+        public Vector3 BasePosition { get; private set; }
         public bool TargetNear { get; private set; }
         public bool IsAttacking { get; set; }
         #endregion
@@ -52,7 +67,6 @@ namespace _Scripts.GameplayFeatures.IA
         protected virtual void Awake()
         {
             _navMesh = GetComponent<NavMeshAgent>();
-            SM = new EnemyStateMachine();
         }
 
         protected virtual void Update()
@@ -77,8 +91,8 @@ namespace _Scripts.GameplayFeatures.IA
             //Init health
             base.InitializeEnemy();
 
-            StartPosition = transform.position;
-            SM.CurrentState = EnemyStateMachine.EnemyState.Patrol;
+            BasePosition = transform.position;
+            CurrentState = EnemyState.Patrol;
         }
 
         protected virtual void UpdateAnimations()
@@ -93,25 +107,29 @@ namespace _Scripts.GameplayFeatures.IA
             //Find Target & Get the distance with him
             LookForTarget();
             CalculateTargetDistance();
+            HandleStoppingDistance();
 
             //No target => Patrol
             if (!CurrentTarget)
-                SM.CurrentState = EnemyStateMachine.EnemyState.Patrol;
+            {
+                EnterPatrolState();
+                CurrentState = EnemyState.Patrol;
+            }
             else
             {
                 //Target and close => Combat
                 if (TargetNear)
-                    SM.CurrentState = EnemyStateMachine.EnemyState.Combat;
+                    CurrentState = EnemyState.Combat;
                 else
-                    SM.CurrentState = EnemyStateMachine.EnemyState.Chase;
+                    CurrentState = EnemyState.Chase;
             }
 
-            switch (SM.CurrentState)
+            switch (CurrentState)
             {
-                case EnemyStateMachine.EnemyState.Combat:
+                case EnemyState.Combat:
                     CombatState();
                     break;
-                case EnemyStateMachine.EnemyState.Chase:
+                case EnemyState.Chase:
                     ChasingState();
                     break;
                 default:
@@ -119,6 +137,67 @@ namespace _Scripts.GameplayFeatures.IA
                     break;
             }
         }
+
+        #region AI Methods
+        /// <summary>
+        /// Set the navMesh agent destination
+        /// </summary>
+        /// <param name="position"> Target position </param>
+        protected void SetDestination(Vector3 position)
+        {
+            _navMesh.SetDestination(position);
+        }
+
+        /// <summary>
+        /// Set the speed of the navMesh Agent
+        /// </summary>
+        /// <param name="speed"> Speed value </param>
+        protected void Move(float speed)
+        {
+            _navMesh.isStopped = false;
+            _navMesh.speed = speed;
+        }
+
+        /// <summary>
+        /// Stop the enemy
+        /// </summary>
+        public void Stop()
+        {
+            _navMesh.isStopped = false;
+            _navMesh.speed = 0f;
+        }
+
+        /// <summary>
+        /// Get the distance between this AI and the current Target
+        /// </summary>
+        protected void CalculateTargetDistance()
+        {
+            if (!CurrentTarget)
+            {
+                TargetNear = false;
+                return;
+            }
+
+            TargetNear = Vector3.Distance(transform.position, CurrentTarget.position) <= _navMesh.stoppingDistance;
+        }
+
+        /// <summary>
+        /// Modify the stopping distance of the agent based on the current state
+        /// </summary>
+        private void HandleStoppingDistance()
+        {
+            _navMesh.stoppingDistance = IsStateOf(EnemyState.Patrol) ? 0 : stoppingDistance;
+        }
+
+        /// <summary>
+        /// Indicates if the current state is the same as the given parameter
+        /// </summary>
+        /// <param name="targetState"> state to check </param>
+        public bool IsStateOf(EnemyState targetState)
+        {
+            return CurrentState == targetState;
+        }
+        #endregion
 
         #region FieldOfView
         /// <summary>
@@ -142,8 +221,6 @@ namespace _Scripts.GameplayFeatures.IA
             if (rangeChecks.Length <= 0)
                 return null;
 
-            Transform currentTarget = rangeChecks[0].transform;
-
             foreach (Collider item in rangeChecks)
             {
                 Transform target = item.transform;
@@ -153,20 +230,16 @@ namespace _Scripts.GameplayFeatures.IA
                 {
                     Ray ray = new Ray(transform.position, directionToTarget);
                     float distanceToTarget = Vector3.Distance(transform.position, target.position);
-                    float distanceToCurrent = Vector3.Distance(transform.position, currentTarget.position);
 
                     if (Physics.Raycast(ray, distanceToTarget, obstructionMask))
                         continue;
 
-                    if (distanceToTarget >= distanceToCurrent)
-                        continue;
-                    else
-                        currentTarget = target;
-
+                    return target;
                 }
+                continue;
             }
 
-            return currentTarget;
+            return null;
         }
 
         /// <summary>
@@ -214,48 +287,6 @@ namespace _Scripts.GameplayFeatures.IA
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), smoothRotation);
             transform.rotation = targetRotation;
         }
-
-        /// <summary>
-        /// Set the navMesh agent destination
-        /// </summary>
-        /// <param name="position"> Target position </param>
-        protected void SetDestination(Vector3 position)
-        {
-            _navMesh.SetDestination(position);
-        }
-
-        /// <summary>
-        /// Get the distance between this AI and the current Target
-        /// </summary>
-        protected void CalculateTargetDistance()
-        {
-            if (!CurrentTarget)
-            {
-                TargetNear = false;
-                return;
-            }
-
-            TargetNear = Vector3.Distance(transform.position, CurrentTarget.position) <= _navMesh.stoppingDistance;
-        }
-
-        /// <summary>
-        /// Set the speed of the navMesh Agent
-        /// </summary>
-        /// <param name="speed"> Speed value </param>
-        protected void Move(float speed)
-        {
-            _navMesh.isStopped = false;
-            _navMesh.speed = speed;
-        }
-
-        /// <summary>
-        /// Stop the enemy
-        /// </summary>
-        public void Stop()
-        {
-            _navMesh.isStopped = false;
-            _navMesh.speed = 0f;
-        }
         #endregion
 
         #region Combat
@@ -277,23 +308,52 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         private void PatrolingState()
         {
-            //Waiting
-            if (_patrolWait)
-                return;
-
-            float distanceToWayPoint = Vector3.Distance(transform.position, _patrolPoint);
-            Debug.Log(distanceToWayPoint);
-
-            //Too far from the way point
-            if (distanceToWayPoint > wayPointDistance)
+            switch (_patrolState)
             {
-                Move(patrolSpeed);
-                GetRandomPatrolPoint();
-            }
-            else
-            {
-                //Way point reached
-                StartCoroutine(PatrolWait(Random.Range(0.5f, waitTime)));
+                case PatrolState.BaseReturn:
+                    {
+                        if (Vector3.Distance(transform.position, BasePosition) > 0.5f)
+                        {
+                            //Move to base
+                            Move(returnSpeed);
+                            SetDestination(BasePosition);
+                            Animator.SetBool("BaseReturn", true);
+                            return;
+                        }
+
+                        Animator.SetBool("BaseReturn", false);
+                        StartCoroutine(PatrolWait());
+                        break;
+                    }
+                case PatrolState.GetPoint:
+                    {
+                        GetRandomPatrolPoint();
+                        _patrolState = PatrolState.GoToPoint;
+                        break;
+                    }
+                case PatrolState.GoToPoint:
+                    {
+                        Move(patrolSpeed);
+
+                        if (Vector3.Distance(transform.position, _patrolPoint) > pointDistance)
+                            return;
+
+                        _patrolState = PatrolState.Reached;
+                        break;
+                    }
+                case PatrolState.Reached:
+                    {
+                        StartCoroutine(PatrolWait());
+                        break;
+                    }
+                case PatrolState.Wait:
+                    {
+                        if (_patrolWait)
+                            return;
+
+                        _patrolState = PatrolState.GetPoint;
+                        break;
+                    }
             }
         }
 
@@ -302,8 +362,8 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         private void GetRandomPatrolPoint()
         {
-            Vector3 randomPosition = StartPosition + Random.insideUnitSphere * patrolRadius;
-            if (!NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, 1, NavMesh.AllAreas))
+            Vector3 randomPosition = BasePosition + Random.insideUnitSphere * patrolRadius;
+            if (!NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, patrolRadius * 2, NavMesh.AllAreas))
                 return;
 
             _patrolPoint = hit.position;
@@ -311,13 +371,28 @@ namespace _Scripts.GameplayFeatures.IA
         }
 
         /// <summary>
-        /// Wait before getting a new patrol point
+        /// Patrol Routine
         /// </summary>
-        /// <param name="time"> Wait duration </param>
-        private IEnumerator PatrolWait(float time)
+        private IEnumerator PatrolWait()
         {
+            _patrolState = PatrolState.Wait;
+
             _patrolWait = true;
-            yield return new WaitForSecondsRealtime(time);
+            float randomTime = Random.Range(1f, patrolWait);
+            yield return new WaitForSecondsRealtime(randomTime);
+
+            _patrolWait = false;
+        }
+
+        /// <summary>
+        /// Stops the patrol routine if it started
+        /// </summary>
+        private void EnterPatrolState()
+        {
+            if (CurrentState == EnemyState.Patrol)
+                return;
+
+            _patrolState = PatrolState.BaseReturn;
             _patrolWait = false;
         }
         #endregion
@@ -325,17 +400,3 @@ namespace _Scripts.GameplayFeatures.IA
         #endregion
     }
 }
-
-#region EnemyStateMachine
-public class EnemyStateMachine
-{
-    public enum EnemyState { Patrol, Chase, Combat }
-
-    public EnemyState CurrentState { get; set; }
-
-    public bool IsStateOf(EnemyState targetState)
-    {
-        return CurrentState == targetState;
-    }
-}
-#endregion
