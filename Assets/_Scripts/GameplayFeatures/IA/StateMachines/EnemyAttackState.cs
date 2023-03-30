@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using UnityEditorInternal;
+using UnityEngine;
 
 namespace _Scripts.GameplayFeatures.IA.StateMachines
 {
     public class EnemyAttackState : EnemyStateMachine
     {
         [SerializeField] private float attackDuration = 0.75f;
-        [SerializeField] private float minLockTime = 0.25f, maxLockTime = 0.75f;
-        [SerializeField] private float slerpRotation = 0.1f;
+        [SerializeField] private float slerp = 0.01f;
         private bool _combo;
         private Quaternion _rotation;
 
@@ -21,9 +21,17 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             if (!animator.IsInTransition(0))
+            {
                 enemy.Stop();
+                enemy.transform.rotation = _rotation;
+            }
+            else
+            {
+                Vector3 direction = enemy.CurrentTarget.position - enemy.transform.position;
+                _rotation = Quaternion.Slerp(enemy.transform.rotation, Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z)), slerp);
+                enemy.transform.rotation = _rotation;
+            }
 
-            HandleRotation(stateInfo.normalizedTime);
             HandleComboTrigger(animator, stateInfo.normalizedTime);
         }
 
@@ -38,19 +46,6 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
             //Combo
             _combo = true;
             animator.SetTrigger("Combo");
-        }
-
-        private void HandleRotation(float normalizedTime)
-        {
-            if (normalizedTime <= minLockTime || normalizedTime > maxLockTime)
-            {
-                Vector3 direction = enemy.CurrentTarget.position - enemy.transform.position;
-                Quaternion lookDirection = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
-
-                _rotation = Quaternion.Slerp(enemy.transform.rotation, lookDirection, slerpRotation);
-            }
-
-            enemy.transform.rotation = _rotation;
         }
     }
 }

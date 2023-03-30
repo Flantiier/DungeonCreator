@@ -183,9 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDuration: 0.75
-  minLockTime: 0.25
-  maxLockTime: 0.6
-  slerpRotation: 0.01
+  slerp: 0.01
 --- !u!1102 &-6907649774296004519
 AnimatorState:
   serializedVersion: 6
@@ -709,9 +707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDuration: 0.75
-  minLockTime: 0.25
-  maxLockTime: 0.6
-  slerpRotation: 0.01
+  slerp: 0.02
 --- !u!1101 &5581776220812976361
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -790,7 +786,7 @@ AnimatorStateMachine:
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
-  m_ExitPosition: {x: 630, y: 280, z: 0}
+  m_ExitPosition: {x: 650, y: 280, z: 0}
   m_ParentStateMachinePosition: {x: 620, y: 90, z: 0}
   m_DefaultState: {fileID: -8574233275427946119}
 --- !u!1107 &6192348319352332100
@@ -880,9 +876,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.19984245
-  m_TransitionOffset: 0
-  m_ExitTime: 0.97988164
+  m_TransitionDuration: 0.19984221
+  m_TransitionOffset: 0.018733079
+  m_ExitTime: 0.91973543
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 2
@@ -905,9 +901,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.16826415
+  m_TransitionDuration: 0.17647862
   m_TransitionOffset: 0
-  m_ExitTime: 0.82903475
+  m_ExitTime: 0.85307735
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 2

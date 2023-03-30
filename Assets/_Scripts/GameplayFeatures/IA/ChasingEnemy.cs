@@ -1,11 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
-using System.Runtime.CompilerServices;
-using TMPro;
-using System.Collections;
-using UnityEngineInternal;
-using static Utils.Utilities;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -92,7 +88,6 @@ namespace _Scripts.GameplayFeatures.IA
 
             BasePosition = transform.position;
             CurrentState = EnemyState.Patrol;
-
         }
 
         protected virtual void UpdateAnimations()
@@ -293,9 +288,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// Handle the Combat behaviour
         /// </summary>
-        protected virtual void CombatState()
-        {
-        }
+        protected virtual void CombatState() { }
         #endregion
 
         #region Patroling
