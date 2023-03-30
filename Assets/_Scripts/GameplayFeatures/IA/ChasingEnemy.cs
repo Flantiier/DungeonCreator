@@ -60,7 +60,6 @@ namespace _Scripts.GameplayFeatures.IA
         public Transform CurrentTarget { get; private set; }
         public Vector3 BasePosition { get; private set; }
         public bool TargetNear { get; private set; }
-        public bool IsAttacking { get; set; }
         #endregion
 
         #region Buils_In
@@ -93,6 +92,7 @@ namespace _Scripts.GameplayFeatures.IA
 
             BasePosition = transform.position;
             CurrentState = EnemyState.Patrol;
+
         }
 
         protected virtual void UpdateAnimations()
@@ -295,10 +295,6 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         protected virtual void CombatState()
         {
-            if (IsAttacking)
-                return;
-
-            Animator.SetTrigger("Attack");
         }
         #endregion
 

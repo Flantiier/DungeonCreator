@@ -1,12 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace _Scripts.GameplayFeatures.IA.StateMachines
 {
     public class EnemyStateMachine : StateMachineBehaviour
     {
-        protected ChasingEnemy GetEnemy(Animator animator)
+        protected ChasingEnemy enemy;
+
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            return animator.GetComponent<ChasingEnemy>();
+            enemy = animator.GetComponent<ChasingEnemy>();
         }
     }
 }
