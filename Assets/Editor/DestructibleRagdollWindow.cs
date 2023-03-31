@@ -27,7 +27,7 @@ public class DestructibleRagdollWindow : OdinEditorWindow
 
         foreach (SkinnedMeshRenderer mesh in meshs)
         {
-            if (mesh.TryGetComponent(out RagdollObject part))
+            if (mesh.TryGetComponent(out DestructibleRagdollPart part))
                 continue;
 
             GameObject instance = NewRagdollPart(mesh);
@@ -58,15 +58,18 @@ public class DestructibleRagdollWindow : OdinEditorWindow
         rb.useGravity = false;
         rb.isKinematic = true;
 
-        //Add script
-        RagdollObject ragdoll = instance.AddComponent<RagdollObject>();
-        ragdoll.referencedBone = mesh.transform;
-        ragdoll.rb = rb;
-
         //Add collider
         MeshCollider collider = instance.AddComponent<MeshCollider>();
         collider.sharedMesh = mesh.sharedMesh;
         collider.convex = true;
+
+        //Add script
+        DestructibleRagdollPart ragdoll = instance.AddComponent<DestructibleRagdollPart>();
+        ragdoll.boneReference = mesh;
+        ragdoll.filter = filter;
+        ragdoll.meshCollider = collider;
+        ragdoll.rb = rb;
+
 
         return instance;
     }

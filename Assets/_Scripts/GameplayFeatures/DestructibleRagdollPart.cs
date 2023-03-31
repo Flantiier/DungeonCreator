@@ -2,18 +2,27 @@
 
 namespace _Scripts.GameplayFeatures
 {
-    public class RagdollObject : MonoBehaviour
+    public class DestructibleRagdollPart : MonoBehaviour
     {
-        public Transform referencedBone;
+        public SkinnedMeshRenderer boneReference;
+        public MeshFilter filter;
+        public MeshCollider meshCollider;
         public Rigidbody rb;
 
         /// <summary>
         /// Set the object position/rotation to the referenced bone position/rotation
         /// </summary>
+        [ContextMenu("Coucou")]
         public void SetRagdollToBone()
         {
-            transform.position = referencedBone.position;
-            transform.rotation = referencedBone.rotation;
+            Mesh mesh = new Mesh();
+            boneReference.BakeMesh(mesh);
+
+            filter.mesh = mesh;
+            meshCollider.sharedMesh = mesh;
+
+            transform.position = boneReference.transform.position;
+            transform.rotation = boneReference.transform.rotation;
         }
 
         /// <summary>

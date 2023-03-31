@@ -12,6 +12,11 @@ namespace _Scripts.GameplayFeatures.IA
         public enum EnemyState { Patrol, Chase, Combat }
         public enum PatrolState { BaseReturn, GetPoint, GoToPoint, Reached, Wait }
 
+        #region References
+        [FoldoutGroup("References")]
+        [SerializeField] private DestructibleRagdollHandler ragdoll;
+        #endregion
+
         #region Chasing variables
         [TitleGroup("Chasing")]
         [SerializeField] private float smoothRotation = 0.1f;
@@ -88,6 +93,8 @@ namespace _Scripts.GameplayFeatures.IA
 
             BasePosition = transform.position;
             CurrentState = EnemyState.Patrol;
+            _patrolPoint = Vector3.zero;
+            _patrolWait = false;
         }
 
         protected virtual void UpdateAnimations()
@@ -131,6 +138,12 @@ namespace _Scripts.GameplayFeatures.IA
                     PatrolingState();
                     break;
             }
+        }
+
+        protected override void HandleEntityDeath()
+        {
+            ragdoll.EnableRagdoll();
+            gameObject.SetActive(false);
         }
 
         #region AI Methods
