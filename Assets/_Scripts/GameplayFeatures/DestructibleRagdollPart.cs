@@ -4,16 +4,17 @@ namespace _Scripts.GameplayFeatures
 {
     public class DestructibleRagdollPart : MonoBehaviour
     {
-        public SkinnedMeshRenderer boneReference;
-        public MeshFilter filter;
-        public MeshCollider meshCollider;
+        [SerializeField] private SkinnedMeshRenderer boneReference;
+        [SerializeField] private MeshFilter filter;
+        [SerializeField] private MeshCollider meshCollider;
         public Rigidbody rb;
+
+        public SkinnedMeshRenderer Bone { get => boneReference; set => boneReference = value; }
 
         /// <summary>
         /// Set the object position/rotation to the referenced bone position/rotation
         /// </summary>
-        [ContextMenu("Coucou")]
-        public void SetRagdollToBone()
+        public virtual void SetRagdollToBone()
         {
             Mesh mesh = new Mesh();
             boneReference.BakeMesh(mesh);

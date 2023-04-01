@@ -93,7 +93,7 @@ namespace _Scripts.GameplayFeatures.IA
 
             BasePosition = transform.position;
             CurrentState = EnemyState.Patrol;
-            _patrolPoint = Vector3.zero;
+            _patrolState = PatrolState.BaseReturn;
             _patrolWait = false;
         }
 

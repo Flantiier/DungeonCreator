@@ -1,18 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
+using _Scripts.Hitboxs_Triggers.Hitboxs;
 
-public class SpearEnemy : MonoBehaviour
+namespace _Scripts.GameplayFeatures.IA
 {
-    // Start is called before the first frame update
-    void Start()
+    public class SpearEnemy : ChasingEnemy
     {
-        
-    }
+        [TitleGroup("Equipment")]
+        [SerializeField] private EnemyHitbox spearHitbox;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void EnableCollider(int index)
+        {
+            if (!spearHitbox)
+                return;
+
+            spearHitbox.Collider.enabled = index <= 0 ? false : true;
+        }
     }
 }
