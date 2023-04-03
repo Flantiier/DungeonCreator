@@ -26,6 +26,9 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
             }
             else
             {
+                if (!enemy.CurrentTarget)
+                    return;
+
                 Vector3 direction = enemy.CurrentTarget.position - enemy.transform.position;
                 _rotation = Quaternion.Slerp(enemy.transform.rotation, Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z)), slerp);
                 enemy.transform.rotation = _rotation;

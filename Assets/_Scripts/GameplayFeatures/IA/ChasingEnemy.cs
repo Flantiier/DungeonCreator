@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
+using _Scripts.Characters;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -111,6 +112,9 @@ namespace _Scripts.GameplayFeatures.IA
             CalculateTargetDistance();
             HandleStoppingDistance();
 
+            //Check player
+            CheckTargetHealth();
+
             //No target => Patrol
             if (!CurrentTarget)
             {
@@ -147,6 +151,20 @@ namespace _Scripts.GameplayFeatures.IA
         }
 
         #region AI Methods
+        /// <summary>
+        /// Check for the health points of the current target
+        /// </summary>
+        private void CheckTargetHealth()
+        {
+            if (!CurrentTarget || !CurrentTarget.TryGetComponent(out Character character))
+                return;
+
+            if (character.CurrentHealth > 0)
+                return;
+
+            CurrentTarget = null;
+        }
+
         /// <summary>
         /// Set the navMesh agent destination
         /// </summary>
@@ -231,6 +249,9 @@ namespace _Scripts.GameplayFeatures.IA
 
             foreach (Collider item in rangeChecks)
             {
+                if (!item.TryGetComponent(out Character character))
+                    continue;
+
                 Transform target = item.transform;
                 Vector3 directionToTarget = (target.position - transform.position).normalized;
 
