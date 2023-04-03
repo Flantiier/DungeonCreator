@@ -56,8 +56,6 @@ namespace _Scripts.GameplayFeatures.Weapons
         #region Interfaces Methods
         public void DealDamage(float damages)
         {
-            Debug.Log("Shield");
-
             if (!ViewIsMine())
                 return;
 
