@@ -2,6 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.Characters;
 using _Scripts.Interfaces;
+using _Scripts.GameplayFeatures.Weapons;
 
 namespace _Scripts.Hitboxs_Triggers.Hitboxs
 {
@@ -22,6 +23,13 @@ namespace _Scripts.Hitboxs_Triggers.Hitboxs
 
         private void OnTriggerEnter(Collider other)
         {
+            if (other.TryGetComponent(out EnemyShield shield))
+            {
+                Debug.Log("Shield");
+                Collider.enabled = false;
+                return;
+            }
+
             if (!other.TryGetComponent(out IDamageable player))
                 return;
 

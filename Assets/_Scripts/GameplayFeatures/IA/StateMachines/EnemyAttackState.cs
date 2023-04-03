@@ -4,9 +4,9 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 {
     public class EnemyAttackState : EnemyStateMachine
     {
-        [SerializeField] private float attackDuration = 0.75f;
+        [SerializeField] protected float attackDuration = 0.75f;
         [SerializeField] private float slerp = 0.01f;
-        private bool _combo;
+        protected bool _combo;
         private Quaternion _rotation;
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -37,7 +37,7 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
             HandleComboTrigger(animator, stateInfo.normalizedTime);
         }
 
-        private void HandleComboTrigger(Animator animator, float normalizedTime)
+        protected virtual void HandleComboTrigger(Animator animator, float normalizedTime)
         {
             if (_combo || normalizedTime < attackDuration)
                 return;
