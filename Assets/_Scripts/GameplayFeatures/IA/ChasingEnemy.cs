@@ -154,7 +154,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// Check for the health points of the current target
         /// </summary>
-        private void CheckTargetHealth()
+        protected void CheckTargetHealth()
         {
             if (!CurrentTarget || !CurrentTarget.TryGetComponent(out Character character))
                 return;
@@ -204,13 +204,21 @@ namespace _Scripts.GameplayFeatures.IA
                 return;
             }
 
-            TargetNear = Vector3.Distance(transform.position, CurrentTarget.position) <= _navMesh.stoppingDistance;
+            TargetNear = GetDistanceWithTarget() <= _navMesh.stoppingDistance;
+        }
+
+        /// <summary>
+        /// Return the distance between the target and this object
+        /// </summary>
+        protected float GetDistanceWithTarget()
+        {
+            return Vector3.Distance(CurrentTarget.position, transform.position);
         }
 
         /// <summary>
         /// Modify the stopping distance of the agent based on the current state
         /// </summary>
-        private void HandleStoppingDistance()
+        protected void HandleStoppingDistance()
         {
             _navMesh.stoppingDistance = IsStateOf(EnemyState.Patrol) ? 0 : stoppingDistance;
         }
@@ -229,7 +237,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// If there's no target yet, set the first visible by the enemy
         /// </summary>
-        private void LookForTarget()
+        protected void LookForTarget()
         {
             if (CurrentTarget)
                 return;
@@ -304,13 +312,21 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// Handle the Chasing behaviour
         /// </summary>
-        protected void ChasingState()
+        protected virtual void ChasingState()
         {
             //Position
             Move(chaseSpeed);
             SetDestination(CurrentTarget.position);
 
             //Rotation
+            LookAtTarget();
+        }
+
+        /// <summary>
+        /// Look at the current target
+        /// </summary>
+        public void LookAtTarget()
+        {
             Vector3 direction = CurrentTarget.position - transform.position;
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), smoothRotation);
@@ -329,7 +345,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// Handle the Patrol Behaviour
         /// </summary>
-        private void PatrolingState()
+        protected void PatrolingState()
         {
             switch (_patrolState)
             {
@@ -410,7 +426,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// <summary>
         /// Stops the patrol routine if it started
         /// </summary>
-        private void EnterPatrolState()
+        protected void EnterPatrolState()
         {
             if (CurrentState == EnemyState.Patrol)
                 return;

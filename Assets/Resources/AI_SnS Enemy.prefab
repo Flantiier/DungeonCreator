@@ -1977,7 +1977,7 @@ GameObject:
   - component: {fileID: 2190607512394919874}
   - component: {fileID: 3770597327585378354}
   m_Layer: 0
-  m_Name: AI_SpearSkeleton
+  m_Name: AI_SnsSkeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2018,7 +2018,7 @@ MonoBehaviour:
   ragdoll: {fileID: 3770597327603924740}
   smoothRotation: 0.1
   chaseSpeed: 3
-  stoppingDistance: 2
+  stoppingDistance: 1.75
   patrolSpeed: 1
   returnSpeed: 2
   patrolRadius: 3
@@ -2106,8 +2106,8 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1344307156692209432}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
+  m_IsTrigger: 0
+  m_Enabled: 0
   m_Radius: 0.3
   m_Height: 1.8
   m_Direction: 1
@@ -12143,7 +12143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3770597327343399933}
   - component: {fileID: 3770597327343399932}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: AI_SnS Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29479,7 +29479,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2397845467261947942}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.5009471, y: 0.0574772, z: 0.49637255}
