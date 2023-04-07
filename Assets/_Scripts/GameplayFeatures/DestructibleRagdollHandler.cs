@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using _Scripts.Hitboxs_Triggers.Hitboxs;
 
 namespace _Scripts.GameplayFeatures
 {
@@ -59,7 +60,7 @@ namespace _Scripts.GameplayFeatures
             if (transform.childCount <= 0)
                 return;
 
-            ragdollParts = transform.GetComponentsInChildren<DestructibleRagdollPart>();
+            ragdollParts = GetComponentsInChildren<DestructibleRagdollPart>();
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 using _Scripts.Characters;
+using _Scripts.TrapSystem;
 
 namespace _Scripts.GameplayFeatures.IA
 {

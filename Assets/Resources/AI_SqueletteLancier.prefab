@@ -1330,7 +1330,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4399131774416141399}
   - component: {fileID: 4399131774416141398}
-  - component: {fileID: -3138973565960899383}
   m_Layer: 22
   m_Name: AI_SqueletteLancier
   m_TagString: Untagged
@@ -1369,28 +1368,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AI: {fileID: 2015626351058714802}
   ragdoll: {fileID: 4399131774710214830}
---- !u!114 &-3138973565960899383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4399131774416141396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &4399131774419339885
 GameObject:
   m_ObjectHideFlags: 0
@@ -16472,7 +16449,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0

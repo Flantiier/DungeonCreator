@@ -75,6 +75,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4143806040605783160}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &3003331653837228256
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544630227598775800}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.4745233, y: 0.16083255, z: 1.4770191}
+  m_Center: {x: -0.0006478727, y: 0.12021898, z: -0.0014864504}
 --- !u!114 &4387919177883731046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,19 +105,6 @@ MonoBehaviour:
   initDamagesOnStart: 1
   damages: 25
   shouldDamageOnStay: 1
---- !u!65 &3003331653837228256
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1544630227598775800}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.4745233, y: 0.16083255, z: 1.4770191}
-  m_Center: {x: -0.0006478727, y: 0.12021898, z: -0.0014864504}
 --- !u!95 &2076239003479225890 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2689082168266474074, guid: 8c9ea440972efae40addc258735d3d98,
