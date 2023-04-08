@@ -1330,6 +1330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4399131774416141399}
   - component: {fileID: 4399131774416141398}
+  - component: {fileID: 962897163936443115}
   m_Layer: 22
   m_Name: AI_SqueletteLancier
   m_TagString: Untagged
@@ -1368,6 +1369,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AI: {fileID: 2015626351058714802}
   ragdoll: {fileID: 4399131774710214830}
+--- !u!114 &962897163936443115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399131774416141396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4399131774419339885
 GameObject:
   m_ObjectHideFlags: 0
@@ -16397,20 +16420,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3476901197871160679}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &7062979188472564966
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2015626351058714802}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.35
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &2428786001728839206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16429,10 +16438,28 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 2621061883031869066}
+  - {fileID: 5657374254891645825}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2621061883031869066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015626351058714802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!195 &2866856066142395660
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -16455,6 +16482,39 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5657374254891645825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015626351058714802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 1
+    SynchronizeType: 1
+    Name: Velocity
+  - Type: 4
+    SynchronizeType: 1
+    Name: TargetNear
+  - Type: 4
+    SynchronizeType: 1
+    Name: Chasing
+  - Type: 4
+    SynchronizeType: 1
+    Name: BaseReturn
+  - Type: 9
+    SynchronizeType: 0
+    Name: Combo
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
 --- !u!114 &8874344066021150140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16488,6 +16548,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 67109056
   spearHitbox: {fileID: 2715791673508205920}
+--- !u!65 &7886560802799231367
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015626351058714802}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 1.8, z: 0.5}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!137 &2039802256412738191 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3174679775859449832, guid: bd9e0ee4be434704a94355d7859ff9cc,
@@ -16935,8 +17008,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.05430291, y: 0.105345, z: 0.61}
-  m_Center: {x: 0.0002538024, y: 0.0043543656, z: 1.3}
+  m_Size: {x: 0.05430291, y: 0.105345, z: 1.14}
+  m_Center: {x: 0.0002538024, y: 0.0043543656, z: 1.03}
 --- !u!114 &2715791673508205920
 MonoBehaviour:
   m_ObjectHideFlags: 0

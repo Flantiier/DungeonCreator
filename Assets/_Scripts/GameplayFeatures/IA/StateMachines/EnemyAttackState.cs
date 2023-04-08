@@ -19,6 +19,9 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
+            if (!enemy.ViewIsMine())
+                return;
+
             if (!animator.IsInTransition(0))
             {
                 enemy.Stop();
@@ -47,7 +50,7 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 
             //Combo
             _combo = true;
-            animator.SetTrigger("Combo");
+            enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Combo", true);
         }
     }
 }

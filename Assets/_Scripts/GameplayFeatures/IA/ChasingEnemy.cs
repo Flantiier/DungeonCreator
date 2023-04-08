@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
 using _Scripts.Characters;
+using Photon.Pun;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -75,6 +76,10 @@ namespace _Scripts.GameplayFeatures.IA
 #if UNITY_EDITOR
             ShowPlayerInFOV();
 #endif
+
+            if (!ViewIsMine())
+                return;
+
             HandleEnemyBehaviour();
             UpdateAnimations();
         }
@@ -89,6 +94,9 @@ namespace _Scripts.GameplayFeatures.IA
         #region Methods
         protected override void InitializeEnemy()
         {
+            if (!ViewIsMine())
+                return;
+
             //Init health
             base.InitializeEnemy();
 
@@ -145,6 +153,12 @@ namespace _Scripts.GameplayFeatures.IA
         }
 
         protected override void HandleEntityDeath()
+        {
+            RPCCall("EnableRagdollRPC", RpcTarget.All);
+        }
+
+        [PunRPC]
+        public void EnableRagdollRPC()
         {
             ragdoll.EnableRagdoll();
             gameObject.SetActive(false);

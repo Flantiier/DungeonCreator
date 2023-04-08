@@ -15,10 +15,11 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            base.OnStateExit(animator, stateInfo, layerIndex);
+            if (!enemy.ViewIsMine())
+                return;
 
-            animator.ResetTrigger("Defend");
-            animator.ResetTrigger("Combo");
+            enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Defend", false);
+            enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Combo", false);
             shouldDefend = false;
         }
 
@@ -32,13 +33,13 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 
             if (classEnemy.ShouldDefend())
             {
-                animator.SetTrigger("Defend");
+                enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Defend", true);
                 return;
             }
 
             //Combo
             _combo = true;
-            animator.SetTrigger("Combo");
+            enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Combo", true);
 
         }
     }

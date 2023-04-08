@@ -17,7 +17,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
         [SerializeField] protected float speed = 10f;
         [SerializeField] protected bool enabledOnStart = false;
 
-        private Rigidbody _rb;
+        protected Rigidbody _rb;
         #endregion
 
         #region Properties

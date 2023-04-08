@@ -121,6 +121,7 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
 
             RPCCall("ResetAnimatorRPC", RpcTarget.All);
+            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 
             skillCooldown.value = 0f;
         }

@@ -3,7 +3,6 @@ using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 using _Scripts.Characters;
-using _Scripts.TrapSystem;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -17,6 +16,9 @@ namespace _Scripts.GameplayFeatures.IA
         {
             base.OnEnable();
 
+            if (!ViewIsMine())
+                return;
+
             InitializeEnemy();
         }
         #endregion
@@ -28,6 +30,7 @@ namespace _Scripts.GameplayFeatures.IA
         protected virtual void InitializeEnemy()
         {
             CurrentHealth = health;
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
         }
 
         #region Health Methods
@@ -60,7 +63,6 @@ namespace _Scripts.GameplayFeatures.IA
             if (CurrentHealth <= 0)
                 return;
 
-            Debug.Log($"Took {damages} damages");
             HandleEntityHealth(damages);
         }
         #endregion

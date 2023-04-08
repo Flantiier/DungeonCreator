@@ -1,6 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.Projectiles;
+using Photon.Pun;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -24,7 +25,8 @@ namespace _Scripts.GameplayFeatures.IA
         {
             base.UpdateAnimations();
             //Class parameters
-            Animator.SetBool("CanShoot", _targetInRange && _canReachTarget);
+            bool shoot = CurrentTarget && _targetInRange && _canReachTarget;
+            Animator.SetBool("CanShoot", shoot);
         }
 
         protected override void HandleEnemyBehaviour()
@@ -92,9 +94,6 @@ namespace _Scripts.GameplayFeatures.IA
 
         protected override void ChasingState()
         {
-            /*float distance = GetDistanceWithTarget();
-            Vector3 destination = distance >= strafingDistance ? CurrentTarget.position : ;*/
-
             Move(chaseSpeed);
             LookAtTarget();
             SetDestination(CurrentTarget.position);
@@ -113,12 +112,15 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         public void ShootProjectile()
         {
+            if (!ViewIsMine() || !CurrentTarget)
+                return;
+
             //Calculates the direction of the projectile
             Vector3 direction = CurrentTarget.position - transform.position;
             Quaternion rotation = Quaternion.LookRotation(direction);
 
             //Launch
-            EnemiesProjectile instance = Instantiate(projectile, shootPosition.position, rotation);
+            EnemiesProjectile instance = PhotonNetwork.Instantiate(projectile.name, shootPosition.position, rotation).GetComponent<EnemiesProjectile>();
             instance.OverrideThrowForce(direction, throwForce);
         }
         #endregion
