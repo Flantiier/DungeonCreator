@@ -22,7 +22,8 @@ namespace Assets.Editor
             tree.AddAssetAtPath("Game Management", "Assets/_ScriptablesObjects/GameManagement/GameProperties.asset", typeof(GameProperties));
             tree.AddAssetAtPath("Folder Navigator", "Assets/Editor/SO/Folder Paths.asset");
             tree.AddAllAssetsAtPath("Edit Traps/Traps", "Assets/_ScriptablesObjects/Traps", typeof(TrapSO));
-            tree.AddAllAssetsAtPath("Edit Traps/Ennemies", "Assets/_ScriptablesObjects/Traps/Traps Enemies", typeof(TrapSO));
+            tree.AddAllAssetsAtPath("Edit Traps/Traps Enemies", "Assets/_ScriptablesObjects/Traps/Traps Enemies", typeof(TrapSO));
+            tree.AddAllAssetsAtPath("Edit Traps/Enemies", "Assets/_ScriptablesObjects/Traps/Enemies Properties", typeof(EnemyProperties));
             tree.AddAllAssetsAtPath("Edit Characters", "Assets/_ScriptablesObjects/Characters/Edit Characters");
 
             return tree;
