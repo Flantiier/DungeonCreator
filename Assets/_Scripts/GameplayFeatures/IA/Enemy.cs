@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
 using _Scripts.Characters;
 
@@ -8,26 +7,8 @@ namespace _Scripts.GameplayFeatures.IA
 {
     public class Enemy : Entity, IDamageable
     {
-        [TitleGroup("Enemy properties")]
-        [SerializeField] private float health = 50f;
-
-        #region Builts_In
-        public override void OnEnable()
-        {
-            base.OnEnable();
-
-            if (!ViewIsMine())
-                return;
-
-            InitializeEnemy();
-        }
-        #endregion
-
         #region Methods
-        /// <summary>
-        /// Initializing script variables
-        /// </summary>
-        protected virtual void InitializeEnemy()
+        protected void InitializeHealth(float health)
         {
             CurrentHealth = health;
             RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);

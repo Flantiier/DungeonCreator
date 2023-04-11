@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
 using _Scripts.Characters;
-using Photon.Pun;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.IA
 {
@@ -14,48 +15,15 @@ namespace _Scripts.GameplayFeatures.IA
         public enum EnemyState { Patrol, Chase, Combat }
         public enum PatrolState { BaseReturn, GetPoint, GoToPoint, Reached, Wait }
 
-        #region References
         [FoldoutGroup("References")]
         [SerializeField] private DestructibleRagdollHandler ragdoll;
-        #endregion
+        [TitleGroup("Properties")]
+        public EnemyProperties properties;
+        protected NavMeshAgent _navMesh;
 
-        #region Chasing variables
-        [TitleGroup("Chasing")]
-        [SerializeField] private float smoothRotation = 0.1f;
-        [TitleGroup("Chasing")]
-        [SerializeField] protected float chaseSpeed = 3f;
-        [TitleGroup("Chasing")]
-        [SerializeField] protected float stoppingDistance = 1.5f;
-        #endregion
-
-        #region Patrol variables
-        [TitleGroup("Patroling")]
-        [SerializeField] private float patrolSpeed = 1f;
-        [TitleGroup("Patroling")]
-        [SerializeField] private float returnSpeed = 2f;
-        [TitleGroup("Patroling")]
-        public float patrolRadius = 3f;
-        [TitleGroup("Patroling")]
-        [SerializeField] private float patrolWait = 2f;
-        [TitleGroup("Patroling")]
-        [SerializeField] private float pointDistance = 0.5f;
         private PatrolState _patrolState;
         private Vector3 _patrolPoint;
         private bool _patrolWait;
-        #endregion
-
-        #region FOV varibales
-        [TitleGroup("FOV")]
-        public float radius = 10f;
-        [TitleGroup("FOV"), Range(0, 360)]
-        public float angle = 160;
-        [TitleGroup("FOV")]
-        [SerializeField] public LayerMask targetMask;
-        [TitleGroup("FOV")]
-        [SerializeField] public LayerMask obstructionMask;
-        #endregion
-
-        protected NavMeshAgent _navMesh;
         #endregion
 
         #region Properties
@@ -69,6 +37,13 @@ namespace _Scripts.GameplayFeatures.IA
         protected virtual void Awake()
         {
             _navMesh = GetComponent<NavMeshAgent>();
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+
+            InitializeEnemy();
         }
 
         protected virtual void Update()
@@ -92,13 +67,12 @@ namespace _Scripts.GameplayFeatures.IA
         #endregion
 
         #region Methods
-        protected override void InitializeEnemy()
+        protected virtual void InitializeEnemy()
         {
             if (!ViewIsMine())
                 return;
 
-            //Init health
-            base.InitializeEnemy();
+            InitializeHealth(properties.health);
 
             BasePosition = transform.position;
             CurrentState = EnemyState.Patrol;
@@ -234,7 +208,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         protected void HandleStoppingDistance()
         {
-            _navMesh.stoppingDistance = IsStateOf(EnemyState.Patrol) ? 0 : stoppingDistance;
+            _navMesh.stoppingDistance = IsStateOf(EnemyState.Patrol) ? 0 : properties.stoppingDistance;
         }
 
         /// <summary>
@@ -264,7 +238,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         protected Transform FieldOfViewCheck()
         {
-            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
+            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, properties.radius, properties.targetMask);
 
             if (rangeChecks.Length <= 0)
                 return null;
@@ -277,12 +251,12 @@ namespace _Scripts.GameplayFeatures.IA
                 Transform target = item.transform;
                 Vector3 directionToTarget = (target.position - transform.position).normalized;
 
-                if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+                if (Vector3.Angle(transform.forward, directionToTarget) < properties.angle / 2)
                 {
                     Ray ray = new Ray(transform.position, directionToTarget);
                     float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-                    if (Physics.Raycast(ray, distanceToTarget, obstructionMask))
+                    if (Physics.Raycast(ray, distanceToTarget, properties.obstructionMask))
                         continue;
 
                     return target;
@@ -298,7 +272,7 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         protected void ShowPlayerInFOV()
         {
-            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
+            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, properties.radius, properties.targetMask);
 
             if (rangeChecks.Length <= 0)
                 return;
@@ -308,12 +282,12 @@ namespace _Scripts.GameplayFeatures.IA
                 Transform target = item.transform;
                 Vector3 directionToTarget = (target.position - transform.position).normalized;
 
-                if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+                if (Vector3.Angle(transform.forward, directionToTarget) < properties.angle / 2)
                 {
                     Ray ray = new Ray(transform.position, directionToTarget);
                     float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-                    if (Physics.Raycast(ray, distanceToTarget, obstructionMask))
+                    if (Physics.Raycast(ray, distanceToTarget, properties.obstructionMask))
                         Debug.DrawRay(ray.origin, ray.direction * distanceToTarget, Color.red);
                     else
                         Debug.DrawRay(ray.origin, ray.direction * distanceToTarget, Color.green);
@@ -329,7 +303,7 @@ namespace _Scripts.GameplayFeatures.IA
         protected virtual void ChasingState()
         {
             //Position
-            Move(chaseSpeed);
+            Move(properties.chaseSpeed);
             SetDestination(CurrentTarget.position);
 
             //Rotation
@@ -343,7 +317,7 @@ namespace _Scripts.GameplayFeatures.IA
         {
             Vector3 direction = CurrentTarget.position - transform.position;
             direction.y = 0f;
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), smoothRotation);
+            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), properties.smoothRotation);
             transform.rotation = targetRotation;
         }
         #endregion
@@ -368,7 +342,7 @@ namespace _Scripts.GameplayFeatures.IA
                         if (Vector3.Distance(transform.position, BasePosition) > 0.5f)
                         {
                             //Move to base
-                            Move(returnSpeed);
+                            Move(properties.returnSpeed);
                             SetDestination(BasePosition);
                             Animator.SetBool("BaseReturn", true);
                             return;
@@ -386,9 +360,9 @@ namespace _Scripts.GameplayFeatures.IA
                     }
                 case PatrolState.GoToPoint:
                     {
-                        Move(patrolSpeed);
+                        Move(properties.patrolSpeed);
 
-                        if (Vector3.Distance(transform.position, _patrolPoint) > pointDistance)
+                        if (Vector3.Distance(transform.position, _patrolPoint) > properties.pointDistance)
                             return;
 
                         _patrolState = PatrolState.Reached;
@@ -415,8 +389,8 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         private void GetRandomPatrolPoint()
         {
-            Vector3 randomPosition = BasePosition + Random.insideUnitSphere * patrolRadius;
-            if (!NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, patrolRadius * 2, NavMesh.AllAreas))
+            Vector3 randomPosition = BasePosition + Random.insideUnitSphere * properties.patrolRadius;
+            if (!NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, properties.patrolRadius * 2, NavMesh.AllAreas))
                 return;
 
             _patrolPoint = hit.position;
@@ -431,7 +405,7 @@ namespace _Scripts.GameplayFeatures.IA
             _patrolState = PatrolState.Wait;
 
             _patrolWait = true;
-            float randomTime = Random.Range(1f, patrolWait);
+            float randomTime = Random.Range(properties.minPatrolWait, properties.maxPatrolWait);
             yield return new WaitForSecondsRealtime(randomTime);
 
             _patrolWait = false;

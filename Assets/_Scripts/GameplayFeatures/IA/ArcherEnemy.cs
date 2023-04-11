@@ -1,26 +1,40 @@
 using UnityEngine;
+using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.Projectiles;
-using Photon.Pun;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.IA
 {
     public class ArcherEnemy : ChasingEnemy
     {
         #region Variables
-        [TitleGroup("Archer properties")]
-        [SerializeField] private float shootingDistance = 20f;
-        [SerializeField] private LayerMask shootObstruction;
-
-        [TitleGroup("Projectile")]
-        [SerializeField] private EnemiesProjectile projectile;
+        [TitleGroup("References")]
         [SerializeField] private Transform shootPosition;
-        [SerializeField] private float throwForce = 10f;
+
+        [TitleGroup("Properties")]
+        [OnValueChanged("GetProperties")]
+        [SerializeField] private ArcherEnemyProperties classProperties;
+
         private bool _targetInRange;
         private bool _canReachTarget;
+        private void GetProperties()
+        {
+            properties = classProperties;
+        }
         #endregion
 
         #region Methods
+        protected override void Awake()
+        {
+            base.Awake();
+
+            if (properties)
+                return;
+
+            GetProperties();
+        }
+
         protected override void UpdateAnimations()
         {
             base.UpdateAnimations();
@@ -78,7 +92,7 @@ namespace _Scripts.GameplayFeatures.IA
 
             //Can shoot on target
             float distance = GetDistanceWithTarget();
-            _targetInRange = distance <= shootingDistance;
+            _targetInRange = distance <= classProperties.shootingDistance;
 
             if (!_targetInRange)
                 return;
@@ -86,7 +100,7 @@ namespace _Scripts.GameplayFeatures.IA
             //Look if there's some obstacles
             Ray ray = new Ray(transform.position, CurrentTarget.position - transform.position);
             //Hit an obstacle
-            if (Physics.Raycast(ray, distance, shootObstruction))
+            if (Physics.Raycast(ray, distance, classProperties.shootObstruction))
                 _canReachTarget = false;
             else
                 _canReachTarget = true;
@@ -94,7 +108,7 @@ namespace _Scripts.GameplayFeatures.IA
 
         protected override void ChasingState()
         {
-            Move(chaseSpeed);
+            Move(properties.chaseSpeed);
             LookAtTarget();
             SetDestination(CurrentTarget.position);
         }
@@ -112,16 +126,14 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         public void ShootProjectile()
         {
-            if (!ViewIsMine() || !CurrentTarget)
-                return;
-
             //Calculates the direction of the projectile
             Vector3 direction = CurrentTarget.position - transform.position;
             Quaternion rotation = Quaternion.LookRotation(direction);
 
             //Launch
-            EnemiesProjectile instance = PhotonNetwork.Instantiate(projectile.name, shootPosition.position, rotation).GetComponent<EnemiesProjectile>();
-            instance.OverrideThrowForce(direction, throwForce);
+            EnemiesProjectile instance = Instantiate(classProperties.projectile, shootPosition.position, rotation).GetComponent<EnemiesProjectile>();
+            instance.Damages = classProperties.damages;
+            instance.OverrideThrowForce(direction, classProperties.throwForce);
         }
         #endregion
 

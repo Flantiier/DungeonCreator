@@ -6,8 +6,15 @@ namespace _Scripts.GameplayFeatures.IA
 {
     public class SpearEnemy : ChasingEnemy
     {
-        [TitleGroup("Equipment")]
+        [FoldoutGroup("References")]
         [SerializeField] private EnemyHitbox spearHitbox;
+
+        protected override void InitializeEnemy()
+        {
+            spearHitbox.Damages = properties.damages;
+
+            base.InitializeEnemy();
+        }
 
         public void EnableCollider(int index)
         {

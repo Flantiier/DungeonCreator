@@ -13,17 +13,17 @@ namespace Assets.Editor
             ChasingEnemy enemy = (ChasingEnemy)target;
             Handles.color = Color.white;
             Vector3 editorPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
-            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.radius);
+            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.properties.radius);
 
-            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.angle / 2);
-            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.angle / 2);
+            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.properties.angle / 2);
+            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.properties.angle / 2);
 
             Handles.color = Color.yellow;
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.radius);
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.properties.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.properties.radius);
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.patrolRadius);
+            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.properties.patrolRadius);
         }
 
         protected Vector3 DirectionFromAngle(float eulerY, float angleInDegrees)
@@ -40,19 +40,23 @@ namespace Assets.Editor
         protected override void OnSceneGUI()
         {
             ArcherEnemy enemy = (ArcherEnemy)target;
+
+            if (!enemy.properties)
+                return;
+
             Handles.color = Color.white;
             Vector3 editorPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
-            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.radius);
+            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.properties.radius);
 
-            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.angle / 2);
-            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.angle / 2);
+            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.properties.angle / 2);
+            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.properties.angle / 2);
 
             Handles.color = Color.yellow;
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.radius);
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.properties.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.properties.radius);
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.patrolRadius);
+            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.properties.patrolRadius);
         }
     }
 
@@ -62,19 +66,23 @@ namespace Assets.Editor
         protected override void OnSceneGUI()
         {
             SpearEnemy enemy = (SpearEnemy)target;
+
+            if (!enemy.properties)
+                return;
+
             Handles.color = Color.white;
             Vector3 editorPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
-            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.radius);
+            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.properties.radius);
 
-            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.angle / 2);
-            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.angle / 2);
+            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.properties.angle / 2);
+            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.properties.angle / 2);
 
             Handles.color = Color.yellow;
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.radius);
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.properties.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.properties.radius);
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.patrolRadius);
+            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.properties.patrolRadius);
         }
     }
 
@@ -84,19 +92,23 @@ namespace Assets.Editor
         protected override void OnSceneGUI()
         {
             SwordAndShieldEnemy enemy = (SwordAndShieldEnemy)target;
+
+            if (!enemy.properties)
+                return;
+
             Handles.color = Color.white;
             Vector3 editorPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
-            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.radius);
+            Handles.DrawWireArc(editorPosition, Vector3.up, Vector3.forward, 360, enemy.properties.radius);
 
-            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.angle / 2);
-            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.angle / 2);
+            Vector3 viewAngle01 = DirectionFromAngle(enemy.transform.eulerAngles.y, -enemy.properties.angle / 2);
+            Vector3 viewAngle02 = DirectionFromAngle(enemy.transform.eulerAngles.y, enemy.properties.angle / 2);
 
             Handles.color = Color.yellow;
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.radius);
-            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle01 * enemy.properties.radius);
+            Handles.DrawLine(editorPosition, editorPosition + viewAngle02 * enemy.properties.radius);
 
             Handles.color = Color.green;
-            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.patrolRadius);
+            Handles.DrawWireDisc(enemy.BasePosition, Vector3.up, enemy.properties.patrolRadius);
         }
     }
 }

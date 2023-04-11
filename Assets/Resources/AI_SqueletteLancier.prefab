@@ -16420,6 +16420,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3476901197871160679}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &7886560802799231367
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015626351058714802}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 1.8, z: 0.5}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &2428786001728839206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16529,38 +16542,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 2428786001728839206}
   animator: {fileID: 3297413114922670142}
-  health: 100
   ragdoll: {fileID: 4399131774710214830}
-  smoothRotation: 0.1
-  chaseSpeed: 3
-  stoppingDistance: 1.7
-  patrolSpeed: 1
-  returnSpeed: 2
-  patrolRadius: 3
-  patrolWait: 2
-  pointDistance: 0.5
-  radius: 10
-  angle: 160
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 33554432
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 67109056
+  properties: {fileID: 11400000, guid: 36ba0935d8e81214eab9a543449b496a, type: 2}
   spearHitbox: {fileID: 2715791673508205920}
---- !u!65 &7886560802799231367
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2015626351058714802}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 1.8, z: 0.5}
-  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!137 &2039802256412738191 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3174679775859449832, guid: bd9e0ee4be434704a94355d7859ff9cc,

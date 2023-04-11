@@ -17059,6 +17059,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1234263162707331030}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1742028091320009858
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9070260750193331597}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 1.8, z: 0.5}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &3529994544548910929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17147,32 +17160,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 8900124111995241576}
   animator: {fileID: 2327224527005453645}
-  health: 100
   ragdoll: {fileID: 6562906216522644881}
-  smoothRotation: 0.1
-  chaseSpeed: 3
-  stoppingDistance: 2
-  patrolSpeed: 1
-  returnSpeed: 2
-  patrolRadius: 3
-  patrolWait: 2
-  pointDistance: 0.5
-  radius: 10
-  angle: 160
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 33554432
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 67109056
-  shootingDistance: 20
-  shootObstruction:
-    serializedVersion: 2
-    m_Bits: 67109056
-  projectile: {fileID: 5898861913459071214, guid: 5d98a7519abc18647b42526e522f0e82,
-    type: 3}
+  properties: {fileID: 11400000, guid: 037d32b368766594c95f7010aec642a3, type: 2}
   shootPosition: {fileID: 3838596142220271639}
-  throwForce: 10
+  classProperties: {fileID: 11400000, guid: 037d32b368766594c95f7010aec642a3, type: 2}
 --- !u!114 &8900124111995241576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17197,19 +17188,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!65 &1742028091320009858
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9070260750193331597}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 1.8, z: 0.5}
-  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1001 &6788596239610714250
 PrefabInstance:
   m_ObjectHideFlags: 0

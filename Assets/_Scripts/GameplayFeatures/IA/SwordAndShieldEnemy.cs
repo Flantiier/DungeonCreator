@@ -1,14 +1,34 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.IA
 {
     public class SwordAndShieldEnemy : ChasingEnemy
     {
-        [TitleGroup("Equipment")]
+        [FoldoutGroup("References")]
         [SerializeField] private EnemyWeaponHitbox sword;
-        [SerializeField] private float defendRatio = 0.5f;
+
+        [TitleGroup("Properties")]
+        [OnValueChanged("GetProperties")]
+        [SerializeField] private SnsEnemyProperties classProperties;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            if (properties)
+                return;
+
+            GetProperties();
+        }
+
+        protected override void InitializeEnemy()
+        {
+            sword.Damages = classProperties.damages;
+            base.InitializeEnemy();
+        }
 
         public void EnableCollider(int state)
         {
@@ -17,7 +37,12 @@ namespace _Scripts.GameplayFeatures.IA
 
         public bool ShouldDefend()
         {
-            return defendRatio <= Random.Range(0f, 1f);
+            return classProperties.defendRatio <= Random.Range(0f, 1f);
+        }
+
+        private void GetProperties()
+        {
+            properties = classProperties;
         }
     }
 }
