@@ -1,33 +1,21 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Sirenix.OdinInspector;
 
 namespace _Scripts.GameplayFeatures
 {
-    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+    public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         #region Variables/Properties
-        [TitleGroup("UI Elements")]
-        [SerializeField] protected float selectedOffset = 70f;
+        [SerializeField] private float offset = 70f;
 
         protected RectTransform _rectTransform;
-        protected Vector2 _previousPosition;
+        protected Vector2 _anchoredPoint;
         #endregion
 
         #region Properties
         public bool IsDragged { get; protected set; }
         public bool CanBeDragged { get; protected set; } = true;
-        public bool PointerOn
-        {
-            get { return PointerOn; }
-            set
-            {
-                if (value)
-                    SetPositionOnSelected(selectedOffset);
-                else
-                    SetPositionOnSelected(-selectedOffset);
-            }
-        }
         #endregion
 
         #region Builts_In
@@ -44,11 +32,9 @@ namespace _Scripts.GameplayFeatures
             if (!CanBeDragged)
                 return;
 
-            //Reset Card selection
-            SetPointerState(false);
             //Start Drag
             BeingDrag(true);
-            SetAnchoredPosition(_rectTransform.anchoredPosition);
+            _anchoredPoint = _rectTransform.anchoredPosition;
         }
 
         //Dragging
@@ -57,7 +43,7 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
-            FollowPointer(eventData.position);
+            transform.position = eventData.position;
         }
 
         //End drag
@@ -66,32 +52,8 @@ namespace _Scripts.GameplayFeatures
             if (!IsDragged)
                 return;
 
+            _rectTransform.anchoredPosition = _anchoredPoint;
             BeingDrag(false);
-            ResetToPreviousPosition();
-        }
-        #endregion
-
-        #region Pointer Interfaces
-        public virtual void OnPointerEnter(PointerEventData eventData) { SetPointerState(true); }
-
-        public virtual void OnPointerExit(PointerEventData eventData) { SetPointerState(false); }
-
-        /// <summary>
-        /// Indicates if the pointer is on/off the object
-        /// </summary>
-        /// <param name="state"></param>
-        protected void SetPointerState(bool state)
-        {
-            PointerOn = state;
-        }
-
-        /// <summary>
-        /// Set the position on the Y axis
-        /// </summary>
-        /// <param name="offset"> Y offset </param>
-        protected void SetPositionOnSelected(float offset)
-        {
-            _rectTransform.localPosition += new Vector3(0f, offset, 0f);
         }
         #endregion
 
@@ -102,38 +64,6 @@ namespace _Scripts.GameplayFeatures
         protected void BeingDrag(bool dragged)
         {
             IsDragged = dragged;
-        }
-
-        /// <summary>
-        /// SMoothly follow the mouse
-        /// </summary>
-        protected void FollowPointer(Vector2 position)
-        {
-            transform.position = position;
-        }
-
-        /// <summary>
-        /// Set the parent of this element
-        /// </summary>
-        public void SetElementParent(Transform parent)
-        {
-            transform.SetParent(parent);
-        }
-
-        /// <summary>
-        /// Set the last position of this UI element
-        /// </summary>
-        public void SetAnchoredPosition(Vector2 position)
-        {
-            _previousPosition = position;
-        }
-
-        /// <summary>
-        /// Reset the position of this UI element to the previous position sets
-        /// </summary>
-        public void ResetToPreviousPosition()
-        {
-            _rectTransform.anchoredPosition = _previousPosition;
         }
         #endregion
     }

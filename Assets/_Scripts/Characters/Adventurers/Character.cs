@@ -9,9 +9,7 @@ using _Scripts.Managers;
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
-using _ScriptableObjects.Adventurers;
 using _ScriptableObjects.Afflictions;
-using _Scripts.UI.Interfaces;
 
 namespace _Scripts.Characters
 {
@@ -21,9 +19,9 @@ namespace _Scripts.Characters
 
         #region References
         [FoldoutGroup("Stats")]
-        [Required, SerializeField] protected CharacterOverallDatas overallDatas;
+        [Required, SerializeField] protected CharactersProperties overallDatas;
         [FoldoutGroup("Stats")]
-        [Required, SerializeField] protected AdventurerDatas characterDatas;
+        [Required, SerializeField] protected AdventurerProperties characterDatas;
 
         [TitleGroup("Variables")]
         [SerializeField] protected FloatVariable skillCooldown;
@@ -34,8 +32,8 @@ namespace _Scripts.Characters
         #region Character
         public static event Action<Character> OnCharacterDeath;
 
-        private Coroutine _healthRecupRoutine;        
-        protected Coroutine _skillCoroutine;
+        private Coroutine _healthRecupRoutine;
+        protected Coroutine _skillRoutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
         #endregion
@@ -43,8 +41,8 @@ namespace _Scripts.Characters
         #endregion
 
         #region Properties
-        public CharacterOverallDatas OverallDatas => overallDatas;
-        public AdventurerDatas CharacterDatas => characterDatas;
+        public CharactersProperties OverallDatas => overallDatas;
+        public AdventurerProperties CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
         public AfflictionStatus CurrentAffliction { get; set; }
         public Transform LookAt { get; private set; }
@@ -70,7 +68,9 @@ namespace _Scripts.Characters
 
             base.OnEnable();
             InitializeCharacter();
+            //Events
             GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
+            TeleportationTool.OnTeleportSelected += TeleportPlayer;
         }
 
         public override void OnDisable()
@@ -79,7 +79,9 @@ namespace _Scripts.Characters
                 return;
 
             base.OnDisable();
+            //Events
             GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
+            TeleportationTool.OnTeleportSelected -= TeleportPlayer;
         }
 
         protected override void Update()
@@ -96,13 +98,12 @@ namespace _Scripts.Characters
         /// <summary>
         /// Teleport the player to a point
         /// </summary>
-        public void GetTeleported(Vector3 position)
+        private void TeleportPlayer(Transform teleportPoint)
         {
-            EnableInputs(false);
-            ResetCharacterVelocity();
-
-            transform.position = position;
-            InitializeCharacter();
+            gameObject.SetActive(false);
+            transform.position = teleportPoint.position;
+            transform.rotation = teleportPoint.rotation;
+            gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -120,6 +121,7 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
 
             RPCCall("ResetAnimatorRPC", RpcTarget.All);
+            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 
             skillCooldown.value = 0f;
         }
@@ -192,10 +194,14 @@ namespace _Scripts.Characters
 
         public void TouchedByAffliction(AfflictionStatus status)
         {
-            if (!ViewIsMine() || CurrentAffliction != status)
+            //Not my character
+            if (!ViewIsMine() || CurrentAffliction)
                 return;
 
-            StartAfflictionEffect(status);
+            //Status
+            Debug.LogWarning($"Affected by : {status}");
+            CurrentAffliction = status;
+            StartCoroutine("AfflictionRoutine");
         }
 
         public void Stunned(float duration)
@@ -298,16 +304,6 @@ namespace _Scripts.Characters
         #endregion
 
         #region Affliction Methods
-        /// <summary>
-        /// Apply a new affliction on the player if there isn't one
-        /// </summary>
-        /// <param name="status"></param>
-        private void StartAfflictionEffect(AfflictionStatus status)
-        {
-            CurrentAffliction = status;
-            StartCoroutine("AfflictionRoutine");
-        }
-
         /// <summary>
         /// Affliction effect duration
         /// </summary>
@@ -578,7 +574,7 @@ namespace _Scripts.Characters
                 return;
 
             OnSkillUsed?.Invoke();
-            _skillCoroutine = StartCoroutine(SkillCooldownRoutine());
+            _skillRoutine = StartCoroutine(SkillCooldownRoutine());
         }
 
         /// <summary>
@@ -595,7 +591,7 @@ namespace _Scripts.Characters
             }
 
             skillCooldown.value = 0f;
-            _skillCoroutine = null;
+            _skillRoutine = null;
             PlayerSM.SkillUsed = false;
             //Skill recovered
             OnSkillRecovered?.Invoke();

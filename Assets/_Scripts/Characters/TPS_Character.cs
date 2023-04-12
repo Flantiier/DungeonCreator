@@ -123,7 +123,7 @@ namespace _Scripts.Characters
         protected override void HandleEntityHealth(float damages)
         {
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
-            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
 
             if (CurrentHealth <= 0)
                 HandleEntityDeath();

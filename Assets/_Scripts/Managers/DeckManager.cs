@@ -98,9 +98,9 @@ namespace _Scripts.Managers
             //Get the first child
             Transform card = storageZone.GetChild(0);
             //Set its parent and child index
+            card.gameObject.SetActive(true);
             card.SetParent(cardZone);
             card.SetAsLastSibling();
-            card.gameObject.SetActive(true);
         }
 
         /// <summary>

@@ -1,24 +1,25 @@
+using System;
 using UnityEngine;
-using TMPro;
 
 namespace _Scripts.UI
 {
-	public class GameTimerDisplay : MonoBehaviour
-	{
-        [SerializeField] private TextMeshProUGUI textMeshPro;
-        [SerializeField] private FloatVariable timer;
-
-		private void Update()
-		{
-			UpdateText();
-		}
-
-        public void UpdateText()
+    public class GameTimerDisplay : VariableDisplayer
+    {
+        protected override void UpdateText()
         {
-            if (!timer || !textMeshPro)
+            if (!textMeshPro || !variable)
                 return;
 
-            textMeshPro.text = timer.value.ToString();
+            //Timer over 1 minut
+            if (variable.value > 60)
+            {
+                float seconds = variable.value % 60;
+                float minuts = Mathf.Floor(variable.value / 60);
+                textMeshPro.text = minuts.ToString("00") + ":" +  seconds.ToString("00");
+                return;
+            }
+            //Timer under 1 minut
+            textMeshPro.text = rounding.RoundValueInString(variable.value);
         }
     }
 }

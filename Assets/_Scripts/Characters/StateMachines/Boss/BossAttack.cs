@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using _ScriptableObjects.Curves;
+using _ScriptableObjects.Characters;
 using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.Characters.Animations.StateMachines.Boss

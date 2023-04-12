@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using _ScriptableObjects.DM;
+using _ScriptableObjects.Characters;
 //
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
@@ -18,7 +18,7 @@ namespace _Scripts.Characters.DungeonMaster
         public enum BossState { Walk, Attack }
 
         [FoldoutGroup("Stats")]
-        [Required, SerializeField] private BossDatas datas;
+        [Required, SerializeField] private BossProperties datas;
 
         private BossInputs _inputs;
         //Events

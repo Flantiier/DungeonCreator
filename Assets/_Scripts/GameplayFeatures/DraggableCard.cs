@@ -48,11 +48,12 @@ namespace _Scripts.GameplayFeatures
         }
         #endregion
 
-        #region Interfaces Implementation
+        #region Drag&Drop Interface
         public override void OnBeginDrag(PointerEventData eventData)
         {
             if (!CanBeDragged)
                 return;
+
             //Drag
             base.OnBeginDrag(eventData);
             _raycaster.raycastTarget = false;
@@ -92,9 +93,9 @@ namespace _Scripts.GameplayFeatures
 
             trapReference = reference;
             design.imageField.sprite = reference.image;
-            design.nameField.SetText(reference.trapName + " :");
+            design.nameField.SetText(reference.trapName);
             design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
-            //design.damageField.SetText(reference.damages.ToString());
+            design.damageField.SetText(reference.damages.ToString());
             design.manaField.SetText(reference.manaCost.ToString());
         }
 

@@ -24,6 +24,7 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         protected virtual void SetTrapHealth(float amount)
         {
+            Debug.Log($"Take Damages : {amount}");
             RPCCall("SetTrapHealthRPC", RpcTarget.AllViaServer, amount);
         }
 

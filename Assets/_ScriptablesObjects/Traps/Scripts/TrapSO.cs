@@ -25,20 +25,18 @@ namespace _ScriptableObjects.Traps
         public GameObject previewPrefab;
 
         //TILING PROPERTIES
-        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
-        [GUIColor(2, 0.5f, 0f)]
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100), GUIColor(0, 2, 0.5f)]
         [Range(1, 3)] public int xAmount = 1;
-        [BoxGroup("Gameplay/Tiles"), LabelWidth(100)]
-        [GUIColor(0f, 0.8f, 2)]
+        [BoxGroup("Gameplay/Tiles"), LabelWidth(100), GUIColor(0, 2, 0.5f)]
         [Range(1, 3)] public int yAmount = 1;
 
         //PROPERTIES
-        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
-        [LabelText("Trap type")]
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100), LabelText("Trap type")]
         public Tile.TilingType type = Tile.TilingType.Ground;
-        [BoxGroup("Gameplay/Type property"), LabelWidth(100)]
-        [Range(10f, 40f), GUIColor(3, 1, 2)]
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100), Range(10, 150), GUIColor(3, 1, 2)]
         public int manaCost = 25;
+        [BoxGroup("Properties"), LabelWidth(100), Range(10, 150), GUIColor(0, 1.5f, 2)]
+        public float damages = 25;
         #endregion
     }
 }
