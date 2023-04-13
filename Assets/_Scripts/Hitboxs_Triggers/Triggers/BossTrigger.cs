@@ -1,34 +1,55 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using _Scripts.Managers;
+using TMPro;
 using _Scripts.Characters;
 
 namespace _Scripts.Hitboxs_Triggers.Triggers
 {
     public class BossTrigger : ListingTrigger<Character>
     {
-        [Header("Trigger properties")]
-        [SerializeField] private int requiredNumb = 3;
+        [SerializeField] private TextMeshProUGUI textMesh;
+        [SerializeField] private GameEvent reachedBossEvent;
+
+        private void Awake()
+        {
+            textMesh.gameObject.SetActive(false);
+        }
 
         public override void OnTriggerEnter(Collider other)
         {
-            base.OnTriggerEnter(other);
+            if (!other.TryGetComponent(out Character character))
+                return;
 
+            //Add player to a list
+            base.OnTriggerEnter(other);
+            textMesh.gameObject.SetActive(true);
+
+            //Trigger boss fight if possible
             TriggerBossFight();
         }
 
+        public override void OnTriggerExit(Collider other)
+        {
+            if (!other.TryGetComponent(out Character character))
+                return;
+
+            base.OnTriggerExit(other);
+            textMesh.gameObject.SetActive(false);
+        }
+
+        [ContextMenu("Trigger boss fight")]
         private void TriggerBossFight()
         {
-            if (List.Count < requiredNumb)
+            /*int playerCount = PhotonNetwork.PlayerList.Length - 1;
+
+            if (List.Count < playerCount)
+            {
+                textMesh.text = $"En attente des autres joueurs.. {List.Count}/{playerCount}";
                 return;
+            }*/
 
-            gameObject.SetActive(false);
-
-            if (!PhotonNetwork.IsMasterClient)
-                return;
-
-            Debug.Log("Boss can be trigered");
-            BossFightManager.BossFightReached();
+            textMesh.text = "Lets go le boss";
+            reachedBossEvent.Raise();
         }
     }
 }

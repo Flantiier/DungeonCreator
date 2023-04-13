@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters;
+using UnityEditor;
 
 namespace _Scripts.Managers
 {
@@ -98,8 +99,7 @@ namespace _Scripts.Managers
         /// </summary>
         private void InstantiateBoss()
         {
-            GameObject instance = PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, Quaternion.identity);
-            instance.SetActive(false);
+            PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, Quaternion.identity);
         }
 
         /// <summary>
