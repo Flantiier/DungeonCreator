@@ -94,7 +94,6 @@ namespace _Scripts.GameplayFeatures
             trapReference = reference;
             design.imageField.sprite = reference.image;
             design.nameField.SetText(reference.trapName);
-            design.descriptionField.SetText(reference.description + $" ({reference.xAmount}x{reference.yAmount})");
             design.damageField.SetText(reference.damages.ToString());
             design.manaField.SetText(reference.manaCost.ToString());
         }
@@ -150,7 +149,6 @@ public struct CardDesign
 {
     public Image imageField;
     public TextMeshProUGUI nameField;
-    public TextMeshProUGUI descriptionField;
     public TextMeshProUGUI damageField;
     public TextMeshProUGUI manaField;
 }
