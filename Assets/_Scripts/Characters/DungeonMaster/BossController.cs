@@ -42,15 +42,32 @@ namespace _Scripts.Characters.DungeonMaster
 
             _inputs = new BossInputs();
             StateMachine = new BossState();
+
             //Init class
             FirstAbility = new Ability();
             SecondAbility = new Ability();
             //Camera
             _camera.gameObject.SetActive(false);
         }
+
+        public override void OnEnable() 
+        {
+            SubscribeInputActions();
+        }
+
+        public override void OnDisable()
+        {
+            UnsubscribeInputActions();
+            _inputs.Disable();
+        }
         #endregion
 
         #region Methods
+        public void EnableBoss()
+        {
+            _camera.gameObject.SetActive(true);
+            _inputs.Enable();
+        }
 
         #region Health
         protected override void HandleEntityDeath()

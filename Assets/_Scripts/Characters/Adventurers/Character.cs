@@ -10,6 +10,7 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
+using UnityEngine.UIElements;
 
 namespace _Scripts.Characters
 {
@@ -98,7 +99,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Teleport the player to a point
         /// </summary>
-        private void TeleportPlayer(Transform teleportPoint)
+        public void TeleportPlayer(Transform teleportPoint)
         {
             gameObject.SetActive(false);
             transform.position = teleportPoint.position;
