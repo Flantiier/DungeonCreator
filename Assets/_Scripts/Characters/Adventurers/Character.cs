@@ -71,7 +71,6 @@ namespace _Scripts.Characters
             InitializeCharacter();
             //Events
             GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
-            TeleportationTool.OnTeleportSelected += TeleportPlayer;
         }
 
         public override void OnDisable()
@@ -82,7 +81,6 @@ namespace _Scripts.Characters
             base.OnDisable();
             //Events
             GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
-            TeleportationTool.OnTeleportSelected -= TeleportPlayer;
         }
 
         protected override void Update()
