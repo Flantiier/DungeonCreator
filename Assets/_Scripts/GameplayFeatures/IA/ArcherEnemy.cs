@@ -126,6 +126,9 @@ namespace _Scripts.GameplayFeatures.IA
         /// </summary>
         public void ShootProjectile()
         {
+            if (!CurrentTarget)
+                return;
+
             //Calculates the direction of the projectile
             Vector3 direction = CurrentTarget.position - transform.position;
             Quaternion rotation = Quaternion.LookRotation(direction);
