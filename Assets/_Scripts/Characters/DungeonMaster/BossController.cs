@@ -50,13 +50,19 @@ namespace _Scripts.Characters.DungeonMaster
             _camera.gameObject.SetActive(false);
         }
 
-        public override void OnEnable() 
+        public override void OnEnable()
         {
+            if (!ViewIsMine())
+                return;
+
             SubscribeInputActions();
         }
 
         public override void OnDisable()
         {
+            if (!ViewIsMine())
+                return;
+
             UnsubscribeInputActions();
             _inputs.Disable();
         }
