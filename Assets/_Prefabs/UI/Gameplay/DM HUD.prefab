@@ -385,6 +385,7 @@ GameObject:
   - component: {fileID: 7569687184485671580}
   - component: {fileID: 7569687184485671581}
   - component: {fileID: 875362079197405119}
+  - component: {fileID: 1944773016684405710}
   m_Layer: 5
   m_Name: DM HUD
   m_TagString: Untagged
@@ -494,6 +495,34 @@ MonoBehaviour:
   cardZone: {fileID: 7569687184434278925}
   storageZone: {fileID: 8696134223839667441}
   cardInHand: 3
+--- !u!114 &1944773016684405710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7569687184485671582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: e1798e7c5ed6e52449b1e06084222fd2, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7569687184485671582}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8256706482944535496
 GameObject:
   m_ObjectHideFlags: 0
