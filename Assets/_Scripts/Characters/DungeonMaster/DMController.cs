@@ -65,6 +65,7 @@ namespace _Scripts.Characters.DungeonMaster
         #region Properties
         public static bool IsDragging { get; set; }
         public static DraggableCard SelectedCard { get; set; }
+        public GameObject MyCamera { get; private set; }
         #endregion
 
         #region Builts_In
@@ -93,6 +94,12 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region Methods
+        public void DisableCharacter()
+        {
+            MyCamera.SetActive(false);
+            transform.root.gameObject.SetActive(false);
+        }
+
         /// <summary>
         /// Create the inputs, the camera and sets variables
         /// </summary>
@@ -116,6 +123,7 @@ namespace _Scripts.Characters.DungeonMaster
 
             TopCamera camera = Instantiate(cameraPrefab);
             camera.SetLookAt(transform);
+            MyCamera = camera.gameObject;
         }
 
         #region Inputs
