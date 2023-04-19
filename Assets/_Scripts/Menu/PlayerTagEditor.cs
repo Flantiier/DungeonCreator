@@ -1,65 +1,68 @@
 using TMPro;
 using UnityEngine;
 
-public class PlayerTagEditor : MonoBehaviour
+namespace _Scripts.Menus
 {
-    #region Variables
-    [SerializeField] private TextMeshProUGUI textMesh;
-    [SerializeField] private TMP_InputField inputField;
-    #endregion
-
-    #region Builts_In
-    private void Awake()
+    public class PlayerTagEditor : MonoBehaviour
     {
-        GetCurrentTag();
-    }
-    #endregion
+        #region Variables
+        [SerializeField] private TextMeshProUGUI textMesh;
+        [SerializeField] private TMP_InputField inputField;
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Reset to the previous player tag
-    /// </summary>
-    public void GetCurrentTag()
-    {
-        textMesh.text = GetPlayerTag();
-    }
-
-    /// <summary>
-    /// Enable or disable the input field
-    /// </summary>
-    public void EditPlayerTag(bool state)
-    {
-        textMesh.gameObject.SetActive(!state);
-        inputField.gameObject.SetActive(state);
-    }
-
-    /// <summary>
-    /// Override the previous tag by the sibmitted one
-    /// </summary>
-    public void SubmitPlayerTag()
-    {
-        textMesh.text = inputField.text;
-        SavePlayerTag(textMesh.text);
-    }
-
-    #region PlayerPrefs
-    public string GetPlayerTag()
-    {
-        if (!PlayerPrefs.HasKey("PlayerTag"))
+        #region Builts_In
+        private void Awake()
         {
-            string tag = $"Player{Random.Range(0, 1000)}";
-            SavePlayerTag(tag);
-            return tag;
+            GetCurrentTag();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Reset to the previous player tag
+        /// </summary>
+        public void GetCurrentTag()
+        {
+            textMesh.text = GetPlayerTag();
         }
 
-        return PlayerPrefs.GetString("PlayerTag");
-    }
+        /// <summary>
+        /// Enable or disable the input field
+        /// </summary>
+        public void EditPlayerTag(bool state)
+        {
+            textMesh.gameObject.SetActive(!state);
+            inputField.gameObject.SetActive(state);
+        }
 
-    public void SavePlayerTag(string value)
-    {
-        PlayerPrefs.SetString("PlayerTag", value);
-    }
-    #endregion
+        /// <summary>
+        /// Override the previous tag by the sibmitted one
+        /// </summary>
+        public void SubmitPlayerTag()
+        {
+            textMesh.text = inputField.text;
+            SavePlayerTag(textMesh.text);
+        }
 
-    #endregion
+        #region PlayerPrefs
+        public string GetPlayerTag()
+        {
+            if (!PlayerPrefs.HasKey("PlayerTag"))
+            {
+                string tag = $"Player{Random.Range(0, 1000)}";
+                SavePlayerTag(tag);
+                return tag;
+            }
+
+            return PlayerPrefs.GetString("PlayerTag");
+        }
+
+        public void SavePlayerTag(string value)
+        {
+            PlayerPrefs.SetString("PlayerTag", value);
+        }
+        #endregion
+
+        #endregion
+    }
 }
