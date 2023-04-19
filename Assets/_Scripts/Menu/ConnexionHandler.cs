@@ -1,17 +1,14 @@
-using System.Collections;
-using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
+using UnityEngine;
+using _Scripts.UI;
+using _Scripts.Managers;
 
 namespace _Scripts.Menus
 {
-
     public class ConnexionHandler : MonoBehaviourPunCallbacks
     {
         [SerializeField] private string lobbyScene;
-        [SerializeField] private GameEvent onConnectedEvent;
-
-        private AsyncOperation _asyncOperation;
+        [SerializeField] private AnimatedTextField textField;
 
         private void Awake()
         {
@@ -22,22 +19,14 @@ namespace _Scripts.Menus
         {
             Debug.Log("Connected to master");
             PhotonNetwork.JoinLobby();
+            textField.SetBaseText("Joining lobby");
         }
 
         public override void OnJoinedLobby()
         {
             Debug.Log("Lobby joined");
-            StartCoroutine(LoadSceneAsync());
-        }
-
-        private IEnumerator LoadSceneAsync()
-        {
-            _asyncOperation = SceneManager.LoadSceneAsync(lobbyScene);
-
-            while (!_asyncOperation.isDone)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
+            textField.SetBaseText("Chargement du menu");
+            SceneLoader.Instance.LoadSceneAsync(lobbyScene);
         }
     }
 }
