@@ -2,11 +2,16 @@ using Photon.Pun;
 using UnityEngine;
 using _Scripts.UI;
 using _Scripts.Managers;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.Menus
 {
     public class ConnexionHandler : MonoBehaviourPunCallbacks
     {
+        [TitleGroup("References")]
+        [SerializeField] private SceneLoader sceneLoader;
+
+        [TitleGroup("UI")]
         [SerializeField] private string lobbyScene;
         [SerializeField] private AnimatedTextField textField;
 
@@ -26,7 +31,7 @@ namespace _Scripts.Menus
         {
             Debug.Log("Lobby joined");
             textField.SetBaseText("Chargement du menu");
-            SceneLoader.Instance.LoadSceneAsync(lobbyScene);
+            sceneLoader.LoadSceneAsync(lobbyScene);
         }
     }
 }

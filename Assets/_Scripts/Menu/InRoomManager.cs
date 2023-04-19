@@ -5,14 +5,14 @@ using Photon.Pun;
 using Photon.Realtime;
 
 public class InRoomManager : MonoBehaviourPunCallbacks
-{
+{/*
     [Header("References")]
     [Tooltip("Referencing the text to display the roomName")]
     [SerializeField] private TextMeshProUGUI roomName;
     [Tooltip("Referencing the tag prefab for the DungeonMaster")]
-    [SerializeField] private PlayerTag dungeonMasterTag;
+    [SerializeField] private PlayerTagEditor dungeonMasterTag;
     [Tooltip("Referencing the tag prefab for the Adventurer")]
-    [SerializeField] private PlayerTag[] adventurerTags;
+    [SerializeField] private PlayerTagEditor[] adventurerTags;
     [Tooltip("Referencing the transform of the playerList")]
     [SerializeField] private Transform playerList;
 
@@ -108,7 +108,7 @@ public class InRoomManager : MonoBehaviourPunCallbacks
         else
         {
             //For each adventurer ag
-            foreach (PlayerTag tag in adventurerTags)
+            foreach (PlayerTagEditor tag in adventurerTags)
             {
                 if (tag.playerInstance == null)
                 {
@@ -150,7 +150,7 @@ public class InRoomManager : MonoBehaviourPunCallbacks
     {
         dungeonMasterTag.ResetTag();
 
-        foreach (PlayerTag tag in adventurerTags)
+        foreach (PlayerTagEditor tag in adventurerTags)
             tag.ResetTag();
 
         _players = new List<PlayerInstance>();
@@ -207,5 +207,5 @@ public class InRoomManager : MonoBehaviourPunCallbacks
     {
         ResetRoomInfo();
     }
-    #endregion
+    #endregion*/
 }

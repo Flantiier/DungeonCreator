@@ -4,12 +4,20 @@ using UnityEngine.SceneManagement;
 
 namespace _Scripts.Managers
 {
-	public class SceneLoader : PersistentSingleton<SceneLoader>
+	public class SceneLoader : MonoBehaviour
 	{
 		/// <summary>
 		/// The current async operation running
 		/// </summary>
 		public AsyncOperation AsyncOperation { get; private set; }
+
+		/// <summary>
+		/// Quit application
+		/// </summary>
+		public void Quit()
+		{
+			Application.Quit();
+		}
 
 		/// <summary>
 		/// Loading a given scene
@@ -28,6 +36,7 @@ namespace _Scripts.Managers
 		{
 			StartCoroutine(AsyncLoadingRoutine(sceneName));
 		}
+
 
 		/// <summary>
 		/// Async Loading routine 
