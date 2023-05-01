@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,8 +6,6 @@ namespace _Scripts.GameplayFeatures
     public class DraggableUIElement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         #region Variables/Properties
-        [SerializeField] private float offset = 70f;
-
         protected RectTransform _rectTransform;
         protected Vector2 _anchoredPoint;
         #endregion
