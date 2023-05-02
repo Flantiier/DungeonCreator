@@ -1,13 +1,17 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.UI.Menus
 {
-    public class CardSlot : MonoBehaviour, IDropHandler
+    public class CardSlot : MonoBehaviour
     {
-        public void OnDrop(PointerEventData eventData)
-        {
+        [ShowInInspector]
+        public DraggableCardMenu CardInSlot { get; set; }
 
+        public void SetCardInSlot(DraggableCardMenu card)
+        {
+            CardInSlot = card;
+            card.OccupedSlot = this;
         }
     }
 }

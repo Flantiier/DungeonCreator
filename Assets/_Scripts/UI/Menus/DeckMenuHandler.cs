@@ -1,9 +1,10 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.GameManagement;
 using _ScriptableObjects.Traps;
+using UnityEngine.UI;
+using UnityEditor;
+using Unity.Transforms;
 
 namespace _Scripts.UI.Menus
 {
@@ -11,11 +12,12 @@ namespace _Scripts.UI.Menus
 	{
 		[TitleGroup("References")]
 		[SerializeField] private CardsDataBase dataBase;
-		[SerializeField] private GameObject cardPrefab;
+		[SerializeField] private DraggableCardMenu cardPrefab;
+		[SerializeField] private Transform cards;
 
-		[TitleGroup("UI")]
-		[SerializeField] private Transform layoutButtonParent;
-		[SerializeField] private Transform cardsPool;
+        [TitleGroup("Slots")]
+		[SerializeField] private CardSlot slotPrefab;
+		[SerializeField] private Transform slots;
 
         #region Builts_In
         private void Start()
@@ -33,55 +35,52 @@ namespace _Scripts.UI.Menus
 			if (dataBase.cards.Length <= 0 || !cardPrefab)
 				return;
 
-			foreach (TrapSO trap in dataBase.cards)
+			for (int i = 0; i < dataBase.cards.Length; i++)
 			{
-				if (!trap)
-				{
-					Debug.LogWarning("Msising card");
-					continue;
-				}
+				TrapSO trap = dataBase.cards[i];
 
-				InstantiateCardInPool(trap);
-			}
+				//Missing trap error
+                if (!trap)
+                {
+                    Debug.LogError("Missing card");
+                    continue;
+                }
+
+                CreateCard(i);
+            }
 		}
 
 		/// <summary>
-		/// Instantiate a new card prefab the pool
+		/// Instantiate a new Card
 		/// </summary>
-		private void InstantiateCardInPool(TrapSO trap)
+		private void CreateCard(int i)
 		{
-			GameObject instance = Instantiate(cardPrefab);
-
-			//Set parent
-			for (int i = cardsPool.childCount - 1; i >= 0; i--)
-			{
-				Transform child = cardsPool.GetChild(i);
-
-				if (child.childCount >= 1)
-					continue;
-
-				instance.transform.SetParent(child);
-				instance.transform.localPosition = Vector3.zero;
-				instance.transform.localScale = Vector3.one;
-			}
+			DraggableCardMenu card = Instantiate(cardPrefab, cards);
+			CardSlot slot = slots.GetChild(i).transform.GetComponent<CardSlot>();
+            card.transform.position = slot.transform.position;
+			slot.SetCardInSlot(card);
 		}
+
+		#region Editor
+#if UNITY_EDITOR
+		[Button("Update Slots")]
+		private void CreateSlots()
+        {
+			//Destroy all children
+            var tempArray = new GameObject[slots.childCount];
+            for (int i = 0; i < tempArray.Length; i++)
+                tempArray[i] = slots.GetChild(i).gameObject;
+
+            foreach (var child in tempArray)
+                DestroyImmediate(child);
+
+			//Create slots
+			for (int i = 0; i < dataBase.cards.Length; i++)
+				PrefabUtility.InstantiatePrefab(slotPrefab, slots);
+		}
+#endif
         #endregion
 
-        #region Editor
-#if UNITY_EDITOR
-        [Button("Init Buttons")]
-		private void InitalizeButtons()
-		{
-			if (!layoutButtonParent)
-				return;
-
-			Button[] buttons = layoutButtonParent.GetComponentsInChildren<Button>();
-			for (int i = 0; i < buttons.Length; i++)
-				buttons[i].GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString();
-		}
-
-
-#endif
-#endregion
-	}
+        #endregion
+    }
 }
