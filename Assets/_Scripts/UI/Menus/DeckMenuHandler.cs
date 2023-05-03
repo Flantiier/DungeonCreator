@@ -173,20 +173,26 @@ namespace _Scripts.UI.Menus
         [Button("Update Slots")]
         private void CreateSlots()
         {
-            for (int i = 0; i < dataBase.cards.Length; i++)
+            ClearChilds();
+
+            //Deck slots
+            for (int i = 0; i < dataBase.deckLength; i++)
             {
                 Object instance = PrefabUtility.InstantiatePrefab(slotPrefab);
+                instance.GetComponent<Transform>().SetParent(deckSlots);
+                instance.name += $"_{deckSlots.childCount}";
 
-                if (i <= dataBase.deckLength - 1)
-                {
-                    instance.GetComponent<Transform>().SetParent(deckSlots);
-                    instance.name += $"_{deckSlots.childCount}";
-                }
-                else
-                {
-                    instance.GetComponent<Transform>().SetParent(slots);
-                    instance.name += $"_{slots.childCount}";
-                }
+                //Reset scale
+                instance.GetComponent<Transform>().localScale = Vector3.one;
+            }
+
+            //All slots
+            int slotsAmount = (Mathf.CeilToInt(dataBase.cards.Length / 4f)) * 4;
+            for (int i = 0; i < slotsAmount; i++)
+            {
+                Object instance = PrefabUtility.InstantiatePrefab(slotPrefab);
+                instance.GetComponent<Transform>().SetParent(slots);
+                instance.name += $"_{slots.childCount}";
 
                 //Reset scale
                 instance.GetComponent<Transform>().localScale = Vector3.one;
