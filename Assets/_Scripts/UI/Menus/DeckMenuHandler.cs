@@ -5,12 +5,12 @@ using UnityEditor;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
+using TMPro;
 //
 using Utils;
 using _ScriptableObjects.GameManagement;
 using _ScriptableObjects.UserDatas;
 using _ScriptableObjects.Traps;
-using ExitGames.Client.Photon;
 
 namespace _Scripts.UI.Menus
 {
@@ -20,6 +20,9 @@ namespace _Scripts.UI.Menus
         [Header("Datas")]
         [SerializeField] private CardsDataBase dataBase;
         [SerializeField] private DeckProflieSO deck;
+
+        [TitleGroup("GUI")]
+        [SerializeField] private DeckMenuGUI GUI;
 
         [TitleGroup("Cards")]
         [SerializeField] private DraggableCardMenu cardPrefab;
@@ -32,6 +35,7 @@ namespace _Scripts.UI.Menus
         #endregion
 
         #region Properties
+        public static event System.Action<TrapSO> OnUpdate;
         public HashSet<DraggableCardMenu> Pool { get; set; } = new HashSet<DraggableCardMenu>();
         #endregion
 
@@ -40,10 +44,23 @@ namespace _Scripts.UI.Menus
         {
             InstantiateCards();
             ArrangeDeck(deck);
+            UpdateGUI(Pool.ElementAt(0).TrapReference);
+        }
+
+        private void OnEnable()
+        {
+            OnUpdate += UpdateGUI;
+        }
+
+        private void OnDisable()
+        {
+            OnUpdate -= UpdateGUI;
         }
         #endregion
 
         #region Methods
+
+        #region Slots & Cards
         /// <summary>
         /// Instantiate all the references cards from the dataBase
         /// </summary>
@@ -85,8 +102,6 @@ namespace _Scripts.UI.Menus
             //Arrange in deck and pool
             foreach (DraggableCardMenu item in Pool)
             {
-                Debug.Log(deck.ContainsCard(item.TrapReference));
-
                 if (deck.ContainsCard(item.TrapReference))
                     tempDeck.Add(item);
                 else
@@ -123,6 +138,26 @@ namespace _Scripts.UI.Menus
         }
         #endregion
 
+        #region GUI Infos
+        public static void RaiseUpdateGUI(TrapSO SO)
+        {
+            OnUpdate?.Invoke(SO);
+        }
+
+        private void UpdateGUI(TrapSO reference)
+        {
+            GUI.design.imageField.sprite = reference.image;
+            GUI.design.nameField.SetText(reference.trapName);
+            GUI.design.damageField.SetText(reference.damages.ToString());
+            GUI.design.manaField.SetText(reference.manaCost.ToString());
+            GUI.description.SetText(reference.description);
+            GUI.type.SetText(reference.type.ToString());
+            GUI.tiling.SetText($"{reference.xAmount} x {reference.yAmount}");
+        }
+        #endregion
+
+        #endregion
+
         #region Editor
 #if UNITY_EDITOR
         [Button("Clean Slots")]
@@ -156,5 +191,14 @@ namespace _Scripts.UI.Menus
         }
 #endif
         #endregion
+    }
+
+    [System.Serializable]
+    public struct DeckMenuGUI
+    {
+        public CardDesign design;
+        public TextMeshProUGUI description;
+        public TextMeshProUGUI type;
+        public TextMeshProUGUI tiling;
     }
 }

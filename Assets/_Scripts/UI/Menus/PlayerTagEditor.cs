@@ -29,10 +29,11 @@ namespace _Scripts.Menus
         /// <summary>
         /// Enable or disable the input field
         /// </summary>
-        public void EditPlayerTag(bool state)
+        public void EditPlayerTag()
         {
-            textMesh.gameObject.SetActive(!state);
-            inputField.gameObject.SetActive(state);
+            textMesh.gameObject.SetActive(!textMesh.gameObject.activeSelf);
+            inputField.gameObject.SetActive(!inputField.gameObject.activeSelf);
+            inputField.text = GetPlayerTag();
         }
 
         /// <summary>

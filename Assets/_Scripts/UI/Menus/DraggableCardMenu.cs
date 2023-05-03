@@ -4,7 +4,7 @@ using _ScriptableObjects.Traps;
 
 namespace _Scripts.UI.Menus
 {
-    public class DraggableCardMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
+    public class DraggableCardMenu : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
         #region Variables
         [SerializeField] private float dragAlpha = 0.75f;
@@ -25,8 +25,18 @@ namespace _Scripts.UI.Menus
         #endregion
 
         #region Drag&Drop
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            //Update infos
+            DeckMenuHandler.RaiseUpdateGUI(TrapReference);
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
+            //Update infos
+            DeckMenuHandler.RaiseUpdateGUI(TrapReference);
+
+            //start drag
             transform.SetAsLastSibling();
             _canvasGroup.alpha = dragAlpha;
             _canvasGroup.blocksRaycasts = false;
