@@ -1,3 +1,4 @@
+using Unity.Transforms;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,6 +19,19 @@ namespace Utils
 
 #if UNITY_EDITOR
         #region Editor
+        public static void DestroyAllChildren(Transform parent)
+        {
+            if (parent.childCount <= 0)
+                return;
+
+            var tempArray = new GameObject[parent.childCount];
+            for (int i = 0; i < tempArray.Length; i++)
+                tempArray[i] = parent.GetChild(i).gameObject;
+
+            foreach (var child in tempArray)
+                GameObject.DestroyImmediate(child);
+        }
+
         /// <summary>
         /// Indicates if the given scene exists and is set up in the build settings
         /// </summary>

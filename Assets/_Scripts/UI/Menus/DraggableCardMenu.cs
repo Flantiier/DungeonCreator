@@ -1,14 +1,18 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using _ScriptableObjects.Traps;
 
 namespace _Scripts.UI.Menus
 {
     public class DraggableCardMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
         #region Variables
+        [SerializeField] private float dragAlpha = 0.75f;
+        [SerializeField] private CardDesign design;
+
         private CanvasGroup _canvasGroup;
-        private bool _swaped;
         public RectTransform RectTransform { get; private set; }
+        [Sirenix.OdinInspector.ShowInInspector] public TrapSO TrapReference { get; set; }
         [Sirenix.OdinInspector.ShowInInspector] public CardSlot OccupedSlot { get; set; }
         #endregion
 
@@ -23,6 +27,8 @@ namespace _Scripts.UI.Menus
         #region Drag&Drop
         public void OnBeginDrag(PointerEventData eventData)
         {
+            transform.SetAsLastSibling();
+            _canvasGroup.alpha = dragAlpha;
             _canvasGroup.blocksRaycasts = false;
         }
 
@@ -33,25 +39,36 @@ namespace _Scripts.UI.Menus
 
         public void OnDrop(PointerEventData eventData)
         {
-            if (!eventData.pointerDrag.TryGetComponent(out DraggableCardMenu card))
+            if (!eventData.pointerDrag.TryGetComponent(out DraggableCardMenu card) || !OccupedSlot)
                 return;
 
-            _swaped = true;
             SwapCards(card);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
-
-            if (_swaped)
-                _swaped = false;
-            else
-                RectTransform.position = OccupedSlot.transform.position;
+            RectTransform.position = OccupedSlot.transform.position;
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Update card design (Name, image, etc)
+        /// </summary>
+        public void UpdateCardInfos(TrapSO reference)
+        {
+            if (!reference)
+                return;
+
+            TrapReference = reference;
+            design.imageField.sprite = reference.image;
+            design.nameField.SetText(reference.trapName);
+            design.damageField.SetText(reference.damages.ToString());
+            design.manaField.SetText(reference.manaCost.ToString());
+        }
+
         private void SwapCards(DraggableCardMenu card)
         {
             //1 => Store the two slots of these cards
