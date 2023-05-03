@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -40,8 +41,10 @@ namespace _Scripts.UI.Menus
         #endregion
 
         #region Builts_In
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return new WaitForSecondsRealtime(0.02f);
+
             InstantiateCards();
             ArrangeDeck(deck);
             UpdateGUI(Pool.ElementAt(0).TrapReference);

@@ -33,9 +33,6 @@ namespace _Scripts.UI.Menus
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            //Update infos
-            DeckMenuHandler.RaiseUpdateGUI(TrapReference);
-
             //start drag
             transform.SetAsLastSibling();
             _canvasGroup.alpha = dragAlpha;
