@@ -1,12 +1,13 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
-using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using TMPro;
+using Sirenix.OdinInspector;
 //
 using Utils;
 using _ScriptableObjects.GameManagement;
@@ -22,129 +23,278 @@ namespace _Scripts.UI.Menus
         [SerializeField] private CardsDataBase dataBase;
         [SerializeField] private DeckProflieSO deck;
 
-        [TitleGroup("GUI")]
+        [FoldoutGroup("GUI")]
         [SerializeField] private DeckMenuGUI GUI;
+        [FoldoutGroup("GUI")]
+        [SerializeField] private GameObject slotBackground;
+        [FoldoutGroup("GUI")]
+        [SerializeField] private Transform gridGroup;
+        [FoldoutGroup("GUI")]
+        [SerializeField] private Transform deckGroup;
+        [FoldoutGroup("GUI")]
+        [SerializeField] private CardGUI dragCard;
 
-        [TitleGroup("Cards")]
-        [SerializeField] private DraggableCardMenu cardPrefab;
-        [SerializeField] private Transform cardsPool;
-
-        [TitleGroup("Slots")]
+        [FoldoutGroup("Slots")]
         [SerializeField] private CardSlot slotPrefab;
-        [SerializeField] private Transform deckSlots;
-        [SerializeField] private Transform slots;
+        [FoldoutGroup("Slots")]
+        [SerializeField] private Transform slotsPool;
+        [FoldoutGroup("Slots")]
+        [SerializeField] private Transform deckPool;
+
+        private readonly HashSet<CardSlot> _cardsPool = new HashSet<CardSlot>();
+        private readonly HashSet<CardSlot> _deckSlots = new HashSet<CardSlot>();
         #endregion
 
-        #region Properties
-        public static event System.Action<TrapSO> OnUpdate;
-        public HashSet<DraggableCardMenu> Pool { get; set; } = new HashSet<DraggableCardMenu>();
+        #region Events
+        public static event Action<TrapSO> OnStartDrag;
+        public static event Action OnEndDrag;
+        public static event Action<CardSlot, CardSlot> OnSwapCards;
+        public static event Action<TrapSO> OnUpdateGUI;
         #endregion
 
         #region Builts_In
+        private void Awake()
+        {
+            dragCard.gameObject.SetActive(false);
+        }
+
         private IEnumerator Start()
         {
             yield return new WaitForSecondsRealtime(0.02f);
 
-            InstantiateCards();
-            ArrangeDeck(deck);
-            UpdateGUI(Pool.ElementAt(0).TrapReference);
+            InstantiateAllSlots();
+            ArrangeAllSlots(deck);
+        }
+
+        private void Update()
+        {
+            if (!dragCard)
+                return;
+
+            if (!dragCard.gameObject.activeSelf)
+                return;
+
+            dragCard.transform.position = Input.mousePosition;
         }
 
         private void OnEnable()
         {
-            OnUpdate += UpdateGUI;
+            OnStartDrag += StartDragging;
+            OnEndDrag += EndDragging;
+            OnSwapCards += SwappingCards;
+            OnUpdateGUI += UpdateGUI;
         }
 
         private void OnDisable()
         {
-            OnUpdate -= UpdateGUI;
+            OnStartDrag -= StartDragging;
+            OnEndDrag -= EndDragging;
+            OnSwapCards -= SwappingCards;
+            OnUpdateGUI -= UpdateGUI;
+        }
+
+        private void OnDestroy()
+        {
+            OverriteDeck();
         }
         #endregion
 
         #region Methods
 
+        #region Deck Save
+        public void NewDeckSelected(DeckProflieSO _deck)
+        {
+            if (_deck == deck)
+                return;
+
+            deck = _deck;
+            ArrangeAllSlots(deck);
+        }
+
+        /// <summary>
+        /// Override the deck with the cards in deck slots
+        /// </summary>
+        private void OverriteDeck()
+        {
+            for (int i = 0; i < _deckSlots.Count; i++)
+                OverriteCard(i);
+        }
+
+        /// <summary>
+        /// overrite a card in the deck
+        /// </summary>
+        private void OverriteCard(int i)
+        {
+            deck.cards[i] = _deckSlots.ElementAt(i).Trap;
+        }
+        #endregion
+
         #region Slots & Cards
         /// <summary>
         /// Instantiate all the references cards from the dataBase
         /// </summary>
-        private void InstantiateCards()
+        private void InstantiateAllSlots()
         {
-            if (dataBase.cards.Length <= 0 || !cardPrefab)
+            if (dataBase.elements.Length <= 0)
                 return;
 
-            for (int i = 0; i < dataBase.cards.Length; i++)
+            //Loop through dataBase to instantiate each card
+            for (int i = 0; i < dataBase.elements.Length; i++)
             {
-                TrapSO trap = dataBase.cards[i];
+                DataBaseElement element = dataBase.elements[i];
 
                 //Missing trap error
-                if (!trap)
+                if (!element.card)
                 {
                     Debug.LogError("Missing card");
                     continue;
                 }
 
-                DraggableCardMenu instance = CreateCard(trap);
-                Pool.Add(instance);
+                CardSlot instance = CreateNewSlot(element.card, slotsPool);
+                _cardsPool.Add(instance);
+                instance.PoolSlot = true;
+                instance.SetCardsAmount(element.maxAmount);
+            }
+
+            //Instantiate deck slots based on dataBase values
+            for (int i = 0; i < dataBase.deckLength; i++)
+            {
+                CardSlot slot = CreateNewSlot(null, deckPool);
+                _deckSlots.Add(slot);
+                slot.DisableGUI();
             }
         }
 
-        /// <summary>
-        /// Arrange cards in slot based on a given deck profile
-        /// </summary>
-        private void ArrangeDeck(DeckProflieSO deck)
+        private CardSlot CreateNewSlot(TrapSO trap, Transform parent)
         {
+            CardSlot instance = Instantiate(slotPrefab, parent);
+            instance.UpdateInfos(trap);
+            return instance;
+        }
+
+        /// <summary>
+        /// Set correctly all the slots based on the grid elements
+        /// </summary>
+        /// <param name="deck"></param>
+        private void ArrangeAllSlots(DeckProflieSO deck)
+        {
+            //Mising deck
             if (!deck)
             {
-                Debug.LogWarning("Missing deck reference");
+                Debug.LogWarning("Missing deck");
                 return;
             }
 
-            HashSet<DraggableCardMenu> tempDeck = new HashSet<DraggableCardMenu>(dataBase.deckLength);
-            HashSet<DraggableCardMenu> temp = new HashSet<DraggableCardMenu>(dataBase.cards.Length - deck.cards.Length);
-
-            //Arrange in deck and pool
-            foreach (DraggableCardMenu item in Pool)
+            // 1 => Reset et Mettre toutes les cartes dans les slots
+            for (int i = 0; i < _cardsPool.Count; i++)
             {
-                if (deck.ContainsCard(item.TrapReference))
-                    tempDeck.Add(item);
-                else
-                    temp.Add(item);
+                CardSlot item = _cardsPool.ElementAt(i);
+                item.transform.position = gridGroup.GetChild(i).position;
+                item.ResetCardAmount();
             }
 
-            ArrangeInSlots(tempDeck, deckSlots);
-            ArrangeInSlots(temp, slots);
+            // 2 => Mettre les cartes du deck dans les slots deck
+            GetDeckCards(deck);
         }
 
         /// <summary>
-        /// Arrange some cards in slots from a group
+        /// Get deck cards in the pool
         /// </summary>
-        private void ArrangeInSlots(HashSet<DraggableCardMenu> collection, Transform group)
+        private void GetDeckCards(DeckProflieSO deck)
         {
-            for (int i = 0; i < group.childCount; i++)
+            int x = 0;
+            foreach (TrapSO SO in deck.cards)
             {
-                Transform child = group.GetChild(i);
-                DraggableCardMenu card = collection.ElementAt(i);
+                for (int i = 0; i < _cardsPool.Count; i++)
+                {
+                    CardSlot slot = _cardsPool.ElementAt(i);
+                    //Not the right trap
+                    if (slot.Trap != SO)
+                        continue;
 
-                card.transform.position = child.position;
-                child.GetComponent<CardSlot>().SetCardInSlot(card);
+                    if (slot.CurrentAmount <= 0)
+                    {
+                        //Looking fro an available trap
+                        Debug.LogWarning("A card was took randomly because of multiple cards error");
+
+                        for (int j = _cardsPool.Count - 1; j >= 0; j--)
+                        {
+                            CardSlot temp = _cardsPool.ElementAt(j);
+                            if (temp.CurrentAmount <= 0)
+                                continue;
+
+                            slot = temp;
+                        }
+                    }
+
+                    //Place a deck slot
+                    CardSlot deckSlot = _deckSlots.ElementAt(x);
+                    deckSlot.transform.position = deckGroup.GetChild(x).position;
+                    deckSlot.UpdateInfos(slot.Trap);
+                    x++;
+
+                    //Remove a card from the pool
+                    slot.DecreaseCardAmount();
+                }
             }
         }
 
         /// <summary>
-        /// Instantiate a new Card
+        /// Swap between two cards (one from the pool, one from the deck)
         /// </summary>
-        private DraggableCardMenu CreateCard(TrapSO trap)
+        private void SwappingCards(CardSlot from, CardSlot to)
         {
-            DraggableCardMenu card = Instantiate(cardPrefab, cardsPool);
-            card.UpdateCardInfos(trap);
-            return card;
+            // 1 => Trouver qui est le slot deck et qui est le slot pool
+            CardSlot tempDeck;
+            CardSlot tempPool;
+
+            if (from.PoolSlot) { tempPool = from; tempDeck = to; }
+            else { tempPool = to; tempDeck = from; }
+
+            // 2 => Trouve l'element dans la liste pool en reference a la carte pool
+            _cardsPool.TryGetValue(tempPool, out CardSlot poolSlot);
+            // 3 => Trouve l'element dans la liste deck en reference a la carte deck
+            _deckSlots.TryGetValue(tempDeck, out CardSlot deckSlot);
+            // 4 => Trouve l'element dans la liste pool en reference a la carte deck
+            TrapSO temp = tempDeck.Trap;
+
+            // 5 => Met la carte pool dans deck
+            deckSlot.UpdateInfos(tempPool.Trap);
+            // 6 => Enleve 1 carte pool dans celles de la pool
+            poolSlot.DecreaseCardAmount();
+            // 7 => Ajoute une carte deck dans celles de la pool
+            foreach (CardSlot item in _cardsPool)
+            {
+                if (item.Trap != temp)
+                    continue;
+
+                item.IncreaseCardAmount();
+            }
+            // 8 => Change the card in the deck
+            for (int k = 0; k < _deckSlots.Count; k++)
+            {
+                if (_deckSlots.ElementAt(k) != deckSlot)
+                    continue;
+
+                OverriteCard(k);
+            }
         }
         #endregion
 
-        #region GUI Infos
-        public static void RaiseUpdateGUI(TrapSO SO)
+        #region GUI Feeedbacks
+        private void StartDragging(TrapSO SO)
         {
-            OnUpdate?.Invoke(SO);
+            if (!dragCard)
+                return;
+
+            dragCard.gameObject.SetActive(true);
+            dragCard.transform.position = Input.mousePosition;
+            dragCard.UpdateInfos(SO);
+        }
+
+        private void EndDragging()
+        {
+            dragCard.gameObject.SetActive(false);
         }
 
         private void UpdateGUI(TrapSO reference)
@@ -159,6 +309,28 @@ namespace _Scripts.UI.Menus
         }
         #endregion
 
+        #region Static Methods
+        public static void InvokeStartDrag(TrapSO SO)
+        {
+            OnStartDrag?.Invoke(SO);
+        }
+
+        public static void InvokeEndDrag()
+        {
+            OnEndDrag?.Invoke();
+        }
+
+        public static void InvokeUpdateGUI(TrapSO SO)
+        {
+            OnUpdateGUI?.Invoke(SO);
+        }
+
+        public static void InvokeSwappingEvent(CardSlot from, CardSlot to)
+        {
+            OnSwapCards?.Invoke(from, to);
+        }
+        #endregion
+
         #endregion
 
         #region Editor
@@ -166,8 +338,8 @@ namespace _Scripts.UI.Menus
         [Button("Clean Slots")]
         private void ClearChilds()
         {
-            Utilities.DestroyAllChildren(slots);
-            Utilities.DestroyAllChildren(deckSlots);
+            Utilities.DestroyAllChildren(gridGroup);
+            Utilities.DestroyAllChildren(deckGroup);
         }
 
         [Button("Update Slots")]
@@ -178,21 +350,21 @@ namespace _Scripts.UI.Menus
             //Deck slots
             for (int i = 0; i < dataBase.deckLength; i++)
             {
-                Object instance = PrefabUtility.InstantiatePrefab(slotPrefab);
-                instance.GetComponent<Transform>().SetParent(deckSlots);
-                instance.name += $"_{deckSlots.childCount}";
+                UnityEngine.Object instance = PrefabUtility.InstantiatePrefab(slotBackground);
+                instance.GetComponent<Transform>().SetParent(deckGroup);
+                instance.name += $"_{deckGroup.childCount}";
 
                 //Reset scale
                 instance.GetComponent<Transform>().localScale = Vector3.one;
             }
 
             //All slots
-            int slotsAmount = (Mathf.CeilToInt(dataBase.cards.Length / 4f)) * 4;
+            int slotsAmount = (Mathf.CeilToInt(dataBase.elements.Length / 4f)) * 4;
             for (int i = 0; i < slotsAmount; i++)
             {
-                Object instance = PrefabUtility.InstantiatePrefab(slotPrefab);
-                instance.GetComponent<Transform>().SetParent(slots);
-                instance.name += $"_{slots.childCount}";
+                UnityEngine.Object instance = PrefabUtility.InstantiatePrefab(slotBackground);
+                instance.GetComponent<Transform>().SetParent(gridGroup);
+                instance.name += $"_{gridGroup.childCount}";
 
                 //Reset scale
                 instance.GetComponent<Transform>().localScale = Vector3.one;

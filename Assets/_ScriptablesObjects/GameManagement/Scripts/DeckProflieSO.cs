@@ -13,7 +13,7 @@ namespace _ScriptableObjects.UserDatas
 		[TitleGroup("Deck Profile")]
         public TrapSO[] cards = new TrapSO[6];
 
-		public bool ContainsCard(TrapSO reference)
+		public bool Contains(TrapSO reference)
 		{
 			return cards.Contains(reference);
 		}
