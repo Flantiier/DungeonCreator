@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
-using _ScriptableObjects.UserDatas;
 using _Scripts.GameplayFeatures;
+using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {

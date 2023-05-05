@@ -11,7 +11,6 @@ using Sirenix.OdinInspector;
 //
 using Utils;
 using _ScriptableObjects.GameManagement;
-using _ScriptableObjects.UserDatas;
 using _ScriptableObjects.Traps;
 
 namespace _Scripts.UI.Menus
@@ -20,7 +19,7 @@ namespace _Scripts.UI.Menus
     {
         #region Variables
         [Header("Datas")]
-        [SerializeField] private CardsDataBase dataBase;
+        [SerializeField] private CardsDatabase dataBase;
         [SerializeField] private DeckProflieSO deck;
 
         [FoldoutGroup("GUI")]
@@ -157,7 +156,7 @@ namespace _Scripts.UI.Menus
             }
 
             //Instantiate deck slots based on dataBase values
-            for (int i = 0; i < dataBase.deckLength; i++)
+            for (int i = 0; i < dataBase.deckSize; i++)
             {
                 CardSlot slot = CreateNewSlot(null, deckPool);
                 _deckSlots.Add(slot);
@@ -348,7 +347,7 @@ namespace _Scripts.UI.Menus
             ClearChilds();
 
             //Deck slots
-            for (int i = 0; i < dataBase.deckLength; i++)
+            for (int i = 0; i < dataBase.deckSize; i++)
             {
                 UnityEngine.Object instance = PrefabUtility.InstantiatePrefab(slotBackground);
                 instance.GetComponent<Transform>().SetParent(deckGroup);

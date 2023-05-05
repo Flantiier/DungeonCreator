@@ -6,7 +6,6 @@ namespace _ScriptableObjects.Traps
 {
     public class TrapSO : ScriptableObject
     {
-        #region Variables
         //INFORMATIONS
         [BoxGroup("Basic Informations"), HorizontalGroup("Basic Informations/G01", 75)]
         [PreviewField(75), HideLabel]
@@ -37,6 +36,5 @@ namespace _ScriptableObjects.Traps
         public int manaCost = 25;
         [BoxGroup("Properties"), LabelWidth(100), Range(10, 150), GUIColor(0, 1.5f, 2)]
         public float damages = 25;
-        #endregion
     }
 }
