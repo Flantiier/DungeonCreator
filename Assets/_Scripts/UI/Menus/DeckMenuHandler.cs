@@ -20,7 +20,8 @@ namespace _Scripts.UI.Menus
         #region Variables
         [Header("Datas")]
         [SerializeField] private CardsDatabase dataBase;
-        [SerializeField] private DeckProflieSO deck;
+        [SerializeField] private DeckDatabase deckDatabase;
+        [ShowInInspector] private DeckProflieSO _currentDeck;
 
         [FoldoutGroup("GUI")]
         [SerializeField] private DeckMenuGUI GUI;
@@ -55,6 +56,8 @@ namespace _Scripts.UI.Menus
         private void Awake()
         {
             dragCard.gameObject.SetActive(false);
+            _currentDeck = deckDatabase.GetDeck();
+            deckDatabase.Load();
         }
 
         private IEnumerator Start()
@@ -62,7 +65,7 @@ namespace _Scripts.UI.Menus
             yield return new WaitForSecondsRealtime(0.02f);
 
             InstantiateAllSlots();
-            ArrangeAllSlots(deck);
+            ArrangeAllSlots(_currentDeck);
         }
 
         private void Update()
@@ -95,19 +98,25 @@ namespace _Scripts.UI.Menus
         private void OnDestroy()
         {
             OverriteDeck();
+            deckDatabase.Save();
         }
         #endregion
 
         #region Methods
 
         #region Deck Save
-        public void NewDeckSelected(DeckProflieSO _deck)
+        public void NewDeckSelected(int index)
         {
-            if (_deck == deck)
+            if (_currentDeck == deckDatabase.decks[index])
                 return;
 
-            deck = _deck;
-            ArrangeAllSlots(deck);
+            //Overrite current
+            OverriteDeck();
+
+            //Select a new one
+            deckDatabase.deckUsed = index;
+            _currentDeck = deckDatabase.GetDeck();
+            ArrangeAllSlots(_currentDeck);
         }
 
         /// <summary>
@@ -124,7 +133,7 @@ namespace _Scripts.UI.Menus
         /// </summary>
         private void OverriteCard(int i)
         {
-            deck.cards[i] = _deckSlots.ElementAt(i).Trap;
+            _currentDeck.cards[i] = _deckSlots.ElementAt(i).Trap;
         }
         #endregion
 
@@ -202,6 +211,7 @@ namespace _Scripts.UI.Menus
         private void GetDeckCards(DeckProflieSO deck)
         {
             int x = 0;
+            bool error = false;
             foreach (TrapSO SO in deck.cards)
             {
                 for (int i = 0; i < _cardsPool.Count; i++)
@@ -216,6 +226,9 @@ namespace _Scripts.UI.Menus
                         //Looking fro an available trap
                         Debug.LogWarning("A card was took randomly because of multiple cards error");
 
+                        if(!error)
+                            error = true;
+
                         for (int j = _cardsPool.Count - 1; j >= 0; j--)
                         {
                             CardSlot temp = _cardsPool.ElementAt(j);
@@ -226,6 +239,7 @@ namespace _Scripts.UI.Menus
                         }
                     }
 
+
                     //Place a deck slot
                     CardSlot deckSlot = _deckSlots.ElementAt(x);
                     deckSlot.transform.position = deckGroup.GetChild(x).position;
@@ -234,6 +248,10 @@ namespace _Scripts.UI.Menus
 
                     //Remove a card from the pool
                     slot.DecreaseCardAmount();
+
+                    //Overrite instantely
+                    if (error)
+                        OverriteDeck();
                 }
             }
         }

@@ -5,12 +5,17 @@ using _ScriptableObjects.Traps;
 
 namespace _ScriptableObjects.GameManagement
 {
-    [CreateAssetMenu(menuName = "Game Management/DeckDatabase")]
+    [CreateAssetMenu(menuName = "Game Management/DeckDatabase"), InlineEditor]
     public class DeckDatabase : ScriptableObject
     {
         public int deckUsed = 0;
         public DeckProflieSO[] decks;
         public CardsDatabase database;
+
+        public DeckProflieSO GetDeck()
+        {
+            return decks[deckUsed];
+        }
 
         [Button("Save")]
         public void Save()

@@ -1,7 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
-using UnityEngine.InputSystem;
 
 namespace _ScriptableObjects.GameManagement
 {
