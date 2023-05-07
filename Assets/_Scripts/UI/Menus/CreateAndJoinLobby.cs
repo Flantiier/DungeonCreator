@@ -6,47 +6,55 @@ using UnityEngine.SceneManagement;
 
 namespace _Scripts.UI.Menus
 {
-	public class CreateAndJoinLobby : MonoBehaviourPunCallbacks
-	{
-		[SerializeField] private TMP_InputField createField;
-		[SerializeField] private TMP_InputField joinField;
-		[SerializeField] private GameObject ui;
+    public class CreateAndJoinLobby : MonoBehaviourPunCallbacks
+    {
+        [SerializeField] private TMP_InputField createField;
+        [SerializeField] private TMP_InputField joinField;
+        [SerializeField] private GameObject ui;
 
         private void Awake()
         {
-            ui.SetActive(false);
-            PhotonNetwork.ConnectUsingSettings();
+            if (!PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.ConnectUsingSettings();
+                ui.SetActive(false);
+            }
+            else
+                ui.SetActive(true);
         }
 
         public override void OnConnectedToMaster()
         {
-			ui.SetActive(true);
-			PhotonNetwork.JoinLobby();
+            ui.SetActive(true);
+            PhotonNetwork.JoinLobby();
         }
         public void CreateRoom()
-		{
-			RoomOptions roomOptions = new RoomOptions();
-			roomOptions.MaxPlayers = 4;
-			roomOptions.IsOpen = true;
-			roomOptions.EmptyRoomTtl = 0;
+        {
+            if (createField.text.Length <= 2)
+                return;
 
-			PhotonNetwork.CreateRoom(createField.text, roomOptions);
-		}
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 4;
+            roomOptions.IsOpen = true;
+            roomOptions.EmptyRoomTtl = 0;
 
-		public void JoinRoom()
-		{
-			PhotonNetwork.JoinRoom(joinField.text);
-		}
+            PhotonNetwork.CreateRoom(createField.text, roomOptions);
+        }
 
-		public static void JoinInList(string name)
-		{
-			PhotonNetwork.JoinRoom(name);
-		}
+        public void JoinRoom()
+        {
+            PhotonNetwork.JoinRoom(joinField.text);
+        }
+
+        public static void JoinInList(string name)
+        {
+            PhotonNetwork.JoinRoom(name);
+        }
 
         public override void OnJoinedRoom()
         {
-			Debug.Log("Joined room");
-			SceneManager.LoadScene("RoomMenu");
+            Debug.Log("Joined room");
+            SceneManager.LoadScene("RoomMenu");
         }
     }
 }
