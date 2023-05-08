@@ -1,7 +1,8 @@
-﻿using TMPro;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
 
 namespace _Scripts.UI.Menus
 {
@@ -19,6 +20,18 @@ namespace _Scripts.UI.Menus
         public PlayerProperties MyPlayer { get; set; }
         #endregion
 
+        #region Builts_In
+        private void OnEnable()
+        {
+            PlayerList.OnPlayerReady += EnableLocalGUI;
+        }
+
+        private void OnDisable()
+        {
+            PlayerList.OnPlayerReady -= EnableLocalGUI;   
+        }
+        #endregion
+
         #region Methods
         /// <summary>
         /// Set name, role and roleSprite on this GUI element
@@ -31,7 +44,7 @@ namespace _Scripts.UI.Menus
             name = MyPlayer.player.IsLocal ? name + " (Me)" : name;
             nameField.text = name;
             SetRoleInfos(MyPlayer.role);
-            EnableLocalGUI(MyPlayer.player.IsLocal);
+            EnableLocalGUI(PhotonNetwork.LocalPlayer, MyPlayer.player.IsLocal);
         }
 
         /// <summary>
@@ -52,8 +65,11 @@ namespace _Scripts.UI.Menus
         /// <summary>
         /// Enable buttons if player is local
         /// </summary>
-        private void EnableLocalGUI(bool enabled)
+        private void EnableLocalGUI(Player player, bool enabled)
         {
+            if (!player.IsLocal)
+                return;
+
             foreach (GameObject item in localGUI)
                 item.SetActive(enabled);
         }
@@ -73,7 +89,7 @@ namespace _Scripts.UI.Menus
             SetRoleInfos(MyPlayer.role);
 
             //Rpc
-            PlayerList.OnRoleUpdated.Invoke(MyPlayer.player, MyPlayer.role);
+            PlayerList.OnRoleUpdated?.Invoke(MyPlayer.player, MyPlayer.role);
         }
         #endregion
     }

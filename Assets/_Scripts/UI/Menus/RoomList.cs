@@ -20,8 +20,13 @@ namespace _Scripts.UI.Menus
         {
             foreach (RoomInfo room in roomList)
             {
+                //Room was removed from list
                 if (room.RemovedFromList)
                 {
+                    //If it doesn't contain the room then pass
+                    if (!_listing.Contains(roomPrefab))
+                        continue;
+
                     int index = _listing.FindIndex(x => x.Infos.Name == room.Name);
                     if (index != 1)
                     {
@@ -29,6 +34,7 @@ namespace _Scripts.UI.Menus
                         _listing.RemoveAt(index);
                     }
                 }
+                //Add a reference to the room
                 else
                 {
                     Room instance = Instantiate(roomPrefab, content);

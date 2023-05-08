@@ -28,6 +28,7 @@ namespace _Scripts.UI.Menus
             ui.SetActive(true);
             PhotonNetwork.JoinLobby();
         }
+
         public void CreateRoom()
         {
             if (createField.text.Length <= 2)
