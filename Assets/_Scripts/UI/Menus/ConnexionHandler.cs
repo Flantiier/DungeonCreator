@@ -1,37 +1,49 @@
-using Photon.Pun;
+using System.Collections;
 using UnityEngine;
-using _Scripts.UI;
-using _Scripts.Managers;
-using Sirenix.OdinInspector;
+using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-namespace _Scripts.Menus
+namespace _Scripts.UI.Menus
 {
     public class ConnexionHandler : MonoBehaviourPunCallbacks
     {
-        [TitleGroup("References")]
-        [SerializeField] private SceneLoader sceneLoader;
-
-        [TitleGroup("UI")]
-        [SerializeField] private string lobbyScene;
+        #region Variables
+        [SerializeField] private string mainScreenScene = "MainScreen";
+        [SerializeField] private float waitTime = 2f;
         [SerializeField] private AnimatedTextField textField;
+        #endregion
 
+        #region Builts_In
         private void Awake()
         {
             PhotonNetwork.ConnectUsingSettings();
+            textField.SetBaseText("Connection to Photon Servers");
         }
+        #endregion
 
+        #region Methods
+        public IEnumerator LoadMenu()
+        {
+            textField.SetBaseText("Loading main screen");
+            AsyncOperation operation = SceneManager.LoadSceneAsync(mainScreenScene);
+
+            while (!operation.isDone) { yield return null; }
+        }
+        #endregion
+
+        #region Callbacks
         public override void OnConnectedToMaster()
         {
             Debug.Log("Connected to master");
             PhotonNetwork.JoinLobby();
-            textField.SetBaseText("Joining lobby");
+            textField.SetBaseText("Joining a lobby");
         }
 
         public override void OnJoinedLobby()
         {
             Debug.Log("Lobby joined");
-            textField.SetBaseText("Chargement du menu");
-            sceneLoader.LoadSceneAsync(lobbyScene);
+            StartCoroutine(LoadMenu());
         }
+        #endregion
     }
 }

@@ -6,28 +6,10 @@ using UnityEngine.SceneManagement;
 
 namespace _Scripts.UI.Menus
 {
-    public class CreateAndJoinLobby : MonoBehaviourPunCallbacks
+    public class CreateAndJoinRoom : MonoBehaviourPunCallbacks
     {
         [SerializeField] private TMP_InputField createField;
         [SerializeField] private TMP_InputField joinField;
-        [SerializeField] private GameObject ui;
-
-        private void Awake()
-        {
-            if (!PhotonNetwork.IsConnected)
-            {
-                PhotonNetwork.ConnectUsingSettings();
-                ui.SetActive(false);
-            }
-            else
-                ui.SetActive(true);
-        }
-
-        public override void OnConnectedToMaster()
-        {
-            ui.SetActive(true);
-            PhotonNetwork.JoinLobby();
-        }
 
         public void CreateRoom()
         {

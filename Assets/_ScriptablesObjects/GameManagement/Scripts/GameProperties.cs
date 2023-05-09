@@ -5,7 +5,7 @@ using static Utils.Utilities.Time;
 
 namespace _ScriptableObjects.GameManagement
 {
-    [CreateAssetMenu(fileName = "New Game Properties", menuName = "Game Management/Game Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Game Properties", menuName = "SO/Game Management/Game Properties"), InlineEditor]
     public class GameProperties : ScriptableObject
     {
         [BoxGroup("Game Steps", CenterLabel = true)]

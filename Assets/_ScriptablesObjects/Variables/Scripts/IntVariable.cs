@@ -1,7 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-[CreateAssetMenu(fileName = "New Int", menuName = "Variables/Int")]
+[CreateAssetMenu(fileName = "New Int", menuName = "SO/Variables/Int")]
 [InlineEditor]
 public class IntVariable : ScriptableObject
 {

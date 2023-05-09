@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Pikes Properties", menuName = "Traps/Pikes Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Pikes Properties", menuName = "SO/Traps/Pikes Properties"), InlineEditor]
     public class PikesProperties : TrapSO
     {
         #region Variables

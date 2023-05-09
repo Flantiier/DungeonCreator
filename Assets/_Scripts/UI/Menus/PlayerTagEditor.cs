@@ -1,3 +1,4 @@
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
@@ -18,12 +19,22 @@ namespace _Scripts.Menus
         #endregion
 
         #region Methods
+        private void SetPhotonName(string name)
+        {
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            PhotonNetwork.NickName = name;
+        }
+
         /// <summary>
         /// Reset to the previous player tag
         /// </summary>
         public void GetCurrentTag()
         {
-            textMesh.text = GetPlayerTag();
+            string m_name = GetPlayerTag();
+            textMesh.text = m_name;
+            SetPhotonName(m_name);
         }
 
         /// <summary>
@@ -42,6 +53,7 @@ namespace _Scripts.Menus
         public void SubmitPlayerTag()
         {
             textMesh.text = inputField.text;
+            SetPhotonName(textMesh.text);
             SavePlayerTag(textMesh.text);
         }
 

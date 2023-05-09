@@ -4,7 +4,7 @@ using _Scripts.Characters;
 
 namespace _ScriptableObjects.Afflictions
 {
-	[CreateAssetMenu(fileName = "New Poison Status", menuName = "Gameplay/Afflictions/Poison")]
+	[CreateAssetMenu(fileName = "New Poison Status", menuName = "SO/Gameplay/Afflictions/Poison")]
 	public class PoisonStatus : AfflictionStatus
 	{
         #region Variables

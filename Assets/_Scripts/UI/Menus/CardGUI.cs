@@ -7,15 +7,8 @@ namespace _Scripts.UI.Menus
 	{
         #region Variables/Properties
         [SerializeField] private CardDesign design;
-        protected CanvasGroup _group;
+        [SerializeField] protected CanvasGroup canvasGroup;
         public TrapSO Trap { get; private set; }
-        #endregion
-
-        #region Builts_In
-        protected virtual void Awake()
-        {
-            _group = GetComponent<CanvasGroup>();
-        }
         #endregion
 
         #region Methods

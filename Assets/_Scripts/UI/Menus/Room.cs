@@ -14,7 +14,7 @@ namespace _Scripts.UI.Menus
 
         public void JoinRoom()
         {
-            CreateAndJoinLobby.JoinInList(Infos.Name);
+            CreateAndJoinRoom.JoinInList(Infos.Name);
         }
 
         public void SetRoomInfos()

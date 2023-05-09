@@ -5,7 +5,7 @@ using _ScriptableObjects.Traps;
 
 namespace _ScriptableObjects.GameManagement
 {
-    [CreateAssetMenu(menuName = "Game Management/DeckDatabase"), InlineEditor]
+    [CreateAssetMenu(menuName = "SO/Game Management/DeckDatabase"), InlineEditor]
     public class DeckDatabase : ScriptableObject
     {
         public int deckUsed = 0;

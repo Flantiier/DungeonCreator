@@ -4,7 +4,7 @@ using _ScriptableObjects.Traps;
 
 namespace _ScriptableObjects.GameManagement
 {
-    [CreateAssetMenu(fileName = "CardsDatabase", menuName = "Game Management/CardsDatabase"), InlineEditor]
+    [CreateAssetMenu(fileName = "CardsDatabase", menuName = "SO/Game Management/CardsDatabase"), InlineEditor]
     public class CardsDatabase : ScriptableObject
     {
         public int deckSize = 8;

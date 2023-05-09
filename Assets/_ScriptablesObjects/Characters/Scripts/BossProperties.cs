@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Characters
 {
-    [CreateAssetMenu(fileName = "New Boss Properties", menuName = "Characters/Boss Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Boss Properties", menuName = "SO/Characters/Boss Properties"), InlineEditor]
     public class BossProperties : ScriptableObject
     {
         [TitleGroup("Smoothing"), LabelWidth(125), Range(0, 0.2f), GUIColor(2, 1, 0)]

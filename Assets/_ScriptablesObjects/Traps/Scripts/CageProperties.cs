@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Cage Properties", menuName = "Traps/Cage Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Cage Properties", menuName = "SO/Traps/Cage Properties"), InlineEditor]
     public class CageProperties : TrapSO
 	{
         #region Variables

@@ -16,9 +16,8 @@ namespace _Scripts.UI.Menus
         #endregion
 
         #region Builts_In
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             mask.gameObject.SetActive(false);
         }
         #endregion
@@ -46,7 +45,7 @@ namespace _Scripts.UI.Menus
             CurrentAmount--;
             UpdateAmountText();
 
-            if (CurrentAmount <= 0 && _group.blocksRaycasts)
+            if (CurrentAmount <= 0 && canvasGroup.blocksRaycasts)
                 MaskCard(true);
         }
 
@@ -61,7 +60,7 @@ namespace _Scripts.UI.Menus
             CurrentAmount++;
             UpdateAmountText();
 
-            if (CurrentAmount >= 1 && !_group.blocksRaycasts)
+            if (CurrentAmount >= 1 && !canvasGroup.blocksRaycasts)
                 MaskCard(false);
         }
 
@@ -80,7 +79,7 @@ namespace _Scripts.UI.Menus
         /// </summary>
         private void MaskCard(bool state)
         {
-            _group.blocksRaycasts = !state;
+            canvasGroup.blocksRaycasts = !state;
             mask.gameObject.SetActive(state);
         }
 

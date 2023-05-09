@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "Sns Enemy", menuName = "Traps/Enemies/Sns Enemy"), InlineEditor]
+    [CreateAssetMenu(fileName = "Sns Enemy", menuName = "SO/Traps/Enemies/Sns Enemy"), InlineEditor]
     public class SnsEnemyProperties : EnemyProperties
     {
         [TitleGroup("Enemy"), LabelWidth(125), Range(0f, 1f), GUIColor(1, 2, 3)]

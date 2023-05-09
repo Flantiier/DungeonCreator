@@ -9,12 +9,7 @@ namespace _Scripts.UI.Menus
     {
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform content;
-        private List<Room> _listing;
-
-        private void Awake()
-        {
-            _listing = new List<Room>();
-        }
+        private readonly List<Room> _listing = new List<Room>();
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {

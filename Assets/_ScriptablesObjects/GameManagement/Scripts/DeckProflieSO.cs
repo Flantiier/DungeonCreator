@@ -5,7 +5,7 @@ using _ScriptableObjects.Traps;
 
 namespace _ScriptableObjects.GameManagement
 {
-	[CreateAssetMenu(fileName = "New Deck Profile", menuName = "Game Management/DeckProfile"), InlineEditor]
+	[CreateAssetMenu(fileName = "New Deck Profile", menuName = "SO/Game Management/DeckProfile"), InlineEditor]
 	public class DeckProflieSO : ScriptableObject
 	{
 		[TitleGroup("Deck Profile")]

@@ -4,7 +4,7 @@ using _Scripts.GameplayFeatures.Projectiles;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Baliste Properties", menuName = "Traps/Baliste Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Baliste Properties", menuName = "SO/Traps/Baliste Properties"), InlineEditor]
     public class BallistaProperties : TrapSO
     {
         #region Variables

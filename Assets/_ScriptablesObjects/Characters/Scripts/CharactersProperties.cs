@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Characters
 {
-    [CreateAssetMenu(fileName = "New Character Properties", menuName = "Characters/Characters Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Character Properties", menuName = "SO/Characters/Characters Properties"), InlineEditor]
     public class CharactersProperties : ScriptableObject
     {
         #region Variables

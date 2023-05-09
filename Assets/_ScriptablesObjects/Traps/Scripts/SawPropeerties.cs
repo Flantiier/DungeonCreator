@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Saw Properties", menuName = "Traps/Saw Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Saw Properties", menuName = "SO/Traps/Saw Properties"), InlineEditor]
     public class SawPropeerties : TrapSO
     {
         #region Variables
