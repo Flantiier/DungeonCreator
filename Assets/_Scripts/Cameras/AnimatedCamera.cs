@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace _Scripts.Cameras
 {
@@ -8,20 +10,23 @@ namespace _Scripts.Cameras
         [SerializeField] private bool resetAtStart;
         [SerializeField, Range(0, 0.2f)] private float moveSpeed = 0.1f;
         [SerializeField, Range(0, 0.2f)] private float rotateSpeed = 0.01f;
-        [SerializeField] private CameraWayPoint[] wayPoints;
+        [SerializeField] private List<CameraWayPoint> wayPoints = new List<CameraWayPoint>();
 
         private void Awake()
         {
-            if (wayPoints.Length <= 0 || currentPoint >= wayPoints.Length || currentPoint < 0)
+            if (wayPoints.Count <= 0 || currentPoint >= wayPoints.Count || currentPoint < 0)
                 return;
 
             if (resetAtStart)
+            {
                 transform.position = wayPoints[currentPoint].position;
+                transform.eulerAngles = wayPoints[currentPoint].eulers;
+            }
         }
 
         private void FixedUpdate()
         {
-            if (wayPoints.Length <= 0 || currentPoint >= wayPoints.Length)
+            if (wayPoints.Count <= 0 || currentPoint >= wayPoints.Count)
                 return;
 
             GoToWayPoint(wayPoints[currentPoint]);
@@ -43,8 +48,17 @@ namespace _Scripts.Cameras
 
         public void SetWayPoint(int value)
         {
-            value = Mathf.Clamp(value, 0, wayPoints.Length);
+            value = Mathf.Clamp(value, 0, wayPoints.Count);
             currentPoint = value;
+        }
+
+        [Button("Add from Transform")]
+        private void AddFromTransform()
+        {
+            CameraWayPoint instance = new CameraWayPoint();
+            instance.position = transform.position;
+            instance.eulers = transform.eulerAngles;
+            wayPoints.Add(instance);
         }
     }
 
