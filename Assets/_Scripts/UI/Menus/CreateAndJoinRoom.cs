@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.SceneManagement;
+using _Scripts.Managers;
 
 namespace _Scripts.UI.Menus
 {
@@ -10,6 +10,8 @@ namespace _Scripts.UI.Menus
     {
         [SerializeField] private TMP_InputField createField;
         [SerializeField] private TMP_InputField joinField;
+        [SerializeField] private string roomMenuScene = "RoomMenu";
+        [SerializeField] private SceneLoader loader;
 
         public void CreateRoom()
         {
@@ -36,8 +38,7 @@ namespace _Scripts.UI.Menus
 
         public override void OnJoinedRoom()
         {
-            Debug.Log("Joined room");
-            SceneManager.LoadScene("RoomMenu");
+            loader.LoadSceneAsync(roomMenuScene);
         }
-    }
+}
 }

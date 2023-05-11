@@ -73,7 +73,7 @@ namespace _Scripts.UI.Menus
             bool start = CheckStartConditions();
             errorText.gameObject.SetActive(!start);
 
-            if (!LocalPlayerReady)
+            if (LocalPlayerReady)
                 return;
             else
                 readyButton.interactable = start;
@@ -253,10 +253,10 @@ namespace _Scripts.UI.Menus
         private IEnumerator StartGameRoutine()
         {
             loadGameEvent.Raise();
-
             yield return new WaitForSecondsRealtime(timeBeforeStarting);
+
             Debug.Log("Load Screen");
-            //PhotonNetwork.LoadLevel(sceneName);
+            PhotonNetwork.LoadLevel(sceneName);
         }
         #endregion
 

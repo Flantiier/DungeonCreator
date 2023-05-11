@@ -11,6 +11,14 @@ namespace _Scripts.UI.Menus
         [SerializeField] private Transform content;
         private readonly List<Room> _listing = new List<Room>();
 
+        public void Awake()
+        {
+            if (!PhotonNetwork.IsConnected)
+                return;
+
+            PhotonNetwork.JoinLobby();
+        }
+
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             foreach (RoomInfo room in roomList)

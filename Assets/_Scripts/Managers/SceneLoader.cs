@@ -6,14 +6,17 @@ namespace _Scripts.Managers
 {
 	public class SceneLoader : MonoBehaviour
 	{
-		/// <summary>
-		/// The current async operation running
-		/// </summary>
+		[SerializeField] private GameObject loadingUI;
 		public AsyncOperation AsyncOperation { get; private set; }
 
-		/// <summary>
-		/// Quit application
-		/// </summary>
+		public void EnableUI(bool enabled)
+		{
+			if (!loadingUI)
+				return;
+
+			loadingUI.SetActive(enabled);
+		}
+
 		public void Quit()
 		{
 			Application.Quit();
@@ -34,6 +37,7 @@ namespace _Scripts.Managers
         /// <param name="sceneName"> Scene to load </param>
         public void LoadSceneAsync(string sceneName)
 		{
+			EnableUI(true);
 			StartCoroutine(AsyncLoadingRoutine(sceneName));
 		}
 
@@ -43,12 +47,11 @@ namespace _Scripts.Managers
 		/// </summary>
 		private IEnumerator AsyncLoadingRoutine(string sceneName)
 		{
+			EnableUI(true);
 			AsyncOperation = SceneManager.LoadSceneAsync(sceneName);
 
 			while (!AsyncOperation.isDone)
 				yield return null;
-
-			Debug.Log("Chargement terminé");
 		}
 	}
 }

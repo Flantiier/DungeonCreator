@@ -9,8 +9,8 @@ namespace _Scripts.UI
 	{
         #region Variables
         [SerializeField] private float animationRate = 1f;
-		[SerializeField] private bool useBaseString;
-		[SerializeField] private string[] texts;
+		[SerializeField] private bool useBaseString = true;
+		[SerializeField] private string[] texts = new string[] { ".", "..", "..." };
 		private int _index;
 		private string _baseString;
 		private TextMeshProUGUI _text;

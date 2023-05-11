@@ -35,13 +35,6 @@ namespace _Scripts.UI.Menus
         public override void OnConnectedToMaster()
         {
             Debug.Log("Connected to master");
-            PhotonNetwork.JoinLobby();
-            textField.SetBaseText("Joining a lobby");
-        }
-
-        public override void OnJoinedLobby()
-        {
-            Debug.Log("Lobby joined");
             StartCoroutine(LoadMenu());
         }
         #endregion
