@@ -15,6 +15,11 @@ namespace _Scripts.UI.Menus
             textMeshPro.color = baseColor;
         }
 
+        public void OnDisable()
+        {
+            textMeshPro.color = baseColor;
+        }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             textMeshPro.color = highlightColor;

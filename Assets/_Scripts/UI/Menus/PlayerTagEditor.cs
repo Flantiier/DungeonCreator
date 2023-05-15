@@ -42,6 +42,7 @@ namespace _Scripts.Menus
         public void SubmitPlayerTag()
         {
             SetPhotonName(inputField.text);
+            SavePlayerTag(inputField.text);
         }
 
         #region PlayerPrefs

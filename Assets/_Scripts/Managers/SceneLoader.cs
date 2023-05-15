@@ -28,6 +28,7 @@ namespace _Scripts.Managers
 		/// <param name="sceneName"> Scene to load </param>
 		public void LoadScene(string sceneName)
 		{
+			EnableUI(true);
 			SceneManager.LoadScene(sceneName);
 		}
 

@@ -26,6 +26,8 @@ namespace _Scripts.UI.Menus
         [FoldoutGroup("GUI")]
         [SerializeField] private DeckMenuGUI GUI;
         [FoldoutGroup("GUI")]
+        [SerializeField] private GameObject GUIPanel;
+        [FoldoutGroup("GUI")]
         [SerializeField] private GameObject slotBackground;
         [FoldoutGroup("GUI")]
         [SerializeField] private Transform gridGroup;
@@ -33,6 +35,9 @@ namespace _Scripts.UI.Menus
         [SerializeField] private Transform deckGroup;
         [FoldoutGroup("GUI")]
         [SerializeField] private CardGUI dragCard;
+        [FoldoutGroup("GUI")]
+        [SerializeField] private Button[] deckButtons;
+        private int _lastButton;
 
         [FoldoutGroup("Slots")]
         [SerializeField] private CardSlot slotPrefab;
@@ -56,8 +61,12 @@ namespace _Scripts.UI.Menus
         private void Awake()
         {
             dragCard.gameObject.SetActive(false);
-            _currentDeck = deckDatabase.GetDeck();
+            GUIPanel.SetActive(false);
+
             deckDatabase.Load();
+            _currentDeck = deckDatabase.GetDeck();
+            _lastButton = deckDatabase.deckUsed;
+            deckButtons[_lastButton].interactable = false;
         }
 
         private IEnumerator Start()
@@ -316,6 +325,9 @@ namespace _Scripts.UI.Menus
 
         private void UpdateGUI(TrapSO reference)
         {
+            if (!GUIPanel.activeInHierarchy)
+                GUIPanel.SetActive(true);
+
             GUI.design.imageField.sprite = reference.image;
             GUI.design.nameField.SetText(reference.trapName);
             GUI.design.damageField.SetText(reference.damages.ToString());
@@ -323,6 +335,13 @@ namespace _Scripts.UI.Menus
             GUI.description.SetText(reference.description);
             GUI.type.SetText(reference.type.ToString());
             GUI.tiling.SetText($"{reference.xAmount} x {reference.yAmount}");
+        }
+
+        public void EnableDeckButton(int index)
+        {
+            deckButtons[_lastButton].interactable = true;
+            deckButtons[index].interactable = false;
+            _lastButton = index;
         }
         #endregion
 
