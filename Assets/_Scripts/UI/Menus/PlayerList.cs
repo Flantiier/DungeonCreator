@@ -3,49 +3,71 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using Sirenix.OdinInspector;
-using UnityEngine.SceneManagement;
 
 namespace _Scripts.UI.Menus
 {
     public class PlayerList : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [Header("References")]
+        [TitleGroup("References")]
         [SerializeField] private PhotonView view;
+        [TitleGroup("References")]
         [SerializeField] private PlayerInfos GUIprefab;
+        [TitleGroup("References")]
         [SerializeField] private Transform content;
 
-        [Header("GUI Elements")]
+        #region GUI
+        [FoldoutGroup("GUI Elements")]
         [SerializeField] private TextMeshProUGUI errorText;
+        [FoldoutGroup("GUI Elements")]
         [SerializeField] private Image readyButtonImage;
+        [FoldoutGroup("GUI Elements")]
         [SerializeField] private Button readyButton;
-        [SerializeField] private Color readyColor, notReadyColor;
+        [FoldoutGroup("GUI Elements")]
+        [SerializeField] private Button[] roleButtons;
+        [FoldoutGroup("GUI Elements")]
+        [SerializeField] private GameObject[] switchElements;
 
-        [Header("Scenes infos")]
+        [FoldoutGroup("Scenes infos")]
         [SerializeField] private string lobbyScene = "Lobby";
+        [FoldoutGroup("Scenes infos")]
         [SerializeField] private string sceneName = "LoadingGame";
+        [FoldoutGroup("Scenes infos")]
         [SerializeField] private float timeBeforeStarting = 5f;
+        private int _lastRole;
+        #endregion
 
-        [Header("Events")]
+        #region Error Texts
+        [FoldoutGroup("Error properties")]
+        [SerializeField, TextArea(2, 2)] private string missingPlayersText = "Can't start the game with only one player";
+        [FoldoutGroup("Error properties")]
+        [SerializeField, TextArea(2, 2)] private string missingDMText = "To start the game, one player should play Dungeon Master.";
+        [FoldoutGroup("Error properties")]
+        [SerializeField, TextArea(2, 2)] private string duplicateRoleText = "Can't be two players or more with the same character selected.";
+        #endregion
+
+        [FoldoutGroup("Events")]
         [SerializeField] private GameEvent loadGameEvent;
-
-        [ShowInInspector] private List<PlayerProperties> _players = new List<PlayerProperties>();
-        private readonly List<PlayerInfos> _guiElements = new List<PlayerInfos>();
-
-        public static System.Action<Player, Role> OnRoleUpdated;
         public static System.Action<Player, bool> OnPlayerReady;
 
+        private List<PlayerProperties> _players = new List<PlayerProperties>();
+        private readonly List<PlayerInfos> _guiElements = new List<PlayerInfos>();
+        #endregion
+
+        #region Properties
         public bool LocalPlayerReady { get; private set; } = false;
         #endregion
 
         #region Builts_In
         private void Awake()
         {
-            readyButtonImage.color = notReadyColor;
+            errorText.text = missingPlayersText;
+            roleButtons[0].interactable = false;
 
             if (!PhotonNetwork.IsMasterClient)
                 return;
@@ -57,14 +79,12 @@ namespace _Scripts.UI.Menus
         public override void OnEnable()
         {
             base.OnEnable();
-            OnRoleUpdated += CharacterRoleListener;
             OnPlayerReady += PlayerReadyListener;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            OnRoleUpdated -= CharacterRoleListener;
             OnPlayerReady -= PlayerReadyListener;
         }
 
@@ -72,11 +92,6 @@ namespace _Scripts.UI.Menus
         {
             bool start = CheckStartConditions();
             errorText.gameObject.SetActive(!start);
-
-            if (LocalPlayerReady)
-                return;
-            else
-                readyButton.interactable = start;
         }
         #endregion
 
@@ -84,6 +99,22 @@ namespace _Scripts.UI.Menus
         public void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene(lobbyScene);
+        }
+
+        public void SetRole(int value)
+        {
+            value = Mathf.Clamp(value, 0, sizeof(Role) - 1);
+            Role role = (Role)System.Enum.ToObject(typeof(Role), value);
+
+            if (_lastRole == value)
+                return;
+
+            roleButtons[_lastRole].interactable = true;
+            roleButtons[value].interactable = false;
+
+            CharacterRoleListener(PhotonNetwork.LocalPlayer, role);
+            _lastRole = value;
         }
 
         #region Listing Players
@@ -147,7 +178,7 @@ namespace _Scripts.UI.Menus
             _players.Remove(target);
 
             //Update GUI
-            int index = _guiElements.FindIndex(x => x.MyPlayer.player == player);
+            int index = _guiElements.FindIndex(x => x.Infos.player == player);
             Destroy(_guiElements[index].gameObject);
             _guiElements.RemoveAt(index);
         }
@@ -159,7 +190,6 @@ namespace _Scripts.UI.Menus
         {
             PlayerProperties player = _players.Find(x => x.player == PhotonNetwork.LocalPlayer);
             PlayerReadyListener(player.player, !player.isReady);
-            readyButtonImage.color = player.isReady ? readyColor : notReadyColor;
         }
         #endregion
 
@@ -197,7 +227,7 @@ namespace _Scripts.UI.Menus
             }
 
             //Throw error because no DM
-            errorText.text = "To start the game, one player should play Dungeon Master.";
+            errorText.text = missingDMText;
             Debug.Log("ERROR : No one is playing DM");
             return false;
         }
@@ -217,13 +247,23 @@ namespace _Scripts.UI.Menus
                     if (player.role == item.role)
                     {
                         //Throw an error because there's a duplicate role
-                        errorText.text = "Can't be two players or more with the same character selected.";
+                        errorText.text = duplicateRoleText;
                         Debug.Log("ERROR : Duplicate role");
                         return true;
                     }
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Enable or disable UI elements
+        /// </summary>
+        [ContextMenu("Switch")]
+        private void SwitchElements()
+        {
+            foreach (GameObject obj in switchElements)
+                obj.SetActive(!obj.activeInHierarchy);
         }
 
         /// <summary>
@@ -247,6 +287,7 @@ namespace _Scripts.UI.Menus
             if (!allReady)
                 return;
 
+            SwitchElements();
             StartCoroutine("StartGameRoutine");
         }
 
@@ -273,7 +314,7 @@ namespace _Scripts.UI.Menus
         {
             int i = _players.FindIndex(x => x.player == player);
             _players.ElementAt(i).role = role;
-            _guiElements.ElementAt(i).MyPlayer.role = role;
+            _guiElements.ElementAt(i).Infos.role = role;
             _guiElements.ElementAt(i).SetRoleInfos(role);
         }
 
@@ -281,6 +322,7 @@ namespace _Scripts.UI.Menus
         {
             view.RPC("PlayerReadyRPC", RpcTarget.All, player, value);
             LocalPlayerReady = value;
+            readyButton.GetComponent<CanvasGroup>().alpha = !LocalPlayerReady ? 1 : 0.25f;
         }
 
         [PunRPC]
@@ -288,7 +330,7 @@ namespace _Scripts.UI.Menus
         {
             int i = _players.FindIndex(x => x.player == player);
             _players.ElementAt(i).isReady = value;
-            _guiElements.ElementAt(i).MyPlayer.isReady = value;
+            _guiElements.ElementAt(i).SetReady(value);
 
             CheckLoading();
         }

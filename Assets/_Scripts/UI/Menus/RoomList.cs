@@ -9,6 +9,7 @@ namespace _Scripts.UI.Menus
     {
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform content;
+        [SerializeField] private GameObject noRoomText;
         private readonly List<Room> _listing = new List<Room>();
 
         public void Awake()
@@ -17,6 +18,16 @@ namespace _Scripts.UI.Menus
                 return;
 
             PhotonNetwork.JoinLobby();
+        }
+
+        private void Update()
+        {
+            if (PhotonNetwork.IsConnected || !content.gameObject.activeInHierarchy)
+                return;
+
+            bool enabled = PhotonNetwork.CountOfRooms <= 0;
+            if(noRoomText.activeSelf != enabled)
+                noRoomText.SetActive(enabled);
         }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)

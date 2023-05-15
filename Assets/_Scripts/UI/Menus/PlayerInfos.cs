@@ -15,21 +15,9 @@ namespace _Scripts.UI.Menus
         [SerializeField] private TextMeshProUGUI nameField;
         [SerializeField] private TextMeshProUGUI roleField;
         [SerializeField] private Image image;
-        [SerializeField] private GameObject[] localGUI;
+        [SerializeField] private GameObject readyImage;
 
-        public PlayerProperties MyPlayer { get; set; }
-        #endregion
-
-        #region Builts_In
-        private void OnEnable()
-        {
-            PlayerList.OnPlayerReady += EnableLocalGUI;
-        }
-
-        private void OnDisable()
-        {
-            PlayerList.OnPlayerReady -= EnableLocalGUI;   
-        }
+        public PlayerProperties Infos { get; set; }
         #endregion
 
         #region Methods
@@ -38,13 +26,16 @@ namespace _Scripts.UI.Menus
         /// </summary>
         public void SetPlayerGUI(PlayerProperties playerProperties)
         {
-            MyPlayer = playerProperties;
+            Infos = playerProperties;
 
-            string name = MyPlayer.player.NickName == "*Player" ? MyPlayer.player.NickName : $"Player{Random.Range(0, 1000)}";
-            name = MyPlayer.player.IsLocal ? name + " (Me)" : name;
+            //Name
+            string name = Infos.player.NickName == "*Player" ? Infos.player.NickName : $"Player{Random.Range(0, 1000)}";
+            name = Infos.player.IsLocal ? name + " (Me)" : name;
             nameField.text = name;
-            SetRoleInfos(MyPlayer.role);
-            EnableLocalGUI(PhotonNetwork.LocalPlayer, MyPlayer.player.IsLocal);
+            //Role
+            SetRoleInfos(Infos.role);
+            //Ready
+            readyImage.SetActive(Infos.isReady);
         }
 
         /// <summary>
@@ -62,34 +53,10 @@ namespace _Scripts.UI.Menus
             }
         }
 
-        /// <summary>
-        /// Enable buttons if player is local
-        /// </summary>
-        private void EnableLocalGUI(Player player, bool enabled)
+        public void SetReady(bool value)
         {
-            if (!player.IsLocal)
-                return;
-
-            foreach (GameObject item in localGUI)
-                item.SetActive(enabled);
-        }
-
-        /// <summary>
-        /// Change the curretn character selected
-        /// </summary>
-        public void ChangeCharacter(int value)
-        {
-            int newValue = (int)MyPlayer.role;
-            int size = sizeof(Role) - 1;
-            newValue += value;
-            newValue = newValue > size ? 0 : newValue < 0 ? size : newValue;
-
-            //Update value
-            MyPlayer.role = (Role)System.Enum.ToObject(typeof(Role), newValue);
-            SetRoleInfos(MyPlayer.role);
-
-            //Rpc
-            PlayerList.OnRoleUpdated?.Invoke(MyPlayer.player, MyPlayer.role);
+            Infos.isReady = value;
+            readyImage.SetActive(Infos.isReady);
         }
         #endregion
     }

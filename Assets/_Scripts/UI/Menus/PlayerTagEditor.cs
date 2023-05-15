@@ -7,7 +7,6 @@ namespace _Scripts.Menus
     public class PlayerTagEditor : MonoBehaviour
     {
         #region Variables
-        [SerializeField] private TextMeshProUGUI textMesh;
         [SerializeField] private TMP_InputField inputField;
         #endregion
 
@@ -33,18 +32,8 @@ namespace _Scripts.Menus
         public void GetCurrentTag()
         {
             string m_name = GetPlayerTag();
-            textMesh.text = m_name;
+            inputField.text = m_name;
             SetPhotonName(m_name);
-        }
-
-        /// <summary>
-        /// Enable or disable the input field
-        /// </summary>
-        public void EditPlayerTag()
-        {
-            textMesh.gameObject.SetActive(!textMesh.gameObject.activeSelf);
-            inputField.gameObject.SetActive(!inputField.gameObject.activeSelf);
-            inputField.text = GetPlayerTag();
         }
 
         /// <summary>
@@ -52,9 +41,7 @@ namespace _Scripts.Menus
         /// </summary>
         public void SubmitPlayerTag()
         {
-            textMesh.text = inputField.text;
-            SetPhotonName(textMesh.text);
-            SavePlayerTag(textMesh.text);
+            SetPhotonName(inputField.text);
         }
 
         #region PlayerPrefs
