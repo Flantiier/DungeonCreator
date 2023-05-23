@@ -1,11 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using Utils;
 using _Scripts.Characters;
+using _ScriptableObjects.GameManagement;
+using UnityEngine.Assertions.Must;
 
 namespace _Scripts.Managers
 {
     public class RespawnManager : MonoBehaviour
     {
+        [SerializeField] private GameProperties properties;
+        [SerializeField] private FloatVariable timeVariable;
         [SerializeField] private FloatVariable respawnTime;
         [SerializeField] private Vector3Variable respawnPosition;
 
@@ -47,7 +52,7 @@ namespace _Scripts.Managers
         /// <param name="character"> Character to respawn </param>
         private IEnumerator RespawnRoutine(Character character)
         {
-            respawnTime.value = 5f;
+            respawnTime.value = GetRespawnTime();
 
             while (respawnTime.value > 0)
             {
@@ -57,6 +62,28 @@ namespace _Scripts.Managers
 
             respawnTime.value = 0;
             RespawnPlayer(character);
+        }
+
+        [ContextMenu("Get time")]
+        private float GetRespawnTime()
+        {
+            float time = 5f;
+            foreach (RespawnUnit unit in properties.respawnInfos)
+            {
+                float max = Utilities.Time.ConvertTime(unit.maxTime, unit.timeUnit, Utilities.Time.TimeUnit.Seconds);
+                float min = Utilities.Time.ConvertTime(unit.minTime, unit.timeUnit, Utilities.Time.TimeUnit.Seconds);
+
+                if (timeVariable.value > min && timeVariable.value <= max)
+                {
+                    time = unit.respawnDelay;
+                    break;
+                }
+                else
+                    continue;
+            }
+
+            Debug.Log("Respawn time : " + time);
+            return time;
         }
     }
 }
