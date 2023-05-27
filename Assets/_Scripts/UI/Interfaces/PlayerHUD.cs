@@ -1,6 +1,5 @@
 using UnityEngine;
 using _Scripts.Characters;
-using UnityEngine.Rendering;
 
 namespace _Scripts.UI.Interfaces
 {

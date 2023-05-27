@@ -8,6 +8,8 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using Sirenix.OdinInspector;
+using _ScriptableObjects.GameManagement;
+using _Scripts.Multi.Connexion;
 
 namespace _Scripts.UI.Menus
 {
@@ -16,6 +18,8 @@ namespace _Scripts.UI.Menus
         #region Variables
         [TitleGroup("References")]
         [SerializeField] private PhotonView view;
+        [TitleGroup("References")]
+        [SerializeField] private GameProperties properties;
         [TitleGroup("References")]
         [SerializeField] private PlayerInfos GUIprefab;
         [TitleGroup("References")]
@@ -76,6 +80,11 @@ namespace _Scripts.UI.Menus
                 AddPlayer(player);
         }
 
+        private void Start()
+        {
+            SetRole(0);
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
@@ -115,6 +124,7 @@ namespace _Scripts.UI.Menus
 
             CharacterRoleListener(PhotonNetwork.LocalPlayer, role);
             _lastRole = value;
+            properties.role = (Role)System.Enum.ToObject(typeof(Role), _lastRole);
         }
 
         #region Listing Players
@@ -293,6 +303,8 @@ namespace _Scripts.UI.Menus
 
         private IEnumerator StartGameRoutine()
         {
+            properties.role = (Role)System.Enum.ToObject(typeof(Role), _lastRole);
+
             loadGameEvent.Raise();
             yield return new WaitForSecondsRealtime(timeBeforeStarting);
 

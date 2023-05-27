@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 3111648633903626145}
   - component: {fileID: 3111648633903626146}
   - component: {fileID: -8999326808795453283}
+  - component: {fileID: 8006018937470758177}
+  - component: {fileID: 3031013019297729703}
   m_Layer: 5
   m_Name: Adventurer HUD
   m_TagString: Untagged
@@ -101,7 +103,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 1862271223
+    m_Bits: 1728053495
 --- !u!114 &-8999326808795453283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +118,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 3111648633350379590}
   staminaSlider: {fileID: 3111648632978026939}
+--- !u!114 &8006018937470758177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3111648633903626147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 2ad91f6a3ef8e5348bdcb73dd8ea2b83, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3111648634060129068}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3031013019297729703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3111648633903626147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: c05f7ffe5dfa1d64caac0e96190bf409, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3111648634060129068}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &3111648634060129068
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,8 +375,6 @@ MonoBehaviour:
   variable: {fileID: 11400000, guid: 4de750aa61d1e7846bfcbf67fa9cb61e, type: 2}
   rounding:
     roundType: 0
-  prefixe: 'Skill : '
-  suffixe: 
 --- !u!1001 &5730501256659849125
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,24 +1,29 @@
 using UnityEngine;
 using Unity.Scenes;
 using Unity.Entities;
-using Sirenix.OdinInspector;
+using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {
     public class SubScenesManager : MonoBehaviourSingleton<SubScenesManager>
     {
+        [SerializeField] private GameProperties properties;
         [SerializeField] private SubScene[] loadedAtStart;
         private SubScene[] _subScenes;
         private SceneSystem _sceneSystem;
 
-        public override void Awake()
+        private void Start()
         {
-            base.Awake();
             _sceneSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<SceneSystem>();
             _subScenes = GetSubScenes();
 
-            UnloadAll(_subScenes);
-            LoadAll(loadedAtStart);
+            if (properties.role == Role.Master)
+                LoadAll(_subScenes);
+            else
+            {
+                UnloadAll(_subScenes);
+                LoadAll(loadedAtStart);
+            }
         }
 
         /// <summary>
@@ -54,7 +59,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Load all subScenes in the list
         /// </summary>
-        private void LoadAll(SubScene[] scenes)
+        public void LoadAll(SubScene[] scenes)
         {
             foreach (SubScene scene in scenes)
                 LoadSubScene(scene);

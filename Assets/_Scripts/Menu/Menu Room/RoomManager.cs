@@ -25,7 +25,7 @@ namespace _Scripts.Multi.Connexion
         [Tooltip("Le text ou sera affiché les éventuelles erreurs")]
         [SerializeField] private TMP_Text errorText;
 
-        public Roles selectedRole = Roles.Undefined;
+        public Roles selectedRole = Roles.Warrior;
 
         private int dmNumber;
         private int advNumber;

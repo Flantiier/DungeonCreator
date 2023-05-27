@@ -236,6 +236,7 @@ namespace _Scripts.Characters
             HandleEntityDeath();
         }
 
+        [ContextMenu("Death")]
         protected override void HandleEntityDeath()
         {
             base.HandleEntityDeath();

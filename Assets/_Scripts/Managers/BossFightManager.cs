@@ -16,11 +16,11 @@ namespace _Scripts.Managers
         #region Methods
 		public void StartBossFight()
 		{
-            ListPlayersRoom.Roles role = PlayersManager.Role;
+            Role role = PlayersManager.Role;
 
 			switch (role)
 			{
-				case ListPlayersRoom.Roles.DM:
+				case Role.Master:
 					SwicthDMToBoss();
 					break;
 				default:
@@ -49,10 +49,10 @@ namespace _Scripts.Managers
 		/// <summary>
 		/// Teleport the player in the boss area
 		/// </summary>
-		private void HandleAdventurers(ListPlayersRoom.Roles role)
+		private void HandleAdventurers(Role role)
 		{
-			Transform spawn = role == ListPlayersRoom.Roles.Warrior ? spawnPositions[0] :
-									role == ListPlayersRoom.Roles.Archer ? spawnPositions[1] : spawnPositions[2];
+			Transform spawn = role == Role.Warrior ? spawnPositions[0] :
+									role == Role.Archer ? spawnPositions[1] : spawnPositions[2];
 
 			Character player = FindPlayer();
 

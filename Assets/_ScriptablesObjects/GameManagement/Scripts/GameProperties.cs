@@ -2,12 +2,15 @@ using UnityEngine;
 using Utils;
 using Sirenix.OdinInspector;
 using static Utils.Utilities.Time;
+using _Scripts.Multi.Connexion;
 
 namespace _ScriptableObjects.GameManagement
 {
     [CreateAssetMenu(fileName = "New Game Properties", menuName = "SO/Game Management/Game Properties"), InlineEditor]
     public class GameProperties : ScriptableObject
     {
+        public Role role;
+
         [BoxGroup("Game Steps", CenterLabel = true)]
         [Tooltip("Le temps de la phase de preparation au début de la partie"), LabelText("Start Phase")]
         public GameStep startPhase = new GameStep(20f, TimeUnit.Seconds);
