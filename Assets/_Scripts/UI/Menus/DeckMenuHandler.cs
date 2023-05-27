@@ -328,13 +328,20 @@ namespace _Scripts.UI.Menus
             if (!GUIPanel.activeInHierarchy)
                 GUIPanel.SetActive(true);
 
-            GUI.design.imageField.sprite = reference.image;
+            //GUI.design.imageField.sprite = reference.image;
             GUI.design.nameField.SetText(reference.trapName);
-            GUI.design.damageField.SetText(reference.damages.ToString());
-            GUI.design.manaField.SetText(reference.manaCost.ToString());
             GUI.description.SetText(reference.description);
-            GUI.type.SetText(reference.type.ToString());
-            GUI.tiling.SetText($"{reference.xAmount} x {reference.yAmount}");
+            GUI.design.manaField.SetText("Cout de mana : " + reference.manaCost.ToString());
+            GUI.design.damageField.SetText("Degats :" + reference.damages.ToString());
+
+            string type = "Sol";
+            if (reference.type == TrapSystem.Tile.TilingType.Wall)
+                type = "Mural";
+            else if (reference.type == TrapSystem.Tile.TilingType.Both)
+                type = "Sol/Mural";
+
+            GUI.type.SetText("Type de piege : " + type);
+            GUI.tiling.SetText($"Tiling : {reference.xAmount}x{reference.yAmount}");
         }
 
         public void EnableDeckButton(int index)
