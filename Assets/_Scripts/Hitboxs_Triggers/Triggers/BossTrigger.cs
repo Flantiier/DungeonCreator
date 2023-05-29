@@ -48,6 +48,14 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             }
 
             textMesh.text = "Lets go le boss";
+
+            if(PhotonNetwork.IsMasterClient)
+                View.RPC("TriggerBossRPC", RpcTarget.AllBuffered);
+        }
+
+        [PunRPC]
+        private void TriggerBossRPC()
+        {
             reachedBossEvent.Raise();
         }
     }

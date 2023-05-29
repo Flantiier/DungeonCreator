@@ -8,15 +8,10 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 	public abstract class ListingTrigger<T> : NetworkMonoBehaviour
 	{
 		#region Variables
-		public List<T> List { get; private set; }
+		public List<T> List { get; private set; } = new List<T>();
 		#endregion
 
 		#region Builts_In
-		private void Awake()
-		{
-			List = new List<T>();
-		}
-
 		public virtual void OnTriggerEnter(Collider other)
 		{
 			if (!other.TryGetComponent(out T target))

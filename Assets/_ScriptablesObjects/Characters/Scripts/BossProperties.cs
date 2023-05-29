@@ -14,6 +14,8 @@ namespace _ScriptableObjects.Characters
         public float walkSpeed = 5;
 
         [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
+        public float health = 500f;
+        [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
         public float firstAbilityRecovery = 15f;
         [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
         public float secondAbilityRecovery = 15f;

@@ -41,9 +41,6 @@ namespace _Scripts.Managers
         /// <param name="scene"> SubScene to load </param>
         public void LoadSubScene(SubScene scene)
         {
-            if (scene.IsLoaded)
-                return;
-
             _sceneSystem.LoadSceneAsync(scene.SceneGUID);
         }
 

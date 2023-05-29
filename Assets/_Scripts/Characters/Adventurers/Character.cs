@@ -346,8 +346,12 @@ namespace _Scripts.Characters
 
                     SmoothingInputs(Inputs, overallDatas.inputSmoothing);
                     UpdateCharacterSpeed(GetMovementSpeed());
-                    HandleCharacterMotion();
-                    HandleCharacterRotation(overallDatas.rotationSmoothing);
+
+                    if (PlayerSM.CanMove)
+                    {
+                        HandleCharacterMotion();
+                        HandleCharacterRotation(overallDatas.rotationSmoothing);
+                    }
                     break;
             }
         }
@@ -635,6 +639,7 @@ namespace _Scripts.Characters.StateMachines
         public enum PlayerStates { Walk, Roll, Attack, Knocked, Stunned, Dead }
         public PlayerStates CurrentState { get; set; }
         public bool UsingStamina { get; set; }
+        public bool CanMove { get; set; }
         public bool CanDodge { get; set; }
         public bool CanAttack { get; set; }
         public Coroutine WaitAttack { get; set; }
@@ -647,6 +652,7 @@ namespace _Scripts.Characters.StateMachines
         public PlayerStateMachine()
         {
             CurrentState = PlayerStates.Walk;
+            CanMove = true;
             CanAttack = true;
             CanDodge = true;
             WaitAttack = null;
