@@ -43,7 +43,7 @@
     },
     "com.unity.collections": {
       "version": "1.4.0",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.6.6",
@@ -54,7 +54,7 @@
     },
     "com.unity.entities": {
       "version": "0.51.1-preview.21",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.6.6",
@@ -128,7 +128,7 @@
     },
     "com.unity.jobs": {
       "version": "0.70.0-preview.7",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.collections": "1.4.0"
@@ -144,7 +144,7 @@
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
-      "depth": 2,
+      "depth": 3,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -158,7 +158,7 @@
     },
     "com.unity.platforms": {
       "version": "0.51.1-preview.21",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.properties": "1.7.0-preview",
@@ -181,7 +181,7 @@
     },
     "com.unity.profiling.core": {
       "version": "1.0.2",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -238,9 +238,18 @@
         "com.unity.shadergraph": "12.1.7"
       }
     },
+    "com.unity.rendering.hybrid": {
+      "version": "0.51.1-preview.21",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.entities": "0.51.1-preview.21"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.roslyn": {
       "version": "0.2.2-preview",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -312,7 +321,7 @@
     },
     "com.unity.test-framework.performance": {
       "version": "2.8.0-preview",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.0",

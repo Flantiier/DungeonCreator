@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Enemy Properties", menuName = "Traps/Enemies/Default"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Enemy Properties", menuName = "SO/Traps/Enemies/Default"), InlineEditor]
     public class EnemyProperties : ScriptableObject
     {
         [TitleGroup("Enemy"), LabelWidth(125), Range(50, 400), GUIColor(0, 2, 0.5f)]

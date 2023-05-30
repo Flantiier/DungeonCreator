@@ -4,7 +4,7 @@ using _ScriptableObjects.Afflictions;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New Bulbe Properties", menuName = "Traps/Bulbe Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Bulbe Properties", menuName = "SO/Traps/Bulbe Properties"), InlineEditor]
     public class BulbProperties : TrapSO
     {
         #region Variables

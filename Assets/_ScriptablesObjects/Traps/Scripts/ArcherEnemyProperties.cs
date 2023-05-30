@@ -4,7 +4,7 @@ using _Scripts.GameplayFeatures.Projectiles;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "Archer Enemy", menuName = "Traps/Enemies/Archer Enemy"), InlineEditor]
+    [CreateAssetMenu(fileName = "Archer Enemy", menuName = "SO/Traps/Enemies/Archer Enemy"), InlineEditor]
     public class ArcherEnemyProperties : EnemyProperties
     {
         [TitleGroup("Archer properties"), LabelWidth(125), GUIColor(1, 2, 3)]

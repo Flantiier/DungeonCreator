@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Characters
 {
-    [CreateAssetMenu(fileName = "New Adventurer Properties", menuName = "Characters/Adventurer Properties")]
+    [CreateAssetMenu(fileName = "New Adventurer Properties", menuName = "SO/Characters/Adventurer Properties")]
     [InlineEditor]
     public class AdventurerProperties : ScriptableObject
     {

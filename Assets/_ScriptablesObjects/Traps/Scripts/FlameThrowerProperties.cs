@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Traps
 {
-    [CreateAssetMenu(fileName = "New FlameThrower Properties", menuName = "Traps/FlameThrower Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New FlameThrower Properties", menuName = "SO/Traps/FlameThrower Properties"), InlineEditor]
     public class FlameThrowerProperties : TrapSO
     {
         #region Variables

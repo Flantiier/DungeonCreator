@@ -5,8 +5,8 @@ namespace _Scripts.GameplayFeatures
     public class DestructibleRagdollPart : MonoBehaviour
     {
         [SerializeField] private SkinnedMeshRenderer boneReference;
-        [SerializeField] private MeshFilter filter;
-        [SerializeField] private MeshCollider meshCollider;
+        public MeshFilter filter;
+        public MeshCollider meshCollider;
         public Rigidbody rb;
 
         public SkinnedMeshRenderer Bone { get => boneReference; set => boneReference = value; }

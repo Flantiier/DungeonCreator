@@ -2,7 +2,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
 
-[CreateAssetMenu(menuName = "Characters List"), InlineEditor]
+[CreateAssetMenu(menuName = "SO/Characters List"), InlineEditor]
 public class CharactersList : ScriptableObject
 {
     #region Variables

@@ -21,13 +21,13 @@ namespace _Scripts.Characters.DungeonMaster
         [Required, SerializeField] private BossProperties datas;
 
         private BossInputs _inputs;
-        //Events
-        public static event Action OnBossDefeated;
         #endregion
 
         #region Properties
         public BossState StateMachine { get; private set; }
         public bool CanAttack { get; set; } = true;
+        public BossProperties Datas => datas;
+
         public Ability FirstAbility { get; private set; }
         public Ability SecondAbility { get; private set; }
         #endregion
@@ -50,13 +50,19 @@ namespace _Scripts.Characters.DungeonMaster
             _camera.gameObject.SetActive(false);
         }
 
-        public override void OnEnable() 
+        public override void OnEnable()
         {
+            if (!ViewIsMine())
+                return;
+
             SubscribeInputActions();
         }
 
         public override void OnDisable()
         {
+            if (!ViewIsMine())
+                return;
+
             UnsubscribeInputActions();
             _inputs.Disable();
         }
@@ -67,16 +73,12 @@ namespace _Scripts.Characters.DungeonMaster
         {
             _camera.gameObject.SetActive(true);
             _inputs.Enable();
+
+            CurrentHealth = datas.health;
+            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
         }
 
         #region Health
-        protected override void HandleEntityDeath()
-        {
-            base.HandleEntityDeath();
-            //Call the event of the boss is defeated
-            OnBossDefeated?.Invoke();
-        }
-
         public void Damage(float damages)
         {
             if (CurrentHealth <= 0)
@@ -108,6 +110,9 @@ namespace _Scripts.Characters.DungeonMaster
         #region Inputs
         protected override void EnableInputs(bool state)
         {
+            if (!ViewIsMine())
+                return;
+
             if (state)
                 _inputs.Enable();
             else
@@ -241,10 +246,19 @@ namespace _Scripts.Characters
     public class Ability
     {
         public bool Available { get; private set; } = true;
+        public float Cooldown { get; private set; }
         public IEnumerator AbilityRoutine(float cooldown)
         {
             Available = false;
-            yield return new WaitForSecondsRealtime(cooldown);
+            Cooldown = cooldown;
+
+            while(Cooldown > 0)
+            {
+                Cooldown -= Time.deltaTime;
+                yield return null;
+            }
+
+            Cooldown = 0f;
             Available = true;
         }
     }

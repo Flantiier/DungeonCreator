@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using _Scripts.Multi.Connexion;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters;
-using UnityEditor;
+using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {
@@ -12,8 +12,10 @@ namespace _Scripts.Managers
     {
         #region Variables
         [TitleGroup("Off Connexion Role")]
-        [SerializeField] private ListPlayersRoom.Roles backUpRole = ListPlayersRoom.Roles.Warrior;
+        [SerializeField] private Role backUpRole;
 
+        [TitleGroup("Spawn Properties")]
+        [SerializeField] private GameProperties properties;
         [TitleGroup("Spawn Properties")]
         [SerializeField] private CharactersList characters;
         [TitleGroup("Spawn Properties")]
@@ -28,7 +30,7 @@ namespace _Scripts.Managers
         #endregion
 
         #region Properties
-        public static ListPlayersRoom.Roles Role { get; private set; }
+        public static Role Role { get; private set; }
         #endregion
 
         #region Builts_In
@@ -36,13 +38,13 @@ namespace _Scripts.Managers
         {
             //Not connected to network
             if (PhotonNetwork.IsConnectedAndReady)
-                InstantiateCharacter();
+                InstantiateCharacter(true);
         }
 
         public override void OnJoinedRoom()
         {
             //Spawn character
-            InstantiateCharacter();
+            InstantiateCharacter(false);
         }
         #endregion
 
@@ -50,43 +52,42 @@ namespace _Scripts.Managers
         /// <summary>
         /// Instantiates any character based on the selected role
         /// </summary>
-        private void InstantiateCharacter()
+        private void InstantiateCharacter(bool awake)
         {
-            ListPlayersRoom.Roles role;
+            Role role;
 
-            try
-            {
-                role = (ListPlayersRoom.Roles)PhotonNetwork.LocalPlayer.CustomProperties["role"];
-            }
-            catch
+            if (awake)
+                role = properties.role;
+            else
             {
                 role = backUpRole;
+                properties.role = backUpRole;
             }
 
             Role = role;
 
             switch (role)
             {
-                case ListPlayersRoom.Roles.DM:
+                case Role.Master:
                     Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);
                     Instantiate(characters.dungeonMaster.UI);
                     InstantiateBoss();
                     spawnPosition.value = masterSpawn.position;
                     break;
 
-                case ListPlayersRoom.Roles.Warrior:
+                case Role.Warrior:
                     Character warrior = PhotonNetwork.Instantiate(characters.warrior.prefab.name, adventurersSpawn[0].position, adventurersSpawn[0].rotation).GetComponent<Character>();
                     InstantiateCharacterHUD(characters.warrior.UI, warrior);
                     spawnPosition.value = adventurersSpawn[0].position;
                     break;
 
-                case ListPlayersRoom.Roles.Archer:
+                case Role.Archer:
                     Character archer = PhotonNetwork.Instantiate(characters.archer.prefab.name, adventurersSpawn[1].position, adventurersSpawn[1].rotation).GetComponent<Character>();
                     InstantiateCharacterHUD(characters.archer.UI, archer);
                     spawnPosition.value = adventurersSpawn[1].position;
                     break;
 
-                case ListPlayersRoom.Roles.Wizard:
+                case Role.Wizard:
                     Character wizard = PhotonNetwork.Instantiate(characters.wizard.prefab.name, adventurersSpawn[2].position, adventurersSpawn[2].rotation).GetComponent<Character>();
                     InstantiateCharacterHUD(characters.wizard.UI, wizard);
                     spawnPosition.value = adventurersSpawn[2].position;

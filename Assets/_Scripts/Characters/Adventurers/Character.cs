@@ -71,7 +71,6 @@ namespace _Scripts.Characters
             InitializeCharacter();
             //Events
             GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
-            TeleportationTool.OnTeleportSelected += TeleportPlayer;
         }
 
         public override void OnDisable()
@@ -82,7 +81,6 @@ namespace _Scripts.Characters
             base.OnDisable();
             //Events
             GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
-            TeleportationTool.OnTeleportSelected -= TeleportPlayer;
         }
 
         protected override void Update()
@@ -238,6 +236,7 @@ namespace _Scripts.Characters
             HandleEntityDeath();
         }
 
+        [ContextMenu("Death")]
         protected override void HandleEntityDeath()
         {
             base.HandleEntityDeath();
@@ -347,8 +346,12 @@ namespace _Scripts.Characters
 
                     SmoothingInputs(Inputs, overallDatas.inputSmoothing);
                     UpdateCharacterSpeed(GetMovementSpeed());
-                    HandleCharacterMotion();
-                    HandleCharacterRotation(overallDatas.rotationSmoothing);
+
+                    if (PlayerSM.CanMove)
+                    {
+                        HandleCharacterMotion();
+                        HandleCharacterRotation(overallDatas.rotationSmoothing);
+                    }
                     break;
             }
         }
@@ -636,6 +639,7 @@ namespace _Scripts.Characters.StateMachines
         public enum PlayerStates { Walk, Roll, Attack, Knocked, Stunned, Dead }
         public PlayerStates CurrentState { get; set; }
         public bool UsingStamina { get; set; }
+        public bool CanMove { get; set; }
         public bool CanDodge { get; set; }
         public bool CanAttack { get; set; }
         public Coroutine WaitAttack { get; set; }
@@ -648,6 +652,7 @@ namespace _Scripts.Characters.StateMachines
         public PlayerStateMachine()
         {
             CurrentState = PlayerStates.Walk;
+            CanMove = true;
             CanAttack = true;
             CanDodge = true;
             WaitAttack = null;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _ScriptableObjects.Cinemachine
 {
-	[CreateAssetMenu(fileName = "New Blend List", menuName = "Cinemachine/BlendList")]
+	[CreateAssetMenu(fileName = "New Blend List", menuName = "SO/Cinemachine/BlendList")]
 	public class BlendList : ScriptableObject
 	{
 		public CinemachineBlendDefinition defaultBlend = new CinemachineBlendDefinition();

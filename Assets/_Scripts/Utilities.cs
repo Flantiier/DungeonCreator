@@ -1,3 +1,6 @@
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Unity.Transforms;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,6 +21,19 @@ namespace Utils
 
 #if UNITY_EDITOR
         #region Editor
+        public static void DestroyAllChildren(Transform parent)
+        {
+            if (parent.childCount <= 0)
+                return;
+
+            var tempArray = new GameObject[parent.childCount];
+            for (int i = 0; i < tempArray.Length; i++)
+                tempArray[i] = parent.GetChild(i).gameObject;
+
+            foreach (var child in tempArray)
+                GameObject.DestroyImmediate(child);
+        }
+
         /// <summary>
         /// Indicates if the given scene exists and is set up in the build settings
         /// </summary>
@@ -162,6 +178,35 @@ namespace Utils
                 float g = RandomValue(min, max);
                 float b = RandomValue(min, max);
                 return new Color(r, g, b, 1);
+            }
+        }
+        #endregion
+
+        #region Byte Serialization
+        public abstract class ByteSerialization
+        {
+            // Convert an object to a byte array
+            public static byte[] ObjectToByteArray<T>(T obj)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                using (var ms = new MemoryStream())
+                {
+                    bf.Serialize(ms, obj);
+                    return ms.ToArray();
+                }
+            }
+
+            // Convert a byte array to an Object
+            public static T ByteArrayToObject<T>(byte[] arrBytes)
+            {
+                using (var memStream = new MemoryStream())
+                {
+                    var binForm = new BinaryFormatter();
+                    memStream.Write(arrBytes, 0, arrBytes.Length);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    var obj = binForm.Deserialize(memStream);
+                    return (T)obj;
+                }
             }
         }
         #endregion

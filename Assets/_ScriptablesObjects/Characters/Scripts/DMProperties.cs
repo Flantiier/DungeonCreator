@@ -4,7 +4,7 @@ using _ScriptableObjects.Cinemachine;
 
 namespace _ScriptableObjects.Characters
 {
-    [CreateAssetMenu(fileName = "New DM Properties", menuName = "Characters/DM¨Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New DM Properties", menuName = "SO/Characters/DM¨Properties"), InlineEditor]
 	public class DMProperties : ScriptableObject
 	{
 		[BoxGroup("Movements", CenterLabel = true), LabelWidth(120), Range(10, 40), GUIColor(2, 1, 0)]

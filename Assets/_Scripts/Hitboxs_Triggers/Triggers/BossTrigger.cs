@@ -20,8 +20,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             if (!other.TryGetComponent(out Character character))
                 return;
 
-            //Add player to a list
-            base.OnTriggerEnter(other);
+            AddItem(character);
             textMesh.gameObject.SetActive(true);
 
             //Trigger boss fight if possible
@@ -33,22 +32,30 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             if (!other.TryGetComponent(out Character character))
                 return;
 
-            base.OnTriggerExit(other);
+            RemoveItem(character);
             textMesh.gameObject.SetActive(false);
         }
 
         [ContextMenu("Trigger boss fight")]
         private void TriggerBossFight()
         {
-            /*int playerCount = PhotonNetwork.PlayerList.Length - 1;
+            int playerCount = PhotonNetwork.PlayerList.Length - 1;
 
             if (List.Count < playerCount)
             {
                 textMesh.text = $"En attente des autres joueurs.. {List.Count}/{playerCount}";
                 return;
-            }*/
+            }
 
             textMesh.text = "Lets go le boss";
+
+            if(PhotonNetwork.IsMasterClient)
+                View.RPC("TriggerBossRPC", RpcTarget.AllBuffered);
+        }
+
+        [PunRPC]
+        private void TriggerBossRPC()
+        {
             reachedBossEvent.Raise();
         }
     }

@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace _ScriptableObjects.Cinemachine
 {
-    [CreateAssetMenu(menuName = "Cinemachine/TopCamera Properties"), InlineEditor]
+    [CreateAssetMenu(menuName = "SO/Cinemachine/TopCamera Properties"), InlineEditor]
     public class TopCameraProperties : ScriptableObject
     {
         [FoldoutGroup("Body Properties"), HideLabel, GUIColor(1.5f, 1, 0.5f)]

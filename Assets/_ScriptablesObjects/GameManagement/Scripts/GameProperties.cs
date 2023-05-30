@@ -2,18 +2,24 @@ using UnityEngine;
 using Utils;
 using Sirenix.OdinInspector;
 using static Utils.Utilities.Time;
+using _Scripts.Multi.Connexion;
 
 namespace _ScriptableObjects.GameManagement
 {
-    [CreateAssetMenu(fileName = "New Game Properties", menuName = "Game Management/Game Properties"), InlineEditor]
+    [CreateAssetMenu(fileName = "New Game Properties", menuName = "SO/Game Management/Game Properties"), InlineEditor]
     public class GameProperties : ScriptableObject
     {
+        public Role role;
+
         [BoxGroup("Game Steps", CenterLabel = true)]
         [Tooltip("Le temps de la phase de preparation au début de la partie"), LabelText("Start Phase")]
         public GameStep startPhase = new GameStep(20f, TimeUnit.Seconds);
         [BoxGroup("Game Steps", CenterLabel = true)]
         [Tooltip("Le temps total de la game"), LabelText("Game")]
         public GameStep game = new GameStep(20f, TimeUnit.Minuts);
+
+        [BoxGroup("Respawn")]
+        public RespawnUnit[] respawnInfos;
     }
 
     #region TimeVariable
@@ -44,7 +50,17 @@ namespace _ScriptableObjects.GameManagement
             duration = Utilities.Time.ConvertTime(duration, TimeUnit, unit);
             _unit = unit;
         }
-        #endregion
-
     }
+    #endregion
+
+    #region RespawnUnit
+    [System.Serializable]
+    public struct RespawnUnit
+    {
+        public float maxTime;
+        public float minTime;
+        public TimeUnit timeUnit;
+        public float respawnDelay;
+    }
+    #endregion
 }

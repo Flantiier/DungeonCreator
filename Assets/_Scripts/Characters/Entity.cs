@@ -38,7 +38,7 @@ namespace _Scripts.Characters
         /// Setting entity health method
         /// </summary>
         [PunRPC]
-        public void HealthRPC(float healthValue)
+        public virtual void HealthRPC(float healthValue)
 		{
 			CurrentHealth = healthValue;
         }

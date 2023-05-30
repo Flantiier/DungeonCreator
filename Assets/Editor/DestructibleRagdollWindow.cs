@@ -67,7 +67,8 @@ public class DestructibleRagdollWindow : OdinEditorWindow
         DestructibleRagdollPart ragdoll = instance.AddComponent<DestructibleRagdollPart>();
         ragdoll.Bone = mesh;
         ragdoll.rb = rb;
-
+        ragdoll.meshCollider = collider;
+        ragdoll.filter = filter;
 
         return instance;
     }

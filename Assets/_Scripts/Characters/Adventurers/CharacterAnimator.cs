@@ -3,6 +3,7 @@ using Photon.Pun;
 using _Scripts.NetworkScript;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.Projectiles;
+using Cinemachine.Utility;
 
 namespace _Scripts.Characters.Animations
 {
@@ -20,9 +21,6 @@ namespace _Scripts.Characters.Animations
         [SerializeField] protected Projectile projectilePrefab;
         [SerializeField] private float addOffset = 0.25f;
         [SerializeField] protected bool projectileMainAttack = false;
-
-        [Header("Helpers")]
-        [SerializeField] private bool showHelpers = false;
         
         protected Projectile _lastProjectile;
         #endregion
@@ -39,19 +37,6 @@ namespace _Scripts.Characters.Animations
 
             Character = GetComponentInParent<Character>();
             SetHitboxsReferences(Character);
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!showHelpers)
-                return;
-
-            try
-            {
-                float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
-                Gizmos.DrawSphere(Character.MainCamera.position + Character.MainCamera.forward * offset, 0.1f);
-            }
-            catch { }
         }
         #endregion
 
@@ -139,7 +124,7 @@ namespace _Scripts.Characters.Animations
             if (_lastProjectile)
                 return;
 
-            Transform instance = PhotonNetwork.Instantiate(projectilePrefab.name, throwPoint.position, Quaternion.identity).transform;
+            Transform instance = PhotonNetwork.Instantiate(projectilePrefab.name, throwPoint.position, throwPoint.rotation).transform;
             instance.SetParent(throwPoint);
             _lastProjectile = instance.GetComponent<Projectile>();
         }
@@ -156,13 +141,16 @@ namespace _Scripts.Characters.Animations
                 CreateProjectile();
 
             _lastProjectile.transform.SetParent(null);
+            _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
+            _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
+            _lastProjectile = null;
 
-            float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
+            /*float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
             _lastProjectile.transform.position = Character.MainCamera.position + Character.MainCamera.forward * (offset + addOffset);
 
             _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
             _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
-            _lastProjectile = null;
+            _lastProjectile = null;*/
         }
         #endregion
 
