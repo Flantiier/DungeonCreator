@@ -89,6 +89,9 @@ namespace _Scripts.Managers
 		/// </summary>
 		private void SwicthDMToBoss()
 		{
+			if (started)
+				return;
+
 			//Disable DM
 			DMController dm = FindObjectOfType<DMController>();
 			dm.DisableCharacter();
