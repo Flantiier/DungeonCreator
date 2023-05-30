@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4023457556505799970}
   - component: {fileID: 3097462667711945348}
   - component: {fileID: 1803796929249601788}
+  - component: {fileID: 7617925466186216765}
   m_Layer: 0
   m_Name: marteau_forgeron
   m_TagString: Untagged
@@ -83,6 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7617925466186216765
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360086237683260170}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.19555221, y: 0.5306115, z: 0.32531428}
+  m_Center: {x: 0.0790138, y: 0.2735513, z: -0.4981246}
 --- !u!1 &446962040588767948
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 970593026194851958}
+  - component: {fileID: 8062961210353371248}
   m_Layer: 0
   m_Name: atelier_de_forge
   m_TagString: Untagged
@@ -118,6 +133,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &8062961210353371248
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446962040588767948}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 821534907729392815, guid: 8fe90d3aad9715e43a7e13f1fd48c4af, type: 3}
 --- !u!1 &1585430263097422601
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,6 +158,7 @@ GameObject:
   - component: {fileID: 2932756918463778383}
   - component: {fileID: 3578660825085183860}
   - component: {fileID: 4915357967782232556}
+  - component: {fileID: 4885016064016834794}
   m_Layer: 0
   m_Name: enclume
   m_TagString: Untagged
@@ -201,6 +231,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4885016064016834794
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585430263097422601}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0339144, y: 0.49103814, z: 0.37680572}
+  m_Center: {x: -0.000000059604645, y: 1.0661163, z: 0.000000007450581}
 --- !u!1 &5754214107663663880
 GameObject:
   m_ObjectHideFlags: 0
