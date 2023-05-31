@@ -26,6 +26,16 @@ namespace _Scripts.UI.Menus
             PhotonNetwork.CreateRoom(createField.text, roomOptions);
         }
 
+        public void JoinLobby()
+        {
+            PhotonNetwork.JoinLobby();
+        }
+
+        public void LeaveLobby()
+        {
+            PhotonNetwork.LeaveLobby();
+        }
+
         public void JoinRoom()
         {
             PhotonNetwork.JoinRoom(joinField.text);

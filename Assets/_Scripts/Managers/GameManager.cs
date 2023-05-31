@@ -54,6 +54,8 @@ namespace _Scripts.Managers
 
         private TextMeshProUGUI _title;
         private TextMeshProUGUI _descrip;
+        private bool _checkEndGame = false;
+        private bool _ended = false;
         #endregion
 
         #endregion
@@ -80,6 +82,23 @@ namespace _Scripts.Managers
             }
             else
                 Debug.LogWarning("No connected the game hasn't started");
+        }
+
+        private void LateUpdate()
+        {
+            if (!_checkEndGame || _ended)
+                return;
+
+            if(_boss.CurrentHealth <= 0)
+            {
+                EndGame(EndGameReason.AdventurerWin);
+                _ended = true;
+            }
+            else if (AdventurersDefeated())
+            {
+                EndGame(EndGameReason.MasterWin);
+                _ended = true;
+            }
         }
         #endregion
 
@@ -268,8 +287,9 @@ namespace _Scripts.Managers
             _adventurers = FindObjectsOfType<Character>();
             _boss = FindObjectOfType<BossController>();
 
-            GetComponent<RespawnManager>();
+            GetComponent<RespawnManager>().enabled = false;
             startBossFightEvent.Raise();
+            _checkEndGame = true;
         }
 
         /// <summary>

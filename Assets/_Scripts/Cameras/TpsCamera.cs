@@ -2,6 +2,7 @@ using UnityEngine;
 using Cinemachine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Cinemachine;
+using _Scripts.Managers;
 
 namespace _Scripts.Cameras
 {

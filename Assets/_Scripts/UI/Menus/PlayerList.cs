@@ -9,15 +9,13 @@ using Photon.Pun;
 using Photon.Realtime;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.GameManagement;
-using _Scripts.Multi.Connexion;
+using System.Runtime.CompilerServices;
 
 namespace _Scripts.UI.Menus
 {
     public class PlayerList : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [TitleGroup("References")]
-        [SerializeField] private PhotonView view;
         [TitleGroup("References")]
         [SerializeField] private GameProperties properties;
         [TitleGroup("References")]
@@ -59,6 +57,7 @@ namespace _Scripts.UI.Menus
         [SerializeField] private GameEvent loadGameEvent;
         public static System.Action<Player, bool> OnPlayerReady;
 
+        private PhotonView view;
         private List<PlayerProperties> _players = new List<PlayerProperties>();
         private readonly List<PlayerInfos> _guiElements = new List<PlayerInfos>();
         #endregion
@@ -70,6 +69,7 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void Awake()
         {
+            view = GetComponent<PhotonView>();
             errorText.text = missingPlayersText;
             roleButtons[0].interactable = false;
 

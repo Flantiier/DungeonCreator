@@ -5,6 +5,8 @@ using Sirenix.OdinInspector;
 using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
+using UnityEngine.InputSystem.LowLevel;
+using _Scripts.Managers;
 
 namespace _Scripts.Characters
 {
@@ -78,6 +80,8 @@ namespace _Scripts.Characters
 
             EnableInputs(true);
             SubscribeInputActions();
+            GameUIManager.OnMenuOpen += EnableInputs;
+            GameUIManager.OnMenuOpen += _camera.EnableInputProvider;
         }
 
         public override void OnDisable()
@@ -87,6 +91,8 @@ namespace _Scripts.Characters
 
             EnableInputs(false);
             UnsubscribeInputActions();
+            GameUIManager.OnMenuOpen -= EnableInputs;
+            GameUIManager.OnMenuOpen -= _camera.EnableInputProvider;
         }
 
         protected virtual void Update()

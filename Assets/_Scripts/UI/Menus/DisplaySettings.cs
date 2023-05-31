@@ -20,6 +20,7 @@ namespace _Scripts.UI.Interfaces
         #region Builts_In
         private void Awake()
         {
+            settings.SaveSettings();
             settings.LoadSettings();
             sensitivitySlider.slider.maxValue = settings.maxSensitivity;
         }

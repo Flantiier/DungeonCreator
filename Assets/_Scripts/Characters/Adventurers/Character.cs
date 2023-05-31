@@ -9,6 +9,7 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
+using _Scripts.Managers;
 
 namespace _Scripts.Characters
 {

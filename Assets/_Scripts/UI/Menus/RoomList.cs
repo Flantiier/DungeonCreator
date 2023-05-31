@@ -10,15 +10,7 @@ namespace _Scripts.UI.Menus
         [SerializeField] private Room roomPrefab;
         [SerializeField] private Transform content;
         [SerializeField] private GameObject noRoomText;
-        private readonly List<Room> _listing = new List<Room>();
-
-        public void Start()
-        {
-            if (!PhotonNetwork.IsConnected)
-                return;
-
-            PhotonNetwork.JoinLobby();
-        }
+        private List<Room> _listing = new List<Room>();
 
         private void Update()
         {
@@ -59,6 +51,17 @@ namespace _Scripts.UI.Menus
                         _listing.Add(instance);
                     }
                 }
+            }
+        }
+
+        public override void OnLeftLobby()
+        {
+            foreach (Room room in _listing)
+            {
+                if (!room)
+                    continue;
+
+                Destroy(room.gameObject);
             }
         }
     }

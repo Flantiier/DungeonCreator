@@ -63,8 +63,10 @@ namespace _Scripts.UI.Menus
             dragCard.gameObject.SetActive(false);
             GUIPanel.SetActive(false);
 
+            deckDatabase.Save();
             deckDatabase.Load();
             _currentDeck = deckDatabase.GetDeck();
+
             _lastButton = deckDatabase.deckUsed;
             deckButtons[_lastButton].interactable = false;
         }

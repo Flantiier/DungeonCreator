@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using InputsMaps;
@@ -9,6 +8,7 @@ using _ScriptableObjects.Characters;
 //
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
+using _Scripts.Managers;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -56,6 +56,7 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
 
             SubscribeInputActions();
+            GameUIManager.OnMenuOpen += EnableInputs;
         }
 
         public override void OnDisable()
@@ -63,6 +64,7 @@ namespace _Scripts.Characters.DungeonMaster
             if (!ViewIsMine())
                 return;
 
+            GameUIManager.OnMenuOpen -= EnableInputs;
             UnsubscribeInputActions();
             _inputs.Disable();
         }

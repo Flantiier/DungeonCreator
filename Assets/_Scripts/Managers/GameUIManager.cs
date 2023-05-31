@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,8 @@ namespace _Scripts.Managers
         [SerializeField] private GameObject gameHUD;
         [TitleGroup("References")]
         [SerializeField] private GameObject optionsMenuHUD;
+
+        public static Action<bool> OnMenuOpen;
         #endregion
 
         #region Builts_In
