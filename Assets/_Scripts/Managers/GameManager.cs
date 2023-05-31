@@ -78,11 +78,18 @@ namespace _Scripts.Managers
             if (PhotonNetwork.IsConnected)
             {
                 if (PhotonNetwork.IsMasterClient)
-                    StartCoroutine(StartPhaseRoutine(gameProperties.startPhase, "StartPhaseEventRPC"));
+                    StartCoroutine(StartPhaseRoutine(gameProperties.startPhase));
             }
             else
                 Debug.LogWarning("No connected the game hasn't started");
         }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+                StartBossFight();
+        }
+
 
         private void LateUpdate()
         {
@@ -91,12 +98,12 @@ namespace _Scripts.Managers
 
             if(_boss.CurrentHealth <= 0)
             {
-                EndGame(EndGameReason.AdventurerWin);
+                EndGameRPC(EndGameReason.AdventurerWin);
                 _ended = true;
             }
             else if (AdventurersDefeated())
             {
-                EndGame(EndGameReason.MasterWin);
+                EndGameRPC(EndGameReason.MasterWin);
                 _ended = true;
             }
         }
@@ -108,7 +115,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Routine that update the time variable on all clients
         /// </summary>
-        private IEnumerator StartPhaseRoutine(GameStep step, string RPC)
+        private IEnumerator StartPhaseRoutine(GameStep step)
         {
             //Set the time value
             timeVariable.value = GetTimeInSeconds(step.duration, step.TimeUnit);
@@ -124,7 +131,7 @@ namespace _Scripts.Managers
 
             //Reset value and call step event
             timeVariable.value = 0;
-            RPCCall(RPC, RpcTarget.All);
+            RPCCall("StartPhaseEventRPC", RpcTarget.AllBuffered);
         }
 
         /// <summary>
@@ -144,17 +151,17 @@ namespace _Scripts.Managers
                 yield return null;
             }
 
-            EndGame(EndGameReason.TimeLeft);
+            RPCCall("EndGameRPC", RpcTarget.All, EndGameReason.TimeLeft);
         }
 
         [PunRPC]
-        private void SetGameTimeRPC(float value)
+        public void SetGameTimeRPC(float value)
         {
             timeVariable.value = value;
         }
 
         [PunRPC]
-        private void StartPhaseEventRPC()
+        public void StartPhaseEventRPC()
         {
             gameProperties.startPhase.gameEvent.Raise();
 
@@ -163,7 +170,7 @@ namespace _Scripts.Managers
         }
 
         [PunRPC]
-        private void GameEventRPC()
+        public void GameEventRPC()
         {
             gameProperties.game.gameEvent.Raise();
         }
@@ -173,7 +180,8 @@ namespace _Scripts.Managers
         /// <summary>
         /// Differents endgame methods
         /// </summary>
-        public void EndGame(EndGameReason reason)
+        [PunRPC]
+        public void EndGameRPC(EndGameReason reason)
         {
             StopAllCoroutines();
 

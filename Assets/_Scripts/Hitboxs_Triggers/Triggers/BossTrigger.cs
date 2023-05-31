@@ -53,6 +53,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             }
 
             textMesh.gameObject.SetActive(false);
+
             if (PhotonNetwork.IsMasterClient)
                 View.RPC("TriggerBossFightRPC", RpcTarget.All);
         }
