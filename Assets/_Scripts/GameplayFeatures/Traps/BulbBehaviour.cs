@@ -16,7 +16,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [FoldoutGroup("References")]
         [SerializeField] private DetectionBox detectionBox;
         [FoldoutGroup("References")]
-        [SerializeField] private VisualEffect fx;
+        [SerializeField] private ParticleSystem particles;
 
         [BoxGroup("Stats")]
         [Required, SerializeField] private BulbProperties datas;
@@ -28,6 +28,7 @@ namespace _Scripts.GameplayFeatures.Traps
         private void Awake()
         {
             hitbox.affliction = datas.affliction;
+            particles.Stop();
         }
 
         private void Update()
@@ -77,11 +78,11 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         private IEnumerator SporesRoutine()
         {
-            fx.Play();
+            particles.Play();
             hitbox.EnableCollider(true);
             yield return new WaitForSecondsRealtime(datas.sporesDuration);
             hitbox.EnableCollider(false);
-            fx.Stop();
+            particles.Stop();
 
             yield return new WaitForSecondsRealtime(datas.waitTime);
             _IsAttacking = false;

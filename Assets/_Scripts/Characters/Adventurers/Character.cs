@@ -5,12 +5,10 @@ using UnityEngine.InputSystem;
 using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using _Scripts.Managers;
 using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using UnityEngine.UIElements;
 
 namespace _Scripts.Characters
 {
@@ -69,18 +67,6 @@ namespace _Scripts.Characters
 
             base.OnEnable();
             InitializeCharacter();
-            //Events
-            GameUIManager.Instance.OnOptionsMenuChanged += ctx => EnableInputs(!ctx);
-        }
-
-        public override void OnDisable()
-        {
-            if (!ViewIsMine())
-                return;
-
-            base.OnDisable();
-            //Events
-            GameUIManager.Instance.OnOptionsMenuChanged -= ctx => EnableInputs(!ctx);
         }
 
         protected override void Update()

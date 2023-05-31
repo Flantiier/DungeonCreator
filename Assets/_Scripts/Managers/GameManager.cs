@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using UnityEngine;
-using Photon.Pun;
-using _ScriptableObjects.GameManagement;
-using Sirenix.OdinInspector;
-using static Utils.Utilities.Time;
+﻿using static Utils.Utilities.Time;
 using TMPro;
+using System.Collections;
+using Photon.Pun;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cinemachine;
+using Sirenix.OdinInspector;
+using _ScriptableObjects.GameManagement;
+using _Scripts.Characters.DungeonMaster;
+using _Scripts.Characters;
 
 public enum EndGameReason
 {
@@ -19,17 +22,44 @@ namespace _Scripts.Managers
     public class GameManager : NetworkMonoSingleton<GameManager>
     {
         #region Variables
-        [FoldoutGroup("Game steps")]
-        [SerializeField] private GameProperties gameProperties;
-        [FoldoutGroup("Game steps")]
-        [SerializeField] private FloatVariable timeVariable;
 
-        [Header("EndGame UI")]
-        [SerializeField] private GameObject endPanel;
+        #region Game Steps
+        [FoldoutGroup("Global Properties")]
+        [SerializeField] private GameProperties gameProperties;
+        [FoldoutGroup("Global Properties")]
+        [SerializeField] private FloatVariable timeVariable;
+        #endregion
+
+        #region Boss Fight
+        [FoldoutGroup("Boss Fight")]
+        [SerializeField] private GameObject bossUI;
+        [FoldoutGroup("Boss Fight")]
+        [SerializeField] private GameObject advBossUI;
+        [FoldoutGroup("Boss Fight")]
+        [SerializeField] private GameEvent startBossFightEvent;
+        [FoldoutGroup("Boss Fight")]
+        [SerializeField] private Transform[] spawnPositions;
+
+        private Character[] _adventurers;
+        private BossController _boss;
+        #endregion
+
+        #region EndGame
+        [FoldoutGroup("EndGame UI")]
         [SerializeField] private string menuScene = "MainScreen";
+        [FoldoutGroup("EndGame UI")]
+        [SerializeField] private GameObject endPanel;
+        [FoldoutGroup("EndGame UI")]
         [SerializeField] private Color winColor = Color.white, loseColor = Color.red;
+
         private TextMeshProUGUI _title;
         private TextMeshProUGUI _descrip;
+        #endregion
+
+        #endregion
+
+        #region Properties
+        public GameProperties Properties => gameProperties;
         #endregion
 
         #region Builts_In
@@ -37,6 +67,12 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
+            _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        }
+
+        private void Start()
+        {
             if (PhotonNetwork.IsConnected)
             {
                 if (PhotonNetwork.IsMasterClient)
@@ -44,9 +80,6 @@ namespace _Scripts.Managers
             }
             else
                 Debug.LogWarning("No connected the game hasn't started");
-
-            _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         }
         #endregion
 
@@ -75,6 +108,9 @@ namespace _Scripts.Managers
             RPCCall(RPC, RpcTarget.All);
         }
 
+        /// <summary>
+        /// HAndle teh duration of the game
+        /// </summary>
         private IEnumerator GameRoutine(GameStep step)
         {
             //Set the time value
@@ -92,10 +128,6 @@ namespace _Scripts.Managers
             EndGame(EndGameReason.TimeLeft);
         }
 
-        /// <summary>
-        /// Set the time variable RPC
-        /// </summary>
-        /// <param name="value"> Time value sent over the network </param>
         [PunRPC]
         private void SetGameTimeRPC(float value)
         {
@@ -119,6 +151,9 @@ namespace _Scripts.Managers
         #endregion
 
         #region EndGame Methods
+        /// <summary>
+        /// Differents endgame methods
+        /// </summary>
         public void EndGame(EndGameReason reason)
         {
             StopAllCoroutines();
@@ -140,6 +175,9 @@ namespace _Scripts.Managers
             StartCoroutine("EndGameRoutine");
         }
 
+        /// <summary>
+        /// Leave the room and go back to the menu
+        /// </summary>
         private IEnumerator EndGameRoutine()
         {
             yield return new WaitForSecondsRealtime(5f);
@@ -148,6 +186,9 @@ namespace _Scripts.Managers
             SceneManager.LoadScene(menuScene);
         }
 
+        /// <summary>
+        /// Endgame method when ther's no time left
+        /// </summary>
         private void TimesLeft()
         {
             if (PlayersManager.Role == Role.Master)
@@ -164,6 +205,9 @@ namespace _Scripts.Managers
             }
         }
 
+        /// <summary>
+        /// Endgame method when the adventurers win
+        /// </summary>
         private void AdventurersWin()
         {
             if (PlayersManager.Role != Role.Master)
@@ -180,6 +224,9 @@ namespace _Scripts.Managers
             }
         }
 
+        /// <summary>
+        /// Endgame method when the DM win
+        /// </summary>
         private void MasterWin()
         {
             if (PlayersManager.Role == Role.Master)
@@ -194,6 +241,102 @@ namespace _Scripts.Managers
                 _title.color = loseColor;
                 _descrip.text = "Le maitre du donjon ne vous a laisse aucune chance... Vous etiez si pret du but.";
             }
+        }
+        #endregion
+
+        #region BossFight Methods
+        /// <summary>
+        /// Teleport player if its an adventurer / Take the control of the boss for the DM
+        /// </summary>
+        [ContextMenu("Start Boss Fight")]
+        public void StartBossFight()
+        {
+            Role role = PlayersManager.Role;
+
+            switch (role)
+            {
+                case Role.Master:
+                    SwicthDMToBoss();
+                    Instantiate(bossUI);
+                    break;
+                default:
+                    TeleportAdventurers(role);
+                    Instantiate(advBossUI);
+                    break;
+            }
+
+            _adventurers = FindObjectsOfType<Character>();
+            _boss = FindObjectOfType<BossController>();
+
+            GetComponent<RespawnManager>();
+            startBossFightEvent.Raise();
+        }
+
+        /// <summary>
+        /// Swicth DM controller to Boss controller
+        /// </summary>
+        private void SwicthDMToBoss()
+        {
+            //Disable DM
+            DMController dm = FindObjectOfType<DMController>();
+            dm.DisableCharacter();
+
+            //Enable Boss
+            BossController boss = FindObjectOfType<BossController>();
+            boss.EnableBoss();
+        }
+
+        /// <summary>
+        /// Teleport the player in the boss area
+        /// </summary>
+        private void TeleportAdventurers(Role role)
+        {
+            Transform spawn = role == Role.Warrior ? spawnPositions[0] : role == Role.Archer ? spawnPositions[1] : spawnPositions[2];
+            Character player = GetLocalPlayer();
+
+            if (player)
+            {
+                //Reset la cam au cas ou
+                CinemachineVirtualCamera vcam = player.MainCamera.parent.GetComponentInChildren<CinemachineVirtualCamera>();
+                vcam.LookAt = player.LookAt;
+                vcam.Follow = player.LookAt;
+                //Teleport player
+                player.TeleportPlayer(spawn);
+            }
+        }
+
+        /// <summary>
+        /// Return the local character
+        /// </summary>
+        private Character GetLocalPlayer()
+        {
+            Character[] characters = FindObjectsOfType<Character>();
+
+            foreach (Character character in characters)
+            {
+                if (!character || !character.ViewIsMine())
+                    continue;
+                else
+                    return character;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Look if all the adventurers are defeated
+        /// </summary>
+        private bool AdventurersDefeated()
+        {
+            foreach (Character item in _adventurers)
+            {
+                if (item.CurrentHealth > 0)
+                    return false;
+                else
+                    continue;
+            }
+
+            return true;
         }
         #endregion
 

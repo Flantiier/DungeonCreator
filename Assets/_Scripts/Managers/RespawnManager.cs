@@ -1,42 +1,46 @@
+using TMPro;
 using System.Collections;
-using UnityEngine;
 using Cinemachine;
+using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using Utils;
+using Sirenix.OdinInspector;
 using _Scripts.Characters;
 using _ScriptableObjects.GameManagement;
-using TMPro;
-using Photon.Realtime;
 
 namespace _Scripts.Managers
 {
-
     public class RespawnManager : MonoBehaviour
     {
         #region Variables
-        [Header("References")]
+        [TitleGroup("References")]
         [SerializeField] private GameObject respawnCanvas;
-        [SerializeField] private GameEvent respawnStart, respawnEnd; 
+        [TitleGroup("References")]
+        [SerializeField] private GameEvent respawnStart, respawnEnd;
 
-        [Header("Properties")]
-        [SerializeField] private GameProperties properties;
+        [FoldoutGroup("Variables")]
         [SerializeField] private FloatVariable timeVariable;
+        [FoldoutGroup("Variables")]
         [SerializeField] private FloatVariable respawnTime;
+        [FoldoutGroup("Variables")]
         [SerializeField] private Vector3Variable respawnPosition;
 
+        //Players
         private Transform[] _players;
         private PhotonView[] _view;
         private CinemachineVirtualCamera _cam;
+        //GUI
         private TextMeshProUGUI _nameField;
         private TextMeshProUGUI _timeField;
-        private int _index;
+        private int _currentIndex;
         #endregion
 
         #region Builts_In
         private void Start()
         {
-            _nameField = respawnCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
             _timeField = respawnCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            _nameField = respawnCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         }
 
         private void OnEnable()
@@ -102,11 +106,13 @@ namespace _Scripts.Managers
             respawnEnd.Raise();
         }
 
-        [ContextMenu("Get time")]
+        /// <summary>
+        /// Get the required time to respawn
+        /// </summary>
         private float GetRespawnTime()
         {
             float time = 5f;
-            foreach (RespawnUnit unit in properties.respawnInfos)
+            foreach (RespawnUnit unit in GameManager.Instance.Properties.respawnInfos)
             {
                 float max = Utilities.Time.ConvertTime(unit.maxTime, unit.timeUnit, Utilities.Time.TimeUnit.Seconds);
                 float min = Utilities.Time.ConvertTime(unit.minTime, unit.timeUnit, Utilities.Time.TimeUnit.Seconds);
@@ -160,8 +166,9 @@ namespace _Scripts.Managers
                 if (!player.GetComponent<PhotonView>().IsMine)
                     return;
 
-                _cam.LookAt = player;
-                _cam.Follow = player;
+                Character character = player.GetComponent<Character>();
+                _cam.LookAt = character.LookAt;
+                _cam.Follow = character.LookAt;
                 break;
             }
         }
@@ -174,12 +181,13 @@ namespace _Scripts.Managers
             if (_players.Length <= 0)
                 return;
 
-            int index = _index + value >= _players.Length ? 0 : _index + value < 0 ? _players.Length - 1 : _index + value;
-            _index = index;
+            int index = _currentIndex + value >= _players.Length ? 0 : _currentIndex + value < 0 ? _players.Length - 1 : _currentIndex + value;
+            _currentIndex = index;
             Transform target = _players[index];
+            Character character = target.GetComponent<Character>();
 
-            _cam.LookAt = target;
-            _cam.Follow = target;
+            _cam.LookAt = character.LookAt;
+            _cam.Follow = character.LookAt;
 
             //Set text
             _nameField.text = GetPlayerName(target.GetComponent<PhotonView>());

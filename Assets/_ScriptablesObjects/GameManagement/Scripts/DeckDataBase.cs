@@ -21,7 +21,7 @@ namespace _ScriptableObjects.GameManagement
         public void Save()
         {
             DecksDataStruct save = new DecksDataStruct(decks, database, deckUsed);
-            SaveSystem.Save(save, "/_decks");
+            SaveSystem.Save(save, "_decks");
         }
 
         [Button("Load")]

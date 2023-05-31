@@ -58,6 +58,14 @@ namespace _Scripts.Characters.Adventurers
 
             return base.RunConditions();
         }
+
+        protected override bool SkillConditions()
+        {
+            if (shield.CurrentHealth <= 0)
+                return false;
+
+            return base.SkillConditions();
+        }
         #endregion
 
         #region Methods

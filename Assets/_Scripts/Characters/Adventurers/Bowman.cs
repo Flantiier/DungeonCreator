@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.Interfaces;
+using _ScriptableObjects.Cinemachine;
 
 namespace _Scripts.Characters.Adventurers
 {
@@ -8,8 +9,9 @@ namespace _Scripts.Characters.Adventurers
     {
         #region Variables
         [Header("Defuse properties")]
+        [SerializeField] private TpsCameraProperties cameraProperties;
         [SerializeField] private float defuseDistance = 3f;
-        [SerializeField] private LayerMask defuseLayers;
+        [SerializeField] private LayerMask defuseLayer;
 
         private IDefusable _currentTrap;
         #endregion
@@ -69,7 +71,8 @@ namespace _Scripts.Characters.Adventurers
             if (!SkillConditions())
                 return;
 
-            if (!Physics.Raycast(MainCamera.position, MainCamera.forward, out RaycastHit hit, defuseDistance, defuseLayers))
+            if (!Physics.Raycast(MainCamera.position, MainCamera.forward, out RaycastHit hit, 
+                                    cameraProperties.framingTranposer.m_CameraDistance + defuseDistance, defuseLayer))
                 return;
 
             if (!hit.collider.TryGetComponent(out IDefusable trap) || trap.IsDisabled)

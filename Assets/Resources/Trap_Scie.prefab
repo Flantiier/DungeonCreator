@@ -67,6 +67,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trap_Scie
       objectReference: {fileID: 0}
+    - target: {fileID: 1852271532031449285, guid: 8c9ea440972efae40addc258735d3d98,
+        type: 3}
+      propertyPath: m_Layer
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 2689082168266474074, guid: 8c9ea440972efae40addc258735d3d98,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c9ea440972efae40addc258735d3d98, type: 3}
 --- !u!1 &1544630227598775800 stripped
@@ -75,6 +85,22 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4143806040605783160}
   m_PrefabAsset: {fileID: 0}
+--- !u!54 &579454259
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544630227598775800}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!65 &3003331653837228256
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -86,8 +112,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.4745233, y: 0.16083255, z: 1.4770191}
-  m_Center: {x: -0.0006478727, y: 0.12021898, z: -0.0014864504}
+  m_Size: {x: 1.4745233, y: 0.5, z: 1.4770191}
+  m_Center: {x: -0.0006478727, y: 0.35, z: -0.0014864504}
 --- !u!114 &4387919177883731046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitboxCollider: {fileID: 3003331653837228256}
-  enabledOnStart: 0
+  enabledOnStart: 1
   initDamagesOnStart: 1
   damages: 25
   shouldDamageOnStay: 1
@@ -117,6 +143,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4143806040605783160}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &5832491528721726260
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2320856319090846909}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6.05, y: 0.25, z: 1}
+  m_Center: {x: 0, y: 0.09, z: 0}
 --- !u!114 &25927865100949511
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ namespace _Scripts.UI.Menus
         [SerializeField] private GameObject noRoomText;
         private readonly List<Room> _listing = new List<Room>();
 
-        public void Awake()
+        public void Start()
         {
             if (!PhotonNetwork.IsConnected)
                 return;

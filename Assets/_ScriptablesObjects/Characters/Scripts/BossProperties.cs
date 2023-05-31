@@ -13,7 +13,7 @@ namespace _ScriptableObjects.Characters
         [TitleGroup("Motion"), LabelWidth(125), Range(1, 20), GUIColor(0, 1.5f, 2)]
         public float walkSpeed = 5;
 
-        [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
+        [TitleGroup("Skills"), Range(100, 5000), GUIColor(0, 2, 0.5f)]
         public float health = 500f;
         [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
         public float firstAbilityRecovery = 15f;

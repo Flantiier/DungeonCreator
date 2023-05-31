@@ -128,6 +128,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5ef5523ab496a44ca2b2cace4679aeb, type: 3}
+--- !u!198 &5401899621015628221 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6407157117932902017, guid: a5ef5523ab496a44ca2b2cace4679aeb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1305389023047827260}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8431875795187375735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -270,7 +276,7 @@ MonoBehaviour:
   - {fileID: 6181826709514003085}
   hitbox: {fileID: 730641118705850189}
   detectionBox: {fileID: 8801453884847968439}
-  fx: {fileID: 0}
+  particles: {fileID: 5401899621015628221}
   datas: {fileID: 11400000, guid: 24808a160bdb855499f2dfb15fa5b77a, type: 2}
 --- !u!114 &1621974429376440146
 MonoBehaviour:

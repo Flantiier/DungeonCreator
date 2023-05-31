@@ -37,7 +37,7 @@ namespace _Scripts.Managers
         private void Awake()
         {
             //Not connected to network
-            if (PhotonNetwork.IsConnectedAndReady)
+            if (PhotonNetwork.IsConnected)
                 InstantiateCharacter(true);
         }
 
@@ -71,7 +71,7 @@ namespace _Scripts.Managers
                 case Role.Master:
                     Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);
                     Instantiate(characters.dungeonMaster.UI);
-                    InstantiateBoss();
+                    PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, bossSpawn.rotation);
                     spawnPosition.value = masterSpawn.position;
                     break;
 
@@ -93,14 +93,6 @@ namespace _Scripts.Managers
                     spawnPosition.value = adventurersSpawn[2].position;
                     break;
             }
-        }
-
-        /// <summary>
-        /// Spwan the boss prefab
-        /// </summary>
-        private void InstantiateBoss()
-        {
-            PhotonNetwork.Instantiate(characters.boss.prefab.name, bossSpawn.position, Quaternion.identity);
         }
 
         /// <summary>

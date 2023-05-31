@@ -14,16 +14,32 @@ namespace _Scripts.GameplayFeatures.Traps
         [SerializeField] private MeshRenderer meshRenderer;
         [FoldoutGroup("References")]
         [SerializeField] private Collider meshCollider;
+        [FoldoutGroup("References")]
+        [SerializeField] private Material inactiveMaterial;
 
         [BoxGroup("Stats")]
         [Required, SerializeField] private CageProperties datas;
+
+        private Material _material;
         #endregion
 
         #region Builts_In
+        private void Start()
+        {
+            if (ViewIsMine())
+                _material = meshRenderer.sharedMaterial;
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
             EnableCage(false);
+
+            if (ViewIsMine())
+            {
+                meshRenderer.sharedMaterial = inactiveMaterial;
+                meshRenderer.enabled = true;
+            }
         }
 
         private void Update()
@@ -55,6 +71,9 @@ namespace _Scripts.GameplayFeatures.Traps
                 return;
 
             EnableCage(true);
+
+            if (ViewIsMine())
+                meshRenderer.sharedMaterial = _material;
         }
 
         /// <summary>

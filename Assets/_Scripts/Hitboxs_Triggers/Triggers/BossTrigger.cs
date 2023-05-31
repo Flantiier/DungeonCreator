@@ -2,14 +2,17 @@
 using Photon.Pun;
 using TMPro;
 using _Scripts.Characters;
+using _Scripts.Managers;
 
 namespace _Scripts.Hitboxs_Triggers.Triggers
 {
     public class BossTrigger : ListingTrigger<Character>
     {
+        #region Variables
         [SerializeField] private TextMeshProUGUI textMesh;
-        [SerializeField] private GameEvent reachedBossEvent;
+        #endregion
 
+        #region Builts_In
         private void Awake()
         {
             textMesh.gameObject.SetActive(false);
@@ -35,7 +38,9 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             RemoveItem(character);
             textMesh.gameObject.SetActive(false);
         }
+        #endregion
 
+        #region Methods
         [ContextMenu("Trigger boss fight")]
         private void TriggerBossFight()
         {
@@ -43,20 +48,20 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 
             if (List.Count < playerCount)
             {
-                textMesh.text = $"En attente des autres joueurs.. {List.Count}/{playerCount}";
+                textMesh.text = $"En attente des autres aventuriers... {List.Count}/{playerCount}";
                 return;
             }
 
-            textMesh.text = "Lets go le boss";
-
-            if(PhotonNetwork.IsMasterClient)
-                View.RPC("TriggerBossRPC", RpcTarget.AllBuffered);
+            textMesh.gameObject.SetActive(false);
+            if (PhotonNetwork.IsMasterClient)
+                View.RPC("TriggerBossFightRPC", RpcTarget.All);
         }
 
         [PunRPC]
-        private void TriggerBossRPC()
+        public void TriggerBossFightRPC()
         {
-            reachedBossEvent.Raise();
+            GameManager.Instance.StartBossFight();
         }
+        #endregion
     }
 }
