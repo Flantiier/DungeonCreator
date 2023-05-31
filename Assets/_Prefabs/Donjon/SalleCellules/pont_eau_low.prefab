@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6474245440842071670}
   - component: {fileID: 7959822587517366739}
   - component: {fileID: 5301316416745145625}
+  - component: {fileID: 3737466023591451003}
+  - component: {fileID: 6929612079613220507}
   m_Layer: 0
   m_Name: pont_eau_low
   m_TagString: Untagged
@@ -83,3 +85,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3737466023591451003
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5950085521171883212}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8.171318, y: 2.7342105, z: 1.3210611}
+  m_Center: {x: 0.00000023841858, y: -0.00000029802322, z: -0.00000008940697}
+--- !u!65 &6929612079613220507
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5950085521171883212}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 8.171318, y: 2.7342105, z: 1.3210611}
+  m_Center: {x: 0.00000023841858, y: 2.31, z: -1.33}

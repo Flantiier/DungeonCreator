@@ -9,6 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 852278386743748428}
+  - component: {fileID: 6196746174191354276}
+  - component: {fileID: 513754822813430794}
+  - component: {fileID: 7860512816051130612}
   m_Layer: 0
   m_Name: forge
   m_TagString: Untagged
@@ -35,6 +38,48 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &6196746174191354276
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42843577623707126}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.46
+  m_Height: 5.73
+  m_Direction: 0
+  m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!136 &513754822813430794
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42843577623707126}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.65
+  m_Height: 9.85
+  m_Direction: 1
+  m_Center: {x: -0.95, y: 5.57, z: 0}
+--- !u!136 &7860512816051130612
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42843577623707126}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 2.9
+  m_Height: 6
+  m_Direction: 1
+  m_Center: {x: -1.3, y: 0.65, z: 0}
 --- !u!1 &2702191393280505622
 GameObject:
   m_ObjectHideFlags: 0
