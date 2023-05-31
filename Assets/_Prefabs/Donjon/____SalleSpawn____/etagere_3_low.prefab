@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8820827786114255159}
   - component: {fileID: 5604232440357013138}
   - component: {fileID: 7647900515705270872}
-  - component: {fileID: 5844538382817355435}
+  - component: {fileID: 6111989384028408758}
   m_Layer: 6
   m_Name: etagere_3_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5844538382817355435
-MeshCollider:
+--- !u!65 &6111989384028408758
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 9062629064940499995, guid: e17bbc61281735d45817e117b9052a96, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.49607727, y: 2.3499985, z: 4.7359104}
+  m_Center: {x: 0, y: 1.1749983, z: -0.000000010244548}
