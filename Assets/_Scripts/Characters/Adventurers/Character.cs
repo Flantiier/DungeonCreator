@@ -9,7 +9,8 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using _Scripts.Managers;
+using Cinemachine;
+using _Scripts.Cameras;
 
 namespace _Scripts.Characters
 {
@@ -45,7 +46,8 @@ namespace _Scripts.Characters
         public AdventurerProperties CharacterDatas => characterDatas;
         public PlayerStateMachine PlayerSM { get; private set; }
         public AfflictionStatus CurrentAffliction { get; set; }
-        public Transform LookAt { get; private set; }
+        public Transform LookAt => lookAt;
+        public TpsCamera Camera => _camera;
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
         #endregion
@@ -90,6 +92,19 @@ namespace _Scripts.Characters
             transform.position = teleportPoint.position;
             transform.rotation = teleportPoint.rotation;
             gameObject.SetActive(true);
+
+            _camera.VCam.Follow = LookAt;
+            _camera.VCam.LookAt = LookAt;
+        }
+
+        public void TeleportPlayer(Vector3 teleportPoint)
+        {
+            gameObject.SetActive(false);
+            transform.position = teleportPoint;
+            gameObject.SetActive(true);
+
+            _camera.VCam.Follow = LookAt;
+            _camera.VCam.LookAt = LookAt;
         }
 
         /// <summary>

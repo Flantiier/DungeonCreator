@@ -11,7 +11,6 @@ using _Scripts.GameplayFeatures;
 using _Scripts.TrapSystem;
 using _Scripts.GameplayFeatures.Traps;
 using _ScriptableObjects.Characters;
-using _Scripts.GameplayFeatures.IA;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -331,7 +330,7 @@ namespace _Scripts.Characters.DungeonMaster
         private void ShootingRaycast()
         {
             //If there is a trap card selected
-            if (!IsDragging || !SelectedCard)
+            if (!IsDragging || !SelectedCard || CardZone.CursorOnZone)
                 return;
 
             Ray ray = GetRayFromScreenPoint();
@@ -358,7 +357,6 @@ namespace _Scripts.Characters.DungeonMaster
                 //Update tiling
                 SetProjectionPosition();
                 UpdateTiling();
-
             }
         }
 
@@ -433,7 +431,6 @@ namespace _Scripts.Characters.DungeonMaster
 
             GameObject instance = PhotonNetwork.Instantiate(SelectedCard.TrapReference.trapPrefab.name, _trapInstance.transform.position, _trapInstance.transform.rotation);
             instance.GetComponent<TrapClass1>().OccupedTiles = interactor.Tiles.ToArray();
-            Debug.Log(instance.GetComponent<TrapClass1>().OccupedTiles.Length);
 
             //Set tiles that will be occuped
             interactor.SetAllTiles(Tile.TileState.Used);

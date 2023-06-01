@@ -1,7 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
-using _Scripts.Multi.Connexion;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters;
 using _ScriptableObjects.GameManagement;
@@ -37,7 +36,7 @@ namespace _Scripts.Managers
         private void Awake()
         {
             //Not connected to network
-            if (PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnectedAndReady)
                 InstantiateCharacter(true);
         }
 

@@ -17,9 +17,7 @@ namespace _Scripts.Managers
             if (PlayersManager.Role == Role.Master || loadAllOverrite)
                 return;
 
-            DisableAllMap();
-            foreach (GameObject obj in loadAtStart)
-                obj.SetActive(true);
+            EnableMapStart();
         }
         #endregion
 
@@ -49,7 +47,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Load all scene in the array
         /// </summary>
-		private void EnableAllMap()
+		public void EnableAllMap()
         {
             foreach (GameObject scene in scenes)
                 EnableMapPart(scene);
@@ -60,8 +58,18 @@ namespace _Scripts.Managers
         /// </summary>
         private void DisableAllMap()
         {
-            foreach (GameObject  scene in scenes)
+            foreach (GameObject scene in scenes)
                 DisableMapPart(scene);
+        }
+
+        /// <summary>
+        /// Enable only the beginning of the map
+        /// </summary>
+        public void EnableMapStart()
+        {
+            DisableAllMap();
+            foreach (GameObject obj in loadAtStart)
+                obj.SetActive(true);
         }
         #endregion
     }

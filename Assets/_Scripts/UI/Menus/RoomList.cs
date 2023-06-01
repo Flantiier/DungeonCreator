@@ -2,39 +2,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using Sirenix.Utilities;
 
 namespace _Scripts.UI.Menus
 {
     public class RoomList : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private Room roomPrefab;
+        #region Variables
+        [SerializeField] private RoomListing roomPrefab;
         [SerializeField] private Transform content;
-        [SerializeField] private GameObject noRoomText;
-        private List<Room> _listing = new List<Room>();
 
-        private void Update()
-        {
-            if (PhotonNetwork.IsConnected || !content.gameObject.activeInHierarchy)
-                return;
+        private List<RoomListing> _listing = new List<RoomListing>();
+        #endregion
 
-            bool enabled = PhotonNetwork.CountOfRooms <= 0;
-            if(noRoomText.activeSelf != enabled)
-                noRoomText.SetActive(enabled);
-        }
-
+        #region Methods
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            foreach (RoomInfo room in roomList)
+            Debug.Log("Joined lobby");
+
+            foreach (RoomInfo info in roomList)
             {
                 //Room was removed from list
-                if (room.RemovedFromList)
+                if (info.RemovedFromList)
                 {
-                    //If it doesn't contain the room then pass
-                    if (!_listing.Contains(roomPrefab))
-                        continue;
-
-                    int index = _listing.FindIndex(x => x.Infos.Name == room.Name);
-                    if (index != 1)
+                    int index = _listing.FindIndex(x => x.RoomInfos.Name == info.Name);
+                    if (index != 1 && index < _listing.Count)
                     {
                         Destroy(_listing[index].gameObject);
                         _listing.RemoveAt(index);
@@ -43,26 +35,21 @@ namespace _Scripts.UI.Menus
                 //Add a reference to the room
                 else
                 {
-                    Room instance = Instantiate(roomPrefab, content);
-                    if (instance != null)
+                    int index = _listing.FindIndex(x => x.RoomInfos.Name == info.Name);
+                    if (index == -1)
                     {
-                        instance.Infos = room;
-                        instance.SetRoomInfos();
-                        _listing.Add(instance);
+                        RoomListing instance = Instantiate(roomPrefab, content);
+                        if (instance != null)
+                        {
+                            instance.SetRoomInfos(info);
+                            _listing.Add(instance);
+                        }
                     }
+                    else
+                        _listing[index].UpdateProperties();
                 }
             }
         }
-
-        public override void OnLeftLobby()
-        {
-            foreach (Room room in _listing)
-            {
-                if (!room)
-                    continue;
-
-                Destroy(room.gameObject);
-            }
-        }
+        #endregion
     }
 }

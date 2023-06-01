@@ -69,8 +69,11 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
-            _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            if (endPanel)
+            {
+                _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            }
         }
 
         private void Start()
@@ -90,9 +93,8 @@ namespace _Scripts.Managers
                 StartBossFight();
         }
 
-
         private void LateUpdate()
-        {
+        {/*
             if (!_checkEndGame || _ended)
                 return;
 
@@ -105,7 +107,7 @@ namespace _Scripts.Managers
             {
                 EndGameRPC(EndGameReason.MasterWin);
                 _ended = true;
-            }
+            }*/
         }
         #endregion
 
@@ -296,6 +298,9 @@ namespace _Scripts.Managers
             _boss = FindObjectOfType<BossController>();
 
             GetComponent<RespawnManager>().enabled = false;
+
+            //Unload map
+
             startBossFightEvent.Raise();
             _checkEndGame = true;
         }

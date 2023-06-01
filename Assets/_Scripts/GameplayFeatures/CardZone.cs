@@ -4,24 +4,32 @@ using _Scripts.Characters.DungeonMaster;
 
 namespace _Scripts.GameplayFeatures
 {
-	public class CardZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
-	{
+    public class CardZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
         #region Variables
         [SerializeField] private GameEvent pointerEnterEvent;
         [SerializeField] private GameEvent pointerExitEvent;
+
+        public static bool CursorOnZone { get; set; }
         #endregion
 
         #region Interfaces Implementations
         public virtual void OnPointerEnter(PointerEventData eventData)
-		{
+        {
+            Debug.Log("Enter");
+            CursorOnZone = true;
+
             if (!DMController.IsDragging)
                 return;
 
             pointerEnterEvent.Raise();
-		}
+        }
 
-		public virtual void OnPointerExit(PointerEventData eventData)
+        public virtual void OnPointerExit(PointerEventData eventData)
         {
+            Debug.Log("Exit");
+            CursorOnZone = false;
+
             if (!DMController.IsDragging)
                 return;
 

@@ -69,7 +69,10 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void Awake()
         {
+            Debug.Log(PhotonNetwork.InLobby);
+
             view = GetComponent<PhotonView>();
+
             errorText.text = missingPlayersText;
             roleButtons[0].interactable = false;
 
@@ -108,7 +111,6 @@ namespace _Scripts.UI.Menus
         public void LeaveRoom()
         {
             PhotonNetwork.LeaveRoom();
-            SceneManager.LoadScene(lobbyScene);
         }
 
         public void SetRole(int value)
@@ -407,7 +409,6 @@ namespace _Scripts.UI.Menus
         public override void OnLeftRoom()
         {
             SceneManager.LoadScene(lobbyScene);
-            PhotonNetwork.JoinLobby();
         }
         #endregion
     }

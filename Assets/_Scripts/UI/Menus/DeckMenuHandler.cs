@@ -18,10 +18,10 @@ namespace _Scripts.UI.Menus
     public class DeckMenuHandler : MonoBehaviour
     {
         #region Variables
-        [Header("Datas")]
+        [TitleGroup("Datas")]
         [SerializeField] private CardsDatabase dataBase;
+        [TitleGroup("Datas")]
         [SerializeField] private DeckDatabase deckDatabase;
-        [ShowInInspector] private DeckProflieSO _currentDeck;
 
         [FoldoutGroup("GUI")]
         [SerializeField] private DeckMenuGUI GUI;
@@ -37,7 +37,6 @@ namespace _Scripts.UI.Menus
         [SerializeField] private CardGUI dragCard;
         [FoldoutGroup("GUI")]
         [SerializeField] private Button[] deckButtons;
-        private int _lastButton;
 
         [FoldoutGroup("Slots")]
         [SerializeField] private CardSlot slotPrefab;
@@ -45,6 +44,9 @@ namespace _Scripts.UI.Menus
         [SerializeField] private Transform slotsPool;
         [FoldoutGroup("Slots")]
         [SerializeField] private Transform deckPool;
+
+        private DeckProflieSO _currentDeck;
+        private int _lastButton;
 
         private readonly HashSet<CardSlot> _cardsPool = new HashSet<CardSlot>();
         private readonly HashSet<CardSlot> _deckSlots = new HashSet<CardSlot>();
@@ -63,11 +65,10 @@ namespace _Scripts.UI.Menus
             dragCard.gameObject.SetActive(false);
             GUIPanel.SetActive(false);
 
-            deckDatabase.Save();
             deckDatabase.Load();
             _currentDeck = deckDatabase.GetDeck();
 
-            _lastButton = deckDatabase.deckUsed;
+            _lastButton = deckDatabase.DeckIndex;
             deckButtons[_lastButton].interactable = false;
         }
 
@@ -81,10 +82,7 @@ namespace _Scripts.UI.Menus
 
         private void Update()
         {
-            if (!dragCard)
-                return;
-
-            if (!dragCard.gameObject.activeSelf)
+            if (!dragCard || !dragCard.gameObject.activeSelf)
                 return;
 
             dragCard.transform.position = Input.mousePosition;
@@ -108,7 +106,7 @@ namespace _Scripts.UI.Menus
 
         private void OnDestroy()
         {
-            OverriteDeck();
+            OverriteDeckDatas();
             deckDatabase.Save();
         }
         #endregion
@@ -121,11 +119,11 @@ namespace _Scripts.UI.Menus
             if (_currentDeck == deckDatabase.decks[index])
                 return;
 
-            //Overrite current
-            OverriteDeck();
+            //Set deck datas to new datas
+            OverriteDeckDatas();
 
             //Select a new one
-            deckDatabase.deckUsed = index;
+            deckDatabase.DeckIndex = index;
             _currentDeck = deckDatabase.GetDeck();
             ArrangeAllSlots(_currentDeck);
         }
@@ -133,22 +131,33 @@ namespace _Scripts.UI.Menus
         /// <summary>
         /// Override the deck with the cards in deck slots
         /// </summary>
-        private void OverriteDeck()
+        private void OverriteDeckDatas()
         {
             for (int i = 0; i < _deckSlots.Count; i++)
-                OverriteCard(i);
+                OverriteCardDatas(i);
         }
 
         /// <summary>
         /// overrite a card in the deck
         /// </summary>
-        private void OverriteCard(int i)
+        private void OverriteCardDatas(int i)
         {
             _currentDeck.cards[i] = _deckSlots.ElementAt(i).Trap;
+            Debug.Log(_deckSlots.ElementAt(i).Trap);
         }
         #endregion
 
         #region Slots & Cards
+        /// <summary>
+        /// Return a new instantiated slot
+        /// </summary>
+        private CardSlot CreateNewSlot(TrapSO trap, Transform parent)
+        {
+            CardSlot instance = Instantiate(slotPrefab, parent);
+            instance.UpdateInfos(trap);
+            return instance;
+        }
+
         /// <summary>
         /// Instantiate all the references cards from the dataBase
         /// </summary>
@@ -157,7 +166,7 @@ namespace _Scripts.UI.Menus
             if (dataBase.elements.Length <= 0)
                 return;
 
-            //Loop through dataBase to instantiate each card
+            //Instantiates all the card slots
             for (int i = 0; i < dataBase.elements.Length; i++)
             {
                 DataBaseElement element = dataBase.elements[i];
@@ -171,30 +180,22 @@ namespace _Scripts.UI.Menus
 
                 CardSlot instance = CreateNewSlot(element.card, slotsPool);
                 _cardsPool.Add(instance);
-                instance.PoolSlot = true;
+                instance.IsPoolSlot = true;
                 instance.SetCardsAmount(element.maxAmount);
             }
 
-            //Instantiate deck slots based on dataBase values
+            //Instantiate all deck slots 
             for (int i = 0; i < dataBase.deckSize; i++)
             {
                 CardSlot slot = CreateNewSlot(null, deckPool);
                 _deckSlots.Add(slot);
-                slot.DisableGUI();
+                slot.DisableAmountField();
             }
-        }
-
-        private CardSlot CreateNewSlot(TrapSO trap, Transform parent)
-        {
-            CardSlot instance = Instantiate(slotPrefab, parent);
-            instance.UpdateInfos(trap);
-            return instance;
         }
 
         /// <summary>
         /// Set correctly all the slots based on the grid elements
         /// </summary>
-        /// <param name="deck"></param>
         private void ArrangeAllSlots(DeckProflieSO deck)
         {
             //Mising deck
@@ -221,50 +222,51 @@ namespace _Scripts.UI.Menus
         /// </summary>
         private void GetDeckCards(DeckProflieSO deck)
         {
-            int x = 0;
-            bool error = false;
+            //deck card loop index
+            int cardIndex = 0;
+
+            //Pour chaque carte dans le deck
             foreach (TrapSO SO in deck.cards)
             {
+                //Pour chaque slot
                 for (int i = 0; i < _cardsPool.Count; i++)
                 {
+                    //Get the card slot
                     CardSlot slot = _cardsPool.ElementAt(i);
+
                     //Not the right trap
                     if (slot.Trap != SO)
                         continue;
 
+                    //Card found, check if amount is 0
                     if (slot.CurrentAmount <= 0)
                     {
-                        //Looking fro an available trap
                         Debug.LogWarning("A card was took randomly because of multiple cards error");
-
-                        if(!error)
-                            error = true;
 
                         for (int j = _cardsPool.Count - 1; j >= 0; j--)
                         {
                             CardSlot temp = _cardsPool.ElementAt(j);
-                            if (temp.CurrentAmount <= 0)
-                                continue;
 
-                            slot = temp;
+                            if (temp.CurrentAmount > 0)
+                                slot = temp;
                         }
                     }
 
-
-                    //Place a deck slot
-                    CardSlot deckSlot = _deckSlots.ElementAt(x);
-                    deckSlot.transform.position = deckGroup.GetChild(x).position;
+                    //Get deck slot
+                    CardSlot deckSlot = _deckSlots.ElementAt(cardIndex);
+                    //Get deck slot position
+                    deckSlot.transform.position = deckGroup.GetChild(cardIndex).position;
+                    //Update deck slot data
                     deckSlot.UpdateInfos(slot.Trap);
-                    x++;
-
-                    //Remove a card from the pool
+                    //Check the next card
+                    cardIndex++;
+                    //Decrease slot amount
                     slot.DecreaseCardAmount();
-
-                    //Overrite instantely
-                    if (error)
-                        OverriteDeck();
                 }
             }
+
+            //Set deck datas 
+            OverriteDeckDatas();
         }
 
         /// <summary>
@@ -272,11 +274,14 @@ namespace _Scripts.UI.Menus
         /// </summary>
         private void SwappingCards(CardSlot from, CardSlot to)
         {
+            if (from.IsPoolSlot && to.IsPoolSlot)
+                return;
+
             // 1 => Trouver qui est le slot deck et qui est le slot pool
             CardSlot tempDeck;
             CardSlot tempPool;
 
-            if (from.PoolSlot) { tempPool = from; tempDeck = to; }
+            if (from.IsPoolSlot) { tempPool = from; tempDeck = to; }
             else { tempPool = to; tempDeck = from; }
 
             // 2 => Trouve l'element dans la liste pool en reference a la carte pool
@@ -290,13 +295,14 @@ namespace _Scripts.UI.Menus
             deckSlot.UpdateInfos(tempPool.Trap);
             // 6 => Enleve 1 carte pool dans celles de la pool
             poolSlot.DecreaseCardAmount();
+
             // 7 => Ajoute une carte deck dans celles de la pool
-            foreach (CardSlot item in _cardsPool)
+            foreach (CardSlot slot in _cardsPool)
             {
-                if (item.Trap != temp)
+                if (slot.Trap != temp)
                     continue;
 
-                item.IncreaseCardAmount();
+                slot.IncreaseCardAmount();
             }
             // 8 => Change the card in the deck
             for (int k = 0; k < _deckSlots.Count; k++)
@@ -304,7 +310,7 @@ namespace _Scripts.UI.Menus
                 if (_deckSlots.ElementAt(k) != deckSlot)
                     continue;
 
-                OverriteCard(k);
+                OverriteCardDatas(k);
             }
         }
         #endregion
@@ -419,7 +425,8 @@ namespace _Scripts.UI.Menus
         #endregion
     }
 
-    [System.Serializable]
+    #region GUI struct
+    [Serializable]
     public struct DeckMenuGUI
     {
         public CardDesign design;
@@ -427,4 +434,5 @@ namespace _Scripts.UI.Menus
         public TextMeshProUGUI type;
         public TextMeshProUGUI tiling;
     }
+    #endregion
 }

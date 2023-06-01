@@ -10,9 +10,25 @@ namespace _Scripts.UI.Menus
         [SerializeField] private GameObject mask;
         [SerializeField] private TextMeshProUGUI amountField;
         private int _maxAmount;
+        private int _currentAmount;
 
-        public int CurrentAmount { get; private set; }
-        public bool PoolSlot { get; set; }
+        //Indicates if its a pool slot or not
+        public bool IsPoolSlot { get; set; }
+        public int CurrentAmount
+        {
+            get => _currentAmount;
+            set
+            {
+                _currentAmount = value;
+                //Update text
+                UpdateText();
+                //Update mask
+                if (CurrentAmount <= 0 && canvasGroup.blocksRaycasts)
+                    MaskCard(true);
+                else if (CurrentAmount >= 1 && !canvasGroup.blocksRaycasts)
+                    MaskCard(false);
+            }
+        }
         #endregion
 
         #region Builts_In
@@ -30,8 +46,7 @@ namespace _Scripts.UI.Menus
         public void SetCardsAmount(int amount)
         {
             _maxAmount = amount;
-            CurrentAmount = amount;
-            UpdateAmountText();
+            _currentAmount = amount;
         }
 
         /// <summary>
@@ -39,14 +54,10 @@ namespace _Scripts.UI.Menus
         /// </summary>
         public void DecreaseCardAmount()
         {
-            if (!PoolSlot || CurrentAmount <= 0)
+            if (!IsPoolSlot || CurrentAmount <= 0)
                 return;
 
             CurrentAmount--;
-            UpdateAmountText();
-
-            if (CurrentAmount <= 0 && canvasGroup.blocksRaycasts)
-                MaskCard(true);
         }
 
         /// <summary>
@@ -54,14 +65,10 @@ namespace _Scripts.UI.Menus
         /// </summary>
         public void IncreaseCardAmount()
         {
-            if (!PoolSlot || CurrentAmount >= _maxAmount)
+            if (!IsPoolSlot || CurrentAmount >= _maxAmount)
                 return;
 
             CurrentAmount++;
-            UpdateAmountText();
-
-            if (CurrentAmount >= 1 && !canvasGroup.blocksRaycasts)
-                MaskCard(false);
         }
 
         /// <summary>
@@ -70,8 +77,6 @@ namespace _Scripts.UI.Menus
         public void ResetCardAmount()
         {
             CurrentAmount = _maxAmount;
-            MaskCard(false);
-            UpdateAmountText();
         }
         
         /// <summary>
@@ -86,12 +91,15 @@ namespace _Scripts.UI.Menus
         /// <summary>
         /// Update the text that shows the current amount of cards available
         /// </summary>
-        private void UpdateAmountText()
+        private void UpdateText()
         {
             amountField.SetText($"x{CurrentAmount}");
         }
 
-        public void DisableGUI()
+        /// <summary>
+        /// Disable amount field (same prefab used)
+        /// </summary>
+        public void DisableAmountField()
         {
             amountField.transform.parent.gameObject.SetActive(false);
         }
@@ -109,7 +117,7 @@ namespace _Scripts.UI.Menus
         //Swap cards on drop if possible
         public void OnDrop(PointerEventData eventData)
         {
-            if (!eventData.pointerDrag.TryGetComponent(out CardSlot slot) || (PoolSlot && slot.PoolSlot))
+            if (!eventData.pointerDrag.TryGetComponent(out CardSlot slot) || (IsPoolSlot && slot.IsPoolSlot))
                 return;
 
             DeckMenuHandler.InvokeSwappingEvent(slot, this);

@@ -30,9 +30,9 @@ namespace _ScriptableObjects.Characters
         public float healthRecup = 7f;
         [BoxGroup("Stats"), TitleGroup("Stats/Health"), LabelWidth(125), Range(1, 20), GUIColor(0, 2, 0.5f)]
         public float healthRecupDelay = 3f;
-        [BoxGroup("Stats"), TitleGroup("Stats/Stamina"), LabelWidth(125), Range(1, 20), GUIColor(3, 2, 0.5f)]
+        [BoxGroup("Stats"), TitleGroup("Stats/Stamina"), LabelWidth(125), Range(1, 50), GUIColor(3, 2, 0.5f)]
         public float staminaRecup = 5f;
-        [BoxGroup("Stats"), TitleGroup("Stats/Stamina"), LabelWidth(125), Range(0.1f, 3f), GUIColor(3, 2, 0.5f)]
+        [BoxGroup("Stats"), TitleGroup("Stats/Stamina"), LabelWidth(125), Range(0.1f, 20), GUIColor(3, 2, 0.5f)]
         public float staminaToRun = 1f;
         [BoxGroup("Stats"), TitleGroup("Stats/Stamina"), LabelWidth(125), Range(1, 100), GUIColor(3, 2, 0.5f)]
         public float staminaToDodge = 20f;

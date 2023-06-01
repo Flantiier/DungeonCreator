@@ -10,8 +10,9 @@ namespace _Scripts.GameplayFeatures
     public class TilingInteractor : MonoBehaviour
     {
         #region Variables/Properties
-        private List<Tile> _tiles = new List<Tile>();
+        private readonly List<Tile> _tiles = new List<Tile>();
         private BoxCollider _collider;
+        private int _collisions;
 
         public int Amount { get; set; }
         public List<Tile> Tiles => _tiles;
@@ -21,24 +22,11 @@ namespace _Scripts.GameplayFeatures
         private void Awake()
         {
             _collider = GetComponent<BoxCollider>();
-            DisableCollider();
-        }
-
-        private void OnEnable()
-        {
-            /*DMController.Instance.OnStartDrag += EnableCollider;
-            DMController.Instance.OnEndDrag += DisableCollider;*/
-        }
-
-        private void OnDisable()
-        {
-            /*DMController.Instance.OnStartDrag -= EnableCollider;
-            DMController.Instance.OnEndDrag -= DisableCollider;*/
         }
 
         private void LateUpdate()
         {
-            if (!_collider.enabled)
+            if (!_collider.enabled || _collisions <= 0)
                 return;
 
             RefreshTiling();
@@ -57,6 +45,7 @@ namespace _Scripts.GameplayFeatures
             }
 
             AddToTilesList(tile);
+            _collisions++;
         }
 
         private void OnTriggerExit(Collider other)
@@ -65,6 +54,7 @@ namespace _Scripts.GameplayFeatures
                 return;
 
             RemoveFromTilesList(tile);
+            _collisions--;
         }
         #endregion
 

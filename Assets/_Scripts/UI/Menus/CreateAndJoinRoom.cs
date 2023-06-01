@@ -2,17 +2,23 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using _Scripts.Managers;
 
 namespace _Scripts.UI.Menus
 {
     public class CreateAndJoinRoom : MonoBehaviourPunCallbacks
     {
+        #region Variables
+        [SerializeField] private GameObject panel;
         [SerializeField] private TMP_InputField createField;
         [SerializeField] private TMP_InputField joinField;
         [SerializeField] private string roomMenuScene = "RoomMenu";
-        [SerializeField] private SceneLoader loader;
+        [SerializeField] private GameObject textLoad;
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Create a room with the given name
+        /// </summary>
         public void CreateRoom()
         {
             if (createField.text.Length <= 2)
@@ -26,6 +32,14 @@ namespace _Scripts.UI.Menus
             PhotonNetwork.CreateRoom(createField.text, roomOptions);
         }
 
+        /// <summary>
+        /// Join given room
+        /// </summary>
+        public void JoinRoom()
+        {
+            PhotonNetwork.JoinRoom(joinField.text);
+        }
+
         public void JoinLobby()
         {
             PhotonNetwork.JoinLobby();
@@ -36,19 +50,22 @@ namespace _Scripts.UI.Menus
             PhotonNetwork.LeaveLobby();
         }
 
-        public void JoinRoom()
-        {
-            PhotonNetwork.JoinRoom(joinField.text);
-        }
-
+        /// <summary>
+        /// Join room in list
+        /// </summary>
         public static void JoinInList(string name)
         {
             PhotonNetwork.JoinRoom(name);
         }
 
+        /// <summary>
+        /// On joined room callback
+        /// </summary>
         public override void OnJoinedRoom()
         {
-            loader.LoadSceneAsync(roomMenuScene);
+            textLoad.SetActive(true);
+            PhotonNetwork.LoadLevel(roomMenuScene);
         }
-}
+        #endregion
+    }
 }

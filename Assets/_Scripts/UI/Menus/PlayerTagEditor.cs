@@ -8,16 +8,26 @@ namespace _Scripts.Menus
     {
         #region Variables
         [SerializeField] private TMP_InputField inputField;
+        private string _currentName;
         #endregion
 
         #region Builts_In
-        private void Awake()
+        private void Start()
         {
             GetCurrentTag();
+        }
+
+        private void OnDestroy()
+        {
+            SubmitPlayerTag();
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Set Photon nickname to player pseudo
+        /// </summary>
+        /// <param name="name"></param>
         private void SetPhotonName(string name)
         {
             if (!PhotonNetwork.IsConnected)
@@ -31,9 +41,10 @@ namespace _Scripts.Menus
         /// </summary>
         public void GetCurrentTag()
         {
-            string m_name = GetPlayerTag();
-            inputField.text = m_name;
-            SetPhotonName(m_name);
+            _currentName = GetPlayerTag();
+
+            inputField.text = _currentName;
+            SetPhotonName(_currentName);
         }
 
         /// <summary>
@@ -41,10 +52,14 @@ namespace _Scripts.Menus
         /// </summary>
         public void SubmitPlayerTag()
         {
-            SetPhotonName(inputField.text);
-            SavePlayerTag(inputField.text);
-        }
+            if (inputField.text.Length <= 0)
+                inputField.text = _currentName;
+            else
+                _currentName = inputField.text;
 
+            SetPhotonName(_currentName);
+            SavePlayerTag(_currentName);
+        }
         #region PlayerPrefs
         public string GetPlayerTag()
         {

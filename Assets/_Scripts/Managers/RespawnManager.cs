@@ -28,7 +28,7 @@ namespace _Scripts.Managers
 
         //Players
         private Transform[] _players;
-        private PhotonView[] _view;
+        private Transform myPlayer;
         private CinemachineVirtualCamera _cam;
         //GUI
         private TextMeshProUGUI _nameField;
@@ -61,11 +61,15 @@ namespace _Scripts.Managers
         public void StartRespawnDelay(Character character)
         {
             respawnStart.Raise();
-            _cam = Camera.main.transform.parent.GetComponentInChildren<CinemachineVirtualCamera>();
 
+            //Spectateur
             EnableCanvas(true);
             GetPlayers();
             SwicthPlayer(0);
+
+            //Load map
+            MapLoader.Instance.EnableAllMap();
+
             StartCoroutine(RespawnRoutine(character));
         }
 
@@ -74,16 +78,12 @@ namespace _Scripts.Managers
         /// </summary>
         private void RespawnPlayer(Character character)
         {
-            EnableCanvas(false);
-            ResetCameraOnPlayer();
-
             if (!character)
                 return;
 
-            character.gameObject.SetActive(false);
-            character.transform.position = respawnPosition.value;
-            character.transform.rotation = Quaternion.identity;
-            character.gameObject.SetActive(true);
+            EnableCanvas(false);
+            ResetCameraOnPlayer();
+            character.TeleportPlayer(respawnPosition.value);
         }
 
         /// <summary>
@@ -92,12 +92,17 @@ namespace _Scripts.Managers
         /// <param name="character"> Character to respawn </param>
         private IEnumerator RespawnRoutine(Character character)
         {
+            bool loaded = false;
             respawnTime.value = GetRespawnTime();
 
             while (respawnTime.value > 0)
             {
                 respawnTime.value -= Time.deltaTime;
                 _timeField.text = "Reapparition dans : " + Mathf.Ceil(respawnTime.value).ToString();
+
+                if (!loaded && respawnTime.value <= 5f)
+                    MapLoader.Instance.EnableMapStart();
+
                 yield return null;
             }
 
@@ -147,12 +152,16 @@ namespace _Scripts.Managers
         {
             Character[] temp = FindObjectsOfType<Character>();
             _players = new Transform[temp.Length];
-            _view = new PhotonView[temp.Length];
 
             for (int i = 0; i < temp.Length; i++)
             {
                 _players[i] = temp[i].transform;
-                _view[i] = temp[i].GetComponent<PhotonView>();
+
+                if (_players[i].GetComponent<PhotonView>().IsMine)
+                {
+                    _cam = temp[i].Camera.VCam;
+                    myPlayer = temp[i].transform;
+                }
             }
         }
 
@@ -161,16 +170,8 @@ namespace _Scripts.Managers
         /// </summary>
         private void ResetCameraOnPlayer()
         {
-            foreach (Transform player in _players)
-            {
-                if (!player.GetComponent<PhotonView>().IsMine)
-                    return;
-
-                Character character = player.GetComponent<Character>();
-                _cam.LookAt = character.LookAt;
-                _cam.Follow = character.LookAt;
-                break;
-            }
+            _cam.Follow = myPlayer;
+            _cam.LookAt = myPlayer;
         }
 
         /// <summary>
@@ -185,6 +186,7 @@ namespace _Scripts.Managers
             _currentIndex = index;
             Transform target = _players[index];
             Character character = target.GetComponent<Character>();
+            Debug.Log(character);
 
             _cam.LookAt = character.LookAt;
             _cam.Follow = character.LookAt;

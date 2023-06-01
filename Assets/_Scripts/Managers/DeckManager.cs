@@ -10,13 +10,14 @@ namespace _Scripts.Managers
     {
         #region Variables
         [TitleGroup("References")]
-        [Required, SerializeField] private DeckProflieSO deck;
+        [Required, SerializeField] private DeckDatabase database;
         [TitleGroup("References")]
         [Required, SerializeField] private DraggableCard cardPrefab;
         [TitleGroup("References")]
         [Required, SerializeField] private Transform cardZone;
         [TitleGroup("References")]
         [Required, SerializeField] private Transform storageZone;
+        private DeckProflieSO _deck;
 
         [TitleGroup("Gameplay properties")]
         [SerializeField] private int cardInHand = 3;
@@ -27,6 +28,10 @@ namespace _Scripts.Managers
         {
             base.Awake();
 
+            //Get deck
+            _deck = database.GetDeck();
+
+            //Create cards
             InstantiateDeck();
             DrawMultiple(cardInHand);
         }
@@ -46,10 +51,10 @@ namespace _Scripts.Managers
         /// </summary>
         private void InstantiateDeck()
         {
-            if (!deck || deck.cards.Length <= 0)
+            if (!_deck || _deck.cards.Length <= 0)
                 return;
 
-            foreach (TrapSO trapDatas in deck.cards)
+            foreach (TrapSO trapDatas in _deck.cards)
             {
                 if (!trapDatas)
                     continue;
