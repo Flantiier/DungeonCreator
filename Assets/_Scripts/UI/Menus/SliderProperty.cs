@@ -1,36 +1,62 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 namespace _Scripts.UI.Menus
 {
     public class SliderProperty : MonoBehaviour
     {
-        public Slider slider;
-        public TMP_InputField inputField;
-        public float Value { get; private set; }
+        #region Variables/Properties
+        [SerializeField] private Slider slider;
+        [SerializeField] private TMP_InputField inputField;
+        private float _value;
 
-        public void SetValue(float value)
+        public float Value
         {
+            get => _value;
+            private set
+            {
+                _value = value;
+                inputField.text = value.ToString();
+                slider.value = value;
+            }
+        }
+        public float MaxValue { get; private set; }
+        public Slider Slider => slider;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Set slider and inputField value
+        /// </summary>
+        public void SetValue(float value, float maxValue)
+        {
+            slider.maxValue = maxValue;
             Value = value;
-            slider.value = value;
-            inputField.text = value.ToString();
         }
 
+        /// <summary>
+        /// Set value by using a slider
+        /// </summary>
         public void SetValueBySlider()
         {
-            Value = slider.value;
-            inputField.text = Value.ToString("0.##");
+            float value = (float)Math.Round(slider.value, 2);
+            Value = value;
         }
 
+        /// <summary>
+        /// Set value by using a input field 
+        /// </summary>
         public void SetValueByField()
         {
             try
             {
-                Value = float.Parse(inputField.text);
-                Value = Mathf.Clamp(Value, slider.minValue, slider.maxValue);
-                inputField.text = Value.ToString("0.##");
-                slider.value = Value;
+                float value = float.Parse(inputField.text);
+                value = Mathf.Clamp(value, slider.minValue, slider.maxValue);
+                Math.Round(value, 2);
+                Value = value;
             }
             catch
             {
@@ -38,7 +64,7 @@ namespace _Scripts.UI.Menus
                 inputField.text = Value.ToString("0.##");
                 slider.value = Value;
             }
-
         }
+        #endregion
     }
 }

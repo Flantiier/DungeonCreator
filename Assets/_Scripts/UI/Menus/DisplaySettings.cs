@@ -20,9 +20,7 @@ namespace _Scripts.UI.Interfaces
         #region Builts_In
         private void Awake()
         {
-            settings.SaveSettings();
             settings.LoadSettings();
-            sensitivitySlider.slider.maxValue = settings.maxSensitivity;
         }
 
         private void OnEnable()
@@ -32,6 +30,7 @@ namespace _Scripts.UI.Interfaces
 
         private void OnDisable()
         {
+            UpdateSettingsValue();
             SaveSettings();
         }
         #endregion
@@ -42,9 +41,9 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         public void SetSettingsValue()
         {
-            sensitivitySlider.SetValue(settings.sensitivity);
-            gVolumeSlider.SetValue(settings.globalVolume);
-            eVolumeSlider.SetValue(settings.effectsVolume);
+            sensitivitySlider.SetValue(settings.sensitivity, settings.maxSensitivity);
+            gVolumeSlider.SetValue(settings.globalVolume, 1f);
+            eVolumeSlider.SetValue(settings.effectsVolume, 1f);
         }
 
         /// <summary>
