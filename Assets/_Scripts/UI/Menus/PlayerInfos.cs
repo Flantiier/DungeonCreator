@@ -1,6 +1,4 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +27,7 @@ namespace _Scripts.UI.Menus
             Infos = playerProperties;
 
             //Name
-            string name = Infos.player.NickName == "*Player" ? Infos.player.NickName : $"Player{Random.Range(0, 1000)}";
+            string name = Infos.player.NickName != "*Player" ? Infos.player.NickName : $"Player{Random.Range(0, 1000)}";
             name = Infos.player.IsLocal ? name + " (Me)" : name;
             nameField.text = name;
             //Role

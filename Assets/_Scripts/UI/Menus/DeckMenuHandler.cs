@@ -143,7 +143,6 @@ namespace _Scripts.UI.Menus
         private void OverriteCardDatas(int i)
         {
             _currentDeck.cards[i] = _deckSlots.ElementAt(i).Trap;
-            Debug.Log(_deckSlots.ElementAt(i).Trap);
         }
         #endregion
 

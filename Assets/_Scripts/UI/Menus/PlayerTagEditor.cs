@@ -1,6 +1,6 @@
-using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using Photon.Pun;
 
 namespace _Scripts.Menus
 {

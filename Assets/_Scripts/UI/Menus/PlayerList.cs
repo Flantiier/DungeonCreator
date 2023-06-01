@@ -9,7 +9,14 @@ using Photon.Pun;
 using Photon.Realtime;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.GameManagement;
-using System.Runtime.CompilerServices;
+
+public enum Role
+{
+    Warrior,
+    Archer,
+    Wizard,
+    Master
+}
 
 namespace _Scripts.UI.Menus
 {
@@ -69,8 +76,6 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void Awake()
         {
-            Debug.Log(PhotonNetwork.InLobby);
-
             view = GetComponent<PhotonView>();
 
             errorText.text = missingPlayersText;
@@ -414,14 +419,7 @@ namespace _Scripts.UI.Menus
     }
 }
 
-public enum Role
-{
-    Warrior,
-    Archer,
-    Wizard,
-    Master
-}
-
+#region PlayerRoomProperties class
 public class PlayerProperties
 {
     public Player player;
@@ -435,3 +433,4 @@ public class PlayerProperties
         isReady = false;
     }
 }
+#endregion

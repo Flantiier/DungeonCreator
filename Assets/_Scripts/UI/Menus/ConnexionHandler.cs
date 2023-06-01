@@ -34,7 +34,6 @@ namespace _Scripts.UI.Menus
         #region Callbacks
         public override void OnConnectedToMaster()
         {
-            Debug.Log("Connected to master");
             StartCoroutine(LoadMenu());
         }
         #endregion

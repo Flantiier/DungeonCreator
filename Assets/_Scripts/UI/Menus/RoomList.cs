@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using Sirenix.Utilities;
 
 namespace _Scripts.UI.Menus
 {
@@ -18,8 +17,6 @@ namespace _Scripts.UI.Menus
         #region Methods
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            Debug.Log("Joined lobby");
-
             foreach (RoomInfo info in roomList)
             {
                 //Room was removed from list
