@@ -96,7 +96,6 @@ namespace _Scripts.Managers
         /// <param name="character"> Character to respawn </param>
         private IEnumerator RespawnRoutine(Character character)
         {
-            bool loaded = false;
             respawnTime.value = GetRespawnTime();
 
             while (respawnTime.value > 0)

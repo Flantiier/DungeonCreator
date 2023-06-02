@@ -54,8 +54,6 @@ namespace _Scripts.Managers
 
         private TextMeshProUGUI _title;
         private TextMeshProUGUI _descrip;
-        private bool _checkEndGame = false;
-        private bool _ended = false;
         #endregion
 
         #endregion
@@ -307,7 +305,6 @@ namespace _Scripts.Managers
             //Unload map
 
             startBossFightEvent.Raise();
-            _checkEndGame = true;
         }
 
         /// <summary>

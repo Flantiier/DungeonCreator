@@ -1,15 +1,15 @@
-using _Scripts.Characters;
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using _Scripts.Characters;
 
 public class TeleportationTool : MonoBehaviour
 {
+    #region Variables
     [SerializeField] private InputAction input;
     [SerializeField] private GameObject panel;
+    #endregion
 
-    public static event Action<Transform> OnTeleportSelected;
-
+    #region Builts_In
     private void OnEnable()
     {
         input.Enable();
@@ -21,7 +21,9 @@ public class TeleportationTool : MonoBehaviour
         input.Disable();
         input.started -= ctx => panel.SetActive(!panel.activeSelf);
     }
+    #endregion
 
+    #region Methods
     public static void InvokeTeleport(Transform transform)
     {
         Character character = FindPlayer();
@@ -49,4 +51,5 @@ public class TeleportationTool : MonoBehaviour
 
         return null;
     }
+    #endregion
 }

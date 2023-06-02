@@ -5,8 +5,6 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
     public class SnSEnemyStateMachine : EnemyAttackState
     {
         private SwordAndShieldEnemy classEnemy;
-        private bool shouldDefend;
-
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             classEnemy = animator.GetComponent<SwordAndShieldEnemy>();
@@ -20,7 +18,6 @@ namespace _Scripts.GameplayFeatures.IA.StateMachines
 
             enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Defend", false);
             enemy.RPCCall("TriggerRPC", Photon.Pun.RpcTarget.All, "Combo", false);
-            shouldDefend = false;
         }
 
         protected override void HandleComboTrigger(Animator animator, float normalizedTime)

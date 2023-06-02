@@ -112,8 +112,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 364, y: 0}
-  m_SizeDelta: {x: 444.9, y: 115.9}
+  m_AnchoredPosition: {x: 364, y: -43}
+  m_SizeDelta: {x: 455.6, y: 59.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4932036193844445426
 CanvasRenderer:
@@ -153,8 +153,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4288403180
+  m_fontColor: {r: 0.92549026, g: 0.83921576, b: 0.60784316, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -460,15 +460,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roles:
   - role: 0
+    name: Selecting role
+    sprite: {fileID: 21300000, guid: ea9c557c74b53264581ad1fe647a6f85, type: 3}
+  - role: 1
     name: Guerriere
     sprite: {fileID: 21300000, guid: 30fac05d26dab624294a8da4093e525b, type: 3}
-  - role: 1
+  - role: 2
     name: Archer
     sprite: {fileID: 21300000, guid: 51feed03f1b208642b72a87e7573de58, type: 3}
-  - role: 2
+  - role: 3
     name: Mage
     sprite: {fileID: 21300000, guid: a25763bbe82731c40a0ba97f9596fc6a, type: 3}
-  - role: 3
+  - role: 4
     name: Dungeon Master
     sprite: {fileID: 21300000, guid: c615e24c6360d53438a646a5652d1ee1, type: 3}
   nameField: {fileID: 6836928816504529734}
@@ -510,8 +513,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 154, y: 0}
-  m_SizeDelta: {x: 288.5, y: 115.9}
+  m_AnchoredPosition: {x: 271, y: 34}
+  m_SizeDelta: {x: 520, y: 74.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6836928816504529735
 CanvasRenderer:
@@ -569,8 +572,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
