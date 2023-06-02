@@ -71,6 +71,7 @@ namespace _Scripts.UI.Menus
         #endregion
 
         #region Properties
+        public int CurrentCharacter => _lastRole;
         public bool LocalPlayerReady { get; private set; } = false;
         #endregion
 
