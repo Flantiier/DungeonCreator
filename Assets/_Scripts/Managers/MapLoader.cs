@@ -27,7 +27,7 @@ namespace _Scripts.Managers
         /// </summary>
         public void EnableMapPart(GameObject scene)
         {
-            if (!scenes.Contains(scene) || scene.activeInHierarchy)
+            if (!scene || !scenes.Contains(scene) || scene.activeInHierarchy)
                 return;
 
             scene.SetActive(true);
@@ -38,7 +38,7 @@ namespace _Scripts.Managers
         /// </summary>
         public void DisableMapPart(GameObject scene)
         {
-            if (!scenes.Contains(scene) || !scene.activeInHierarchy)
+            if (!scene || !scenes.Contains(scene) || !scene.activeInHierarchy)
                 return;
 
             scene.SetActive(false);

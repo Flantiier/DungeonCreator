@@ -15,6 +15,7 @@ namespace _Scripts.Cameras
         [SerializeField] private bool updateInEditMode = false;
 
         public Transform CameraTransform => cam.transform;
+        public CinemachineVirtualCamera VCam => vCam;
 
         private void Update()
         {

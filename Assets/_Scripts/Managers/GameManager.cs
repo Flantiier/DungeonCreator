@@ -65,26 +65,18 @@ namespace _Scripts.Managers
         #endregion
 
         #region Builts_In
-        public override void Awake()
-        {
-            base.Awake();
-
-            if (endPanel)
-            {
-                _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-                _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            }
-        }
-
         private void Start()
         {
+            //Game Launch
             if (PhotonNetwork.IsConnected)
             {
                 if (PhotonNetwork.IsMasterClient)
                     StartCoroutine(StartPhaseRoutine(gameProperties.startPhase));
             }
-            else
-                Debug.LogWarning("No connected the game hasn't started");
+
+            //Disable Cursor
+            if (PlayersManager.Role != Role.Master)
+                EnableCursor(false);
         }
 
         private void Update()
@@ -112,6 +104,13 @@ namespace _Scripts.Managers
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Enable or disable the mouse cursor
+        /// </summary>
+        public void EnableCursor(bool visible)
+        {
+            Cursor.visible = visible;
+        }
 
         #region GameSteps
         /// <summary>
@@ -186,6 +185,12 @@ namespace _Scripts.Managers
         public void EndGameRPC(EndGameReason reason)
         {
             StopAllCoroutines();
+
+            if (!endPanel)
+                return;
+
+            _title = endPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            _descrip = endPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
 
             switch (reason)
             {

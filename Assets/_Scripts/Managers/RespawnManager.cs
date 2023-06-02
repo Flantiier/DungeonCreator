@@ -1,4 +1,5 @@
 using TMPro;
+using System;
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
@@ -27,8 +28,8 @@ namespace _Scripts.Managers
         [SerializeField] private Vector3Variable respawnPosition;
 
         //Players
-        private Transform[] _players;
-        private Transform myPlayer;
+        private Character[] _players;
+        private Character _myPlayer;
         private CinemachineVirtualCamera _cam;
         //GUI
         private TextMeshProUGUI _nameField;
@@ -45,12 +46,12 @@ namespace _Scripts.Managers
 
         private void OnEnable()
         {
-            Character.OnCharacterDeath += StartRespawnDelay;
+            Character.OnCharacterDeath += StartRespawn;
         }
 
         private void OnDisable()
         {
-            Character.OnCharacterDeath -= StartRespawnDelay;
+            Character.OnCharacterDeath -= StartRespawn;
         }
         #endregion
 
@@ -58,14 +59,17 @@ namespace _Scripts.Managers
         /// <summary>
         /// Start a coroutine to respawn the player
         /// </summary>
-        public void StartRespawnDelay(Character character)
+        public void StartRespawn(Character character)
         {
             respawnStart.Raise();
 
             //Spectateur
-            EnableCanvas(true);
-            GetPlayers();
-            SwicthPlayer(0);
+            EnableRespawnCanvas(true);
+            GetPlayersList();
+            //Set camera on player
+            _currentIndex = Array.FindIndex(_players, p => p == _myPlayer);
+            _cam.LookAt = _myPlayer.LookAt;
+            _cam.Follow = _myPlayer.LookAt;
 
             //Load map
             MapLoader.Instance.EnableAllMap();
@@ -81,7 +85,7 @@ namespace _Scripts.Managers
             if (!character)
                 return;
 
-            EnableCanvas(false);
+            EnableRespawnCanvas(false);
             ResetCameraOnPlayer();
             character.TeleportPlayer(respawnPosition.value);
         }
@@ -100,11 +104,11 @@ namespace _Scripts.Managers
                 respawnTime.value -= Time.deltaTime;
                 _timeField.text = "Reapparition dans : " + Mathf.Ceil(respawnTime.value).ToString();
 
-                if (!loaded && respawnTime.value <= 5f)
-                    MapLoader.Instance.EnableMapStart();
-
                 yield return null;
             }
+
+            //Load map start
+            MapLoader.Instance.EnableMapStart();
 
             respawnTime.value = 0;
             RespawnPlayer(character);
@@ -131,7 +135,6 @@ namespace _Scripts.Managers
                     continue;
             }
 
-            Debug.Log("Respawn time : " + time);
             return time;
         }
         #endregion
@@ -140,7 +143,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Enable respawn canvas 
         /// </summary>
-        private void EnableCanvas(bool enabled)
+        private void EnableRespawnCanvas(bool enabled)
         {
             respawnCanvas.SetActive(enabled);
         }
@@ -148,20 +151,22 @@ namespace _Scripts.Managers
         /// <summary>
         /// Get players to watch
         /// </summary>
-        private void GetPlayers()
+        private void GetPlayersList()
         {
-            Character[] temp = FindObjectsOfType<Character>();
-            _players = new Transform[temp.Length];
+            _players = FindObjectsOfType<Character>();
 
-            for (int i = 0; i < temp.Length; i++)
+            if (_myPlayer)
+                return;
+
+            //Get players transform
+            for (int i = 0; i < _players.Length; i++)
             {
-                _players[i] = temp[i].transform;
+                //Check if its the local player
+                if (!_players[i].GetComponent<PhotonView>().IsMine)
+                    continue;
 
-                if (_players[i].GetComponent<PhotonView>().IsMine)
-                {
-                    _cam = temp[i].Camera.VCam;
-                    myPlayer = temp[i].transform;
-                }
+                _myPlayer = _players[i];
+                _cam = _players[i].Camera.VCam;
             }
         }
 
@@ -170,8 +175,8 @@ namespace _Scripts.Managers
         /// </summary>
         private void ResetCameraOnPlayer()
         {
-            _cam.Follow = myPlayer;
-            _cam.LookAt = myPlayer;
+            _cam.Follow = _myPlayer.LookAt;
+            _cam.LookAt = _myPlayer.LookAt;
         }
 
         /// <summary>
@@ -182,17 +187,17 @@ namespace _Scripts.Managers
             if (_players.Length <= 0)
                 return;
 
-            int index = _currentIndex + value >= _players.Length ? 0 : _currentIndex + value < 0 ? _players.Length - 1 : _currentIndex + value;
-            _currentIndex = index;
-            Transform target = _players[index];
-            Character character = target.GetComponent<Character>();
-            Debug.Log(character);
+            //Get look at target on character
+            _currentIndex = _currentIndex + value >= _players.Length ? 0 : _currentIndex + value < 0 ? _players.Length - 1 : _currentIndex + value;
+            Character character = _players[_currentIndex];
+            Transform lookAt = character.LookAt;
 
-            _cam.LookAt = character.LookAt;
-            _cam.Follow = character.LookAt;
+            //Switch camera target
+            _cam.LookAt = lookAt;
+            _cam.Follow = lookAt;
 
             //Set text
-            _nameField.text = GetPlayerName(target.GetComponent<PhotonView>());
+            _nameField.text = GetPlayerName(character.View);
         }
 
         /// <summary>

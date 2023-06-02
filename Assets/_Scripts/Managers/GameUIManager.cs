@@ -48,7 +48,10 @@ namespace _Scripts.Managers
             if (!optionsMenuHUD)
                 return;
 
-            EnableUIElement(optionsMenuHUD, !optionsMenuHUD.activeInHierarchy);
+            bool enabled = !optionsMenuHUD.activeInHierarchy;
+            EnableUIElement(optionsMenuHUD, enabled);
+            OnMenuOpen?.Invoke(enabled);
+            GameManager.Instance.EnableCursor(enabled);
         }
 
         /// <summary>
