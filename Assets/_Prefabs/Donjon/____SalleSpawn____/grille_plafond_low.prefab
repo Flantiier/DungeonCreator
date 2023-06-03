@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 92094492597840816}
   - component: {fileID: 3956681544464032789}
   - component: {fileID: 1228360849879437535}
-  - component: {fileID: 4629885759514427376}
+  - component: {fileID: 1101613490325586080}
   m_Layer: 0
   m_Name: grille_plafond_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4629885759514427376
-MeshCollider:
+--- !u!65 &1101613490325586080
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2568207477800895605, guid: 881b091c29679de49b0465504fe5d507, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 6.383035, y: 0.099999994, z: 6.481503}
+  m_Center: {x: 0, y: 0, z: 0}
