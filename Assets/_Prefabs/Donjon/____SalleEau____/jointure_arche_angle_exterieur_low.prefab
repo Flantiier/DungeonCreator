@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1719512047926991920}
   - component: {fileID: 2338270414511166357}
   - component: {fileID: 547121127666657119}
-  - component: {fileID: -784326432912538993}
+  - component: {fileID: 5817276687030766196}
   m_Layer: 0
   m_Name: jointure_arche_angle_exterieur_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-784326432912538993
-MeshCollider:
+--- !u!65 &5817276687030766196
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5125329566884426679, guid: e859b8a819e9852438b98bb60af80382, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
