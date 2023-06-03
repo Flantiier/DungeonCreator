@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 358985596423013799}
   - component: {fileID: 3698727335546685954}
   - component: {fileID: 1490818624172687048}
-  - component: {fileID: -8712144198592227597}
+  - component: {fileID: 7916761239380544421}
   m_Layer: 0
   m_Name: jointure_arche_T_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-8712144198592227597
-MeshCollider:
+--- !u!65 &7916761239380544421
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2070135193616105906, guid: deadc67421a4de640851f5560c6e29f1, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 1.5000004, y: 1, z: 2.0000005}
+  m_Center: {x: 0.25000006, y: -8.881784e-16, z: 0}

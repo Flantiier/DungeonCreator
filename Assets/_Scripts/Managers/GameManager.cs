@@ -60,6 +60,7 @@ namespace _Scripts.Managers
 
         #region Properties
         public GameProperties Properties => gameProperties;
+        public bool BossFightStarted { get; private set; }
         #endregion
 
         #region Builts_In
@@ -73,8 +74,7 @@ namespace _Scripts.Managers
             }
 
             //Disable Cursor
-            if (PlayersManager.Role != Role.Master)
-                EnableCursor(false);
+            EnableCursor(PlayersManager.Role == Role.Master);
         }
 
         private void Update()
@@ -107,6 +107,7 @@ namespace _Scripts.Managers
         /// </summary>
         public void EnableCursor(bool visible)
         {
+            Debug.Log("Cursor : " + visible);
             Cursor.visible = visible;
         }
 
@@ -290,6 +291,7 @@ namespace _Scripts.Managers
                 case Role.Master:
                     SwicthDMToBoss();
                     Instantiate(bossUI);
+                    EnableCursor(false);
                     break;
                 default:
                     TeleportAdventurers(role);
@@ -297,13 +299,16 @@ namespace _Scripts.Managers
                     break;
             }
 
+            //Find all players
             _adventurers = FindObjectsOfType<Character>();
             _boss = FindObjectOfType<BossController>();
 
+            //Disable respawn
             GetComponent<RespawnManager>().enabled = false;
 
             //Unload map
 
+            BossFightStarted = true;
             startBossFightEvent.Raise();
         }
 

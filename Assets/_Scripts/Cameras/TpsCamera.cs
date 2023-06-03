@@ -11,16 +11,17 @@ namespace _Scripts.Cameras
     {
         #region Variables
         [TitleGroup("References")]
-        [SerializeField] private GeneralSettings settings;
-        [TitleGroup("References")]
-        [Required, SerializeField] private CinemachineInputProvider inputProvider;
         [TitleGroup("Edit properties")]
         [SerializeField] private TpsCameraProperties cameraProperties;
+        [SerializeField] private GeneralSettings settings;
+        
+        private CinemachineInputProvider _inputProvider;
         #endregion
 
         #region Builts_In
         private void Start()
         {
+            _inputProvider = GetComponentInChildren<CinemachineInputProvider>();
             SetCameraProperties();
         }
 
@@ -36,7 +37,10 @@ namespace _Scripts.Cameras
         /// </summary>
         public void EnableInputProvider(bool state)
         {
-            inputProvider.enabled = state;
+            if(state)
+                _inputProvider.XYAxis.action.Enable();
+            else
+                _inputProvider.XYAxis.action.Disable();
         }
 
         /// <summary>

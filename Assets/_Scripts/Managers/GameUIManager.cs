@@ -50,7 +50,12 @@ namespace _Scripts.Managers
 
             bool enabled = !optionsMenuHUD.activeInHierarchy;
             EnableUIElement(optionsMenuHUD, enabled);
-            OnMenuOpen?.Invoke(enabled);
+            OnMenuOpen?.Invoke(!enabled);
+
+            //Playing as DM and the boss hasn't started yet
+            if (PlayersManager.Role == Role.Master && !GameManager.Instance.BossFightStarted)
+                return;
+
             GameManager.Instance.EnableCursor(enabled);
         }
 
