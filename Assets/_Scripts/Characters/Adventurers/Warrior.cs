@@ -8,6 +8,7 @@ namespace _Scripts.Characters.Adventurers
         #region Variables
         [Header("Warrior references")]
         [SerializeField] private Shield shield;
+        [SerializeField] private float speedDuringAbility = 1.5f;
         #endregion
 
         #region Properties
@@ -49,6 +50,14 @@ namespace _Scripts.Characters.Adventurers
 
             PlayerSM.EnableLayers = UsingShield;
             UpdateAnimationLayers();
+        }
+
+        public override float GetMovementSpeed()
+        {
+            if (SkillConditions() && PlayerSM.EnableLayers)
+                return speedDuringAbility;
+
+            return base.GetMovementSpeed();
         }
 
         public override bool RunConditions()

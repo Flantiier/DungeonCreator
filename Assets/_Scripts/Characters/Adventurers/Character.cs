@@ -446,7 +446,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Return the current target motion speed
         /// </summary>
-        public float GetMovementSpeed()
+        public virtual float GetMovementSpeed()
         {
             if (RunConditions() && CurrentStamina >= 0.1f)
                 return overallDatas.runSpeed;
