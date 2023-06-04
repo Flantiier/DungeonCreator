@@ -132,7 +132,7 @@ namespace _Scripts.Characters.Animations
         /// <summary>
         /// Lauching the projectile
         /// </summary>
-        public void LaunchProjectile()
+        public virtual void LaunchProjectile()
         {
             if (!ViewIsMine())
                 return;
@@ -144,13 +144,6 @@ namespace _Scripts.Characters.Animations
             _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
             _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
             _lastProjectile = null;
-
-            /*float offset = (Character.transform.position - Character.MainCamera.position).magnitude;
-            _lastProjectile.transform.position = Character.MainCamera.position + Character.MainCamera.forward * (offset + addOffset);
-
-            _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
-            _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
-            _lastProjectile = null;*/
         }
         #endregion
 

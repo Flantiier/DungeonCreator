@@ -9,6 +9,7 @@ namespace _Scripts.Characters.Adventurers
     {
         #region Variables
         [Header("Defuse properties")]
+        [SerializeField] private float speedDuringAbility = 2f;
         [SerializeField] private TpsCameraProperties cameraProperties;
         [SerializeField] private float defuseDistance = 3f;
         [SerializeField] private LayerMask defuseLayer;
@@ -66,6 +67,14 @@ namespace _Scripts.Characters.Adventurers
         #endregion
 
         #region Methods
+        public override float GetMovementSpeed()
+        {
+            if (PlayerSM.EnableLayers)
+                return speedDuringAbility;
+
+            return base.GetMovementSpeed();
+        }
+
         private void SkillAction(InputAction.CallbackContext _)
         {
             if (!SkillConditions())

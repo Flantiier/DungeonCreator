@@ -524,7 +524,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Main attack callback
         /// </summary>
-        private void HandleMainAttack(InputAction.CallbackContext _)
+        protected virtual void HandleMainAttack(InputAction.CallbackContext _)
         {
             if (!AttackConditions())
                 return;
@@ -536,7 +536,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Second attack callback
         /// </summary>
-        private void HandleSecondAttack(InputAction.CallbackContext _)
+        protected virtual void HandleSecondAttack(InputAction.CallbackContext _)
         {
             if (!AttackConditions())
                 return;
