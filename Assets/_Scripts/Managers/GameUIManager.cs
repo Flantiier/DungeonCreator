@@ -70,14 +70,14 @@ namespace _Scripts.Managers
         /// <summary>
         /// Enable or disable an referenced object
         /// </summary>
-        /// <param name="ui"> element to enable/disable </param>
+        /// <param name="panel"> element to enable/disable </param>
         /// <param name="state"> Set to enable or disable </param>
-        private void EnableUIElement(GameObject ui, bool state)
+        private void EnableUIElement(GameObject panel, bool state)
         {
-            if (!ui)
+            if (!panel)
                 return;
 
-            ui.SetActive(state);
+            panel.SetActive(state);
         }
         #endregion
 

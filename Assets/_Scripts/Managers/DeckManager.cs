@@ -29,6 +29,7 @@ namespace _Scripts.Managers
             base.Awake();
 
             //Get deck
+            database.Load();
             _deck = database.GetDeck();
 
             //Create cards

@@ -9,15 +9,16 @@ namespace _ScriptableObjects.GameManagement
     public class DeckDatabase : ScriptableObject
     {
         #region Variables
+        public int DeckIndex = 0;
         public DeckProflieSO[] decks;
         public CardsDatabase database;
-        public int DeckIndex { get; set; } = 0;
         #endregion
 
         #region Methods
         public DeckProflieSO GetDeck()
         {
-            return decks[DeckIndex];
+            int index = Mathf.Clamp(DeckIndex, 0, decks.Length - 1);
+            return decks[index];
         }
 
         [Button("Save")]

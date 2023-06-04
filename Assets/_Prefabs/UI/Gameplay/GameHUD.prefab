@@ -2079,8 +2079,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5079867071904758238}
   - component: {fileID: 2609661496640100636}
-  - component: {fileID: 5187417362635383155}
   - component: {fileID: 7547523123887396464}
+  - component: {fileID: 5187417362635383155}
   m_Layer: 5
   m_Name: Timer
   m_TagString: Untagged
@@ -2103,10 +2103,10 @@ RectTransform:
   m_Father: {fileID: 595609284000587636}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 55}
-  m_SizeDelta: {x: 452.3, y: 101}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2609661496640100636
 CanvasRenderer:
@@ -2116,6 +2116,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4256748459447421756}
   m_CullTransparentMesh: 1
+--- !u!114 &7547523123887396464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4256748459447421756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d19444c8481ab14cbb9a55aa98780a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMeshPro: {fileID: 5187417362635383155}
+  variable: {fileID: 11400000, guid: 696c1de6e103cfe4e8c6cb1c25bf3167, type: 2}
+  rounding:
+    roundType: 1
+  lowLimit: 60
+  textColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+  lowTimeColor: {r: 1, g: 0.3160377, b: 0.3160377, a: 1}
 --- !u!114 &5187417362635383155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2205,22 +2224,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7547523123887396464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4256748459447421756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d19444c8481ab14cbb9a55aa98780a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textMeshPro: {fileID: 5187417362635383155}
-  variable: {fileID: 11400000, guid: 696c1de6e103cfe4e8c6cb1c25bf3167, type: 2}
-  rounding:
-    roundType: 1
 --- !u!1 &5808548335226588013
 GameObject:
   m_ObjectHideFlags: 0
@@ -2257,8 +2260,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -310, y: -140}
-  m_SizeDelta: {x: 659, y: 259}
+  m_AnchoredPosition: {x: -182, y: -107}
+  m_SizeDelta: {x: 333.8, y: 171.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4986787984206745576
 CanvasRenderer:
@@ -2286,7 +2289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2538347452080451203
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2335,7 +2338,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Phase pr\xE9paratoire"
+  m_text: Ouverture de la porte
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2682,7 +2685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3658134321525176879
 RectTransform:
   m_ObjectHideFlags: 0
