@@ -389,7 +389,7 @@ namespace _Scripts.Managers
 
         public override void OnLeftRoom()
         {
-            SceneManager.LoadScene("BackToMainMenu");
+            SceneManager.LoadScene("MainScreen");
         }
         #endregion
     }

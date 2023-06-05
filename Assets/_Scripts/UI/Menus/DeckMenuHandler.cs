@@ -36,6 +36,8 @@ namespace _Scripts.UI.Menus
         [FoldoutGroup("GUI")]
         [SerializeField] private CardGUI dragCard;
         [FoldoutGroup("GUI")]
+        [SerializeField] private GameObject selectButton;
+        [FoldoutGroup("GUI")]
         [SerializeField] private Button[] deckButtons;
 
         [FoldoutGroup("Slots")]
@@ -46,7 +48,7 @@ namespace _Scripts.UI.Menus
         [SerializeField] private Transform deckPool;
 
         private DeckProflieSO _currentDeck;
-        private int _lastButton;
+        private int _lastDeckSelected;
 
         private readonly HashSet<CardSlot> _cardsPool = new HashSet<CardSlot>();
         private readonly HashSet<CardSlot> _deckSlots = new HashSet<CardSlot>();
@@ -68,8 +70,9 @@ namespace _Scripts.UI.Menus
             deckDatabase.Load();
             _currentDeck = deckDatabase.GetDeck();
 
-            _lastButton = deckDatabase.DeckIndex;
-            deckButtons[_lastButton].interactable = false;
+            selectButton.SetActive(false);
+            _lastDeckSelected = deckDatabase.DeckIndex;
+            deckButtons[_lastDeckSelected].interactable = false;
         }
 
         private IEnumerator Start()
@@ -122,9 +125,12 @@ namespace _Scripts.UI.Menus
             //Set deck datas to new datas
             OverriteDeckDatas();
 
+            //Hide select button
+            selectButton.SetActive(index != deckDatabase.DeckIndex);
+
             //Select a new one
-            deckDatabase.DeckIndex = index;
-            _currentDeck = deckDatabase.GetDeck();
+            index = Mathf.Clamp(index, 0, deckDatabase.decks.Length);
+            _currentDeck = deckDatabase.decks[index];
             ArrangeAllSlots(_currentDeck);
         }
 
@@ -143,6 +149,15 @@ namespace _Scripts.UI.Menus
         private void OverriteCardDatas(int i)
         {
             _currentDeck.cards[i] = _deckSlots.ElementAt(i).Trap;
+        }
+
+        /// <summary>
+        /// Method to select a new deck
+        /// </summary>
+        public void SelectDeck()
+        {
+            deckDatabase.DeckIndex = _lastDeckSelected;
+            selectButton.SetActive(false);
         }
         #endregion
 
@@ -353,9 +368,9 @@ namespace _Scripts.UI.Menus
 
         public void EnableDeckButton(int index)
         {
-            deckButtons[_lastButton].interactable = true;
+            deckButtons[_lastDeckSelected].interactable = true;
             deckButtons[index].interactable = false;
-            _lastButton = index;
+            _lastDeckSelected = index;
         }
         #endregion
 
