@@ -48,6 +48,20 @@ namespace _Scripts.Managers
             if (!optionsMenuHUD)
                 return;
 
+            OpenOptionsPanel();
+        }
+
+        /// <summary>
+        /// Enable or disable all the gameplay at once
+        /// </summary>
+        private void EnableGameplayUI(bool state)
+        {
+            EnableUIElement(gameHUD, state);
+        }
+
+        //Open or close the options panel
+        public void OpenOptionsPanel()
+        {
             bool enabled = !optionsMenuHUD.activeInHierarchy;
             EnableUIElement(optionsMenuHUD, enabled);
             OnMenuOpen?.Invoke(!enabled);
@@ -57,14 +71,6 @@ namespace _Scripts.Managers
                 return;
 
             GameManager.Instance.EnableCursor(enabled);
-        }
-
-        /// <summary>
-        /// Enable or disable all the gameplay at once
-        /// </summary>
-        private void EnableGameplayUI(bool state)
-        {
-            EnableUIElement(gameHUD, state);
         }
 
         /// <summary>

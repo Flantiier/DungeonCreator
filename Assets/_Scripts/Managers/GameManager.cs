@@ -380,5 +380,17 @@ namespace _Scripts.Managers
         #endregion
 
         #endregion
+
+        #region Multiplayer Methods
+        public void LeaveGame()
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        public override void OnLeftRoom()
+        {
+            SceneManager.LoadScene("BackToMainMenu");
+        }
+        #endregion
     }
 }
