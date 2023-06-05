@@ -9,7 +9,6 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using Cinemachine;
 using _Scripts.Cameras;
 
 namespace _Scripts.Characters
@@ -122,7 +121,7 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
 
             RPCCall("ResetAnimatorRPC", RpcTarget.All);
-            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
 
             skillCooldown.value = 0f;
         }

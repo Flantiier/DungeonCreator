@@ -21,13 +21,14 @@ namespace _Scripts.Characters.DungeonMaster
         [Required, SerializeField] private BossProperties datas;
 
         private BossInputs _inputs;
+        private bool _isRunning;
         #endregion
 
         #region Properties
         public BossState StateMachine { get; private set; }
         public bool CanAttack { get; set; } = true;
         public BossProperties Datas => datas;
-
+        public float Stamina { get; private set; }
         public Ability FirstAbility { get; private set; }
         public Ability SecondAbility { get; private set; }
         #endregion
@@ -68,16 +69,30 @@ namespace _Scripts.Characters.DungeonMaster
             UnsubscribeInputActions();
             _inputs.Disable();
         }
+
+        protected override void Update()
+        {
+            if (!ViewIsMine() || CurrentHealth <= 0)
+                return;
+
+            _isRunning = _inputs.Gameplay.Run.IsPressed() && StateMachine == BossState.Walk;
+
+            base.Update();
+            HandleStaminaRecuperation();
+        }
         #endregion
 
         #region Methods
         public void EnableBoss()
         {
+            //Set health
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
+            CurrentHealth = datas.health;
+            Stamina = datas.stamina;
+
+            //Enable inputs and camera
             _camera.gameObject.SetActive(true);
             _inputs.Enable();
-
-            CurrentHealth = datas.health;
-            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
         }
 
         #region Health
@@ -87,6 +102,12 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
 
             HandleEntityHealth(damages);
+        }
+
+        protected override void HandleEntityDeath()
+        {
+            _inputs.Disable();
+            RPCAnimatorTrigger(RpcTarget.AllBuffered, "Death", true); ;
         }
         #endregion
 
@@ -105,7 +126,8 @@ namespace _Scripts.Characters.DungeonMaster
             if (!Animator)
                 return;
 
-            Animator.SetFloat("motion", Inputs.magnitude);
+            float target = Inputs.magnitude >= 0.2f && (_isRunning && Stamina > 0) ? 2f : Inputs.magnitude;
+            Animator.SetFloat("motion", Mathf.Lerp(Animator.GetFloat("motion"), target, 0.05f));
         }
         #endregion
 
@@ -164,16 +186,48 @@ namespace _Scripts.Characters.DungeonMaster
 
         protected override void HandleCharacterMotion()
         {
-            CurrentSpeed = datas.walkSpeed;
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, GetMovementSpeed(), datas.speedSmoothing);
             base.HandleCharacterMotion();
         }
 
         private float GetMovementSpeed()
         {
-            if (Inputs.magnitude >= 0.1f)
+            if (Inputs.magnitude >= 0.2f && (_isRunning && Stamina > 0))
+                return datas.runSpeed;
+            else if (Inputs.magnitude >= 0.1f)
                 return datas.walkSpeed;
 
             return 0f;
+        }
+        #endregion
+
+        #region Stamina Methods
+        /// <summary>
+        /// Handle stamina recuperation
+        /// </summary>
+        protected void HandleStaminaRecuperation()
+        {
+            if (_isRunning)
+            {
+                Stamina -= datas.usedStamina * Time.deltaTime;
+                Stamina = Mathf.Clamp(Stamina, 0f, datas.stamina);
+                return;
+            }
+
+            Stamina += datas.staminaRecup * Time.deltaTime;
+            Stamina = Mathf.Clamp(Stamina, 0f, datas.stamina);
+        }
+
+        /// <summary>
+        /// using stamina
+        /// </summary>
+        /// <param name="amount"> amount of stamina used </param>
+        public void UsingStamina(float amount)
+        {
+            if (!ViewIsMine())
+                return;
+
+            Stamina -= amount;
         }
         #endregion
 
@@ -254,7 +308,7 @@ namespace _Scripts.Characters
             Available = false;
             Cooldown = cooldown;
 
-            while(Cooldown > 0)
+            while (Cooldown > 0)
             {
                 Cooldown -= Time.deltaTime;
                 yield return null;

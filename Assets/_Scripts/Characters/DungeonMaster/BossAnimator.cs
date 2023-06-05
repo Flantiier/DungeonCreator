@@ -12,13 +12,13 @@ namespace _Scripts.Characters.DungeonMaster
     public class BossAnimator : NetworkMonoBehaviour
     {
         #region Variables
-        [TitleGroup("References")]
-        [SerializeField] private EnemiesProjectile projectile;
-        [TitleGroup("References")]
-        [SerializeField] private Transform throwPoint;
-
         [TitleGroup("Hitboxs")]
         [SerializeField] protected EnemyHitbox[] hitboxs;
+
+        [TitleGroup("Projectiles")]
+        [SerializeField] private EnemiesProjectile projectile;
+        [TitleGroup("Projectiles")]
+        [SerializeField] private Transform throwPoint;
 
         [TitleGroup("Stun ability")]
         [SerializeField] private float stunRange = 10f;
@@ -118,14 +118,27 @@ namespace _Scripts.Characters.DungeonMaster
         /// <summary>
         /// Create a projectile and throw it in front on the player
         /// </summary>
-        public void ThrowProjectile()
+        public void ThrowProjectiles()
         {
             if (!ViewIsMine() || !projectile)
                 return;
 
-            GameObject instance = PhotonNetwork.Instantiate(projectile.name, throwPoint.position, transform.rotation);
-            EnemiesProjectile proj = instance.GetComponent<EnemiesProjectile>();
-            proj.ThrowProjectile(Boss.MainCamera.forward);
+            Character[] characters = FindObjectsOfType<Character>();
+
+            if (characters.Length <= 0 || characters == null)
+                return;
+
+            foreach (Character character in characters)
+            {
+                if (character.CurrentHealth <= 0)
+                    continue;
+
+                //Throw projectile
+                Vector3 direction = character.transform.position - throwPoint.position;
+                GameObject instance = PhotonNetwork.Instantiate(projectile.name, throwPoint.position, Quaternion.LookRotation(direction));
+                EnemiesProjectile proj = instance.GetComponent<EnemiesProjectile>();
+                proj.ThrowProjectile(direction + Vector3.up);
+            }
         }
         #endregion
     }

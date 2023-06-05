@@ -207,7 +207,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8831820030557384350}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.95, z: 0.9}
+  m_LocalPosition: {x: 0, y: 4.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -511,6 +511,56 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.052047066
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.115053475
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.09293211
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.31755027
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7150678
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.25462496
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.56833625
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -9.481
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -98.883
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633038417526328594, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -227.319
+      objectReference: {fileID: 0}
     - target: {fileID: 4858450022742636551, guid: b4cac7c23b97fe142a17557eeb1eb1f9,
         type: 3}
       propertyPath: m_Layer
@@ -752,6 +802,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: ability02
+  - Type: 9
+    SynchronizeType: 0
+    Name: Death
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
@@ -792,11 +845,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 7627724767320029410}
+  hitboxs:
+  - {fileID: 8365857083000066851}
   projectile: {fileID: 1956696718394038492, guid: 7465b3f8b1b7c704aabc22a8018dee17,
     type: 3}
   throwPoint: {fileID: 3444138456361301967}
-  hitboxs:
-  - {fileID: 8365857083000066851}
   stunRange: 10
   stunDuration: 4
   stunMask:
