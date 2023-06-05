@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2915157407400415374}
   - component: {fileID: 836082369}
   - component: {fileID: 6742897080655814220}
+  - component: {fileID: 2915157408225872464}
   m_Layer: 0
   m_Name: RoomMenu Scripts
   m_TagString: Untagged
@@ -45,10 +46,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249f6a5f0391bab49ac11aaebf5306bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 6742897080655814220}
+  properties: {fileID: 11400000, guid: 3c1d256d0ba855145995996f9dd27dac, type: 2}
   GUIprefab: {fileID: 6836928815605626405, guid: f37480a5255e66149a45fdcbeb347bb7,
     type: 3}
   content: {fileID: 0}
+  errorText: {fileID: 0}
+  readyButtonImage: {fileID: 0}
+  readyButton: {fileID: 0}
+  roleButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  switchElements:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  lobbyScene: MainScreen
+  sceneName: LoadingScreen
+  timeBeforeStarting: 5
+  missingPlayersText: Impossible de lancer la partie avec un seul joueur.
+  missingDMText: Impossible de lancer la partie tant qu'un des joueurs ne joue pas
+    le Dungeon Master.
+  duplicateRoleText: "impossible de lancer la partie si deux personnes ou plus jouent
+    le m\xEAme personnage."
+  loadGameEvent: {fileID: 11400000, guid: 2d92f8c8f60bdfa4b8762833efe9bd3b, type: 2}
 --- !u!114 &6742897080655814220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,3 +93,25 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2915157408225872464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2915157407400415473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ef2bbeac1b0364ba877a89fa1bbd5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelButton: {fileID: 0}
+  deckDatabase: {fileID: 11400000, guid: 0b4d2a0514fbe9748aff5b7bb1e46a20, type: 2}
+  slotPrefab: {fileID: 5649638059145483115, guid: dacff2c2ab998ba4ea7e0d2fa01dff3f,
+    type: 3}
+  slotParent: {fileID: 0}
+  selectButton: {fileID: 0}
+  deckButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

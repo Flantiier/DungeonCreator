@@ -63,6 +63,7 @@ namespace _Scripts.UI.Menus
 
         [FoldoutGroup("Events")]
         [SerializeField] private GameEvent loadGameEvent;
+        public static System.Action<Role> OnRoleChanged;
         public static System.Action<Player, bool> OnPlayerReady;
 
         private PhotonView view;
@@ -434,6 +435,7 @@ namespace _Scripts.UI.Menus
         private void CharacterRoleListener(Player player, Role role)
         {
             view.RPC("UpdateCharacterRoleRPC", RpcTarget.All, player, role);
+            OnRoleChanged?.Invoke(role);
         }
 
         /// <summary>
