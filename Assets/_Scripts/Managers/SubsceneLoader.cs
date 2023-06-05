@@ -27,21 +27,19 @@ namespace _Scripts.Managers
         /// Load a subScene in the subscene array
         /// </summary>
         /// <param name="sceneName"> Scene name to load </param>
-        public void LoadSubscene(string sceneName)
+        public void LoadSubscene(SubScene sceneName)
         {
-            string name = "SubScene_" + sceneName;
-            SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == name);
+            SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == sceneName);
             subSceneData.Load(_sceneSystem);
         }
 
         /// <summary>
         /// Unload a subScene in the subscene array
         /// </summary>
-        /// <param name="sceneName"> Scene name to unload </param>
-        public void UnloadSubscene(string sceneName)
+        /// <param name="scene"> Scene name to unload </param>
+        public void UnloadSubscene(SubScene scene)
         {
-            string name = "SubScene_" + sceneName;
-            SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == name);
+            SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == scene);
             subSceneData.Unload(_sceneSystem);
         }
         #endregion
@@ -54,7 +52,7 @@ namespace _Scripts.Managers
         [SerializeField] private SubScene subScene;
         [SerializeField] private GameObject colliders;
 
-        public string SubScene => subScene.SceneName;
+        public SubScene SubScene => subScene;
         public bool IsLoaded { get; set; } = false;
 
         public void Load(SceneSystem system)

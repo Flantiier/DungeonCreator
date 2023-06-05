@@ -5,21 +5,27 @@ using _Scripts.Hitboxs_Triggers;
 using _Scripts.GameplayFeatures.Projectiles;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using Photon.Pun;
+using _Scripts.Interfaces;
 
 namespace _Scripts.Characters.DungeonMaster
 {
     public class BossAnimator : NetworkMonoBehaviour
     {
         #region Variables
-        [FoldoutGroup("References")]
-        [SerializeField] private StunHitbox stunZone;
-        [TitleGroup("References/Projectile")]
+        [TitleGroup("References")]
         [SerializeField] private EnemiesProjectile projectile;
-        [TitleGroup("References/Projectile")]
+        [TitleGroup("References")]
         [SerializeField] private Transform throwPoint;
 
         [TitleGroup("Hitboxs")]
         [SerializeField] protected EnemyHitbox[] hitboxs;
+
+        [TitleGroup("Stun ability")]
+        [SerializeField] private float stunRange = 10f;
+        [TitleGroup("Stun ability")]
+        [SerializeField] private float stunDuration = 4f;
+        [TitleGroup("Stun ability")]
+        [SerializeField] private LayerMask stunMask;
         #endregion
 
         #region Properties
@@ -30,6 +36,11 @@ namespace _Scripts.Characters.DungeonMaster
         private void Awake()
         {
             Boss = GetComponentInParent<BossController>();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawWireSphere(transform.parent.position, stunRange);
         }
         #endregion
 
@@ -92,10 +103,16 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         public void CreateImpactZone()
         {
-            if (!stunZone)
-                return;
+            Collider[] colliders = Physics.OverlapSphere(Boss.transform.position, stunRange, stunMask);
 
-            Instantiate(stunZone, transform.position, transform.rotation);
+            foreach (Collider col in colliders)
+            {
+                if (!col || !col.TryGetComponent(out IPlayerStunable player))
+                    continue;
+
+                Character character = col.GetComponent<Character>();
+                character.RPCCall("StunPlayer", RpcTarget.Others, stunDuration);
+            }
         }
 
         /// <summary>

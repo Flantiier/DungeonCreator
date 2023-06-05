@@ -21,6 +21,6 @@ namespace _Scripts.Interfaces
 
     public interface IPlayerStunable
     {
-        public void Stunned(float duration);
+        public void StunPlayer(float duration);
     }
 }

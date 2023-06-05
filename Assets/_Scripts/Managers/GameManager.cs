@@ -107,7 +107,6 @@ namespace _Scripts.Managers
         /// </summary>
         public void EnableCursor(bool visible)
         {
-            Debug.Log("Cursor : " + visible);
             Cursor.visible = visible;
         }
 

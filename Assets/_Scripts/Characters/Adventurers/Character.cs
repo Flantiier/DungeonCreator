@@ -205,15 +205,13 @@ namespace _Scripts.Characters
             StartCoroutine("AfflictionRoutine");
         }
 
-        public void Stunned(float duration)
+        [PunRPC]
+        public void StunPlayer(float duration)
         {
-            if (!ViewIsMine() || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+            if (!ViewIsMine())
                 return;
 
-            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
-                return;
-
-            StartCoroutine(StunRoutine(duration));
+            StunMethod(duration);
         }
         #endregion
 
@@ -325,8 +323,20 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
         }
 
+        private void StunMethod(float duration)
+        {
+            if (!GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+                return;
+
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
+                return;
+
+            StartCoroutine(StunRoutine(duration));
+        }
+
         private IEnumerator StunRoutine(float duration)
         {
+            PlayerSM.EnableLayers = false;
             RPCAnimatorTrigger(RpcTarget.All, "stunned", true);
             yield return new WaitForSecondsRealtime(duration);
             RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);

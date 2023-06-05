@@ -23,7 +23,7 @@ namespace _Scripts.Hitboxs_Triggers
 			if (!other.TryGetComponent(out IPlayerStunable player))
 				return;
 
-			player.Stunned(stunDuration);
+			player.StunPlayer(stunDuration);
 		}
         #endregion
     }
