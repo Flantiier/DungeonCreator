@@ -378,16 +378,6 @@ namespace _Scripts.UI.Menus
         }
 
         /// <summary>
-        /// Enable or disable UI elements
-        /// </summary>
-        [ContextMenu("Switch")]
-        private void SwitchElements()
-        {
-            foreach (GameObject obj in switchElements)
-                obj.SetActive(!obj.activeInHierarchy);
-        }
-
-        /// <summary>
         /// Start the timer before the loadign screen
         /// </summary>
         private void CheckLoading()
@@ -408,7 +398,14 @@ namespace _Scripts.UI.Menus
             if (!allReady)
                 return;
 
-            SwitchElements();
+            ///Switching ui panels
+            foreach (GameObject obj in switchElements)
+                obj.SetActive(!obj.activeInHierarchy);
+
+            //Close the room
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+
             StartCoroutine("StartGameRoutine");
         }
 

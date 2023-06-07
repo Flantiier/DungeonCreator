@@ -6,9 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using Sirenix.OdinInspector;
+//
+using _Scripts.Characters;
 using _ScriptableObjects.GameManagement;
 using _Scripts.Characters.DungeonMaster;
-using _Scripts.Characters;
+using _Scripts.GameplayFeatures.Traps;
 
 public enum EndGameReason
 {
@@ -353,10 +355,24 @@ namespace _Scripts.Managers
         /// <summary>
         /// Disable the all map except the boos room
         /// </summary>
+        [ContextMenu("Disable traps")]
         private void UnloadMap()
         {
             //Call the unload method
-            //Call a static event to disable traps
+
+            //Disable all enabled the traps
+            TrapClass1[] traps = FindObjectsOfType<TrapClass1>();
+
+            if (traps.Length <= 0)
+                return;
+
+            foreach (TrapClass1 trap in traps)
+            {
+                if (!trap)
+                    continue;
+
+                trap.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>

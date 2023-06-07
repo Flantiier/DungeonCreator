@@ -38,14 +38,6 @@ namespace _Scripts.Managers
         }
         #endregion
 
-        #region Test Methods
-        [ContextMenu("Shuffle stroage")]
-        private void ShuffleStorage()
-        {
-            ShuffleDeck(storageZone);
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Creates every card in the deck

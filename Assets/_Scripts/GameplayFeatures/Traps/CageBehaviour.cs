@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
-using _Scripts.GameplayFeatures.PhysicsAdds;
 using _ScriptableObjects.Traps;
+using _Scripts.GameplayFeatures.PhysicsAdds;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -19,17 +19,9 @@ namespace _Scripts.GameplayFeatures.Traps
 
         [BoxGroup("Stats")]
         [Required, SerializeField] private CageProperties datas;
-
-        private Material _material;
         #endregion
 
         #region Builts_In
-        private void Start()
-        {
-            if (ViewIsMine())
-                _material = meshRenderer.sharedMaterial;
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -73,7 +65,7 @@ namespace _Scripts.GameplayFeatures.Traps
             EnableCage(true);
 
             if (ViewIsMine())
-                meshRenderer.sharedMaterial = _material;
+                meshRenderer.sharedMaterial = sharedMaterial;
         }
 
         /// <summary>

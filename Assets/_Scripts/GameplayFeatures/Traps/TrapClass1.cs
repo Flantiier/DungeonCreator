@@ -45,11 +45,9 @@ namespace _Scripts.GameplayFeatures.Traps
             if (trapParts.Length <= 0)
                 return;
 
-            Debug.Log("Scanned");
             StartCoroutine(DetectionRoutine(duration));
         }
 
-        [ContextMenu("Detected")]
         public void GetDetected()
         {
             if (trapParts.Length <= 0)
