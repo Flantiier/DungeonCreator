@@ -22,6 +22,7 @@ namespace _Scripts.Characters.DungeonMaster
 
         private BossInputs _inputs;
         private bool _isRunning;
+        private bool _isEnabled = false;
         #endregion
 
         #region Properties
@@ -49,6 +50,12 @@ namespace _Scripts.Characters.DungeonMaster
             SecondAbility = new Ability();
             //Camera
             _camera.gameObject.SetActive(false);
+        }
+
+        private void Start()
+        {
+            SetHealth();
+            Stamina = datas.stamina;
         }
 
         public override void OnEnable()
@@ -85,12 +92,7 @@ namespace _Scripts.Characters.DungeonMaster
         #region Methods
         public void EnableBoss()
         {
-            //Set health
-            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
-            CurrentHealth = datas.health;
-            Stamina = datas.stamina;
-
-            //Enable inputs and camera
+            _isEnabled = true;
             _camera.gameObject.SetActive(true);
             _inputs.Enable();
         }
@@ -98,16 +100,26 @@ namespace _Scripts.Characters.DungeonMaster
         #region Health
         public void Damage(float damages)
         {
-            if (CurrentHealth <= 0)
+            if (CurrentHealth <= 0 || !_isEnabled)
                 return;
 
             HandleEntityHealth(damages);
         }
 
+        [ContextMenu("Death")]
         protected override void HandleEntityDeath()
         {
             _inputs.Disable();
             RPCAnimatorTrigger(RpcTarget.AllBuffered, "Death", true); ;
+        }
+
+        /// <summary>
+        /// Set character and send it over network
+        /// </summary>
+        private void SetHealth()
+        {
+            CurrentHealth = datas.health;
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
         }
         #endregion
 

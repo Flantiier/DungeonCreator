@@ -42,6 +42,7 @@ namespace _Scripts.Managers
 
         private Character[] _adventurers;
         private BossController _boss;
+        private bool _hasEnded;
         #endregion
 
         #region EndGame
@@ -77,27 +78,12 @@ namespace _Scripts.Managers
             EnableCursor(PlayersManager.Role == Role.Master);
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F1))
-                StartBossFight();
-        }
-
         private void LateUpdate()
-        {/*
-            if (!_checkEndGame || _ended)
+        {
+            if (!BossFightStarted)
                 return;
 
-            if(_boss.CurrentHealth <= 0)
-            {
-                EndGameRPC(EndGameReason.AdventurerWin);
-                _ended = true;
-            }
-            else if (AdventurersDefeated())
-            {
-                EndGameRPC(EndGameReason.MasterWin);
-                _ended = true;
-            }*/
+            CheckCharactersLeft();
         }
         #endregion
 
@@ -305,10 +291,12 @@ namespace _Scripts.Managers
             //Disable respawn
             GetComponent<RespawnManager>().enabled = false;
 
-            //Unload map
+            //Unload map and disable all the traps
+            UnloadMap();
 
-            BossFightStarted = true;
+            //Start boss fight
             startBossFightEvent.Raise();
+            BossFightStarted = true;
         }
 
         /// <summary>
@@ -363,6 +351,38 @@ namespace _Scripts.Managers
         }
 
         /// <summary>
+        /// Disable the all map except the boos room
+        /// </summary>
+        private void UnloadMap()
+        {
+            //Call the unload method
+            //Call a static event to disable traps
+        }
+
+        /// <summary>
+        /// Called when a character is dead during the boss fight, check who's winning the fight
+        /// </summary>
+        private void CheckCharactersLeft()
+        {
+            if (_adventurers.Length <= 0 || !_boss)
+                return;
+
+            if (!BossFightStarted || _hasEnded)
+                return;
+
+            if (_boss.CurrentHealth <= 0)
+            {
+                EndGameRPC(EndGameReason.AdventurerWin);
+                _hasEnded = true;
+            }
+            else if (AdventurersDefeated())
+            {
+                EndGameRPC(EndGameReason.MasterWin);
+                _hasEnded = true;
+            }
+        }
+
+        /// <summary>
         /// Look if all the adventurers are defeated
         /// </summary>
         private bool AdventurersDefeated()
@@ -377,6 +397,7 @@ namespace _Scripts.Managers
 
             return true;
         }
+
         #endregion
 
         #endregion
