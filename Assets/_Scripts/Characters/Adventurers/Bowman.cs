@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.Interfaces;
 using _ScriptableObjects.Cinemachine;
+using Unity.Rendering;
 
 namespace _Scripts.Characters.Adventurers
 {
@@ -15,12 +16,22 @@ namespace _Scripts.Characters.Adventurers
         [SerializeField] private LayerMask defuseLayer;
 
         private IDefusable _currentTrap;
+        private RaycastHit _hit;
         #endregion
 
         #region Properties
+        public bool TrapDetected { get; private set; }
         public bool IsDefusing { get; set; }
         public float TargetDefuseTime { get; set; }
         public float CurrentDefuseTime { get; set; }
+        #endregion
+
+        #region Builts_In
+        protected override void Update()
+        {
+            base.Update();
+            TrapDetection();
+        }
         #endregion
 
         #region Inherited Methods
@@ -75,16 +86,27 @@ namespace _Scripts.Characters.Adventurers
             return base.GetMovementSpeed();
         }
 
+        /// <summary>
+        /// Shoot a raycasr and indicates if ther's a defusable trap detected
+        /// </summary>
+        private void TrapDetection()
+        {
+            Vector3 position = MainCamera.position;
+            Vector3 direction = MainCamera.forward;
+            float distance = cameraProperties.framingTranposer.m_CameraDistance + defuseDistance;
+
+            if (!Physics.Raycast(position, direction, out _hit, distance, defuseLayer))
+                TrapDetected = false;
+            else
+                TrapDetected = true;
+        }
+
         private void SkillAction(InputAction.CallbackContext _)
         {
-            if (!SkillConditions())
+            if (!SkillConditions() || !TrapDetected)
                 return;
 
-            if (!Physics.Raycast(MainCamera.position, MainCamera.forward, out RaycastHit hit, 
-                                    cameraProperties.framingTranposer.m_CameraDistance + defuseDistance, defuseLayer))
-                return;
-
-            if (!hit.collider.TryGetComponent(out IDefusable trap) || trap.IsDisabled)
+            if (!_hit.collider.TryGetComponent(out IDefusable trap) || trap.IsDisabled)
                 return;
 
             _currentTrap = trap;

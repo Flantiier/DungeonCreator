@@ -588,6 +588,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            PlayerSM.SkillUsed = true;
             OnSkillUsed?.Invoke();
             _skillRoutine = StartCoroutine(SkillCooldownRoutine());
         }
