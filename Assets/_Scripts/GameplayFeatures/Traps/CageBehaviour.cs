@@ -34,9 +34,11 @@ namespace _Scripts.GameplayFeatures.Traps
             }
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             HandleCageBehaviour();
+            HideCage();
         }
         #endregion
 
@@ -59,13 +61,11 @@ namespace _Scripts.GameplayFeatures.Traps
             if (!triggerBox || !triggerBox.IsDetecting())
                 return;
 
-            if (meshRenderer.enabled)
-                return;
-
-            EnableCage(true);
-
             if (ViewIsMine())
                 meshRenderer.sharedMaterial = sharedMaterial;
+
+            if (!meshRenderer.enabled)
+                EnableCage(true);
         }
 
         /// <summary>
@@ -76,6 +76,17 @@ namespace _Scripts.GameplayFeatures.Traps
             meshRenderer.enabled = enabled;
             meshCollider.enabled = enabled;
             triggerBox.Enabled = !enabled;
+        }
+
+        /// <summary>
+        /// Enable the dissolve transition on the cage
+        /// </summary>
+        private void HideCage()
+        {
+            if (ViewIsMine())
+                SetVisbility(meshRenderer.sharedMaterial == sharedMaterial);
+            else
+                SetVisbility(meshRenderer.enabled);
         }
         #endregion
     }

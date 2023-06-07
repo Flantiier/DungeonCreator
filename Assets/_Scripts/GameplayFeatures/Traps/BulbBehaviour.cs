@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.PhysicsAdds;
 using _ScriptableObjects.Traps;
+using UnityEditor.Rendering;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -31,9 +32,11 @@ namespace _Scripts.GameplayFeatures.Traps
             particles.Stop();
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             HandleBulbBehaviour();
+            HideBulbe();
         }
         #endregion
 
@@ -67,7 +70,6 @@ namespace _Scripts.GameplayFeatures.Traps
         /// <summary>
         /// Start the coroutine to ejects the spores
         /// </summary>
-        [ContextMenu("Attack")]
         public void BulbAttack()
         {
             StartCoroutine("SporesRoutine");
@@ -86,6 +88,14 @@ namespace _Scripts.GameplayFeatures.Traps
 
             yield return new WaitForSecondsRealtime(datas.waitTime);
             _IsAttacking = false;
+        }
+        
+        /// <summary>
+        /// Hides the bulbe when nothing is detected
+        /// </summary>
+        private void HideBulbe()
+        {
+            SetVisbility(detectionBox.IsDetecting());
         }
         #endregion
     }

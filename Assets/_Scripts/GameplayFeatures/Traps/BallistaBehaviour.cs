@@ -136,7 +136,7 @@ namespace _Scripts.GameplayFeatures.Traps
 		/// </summary>
 		private void HideTurret()
 		{
-			_isVisible = fov.IsDetecting();
+			SetVisbility(fov.IsDetecting());
 
 			if (_lastProjectile)
 				_lastProjectile.gameObject.SetActive(false);

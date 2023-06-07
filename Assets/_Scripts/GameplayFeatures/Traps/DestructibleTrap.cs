@@ -10,6 +10,7 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Variables/Properties
         [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected Material sharedMaterial;
+        [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected float dissolveSpeed = 0.04f;
 
         protected bool _isVisible = false;
@@ -19,8 +20,10 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        protected virtual void Start()
+        public override void OnEnable()
         {
+            base.OnEnable();
+
             if (!sharedMaterial.HasFloat(DISSOLVE_PARAM))
                 return;
 
