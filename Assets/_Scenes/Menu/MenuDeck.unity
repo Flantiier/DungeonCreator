@@ -2797,6 +2797,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 687222806}
@@ -2805,6 +2815,26 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 687222806}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectDeck
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: _Scripts.UI.Menus.DeckMenuHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022922310366286104, guid: 13a3fa0df87734f458abedd3256213df,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 9022922310366286105, guid: 13a3fa0df87734f458abedd3256213df,
         type: 3}
       propertyPath: m_Pivot.x

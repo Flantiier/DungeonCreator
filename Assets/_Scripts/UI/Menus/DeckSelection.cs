@@ -22,6 +22,7 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void Awake()
         {
+			deckDatabase.Load();
 			InitializeSlots();
         }
 
@@ -77,7 +78,7 @@ namespace _Scripts.UI.Menus
 
 			//Set index
 			index = Mathf.Clamp(index, 0, deckDatabase.decks.Length);
-			DeckProflieSO deck = deckDatabase.decks[_deckIndex];
+			DeckProflieSO deck = deckDatabase.decks[index];
 			for (int i = 0; i < deck.cards.Length; i++)
 			{
 				TrapSO card = deck.cards[i];

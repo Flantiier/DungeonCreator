@@ -1,8 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
-using _ScriptableObjects.GameManagement;
-using _Scripts.UI.Menus;
 using Sirenix.OdinInspector;
+using _Scripts.UI.Menus;
+using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.UI.Interfaces
 {
@@ -42,8 +41,8 @@ namespace _Scripts.UI.Interfaces
         public void SetSettingsValue()
         {
             sensitivitySlider.SetValue(settings.sensitivity / 10, settings.maxSensitivity / 10);
-            gVolumeSlider.SetValue(settings.globalVolume * 10, 100);
-            eVolumeSlider.SetValue(settings.effectsVolume * 10, 100);
+            gVolumeSlider.SetValue(settings.globalVolume * 100, 100);
+            eVolumeSlider.SetValue(settings.effectsVolume * 100, 100);
         }
 
         /// <summary>

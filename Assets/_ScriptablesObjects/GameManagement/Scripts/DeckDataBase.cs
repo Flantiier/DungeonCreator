@@ -32,6 +32,10 @@ namespace _ScriptableObjects.GameManagement
         public void Load()
         {
             DecksDataStruct load = new DecksDataStruct();
+
+            if (!SaveSystem.SaveExists("_decks"))
+                Save();
+
             SaveSystem.Load(ref load, "_decks");
 
             DeckIndex = load.currentDeck;

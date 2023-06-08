@@ -129,21 +129,21 @@ namespace _Scripts.UI.Menus
                 readyButton.interactable = false;
                 CharacterRoleListener(PhotonNetwork.LocalPlayer, role);
                 properties.role = (Role)System.Enum.ToObject(typeof(Role), _lastRole);
-                return;
             }
-
-            if (_lastRole == value)
-                return;
-
-            if (_lastRole > 0)
+            //Selected a character
+            else
             {
-                roleButtons[_lastRole - 1].interactable = true;
-                roleButtons[value - 1].interactable = false;
-            }
+                if (_lastRole == value)
+                    return;
 
-            _lastRole = value;
-            CharacterRoleListener(PhotonNetwork.LocalPlayer, role);
-            properties.role = (Role)System.Enum.ToObject(typeof(Role), _lastRole);
+                if (_lastRole > 0)
+                    roleButtons[_lastRole - 1].interactable = true;
+                roleButtons[value - 1].interactable = false;
+
+                _lastRole = value;
+                CharacterRoleListener(PhotonNetwork.LocalPlayer, role);
+                properties.role = (Role)System.Enum.ToObject(typeof(Role), _lastRole);
+            }
         }
 
         /// <summary>
