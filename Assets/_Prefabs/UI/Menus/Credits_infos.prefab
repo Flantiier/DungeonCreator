@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8556321188081138509}
   - component: {fileID: 8556321188081138511}
   m_Layer: 5
-  m_Name: CreditPanel
+  m_Name: Credits_infos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +24,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8556321188081138508}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -113,8 +113,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "- Character designer.\n- Mod\xE9lisation personnages & assets.\n- Shaders
-    / VFX."
+  m_text: "Character designer.\nMod\xE9lisation personnages & assets.\nShaders /
+    VFX."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34a93b7c036f5774582ae5e668c8e01a, type: 2}
   m_sharedMaterial: {fileID: -3715838253209002205, guid: 34a93b7c036f5774582ae5e668c8e01a,
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Leo Bocktaels
+  m_text: Leo bocktaels
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34a93b7c036f5774582ae5e668c8e01a, type: 2}
   m_sharedMaterial: {fileID: -3715838253209002205, guid: 34a93b7c036f5774582ae5e668c8e01a,
@@ -260,8 +260,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4288403180
-  m_fontColor: {r: 0.92549026, g: 0.83921576, b: 0.60784316, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -284,7 +284,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 5
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535

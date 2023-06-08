@@ -41,9 +41,9 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         public void SetSettingsValue()
         {
-            sensitivitySlider.SetValue(settings.sensitivity, settings.maxSensitivity);
-            gVolumeSlider.SetValue(settings.globalVolume, 1f);
-            eVolumeSlider.SetValue(settings.effectsVolume, 1f);
+            sensitivitySlider.SetValue(settings.sensitivity / 10, settings.maxSensitivity / 10);
+            gVolumeSlider.SetValue(settings.globalVolume * 10, 100);
+            eVolumeSlider.SetValue(settings.effectsVolume * 10, 100);
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         public void UpdateSettingsValue()
         {
-            settings.sensitivity = sensitivitySlider.Value;
-            settings.globalVolume = gVolumeSlider.Value;
-            settings.effectsVolume = eVolumeSlider.Value;
+            settings.sensitivity = sensitivitySlider.Value * 10;
+            settings.globalVolume = gVolumeSlider.Value / 100;
+            settings.effectsVolume = eVolumeSlider.Value / 100;
         }
 
         public void SaveSettings()
