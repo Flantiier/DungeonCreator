@@ -3,6 +3,7 @@ using UnityEditor;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using Sirenix.OdinInspector.Editor;
+using _Scripts.TrapSystem;
 
 namespace _Scripts.Editor
 {
@@ -63,7 +64,7 @@ namespace _Scripts.Editor
 
             foreach (Collider col in temp)
             {
-                if (col.transform.parent != null && col.transform.root.name == "Tiling")
+                if (col.TryGetComponent(out Tile _))
                     continue;
                 else
                     colliders.Add(col);

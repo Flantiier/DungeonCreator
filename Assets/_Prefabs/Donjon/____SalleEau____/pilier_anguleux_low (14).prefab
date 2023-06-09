@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6332323743857560747}
   - component: {fileID: 6939824307521045262}
   - component: {fileID: 5164434950857504708}
-  - component: {fileID: 5085522705349487922}
+  - component: {fileID: 3797041356092560146}
   m_Layer: 0
   m_Name: pilier_anguleux_low (14)
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5085522705349487922
-MeshCollider:
+--- !u!65 &3797041356092560146
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7274878598035392325, guid: d412e9dcd396f4a44bb5389e85d1d158, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 1.9000003, y: 12.149998, z: 1.3000023}
+  m_Center: {x: -0.00000014901161, y: -0.0000030994415, z: -0.0000012218952}
