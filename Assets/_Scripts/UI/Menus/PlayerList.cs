@@ -52,15 +52,6 @@ namespace _Scripts.UI.Menus
         private int _lastRole;
         #endregion
 
-        #region Error Texts
-        [FoldoutGroup("Error properties")]
-        [SerializeField, TextArea(2, 2)] private string missingPlayersText = "Can't start the game with only one player";
-        [FoldoutGroup("Error properties")]
-        [SerializeField, TextArea(2, 2)] private string missingDMText = "To start the game, one player should play Dungeon Master.";
-        [FoldoutGroup("Error properties")]
-        [SerializeField, TextArea(2, 2)] private string duplicateRoleText = "Can't be two players or more with the same character selected.";
-        #endregion
-
         [FoldoutGroup("Events")]
         [SerializeField] private GameEvent loadGameEvent;
         public static System.Action<Role> OnRoleChanged;
@@ -153,13 +144,13 @@ namespace _Scripts.UI.Menus
         {
             PlayerProperties player = _players.Find(x => x.player == PhotonNetwork.LocalPlayer);
             PlayerReadyListener(player.player, !player.isReady);
-            EnableRoleButtons(player.isReady);
+            LockRoleButtons(player.isReady);
         }
 
         /// <summary>
         /// Enable or disable role buttons 
         /// </summary>
-        private void EnableRoleButtons(bool isReady)
+        private void LockRoleButtons(bool isReady)
         {
             if (isReady)
             {
@@ -170,7 +161,7 @@ namespace _Scripts.UI.Menus
             {
                 for (int i = 0; i < roleButtons.Length; i++)
                 {
-                    if (i == _lastRole)
+                    if (i == _lastRole - 1)
                         continue;
 
                     roleButtons[i].interactable = true;
@@ -243,7 +234,6 @@ namespace _Scripts.UI.Menus
         /// <summary>
         /// Add a player to the list
         /// </summary>
-        /// <param name="newPlayer"></param>
         private void AddPlayer(Player newPlayer)
         {
             if (ContainsPlayer(newPlayer))
@@ -272,6 +262,10 @@ namespace _Scripts.UI.Menus
             PlayerInfos instance = Instantiate(GUIprefab, content);
             instance.SetPlayerGUI(playerInstance);
             _guiElements.Add(instance);
+
+            //Lock character
+            if (isReady)
+                roleButtons[(int)role - 1].interactable = false;
         }
 
         /// <summary>
@@ -282,13 +276,18 @@ namespace _Scripts.UI.Menus
             if (!ContainsPlayer(player))
                 return;
 
-            PlayerProperties target = _players.Find(x => x.player == player);
-            _players.Remove(target);
+            //Get removed player
+            int index = _players.FindIndex(x => x.player == player);
+            PlayerProperties target = _players[index];
 
-            //Update GUI
-            int index = _guiElements.FindIndex(x => x.Infos.player == player);
+            //Freed the selected character
+            if (target.isReady)
+                roleButtons[(int)target.role - 1].interactable = true;
+
+            //Remove from the lists
             Destroy(_guiElements[index].gameObject);
             _guiElements.RemoveAt(index);
+            _players.Remove(target);
         }
         #endregion
 
@@ -298,14 +297,14 @@ namespace _Scripts.UI.Menus
             //Need more player
             if (PhotonNetwork.PlayerList.Length <= 1)
             {
-                errorText.text = "The game can't start with only one player.";
+                errorText.text = "Impossible de commencer avec un seul joueur.";
                 return false;
             }
 
             //Player with undefined role
             if (HasUndefinedRole())
             {
-                errorText.text = "A player has an undefined role.";
+                errorText.text = "Tous les joueurs non selectionner un role.";
                 return false;
             }
 
@@ -317,7 +316,6 @@ namespace _Scripts.UI.Menus
             if (DuplicateRoleCheck())
                 return false;
 
-            Debug.Log("Can start timer to load");
             return true;
         }
 
@@ -348,8 +346,7 @@ namespace _Scripts.UI.Menus
             }
 
             //Throw error because no DM
-            errorText.text = missingDMText;
-            Debug.Log("ERROR : No one is playing DM");
+            errorText.text = "Impossible de lancer la partie sans Dungeon Master.";
             return false;
         }
 
@@ -368,8 +365,7 @@ namespace _Scripts.UI.Menus
                     if (player.role == item.role)
                     {
                         //Throw an error because there's a duplicate role
-                        errorText.text = duplicateRoleText;
-                        Debug.Log("ERROR : Duplicate role");
+                        errorText.text = "Un ou plusieurs joueurs ont choisi le meme personnage.";
                         return true;
                     }
                 }
