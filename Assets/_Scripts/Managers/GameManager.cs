@@ -25,6 +25,11 @@ namespace _Scripts.Managers
     {
         #region Variables
 
+        #region References
+        [TitleGroup("References")]
+        [SerializeField] private GameObject tiling;
+        #endregion
+
         #region Game Steps
         [FoldoutGroup("Global Properties")]
         [SerializeField] private GameProperties gameProperties;
@@ -78,6 +83,7 @@ namespace _Scripts.Managers
 
             //Disable Cursor
             EnableCursor(PlayersManager.Role == Role.Master);
+            EnableTiling(PlayersManager.Role == Role.Master);
         }
 
         private void LateUpdate()
@@ -96,6 +102,17 @@ namespace _Scripts.Managers
         public void EnableCursor(bool visible)
         {
             Cursor.visible = visible;
+        }
+
+        /// <summary>
+        /// Enable or disable the tiling
+        /// </summary>
+        private void EnableTiling(bool enabled)
+        {
+            if (!tiling)
+                return;
+
+            tiling.SetActive(enabled);
         }
 
         #region GameSteps
@@ -355,10 +372,11 @@ namespace _Scripts.Managers
         /// <summary>
         /// Disable the all map except the boos room
         /// </summary>
-        [ContextMenu("Disable traps")]
         private void UnloadMap()
         {
-            //Call the unload method
+            EnableTiling(false);
+            if (SubsceneLoader.Instance)
+                SubsceneLoader.Instance.LoadMapEnd();
 
             //Disable all enabled the traps
             TrapClass1[] traps = FindObjectsOfType<TrapClass1>();
