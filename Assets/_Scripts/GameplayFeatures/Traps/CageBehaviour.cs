@@ -62,7 +62,7 @@ namespace _Scripts.GameplayFeatures.Traps
                 return;
 
             if (ViewIsMine())
-                meshRenderer.sharedMaterial = sharedMaterial;
+                meshRenderer.sharedMaterial = trapMaterial;
 
             if (!meshRenderer.enabled)
                 EnableCage(true);
@@ -84,7 +84,7 @@ namespace _Scripts.GameplayFeatures.Traps
         private void HideCage()
         {
             if (ViewIsMine())
-                SetVisbility(meshRenderer.sharedMaterial == sharedMaterial);
+                SetVisbility(meshRenderer.sharedMaterial == trapMaterial);
             else
                 SetVisbility(meshRenderer.enabled);
         }

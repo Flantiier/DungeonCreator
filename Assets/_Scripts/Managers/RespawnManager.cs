@@ -72,7 +72,7 @@ namespace _Scripts.Managers
             _cam.Follow = _myPlayer.LookAt;
 
             //Load map
-            MapLoader.Instance.EnableAllMap();
+            //MapLoader.Instance.EnableAllMap();
 
             StartCoroutine(RespawnRoutine(character));
         }
@@ -107,7 +107,7 @@ namespace _Scripts.Managers
             }
 
             //Load map start
-            MapLoader.Instance.EnableMapStart();
+            //MapLoader.Instance.EnableMapStart();
 
             respawnTime.value = 0;
             RespawnPlayer(character);

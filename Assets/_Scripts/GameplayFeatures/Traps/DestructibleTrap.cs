@@ -9,25 +9,31 @@ namespace _Scripts.GameplayFeatures.Traps
     {
         #region Variables/Properties
         [FoldoutGroup("Dissolve properties")]
-        [SerializeField] protected Material sharedMaterial;
+        [SerializeField] protected Material trapMaterial;
         [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected float dissolveSpeed = 0.04f;
 
         protected bool _isVisible = false;
         private const string DISSOLVE_PARAM = "_dissolve";
+        protected Material _sharedMaterial;
 
         public float CurrentHealth { get; protected set; }
         #endregion
 
         #region Builts_In
+        protected virtual void Awake()
+        {
+            InitalizeMaterial();
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
 
-            if (!sharedMaterial.HasFloat(DISSOLVE_PARAM))
+            if (!_sharedMaterial.HasFloat(DISSOLVE_PARAM))
                 return;
 
-            sharedMaterial.SetFloat(DISSOLVE_PARAM, 0f);
+            _sharedMaterial.SetFloat(DISSOLVE_PARAM, 0f);
         }
 
         protected virtual void Update()
@@ -46,21 +52,41 @@ namespace _Scripts.GameplayFeatures.Traps
 
         #region Invisibility Methods
         /// <summary>
+        /// Create a instance of the trap material and set it in the MeshRenderer
+        /// </summary>
+        protected void InitalizeMaterial()
+        {
+            _sharedMaterial = new Material(trapMaterial);
+
+            foreach (GameObject part in trapParts)
+            {
+                if (!part.TryGetComponent(out MeshRenderer renderer) || !part.TryGetComponent(out SkinnedMeshRenderer skinned))
+                    continue;
+
+                if(renderer)
+                    renderer.sharedMaterial = _sharedMaterial;
+
+                if (skinned)
+                    skinned.sharedMaterial = _sharedMaterial;
+            }
+        }
+
+        /// <summary>
         /// Set the dissolve property of the material
         /// </summary>
         protected virtual void SetDissolveAmount()
         {
-            if (!sharedMaterial.HasFloat(DISSOLVE_PARAM))
+            if (!_sharedMaterial.HasFloat(DISSOLVE_PARAM))
                 return;
 
-            float amount = sharedMaterial.GetFloat(DISSOLVE_PARAM);
+            float amount = _sharedMaterial.GetFloat(DISSOLVE_PARAM);
 
             if (_isVisible && amount < 1)
                 amount = Mathf.Lerp(amount, 1f, dissolveSpeed);
             else if (!_isVisible && amount > 0)
                 amount = Mathf.Lerp(amount, 0f, dissolveSpeed);
 
-            sharedMaterial.SetFloat(DISSOLVE_PARAM, amount);
+            _sharedMaterial.SetFloat(DISSOLVE_PARAM, amount);
         }
 
         /// <summary>
@@ -69,18 +95,6 @@ namespace _Scripts.GameplayFeatures.Traps
         protected void SetVisbility(bool enabled)
         {
             _isVisible = enabled;
-        }
-
-        [ContextMenu("Visible")]
-        private void Enable()
-        {
-            SetVisbility(true);
-        }
-
-        [ContextMenu("Invisible")]
-        private void Disable()
-        {
-            SetVisbility(false);
         }
         #endregion
 

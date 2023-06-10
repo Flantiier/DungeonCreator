@@ -1,19 +1,21 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Traps;
-using _Scripts.Interfaces;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-    public class SawBehaviour : DamagingTrap, IDefusable
+    public class SawBehaviour : DefusableTrap
     {
         #region Variables
         [BoxGroup("Properties")]
         [Required, SerializeField] private SawPropeerties datas;
+        #endregion
 
-        public float DefuseDuration => datas.defuseDuration;
-        public bool IsDisabled { get; set; }
+        #region Builts_In
+        private void Awake()
+        {
+            DefuseDuration = datas.defuseDuration;
+        }
         #endregion
 
         #region Inherited Methods
@@ -25,25 +27,6 @@ namespace _Scripts.GameplayFeatures.Traps
                 return;
 
             SyncAnimator(0);
-        }
-        #endregion
-
-        #region Defuse Interaction
-        [ContextMenu("Defused")]
-        public void DefuseTrap()
-        {
-            StartCoroutine("GetDefused");
-        }
-
-        protected override IEnumerator GetDefused()
-        {
-            float baseSpeed = Animator.speed;
-
-            Animator.speed = 0f;
-            hitbox.EnableCollider(false);
-            yield return new WaitForSecondsRealtime(datas.defuseDuration);
-            Animator.speed = baseSpeed;
-            hitbox.EnableCollider(true);
         }
         #endregion
     }

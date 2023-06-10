@@ -6,7 +6,7 @@ using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-    public class FlameThrowerBehaviour : DamagingTrap
+    public class FlameThrowerBehaviour : DefusableTrap
     {
         #region Variables
         [FoldoutGroup("References")]
@@ -23,6 +23,11 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
+        private void Awake()
+        {
+            DefuseDuration = datas.defuseDuration;
+        }
+
         private void Start()
         {
             StartCoroutine("FlamesRoutine");
