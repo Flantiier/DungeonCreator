@@ -9,23 +9,14 @@ namespace _Scripts.GameplayFeatures.Traps
     {
         #region Variables/Properties
         [FoldoutGroup("Dissolve properties")]
-        [SerializeField] protected Material trapMaterial;
-        [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected float dissolveSpeed = 0.04f;
-
-        protected bool _isVisible = false;
         private const string DISSOLVE_PARAM = "_dissolve";
-        protected Material _sharedMaterial;
+        protected bool _isVisible = false;
 
         public float CurrentHealth { get; protected set; }
         #endregion
 
         #region Builts_In
-        protected virtual void Awake()
-        {
-            InitalizeMaterial();
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -51,26 +42,6 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Invisibility Methods
-        /// <summary>
-        /// Create a instance of the trap material and set it in the MeshRenderer
-        /// </summary>
-        protected void InitalizeMaterial()
-        {
-            _sharedMaterial = new Material(trapMaterial);
-
-            foreach (GameObject part in trapParts)
-            {
-                if (!part.TryGetComponent(out MeshRenderer renderer) || !part.TryGetComponent(out SkinnedMeshRenderer skinned))
-                    continue;
-
-                if(renderer)
-                    renderer.sharedMaterial = _sharedMaterial;
-
-                if (skinned)
-                    skinned.sharedMaterial = _sharedMaterial;
-            }
-        }
-
         /// <summary>
         /// Set the dissolve property of the material
         /// </summary>

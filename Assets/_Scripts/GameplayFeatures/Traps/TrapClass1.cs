@@ -10,6 +10,8 @@ namespace _Scripts.GameplayFeatures.Traps
     public class TrapClass1 : NetworkAnimatedObject, IDetectable
     {
         #region Variables/Properties
+        [FoldoutGroup("Trap properties")]
+        [SerializeField] protected Material trapMaterial;
         [FoldoutGroup("Trap references")]
         [SerializeField] private string defaultLayer = "Default";
         [FoldoutGroup("Trap references")]
@@ -17,10 +19,16 @@ namespace _Scripts.GameplayFeatures.Traps
         [FoldoutGroup("Trap references")]
         [SerializeField] protected GameObject[] trapParts;
 
+        protected Material _sharedMaterial;
         public Tile[] OccupedTiles { get; set; }
         #endregion
 
-        #region Built_In
+        #region Builts_In
+        protected virtual void Awake()
+        {
+            InitalizeMaterial();
+        }
+
         public override void OnEnable()
         {
             base.OnEnable();
@@ -84,6 +92,26 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Create a instance of the trap material and set it in the MeshRenderer
+        /// </summary>
+        protected void InitalizeMaterial()
+        {
+            if (!trapMaterial)
+                return;
+
+            _sharedMaterial = new Material(trapMaterial);
+
+            foreach (GameObject part in trapParts)
+            {
+                if (part.TryGetComponent(out MeshRenderer renderer))
+                    renderer.sharedMaterial = _sharedMaterial;
+
+                if (part.TryGetComponent(out SkinnedMeshRenderer skinned))
+                    skinned.sharedMaterial = _sharedMaterial;
+            }
+        }
+
         /// <summary>
         /// Initialize some variables for the trap behaviour
         /// Executed during OnEnable

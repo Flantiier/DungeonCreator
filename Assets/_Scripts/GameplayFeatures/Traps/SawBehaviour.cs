@@ -12,8 +12,9 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DefuseDuration = datas.defuseDuration;
         }
         #endregion

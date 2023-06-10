@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.VFX;
 using Sirenix.OdinInspector;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.PhysicsAdds;
 using _ScriptableObjects.Traps;
-using UnityEditor.Rendering;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -26,9 +24,8 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             hitbox.affliction = datas.affliction;
             particles.Stop();
         }

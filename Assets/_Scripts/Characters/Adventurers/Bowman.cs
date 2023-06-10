@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.Interfaces;
 using _ScriptableObjects.Cinemachine;
-using Unity.Rendering;
+using _Scripts.GameplayFeatures.Traps;
+using _Scripts.Characters.StateMachines;
 
 namespace _Scripts.Characters.Adventurers
 {
@@ -17,6 +18,7 @@ namespace _Scripts.Characters.Adventurers
 
         private IDefusable _currentTrap;
         private RaycastHit _hit;
+        private DefusableTrap _hitTrap;
         #endregion
 
         #region Properties
@@ -29,6 +31,9 @@ namespace _Scripts.Characters.Adventurers
         #region Builts_In
         protected override void Update()
         {
+            if (!ViewIsMine())
+                return;
+
             base.Update();
             TrapDetection();
         }
@@ -77,30 +82,21 @@ namespace _Scripts.Characters.Adventurers
         }
         #endregion
 
+        #region Health Method
+        protected override void HandleEntityDeath()
+        {
+            //Reset hit trap
+            if(_hitTrap != null)
+            {
+                _hitTrap.HighlightTrap(false);
+                _hitTrap = null;
+            }
+
+            base.HandleEntityDeath();
+        }
+        #endregion
+
         #region Methods
-        public override float GetMovementSpeed()
-        {
-            if (PlayerSM.EnableLayers)
-                return speedDuringAbility;
-
-            return base.GetMovementSpeed();
-        }
-
-        /// <summary>
-        /// Shoot a raycasr and indicates if ther's a defusable trap detected
-        /// </summary>
-        private void TrapDetection()
-        {
-            Vector3 position = MainCamera.position;
-            Vector3 direction = MainCamera.forward;
-            float distance = cameraProperties.framingTranposer.m_CameraDistance + defuseDistance;
-
-            if (!Physics.Raycast(position, direction, out _hit, distance, defuseLayer))
-                TrapDetected = false;
-            else
-                TrapDetected = true;
-        }
-
         private void SkillAction(InputAction.CallbackContext _)
         {
             if (!SkillConditions() || !TrapDetected)
@@ -114,6 +110,14 @@ namespace _Scripts.Characters.Adventurers
             RPCAnimatorTrigger(Photon.Pun.RpcTarget.All, "SkillEnabled", true);
         }
 
+        public override float GetMovementSpeed()
+        {
+            if (PlayerSM.EnableLayers)
+                return speedDuringAbility;
+
+            return base.GetMovementSpeed();
+        }
+
         /// <summary>
         /// Defuse the last trap
         /// </summary>
@@ -124,6 +128,57 @@ namespace _Scripts.Characters.Adventurers
 
             _currentTrap.DefuseTrap();
             SkillUsed();
+        }
+
+        /// <summary>
+        /// Shoot a raycasr and indicates if ther's a defusable trap detected
+        /// </summary>
+        private void TrapDetection()
+        {
+            if (!PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Walk) || PlayerSM.SkillUsed)
+                return;
+
+            Vector3 position = MainCamera.position;
+            Vector3 direction = MainCamera.forward;
+            float distance = cameraProperties.framingTranposer.m_CameraDistance + defuseDistance;
+            bool detect = Physics.Raycast(position, direction, out _hit, distance, defuseLayer);
+            TrapDetected = detect;
+
+            if (IsDefusing)
+                return;
+
+            HighlightingTrap(detect);
+        }
+
+        /// <summary>
+        /// Highlight feedback to enable on traps
+        /// </summary>
+        private void HighlightingTrap(bool detect)
+        {
+            //Don't detect a trap
+            if (!detect)
+            {
+                if (!_hitTrap)
+                    return;
+
+                _hitTrap.HighlightTrap(false);
+                _hitTrap = null;
+            }
+            //Detect a trap
+            else
+            {
+                if (_hit.collider.TryGetComponent(out DefusableTrap trap))
+                {
+                    if (_hitTrap == trap)
+                        return;
+
+                    if (_hitTrap)
+                        _hitTrap.HighlightTrap(false);
+
+                    trap.HighlightTrap(true);
+                    _hitTrap = trap;
+                }
+            }
         }
         #endregion
     }

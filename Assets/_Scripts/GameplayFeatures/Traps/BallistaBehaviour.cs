@@ -3,7 +3,6 @@ using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.PhysicsAdds;
 using _Scripts.GameplayFeatures.Projectiles;
 using _ScriptableObjects.Traps;
-using Unity.VisualScripting;
 
 namespace _Scripts.GameplayFeatures.Traps
 {

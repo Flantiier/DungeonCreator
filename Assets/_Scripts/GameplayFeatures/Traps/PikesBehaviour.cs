@@ -12,8 +12,9 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Inherited Methods
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DefuseDuration = datas.defuseDuration;
         }
 

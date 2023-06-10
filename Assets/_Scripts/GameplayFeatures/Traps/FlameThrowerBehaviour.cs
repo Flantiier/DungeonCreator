@@ -23,8 +23,9 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DefuseDuration = datas.defuseDuration;
         }
 
@@ -39,6 +40,25 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.InitializeTrap();
             SetHitboxDamages(datas.damages);
+        }
+
+        protected override IEnumerator DefusedTrapRoutine()
+        {
+            HighlightTrap(false);
+
+            //Stop the flammes
+            StopCoroutine("FlamesRoutine");
+            fx.Stop();
+
+            //Base routine
+            hitbox.EnableCollider(false);
+            IsDisabled = true;
+            yield return new WaitForSecondsRealtime(DefuseDuration);
+            IsDisabled = false;
+            hitbox.EnableCollider(true);
+
+            //Restart the flames
+            StartCoroutine("FlamesRoutine");
         }
         #endregion
 

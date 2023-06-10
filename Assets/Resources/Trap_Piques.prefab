@@ -182,19 +182,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3699959781936947560}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &4455952109850207402
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3027652324285799288}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3564810937519942194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 4632678491467595463}
   animator: {fileID: 557549229055365225}
+  trapMaterial: {fileID: 2100000, guid: 5daa2cf9158e6c6409df35f08f9a4b2d, type: 2}
   defaultLayer: DefusableTraps
   topLayer: RenderedOnTop
   trapParts:
