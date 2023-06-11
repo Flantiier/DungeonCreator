@@ -23,6 +23,7 @@ namespace _Scripts.UI.Interfaces
         private void OnEnable()
         {
             skillImage.fillAmount = 0;
+            skillText.gameObject.SetActive(skillCooldown.value > 0);
         }
 
         private void LateUpdate()
@@ -48,6 +49,7 @@ namespace _Scripts.UI.Interfaces
             //Sliders
             healthSlider.SetPlayer(Character);
             staminaSlider.SetPlayer(Character);
+            skillText.gameObject.SetActive(skillCooldown.value > 0);
 
             //Skill hud
             if (!Character.PlayerSM.SkillUsed)

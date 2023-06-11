@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8808735942537585120}
   - component: {fileID: 5589302754920377925}
   - component: {fileID: 7671255758645025423}
-  - component: {fileID: 2706144881565143499}
+  - component: {fileID: 4162972150240186526}
   m_Layer: 6
   m_Name: pilier_banquet_bas_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2706144881565143499
-MeshCollider:
+--- !u!65 &4162972150240186526
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8426553933397448762, guid: 4965c56e2aa30fc4b9f2dfd88064959b, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.25002015, y: 5.9999995, z: 1.0000024}
+  m_Center: {x: -0.0000012218952, y: -0.00000023841858, z: 0.0000036656857}

@@ -21,6 +21,9 @@ namespace _Scripts.Managers
         {
             base.Awake();
             _sceneSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<SceneSystem>();
+
+            //Unload map
+            UnloadAll();
         }
 
         private void Start()
@@ -43,7 +46,7 @@ namespace _Scripts.Managers
         public void LoadSubscene(SubScene subscene)
         {
             SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == subscene);
-            if (subscene == null || subscene.IsLoaded)
+            if (subscene == null || subSceneData.IsLoaded)
                 return;
 
             subSceneData.Load(_sceneSystem);
@@ -56,7 +59,7 @@ namespace _Scripts.Managers
         public void UnloadSubscene(SubScene subscene)
         {
             SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == subscene);
-            if (subscene == null || !subscene.IsLoaded)
+            if (subscene == null || !subSceneData.IsLoaded)
                 return;
 
             subSceneData.Unload(_sceneSystem);
@@ -110,6 +113,7 @@ namespace _Scripts.Managers
         [SerializeField] private GameObject colliders;
 
         public SubScene SubScene => subScene;
+        public GameObject Colliders => colliders;
         public bool IsLoaded { get; set; } = false;
 
         public void Load(SceneSystem system)
@@ -117,8 +121,8 @@ namespace _Scripts.Managers
             if (IsLoaded)
                 return;
 
-            colliders.SetActive(true);
             system.LoadSceneAsync(subScene.SceneGUID);
+            colliders.SetActive(true);
             IsLoaded = true;
         }
 
@@ -127,8 +131,8 @@ namespace _Scripts.Managers
             if (!IsLoaded)
                 return;
 
-            colliders.SetActive(false);
             system.UnloadScene(subScene.SceneGUID);
+            colliders.SetActive(false);
             IsLoaded = false;
         }
     }
