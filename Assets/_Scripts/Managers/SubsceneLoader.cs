@@ -14,13 +14,14 @@ namespace _Scripts.Managers
         [SerializeField] private bool loadOverrite;
 
         private SceneSystem _sceneSystem;
+        public SceneSystem SceneSystem => _sceneSystem;
         #endregion
 
         #region Builts_In
         public override void Awake()
         {
             base.Awake();
-            _sceneSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<SceneSystem>();
+            _sceneSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<SceneSystem>();
 
             //Unload map
             UnloadAll();
@@ -42,11 +43,12 @@ namespace _Scripts.Managers
         /// <summary>
         /// Load a subScene in the subscene array
         /// </summary>
-        /// <param name="subscene"> Scene name to load </param>
         public void LoadSubscene(SubScene subscene)
         {
             SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == subscene);
-            if (subscene == null || subSceneData.IsLoaded)
+            Entity entity = _sceneSystem.GetSceneEntity(subSceneData.SubScene.SceneGUID);
+
+            if (_sceneSystem.IsSceneLoaded(entity))
                 return;
 
             subSceneData.Load(_sceneSystem);
@@ -55,11 +57,12 @@ namespace _Scripts.Managers
         /// <summary>
         /// Unload a subScene in the subscene array
         /// </summary>
-        /// <param name="subscene"> Scene name to unload </param>
         public void UnloadSubscene(SubScene subscene)
         {
             SubSceneData subSceneData = Array.Find(subScenes, x => x.SubScene == subscene);
-            if (subscene == null || !subSceneData.IsLoaded)
+            Entity entity = _sceneSystem.GetSceneEntity(subSceneData.SubScene.SceneGUID);
+
+            if (!_sceneSystem.IsSceneLoaded(entity))
                 return;
 
             subSceneData.Unload(_sceneSystem);
@@ -68,6 +71,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Load the entire map
         /// </summary>
+        [ContextMenu("Load All")]
         public void LoadAll()
         {
             foreach (SubSceneData subscene in subScenes)
@@ -77,6 +81,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Unload the entire map
         /// </summary>
+        [ContextMenu("Unload All")]
         public void UnloadAll()
         {
             foreach (SubSceneData subscene in subScenes)
@@ -121,7 +126,7 @@ namespace _Scripts.Managers
             if (IsLoaded)
                 return;
 
-            system.LoadSceneAsync(subScene.SceneGUID);
+            system.LoadSceneAsync(SubScene.SceneGUID);
             colliders.SetActive(true);
             IsLoaded = true;
         }
@@ -131,7 +136,7 @@ namespace _Scripts.Managers
             if (!IsLoaded)
                 return;
 
-            system.UnloadScene(subScene.SceneGUID);
+            system.UnloadScene(SubScene.SceneGUID);
             colliders.SetActive(false);
             IsLoaded = false;
         }
