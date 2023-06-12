@@ -169,10 +169,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 7142128784793543715}
   animator: {fileID: 0}
-  defaultLayer: Default
+  defaultLayer: Traps
   topLayer: RenderedOnTop
   trapParts:
   - {fileID: 5414701423915646680}
+  trapMaterial: {fileID: 2100000, guid: 158b85868d9fca4428900387728da1d7, type: 2}
+  dissolveSpeed: 0.02
   triggerBox: {fileID: 6110328302638666897}
   meshRenderer: {fileID: 2256561658037207805}
   meshCollider: {fileID: 6991591211958265819}
@@ -192,8 +194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableHelpers: 1
   helpersColor: {r: 0.3128791, g: 1, b: 0.28773582, a: 1}
-  extends: {x: 2, y: 0.5, z: 2}
-  offset: {x: 0, y: 0.25, z: 0}
+  extends: {x: 2.2, y: 0.5, z: 2.2}
+  offset: {x: 0, y: 0.5, z: 0}
   mask:
     serializedVersion: 2
     m_Bits: 33554432
@@ -215,27 +217,10 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7284843124143009760}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7284843124143009760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3773856583452564764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!1 &5414701423915646680 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5416601938339238895, guid: 05bf5fd65a26816488d450df43267bc2,

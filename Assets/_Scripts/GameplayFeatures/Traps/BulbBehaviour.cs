@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.VFX;
 using Sirenix.OdinInspector;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.PhysicsAdds;
@@ -25,15 +24,17 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        private void Awake()
+        protected void Awake()
         {
             hitbox.affliction = datas.affliction;
             particles.Stop();
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             HandleBulbBehaviour();
+            HideBulbe();
         }
         #endregion
 
@@ -67,7 +68,6 @@ namespace _Scripts.GameplayFeatures.Traps
         /// <summary>
         /// Start the coroutine to ejects the spores
         /// </summary>
-        [ContextMenu("Attack")]
         public void BulbAttack()
         {
             StartCoroutine("SporesRoutine");
@@ -86,6 +86,14 @@ namespace _Scripts.GameplayFeatures.Traps
 
             yield return new WaitForSecondsRealtime(datas.waitTime);
             _IsAttacking = false;
+        }
+        
+        /// <summary>
+        /// Hides the bulbe when nothing is detected
+        /// </summary>
+        private void HideBulbe()
+        {
+            SetVisbility(detectionBox.IsDetecting());
         }
         #endregion
     }

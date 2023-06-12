@@ -37,10 +37,13 @@ namespace _Scripts.GameplayFeatures.Traps
 				Destroy(_lastProjectile);
 		}
 
-		private void Update()
+		protected override void Update()
 		{
+			base.Update();
+
 			HandleTurretRotation();
 			HandleShootingBehaviour();
+			HideTurret();
 		}
         #endregion
 
@@ -119,9 +122,23 @@ namespace _Scripts.GameplayFeatures.Traps
 			if (!_lastProjectile)
 				return;
 
+			if (!_lastProjectile.gameObject.activeSelf)
+				_lastProjectile.gameObject.SetActive(true);
+
 			_lastProjectile.transform.SetParent(null);
 			_lastProjectile.OverrideThrowForce(_lastProjectile.transform.forward, datas.throwForce);
 			_lastProjectile = null;
+		}
+
+		/// <summary>
+		/// Hide the turret and its projectile when nothing si detected
+		/// </summary>
+		private void HideTurret()
+		{
+			SetVisbility(fov.IsDetecting());
+
+			if (_lastProjectile)
+				_lastProjectile.gameObject.SetActive(false);
 		}
         #endregion
     }

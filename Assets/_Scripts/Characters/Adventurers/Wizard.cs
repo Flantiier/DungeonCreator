@@ -2,6 +2,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using _Scripts.GameplayFeatures;
+using System.Runtime.CompilerServices;
 
 namespace _Scripts.Characters.Adventurers
 {
@@ -9,6 +10,7 @@ namespace _Scripts.Characters.Adventurers
 	{
         #region Variables
         [Header("Wizard properties")]
+        [SerializeField] private float speedDuringAbility = 2f;
         [SerializeField] private ScanArea scanAreaPrefab;
         #endregion
 
@@ -33,12 +35,19 @@ namespace _Scripts.Characters.Adventurers
         protected override void UpdateAnimations()
         {
             base.UpdateAnimations();
-
             UpdateAnimationLayers();
         }
         #endregion
 
         #region Methods
+        public override float GetMovementSpeed()
+        {
+            if (PlayerSM.EnableLayers)
+                return speedDuringAbility;
+
+            return base.GetMovementSpeed();
+        }
+
         private void SkillAction(InputAction.CallbackContext _)
         {
             if (!SkillConditions())

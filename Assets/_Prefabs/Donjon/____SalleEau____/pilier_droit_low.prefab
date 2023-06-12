@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6870843409375562479}
   - component: {fileID: 7563224069532091722}
   - component: {fileID: 5697351985350963584}
-  - component: {fileID: 4936310307825733842}
+  - component: {fileID: 3767320502179758371}
   m_Layer: 0
   m_Name: pilier_droit_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4936310307825733842
-MeshCollider:
+--- !u!65 &3767320502179758371
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6858570238045680853, guid: f5ccbb4b5803f9b4aa333e13ec1b5b54, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 1.1, y: 12.150002, z: 1.1}
+  m_Center: {x: 0, y: -0.0000026226044, z: -0.0000024437904}

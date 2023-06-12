@@ -72,7 +72,8 @@ namespace _Scripts.Managers
             _cam.Follow = _myPlayer.LookAt;
 
             //Load map
-            MapLoader.Instance.EnableAllMap();
+            if (SubsceneLoader.Instance)
+                SubsceneLoader.Instance.LoadAll();
 
             StartCoroutine(RespawnRoutine(character));
         }
@@ -107,8 +108,10 @@ namespace _Scripts.Managers
             }
 
             //Load map start
-            MapLoader.Instance.EnableMapStart();
+            if (SubsceneLoader.Instance)
+                SubsceneLoader.Instance.LoadMapStart();
 
+            //Reset respawn
             respawnTime.value = 0;
             RespawnPlayer(character);
             respawnEnd.Raise();

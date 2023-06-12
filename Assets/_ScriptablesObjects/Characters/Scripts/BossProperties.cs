@@ -10,11 +10,21 @@ namespace _ScriptableObjects.Characters
         public float inputSmoothing = 0.1f;
         [TitleGroup("Smoothing"), LabelWidth(125), Range(0, 0.2f), GUIColor(2, 1, 0)]
         public float rotationSmoothing = 0.1f;
+        [TitleGroup("Motion"), LabelWidth(125), Range(0, 0.2f), GUIColor(0, 1.5f, 2)]
+        public float speedSmoothing = 0.1f;
         [TitleGroup("Motion"), LabelWidth(125), Range(1, 20), GUIColor(0, 1.5f, 2)]
         public float walkSpeed = 5;
+        [TitleGroup("Motion"), LabelWidth(125), Range(1, 20), GUIColor(0, 1.5f, 2)]
+        public float runSpeed = 8;
 
         [TitleGroup("Skills"), Range(100, 5000), GUIColor(0, 2, 0.5f)]
         public float health = 500f;
+        [TitleGroup("Skills"), Range(100, 5000), GUIColor(0, 2, 0.5f)]
+        public float stamina = 100f;
+        [TitleGroup("Skills"), Range(0, 30), GUIColor(0, 2, 0.5f)]
+        public float usedStamina = 7f;
+        [TitleGroup("Skills"), Range(0f, 20f), GUIColor(0, 2, 0.5f)]
+        public float staminaRecup = 7f;
         [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]
         public float firstAbilityRecovery = 15f;
         [TitleGroup("Skills"), Range(5, 60), GUIColor(0, 2, 0.5f)]

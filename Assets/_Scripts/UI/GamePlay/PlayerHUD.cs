@@ -16,12 +16,16 @@ namespace _Scripts.UI.Interfaces
         [SerializeField] private FloatVariable skillCooldown;
         [SerializeField] private Image skillImage;
         [SerializeField] private TextMeshProUGUI skillText;
-        [SerializeField] private float alphaValue = 0.5f;
-
         public Character Character { get; private set; }
         #endregion
 
         #region Builts-In
+        private void OnEnable()
+        {
+            skillImage.fillAmount = 0;
+            skillText.gameObject.SetActive(skillCooldown.value > 0);
+        }
+
         private void LateUpdate()
         {
             SetHUD();
@@ -45,14 +49,14 @@ namespace _Scripts.UI.Interfaces
             //Sliders
             healthSlider.SetPlayer(Character);
             staminaSlider.SetPlayer(Character);
+            skillText.gameObject.SetActive(skillCooldown.value > 0);
 
             //Skill hud
-            float amount = skillCooldown.value / Character.CharacterDatas.skillCooldown;
-            skillImage.fillAmount = 1 - amount;
-            Color color = skillImage.color;
-            color.a = skillCooldown.value > 0 ? alphaValue : 1f;
-            skillImage.color = color; 
+            if (!Character.PlayerSM.SkillUsed)
+                return;
 
+            float amount = skillCooldown.value / Character.CharacterDatas.skillCooldown;
+            skillImage.fillAmount = amount;
             skillText.gameObject.SetActive(skillCooldown.value > 0);
             skillText.text = Mathf.Ceil(skillCooldown.value).ToString();
         }

@@ -29,8 +29,7 @@ namespace _Scripts.GameplayFeatures.PhysicsAdds
             if (!enableHelpers)
                 return;
 
-            Gizmos.color = helpersColor;
-            Gizmos.DrawSphere(transform.position, radius);
+            Gizmos.DrawWireSphere(transform.position, radius);
         }
         #endregion
 

@@ -21,7 +21,7 @@ namespace _Scripts.Characters.Animations.StateMachines
             base.StateEnter(animator, stateInfo, layerIndex);
 
             SetAttackCurve();
-            Character.SetMeshOrientation(Character.Orientation.forward);
+            //Character.SetMeshOrientation(Character.Orientation.forward);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

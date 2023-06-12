@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4814051583335939349}
   - component: {fileID: 8458087746029367984}
   - component: {fileID: 5946403748077815418}
-  - component: {fileID: 2944176135209985141}
+  - component: {fileID: 6533272333224995821}
   m_Layer: 29
   m_Name: mur_haut_petite_porte_low
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2944176135209985141
-MeshCollider:
+--- !u!65 &6533272333224995821
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6543401003623654221, guid: 6f5104c94d5686b45a8a2cff1cc10cba, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.0000018310546, y: 6.000007, z: 6.4999957}
+  m_Center: {x: 0.00000793457, y: 8.989605e-22, z: 0.00000047683716}

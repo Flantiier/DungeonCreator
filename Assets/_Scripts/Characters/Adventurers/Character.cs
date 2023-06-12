@@ -9,7 +9,6 @@ using _Scripts.Interfaces;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using Cinemachine;
 using _Scripts.Cameras;
 
 namespace _Scripts.Characters
@@ -122,7 +121,7 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
 
             RPCCall("ResetAnimatorRPC", RpcTarget.All);
-            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
+            RPCCall("HealthRPC", RpcTarget.OthersBuffered, CurrentHealth);
 
             skillCooldown.value = 0f;
         }
@@ -205,15 +204,13 @@ namespace _Scripts.Characters
             StartCoroutine("AfflictionRoutine");
         }
 
-        public void Stunned(float duration)
+        [PunRPC]
+        public void StunPlayer(float duration)
         {
-            if (!ViewIsMine() || !GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+            if (!ViewIsMine())
                 return;
 
-            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
-                return;
-
-            StartCoroutine(StunRoutine(duration));
+            StunMethod(duration);
         }
         #endregion
 
@@ -325,8 +322,20 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
         }
 
+        private void StunMethod(float duration)
+        {
+            if (!GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
+                return;
+
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
+                return;
+
+            StartCoroutine(StunRoutine(duration));
+        }
+
         private IEnumerator StunRoutine(float duration)
         {
+            PlayerSM.EnableLayers = false;
             RPCAnimatorTrigger(RpcTarget.All, "stunned", true);
             yield return new WaitForSecondsRealtime(duration);
             RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
@@ -446,7 +455,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Return the current target motion speed
         /// </summary>
-        public float GetMovementSpeed()
+        public virtual float GetMovementSpeed()
         {
             if (RunConditions() && CurrentStamina >= 0.1f)
                 return overallDatas.runSpeed;
@@ -524,7 +533,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Main attack callback
         /// </summary>
-        private void HandleMainAttack(InputAction.CallbackContext _)
+        protected virtual void HandleMainAttack(InputAction.CallbackContext _)
         {
             if (!AttackConditions())
                 return;
@@ -536,7 +545,7 @@ namespace _Scripts.Characters
         /// <summary>
         /// Second attack callback
         /// </summary>
-        private void HandleSecondAttack(InputAction.CallbackContext _)
+        protected virtual void HandleSecondAttack(InputAction.CallbackContext _)
         {
             if (!AttackConditions())
                 return;
@@ -579,6 +588,7 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            PlayerSM.SkillUsed = true;
             OnSkillUsed?.Invoke();
             _skillRoutine = StartCoroutine(SkillCooldownRoutine());
         }

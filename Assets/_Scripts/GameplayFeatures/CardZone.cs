@@ -16,7 +16,6 @@ namespace _Scripts.GameplayFeatures
         #region Interfaces Implementations
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
-            Debug.Log("Enter");
             CursorOnZone = true;
 
             if (!DMController.IsDragging)
@@ -27,7 +26,6 @@ namespace _Scripts.GameplayFeatures
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            Debug.Log("Exit");
             CursorOnZone = false;
 
             if (!DMController.IsDragging)

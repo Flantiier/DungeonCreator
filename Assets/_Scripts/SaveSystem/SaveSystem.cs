@@ -38,9 +38,10 @@ public static class SaveSystem
         JsonUtility.FromJsonOverwrite((string)bf.Deserialize(stream), obj);
         stream.Close();
     }
+
     public static bool SaveExists(string key)
     {
         string path = Application.persistentDataPath + SAVES_PATH;
-        return File.Exists(path + key + ".json");
+        return File.Exists(path + "/" + key + ".json");
     }
 }

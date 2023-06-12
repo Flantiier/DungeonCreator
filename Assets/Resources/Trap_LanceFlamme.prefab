@@ -70,7 +70,7 @@ PrefabInstance:
     - target: {fileID: 2584265418581041429, guid: 0ecf53116a172a4479d2429758dd915d,
         type: 3}
       propertyPath: m_Layer
-      value: 27
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 2584265419118847330, guid: 0ecf53116a172a4479d2429758dd915d,
         type: 3}
@@ -291,7 +291,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 851360045784221805}
   animator: {fileID: 0}
-  defaultLayer: Default
+  trapMaterial: {fileID: 2100000, guid: 7d76ef1f1c4adc64cbd4ae0ebb983968, type: 2}
+  defaultLayer: DefusableTraps
   topLayer: RenderedOnTop
   trapParts:
   - {fileID: 7001495582014280796}

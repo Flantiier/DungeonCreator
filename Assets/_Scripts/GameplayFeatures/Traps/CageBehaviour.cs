@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
-using _Scripts.GameplayFeatures.PhysicsAdds;
 using _ScriptableObjects.Traps;
+using _Scripts.GameplayFeatures.PhysicsAdds;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -19,17 +19,9 @@ namespace _Scripts.GameplayFeatures.Traps
 
         [BoxGroup("Stats")]
         [Required, SerializeField] private CageProperties datas;
-
-        private Material _material;
         #endregion
 
         #region Builts_In
-        private void Start()
-        {
-            if (ViewIsMine())
-                _material = meshRenderer.sharedMaterial;
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -42,9 +34,11 @@ namespace _Scripts.GameplayFeatures.Traps
             }
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             HandleCageBehaviour();
+            HideCage();
         }
         #endregion
 
@@ -67,13 +61,11 @@ namespace _Scripts.GameplayFeatures.Traps
             if (!triggerBox || !triggerBox.IsDetecting())
                 return;
 
-            if (meshRenderer.enabled)
-                return;
-
-            EnableCage(true);
-
             if (ViewIsMine())
-                meshRenderer.sharedMaterial = _material;
+                meshRenderer.sharedMaterial = trapMaterial;
+
+            if (!meshRenderer.enabled)
+                EnableCage(true);
         }
 
         /// <summary>
@@ -84,6 +76,17 @@ namespace _Scripts.GameplayFeatures.Traps
             meshRenderer.enabled = enabled;
             meshCollider.enabled = enabled;
             triggerBox.Enabled = !enabled;
+        }
+
+        /// <summary>
+        /// Enable the dissolve transition on the cage
+        /// </summary>
+        private void HideCage()
+        {
+            if (ViewIsMine())
+                SetVisbility(meshRenderer.sharedMaterial == trapMaterial);
+            else
+                SetVisbility(meshRenderer.enabled);
         }
         #endregion
     }

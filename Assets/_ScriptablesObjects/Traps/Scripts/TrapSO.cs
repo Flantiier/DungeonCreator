@@ -32,7 +32,7 @@ namespace _ScriptableObjects.Traps
         //PROPERTIES
         [BoxGroup("Gameplay/Type property"), LabelWidth(100), LabelText("Trap type")]
         public Tile.TilingType type = Tile.TilingType.Ground;
-        [BoxGroup("Gameplay/Type property"), LabelWidth(100), Range(10, 150), GUIColor(3, 1, 2)]
+        [BoxGroup("Gameplay/Type property"), LabelWidth(100), Range(0, 50), GUIColor(3, 1, 2)]
         public int manaCost = 25;
         [BoxGroup("Properties"), LabelWidth(100), Range(10, 150), GUIColor(0, 1.5f, 2)]
         public float damages = 25;

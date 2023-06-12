@@ -6,9 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using Sirenix.OdinInspector;
+//
+using _Scripts.Characters;
 using _ScriptableObjects.GameManagement;
 using _Scripts.Characters.DungeonMaster;
-using _Scripts.Characters;
+using _Scripts.GameplayFeatures.Traps;
 
 public enum EndGameReason
 {
@@ -22,6 +24,11 @@ namespace _Scripts.Managers
     public class GameManager : NetworkMonoSingleton<GameManager>
     {
         #region Variables
+
+        #region References
+        [TitleGroup("References")]
+        [SerializeField] private GameObject tiling;
+        #endregion
 
         #region Game Steps
         [FoldoutGroup("Global Properties")]
@@ -42,6 +49,7 @@ namespace _Scripts.Managers
 
         private Character[] _adventurers;
         private BossController _boss;
+        private bool _hasEnded;
         #endregion
 
         #region EndGame
@@ -60,6 +68,7 @@ namespace _Scripts.Managers
 
         #region Properties
         public GameProperties Properties => gameProperties;
+        public bool BossFightStarted { get; private set; }
         #endregion
 
         #region Builts_In
@@ -73,31 +82,16 @@ namespace _Scripts.Managers
             }
 
             //Disable Cursor
-            if (PlayersManager.Role != Role.Master)
-                EnableCursor(false);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F1))
-                StartBossFight();
+            EnableCursor(PlayersManager.Role == Role.Master);
+            EnableTiling(PlayersManager.Role == Role.Master);
         }
 
         private void LateUpdate()
-        {/*
-            if (!_checkEndGame || _ended)
+        {
+            if (!BossFightStarted)
                 return;
 
-            if(_boss.CurrentHealth <= 0)
-            {
-                EndGameRPC(EndGameReason.AdventurerWin);
-                _ended = true;
-            }
-            else if (AdventurersDefeated())
-            {
-                EndGameRPC(EndGameReason.MasterWin);
-                _ended = true;
-            }*/
+            CheckCharactersLeft();
         }
         #endregion
 
@@ -108,6 +102,17 @@ namespace _Scripts.Managers
         public void EnableCursor(bool visible)
         {
             Cursor.visible = visible;
+        }
+
+        /// <summary>
+        /// Enable or disable the tiling
+        /// </summary>
+        private void EnableTiling(bool enabled)
+        {
+            if (!tiling)
+                return;
+
+            tiling.SetActive(enabled);
         }
 
         #region GameSteps
@@ -290,6 +295,7 @@ namespace _Scripts.Managers
                 case Role.Master:
                     SwicthDMToBoss();
                     Instantiate(bossUI);
+                    EnableCursor(false);
                     break;
                 default:
                     TeleportAdventurers(role);
@@ -297,14 +303,19 @@ namespace _Scripts.Managers
                     break;
             }
 
+            //Find all players
             _adventurers = FindObjectsOfType<Character>();
             _boss = FindObjectOfType<BossController>();
 
+            //Disable respawn
             GetComponent<RespawnManager>().enabled = false;
 
-            //Unload map
+            //Unload map and disable all the traps
+            UnloadMap();
 
+            //Start boss fight
             startBossFightEvent.Raise();
+            BossFightStarted = true;
         }
 
         /// <summary>
@@ -359,6 +370,53 @@ namespace _Scripts.Managers
         }
 
         /// <summary>
+        /// Disable the all map except the boos room
+        /// </summary>
+        private void UnloadMap()
+        {
+            EnableTiling(false);
+            if (SubsceneLoader.Instance)
+                SubsceneLoader.Instance.LoadMapEnd();
+
+            //Disable all enabled the traps
+            TrapClass1[] traps = FindObjectsOfType<TrapClass1>();
+
+            if (traps.Length <= 0)
+                return;
+
+            foreach (TrapClass1 trap in traps)
+            {
+                if (!trap)
+                    continue;
+
+                trap.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Called when a character is dead during the boss fight, check who's winning the fight
+        /// </summary>
+        private void CheckCharactersLeft()
+        {
+            if (_adventurers.Length <= 0 || !_boss)
+                return;
+
+            if (!BossFightStarted || _hasEnded)
+                return;
+
+            if (_boss.CurrentHealth <= 0)
+            {
+                EndGameRPC(EndGameReason.AdventurerWin);
+                _hasEnded = true;
+            }
+            else if (AdventurersDefeated())
+            {
+                EndGameRPC(EndGameReason.MasterWin);
+                _hasEnded = true;
+            }
+        }
+
+        /// <summary>
         /// Look if all the adventurers are defeated
         /// </summary>
         private bool AdventurersDefeated()
@@ -373,8 +431,21 @@ namespace _Scripts.Managers
 
             return true;
         }
+
         #endregion
 
+        #endregion
+
+        #region Multiplayer Methods
+        public void LeaveGame()
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        public override void OnLeftRoom()
+        {
+            SceneManager.LoadScene("MainScreen");
+        }
         #endregion
     }
 }

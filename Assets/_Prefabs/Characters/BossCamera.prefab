@@ -49,9 +49,8 @@ MonoBehaviour:
   cam: {fileID: 6688695239529884353}
   vCam: {fileID: 7539177810534222474}
   updateInEditMode: 1
-  settings: {fileID: 11400000, guid: f8a96ba27221b6446b93d492b7c0df3f, type: 2}
-  inputProvider: {fileID: 7330239526569145006}
   cameraProperties: {fileID: 11400000, guid: 9ec3b4faa8cd1bf45865939cfee4074a, type: 2}
+  settings: {fileID: 11400000, guid: f8a96ba27221b6446b93d492b7c0df3f, type: 2}
 --- !u!1 &3572368936737155981
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +180,7 @@ MonoBehaviour:
   m_HorizontalAxis:
     Value: 0
     m_SpeedMode: 1
-    m_MaxSpeed: 0.05
+    m_MaxSpeed: 0.10000004
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -350,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8711675011043297045}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 2.220446e-18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -388,7 +387,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1069549559
+    m_Bits: 1071648759
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

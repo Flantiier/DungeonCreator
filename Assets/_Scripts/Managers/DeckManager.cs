@@ -29,19 +29,12 @@ namespace _Scripts.Managers
             base.Awake();
 
             //Get deck
+            database.Load();
             _deck = database.GetDeck();
 
             //Create cards
             InstantiateDeck();
             DrawMultiple(cardInHand);
-        }
-        #endregion
-
-        #region Test Methods
-        [ContextMenu("Shuffle stroage")]
-        private void ShuffleStorage()
-        {
-            ShuffleDeck(storageZone);
         }
         #endregion
 

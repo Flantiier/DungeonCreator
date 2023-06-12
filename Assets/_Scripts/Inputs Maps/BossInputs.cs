@@ -64,6 +64,15 @@ namespace InputsMaps
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""088b731a-4e81-43bb-b523-1dfc306b08ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -154,6 +163,17 @@ namespace InputsMaps
                     ""action"": ""Ability02"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1f97618d-29ea-4f30-be29-c9d855ce9ea9"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -166,6 +186,7 @@ namespace InputsMaps
             m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
             m_Gameplay_Ability01 = m_Gameplay.FindAction("Ability01", throwIfNotFound: true);
             m_Gameplay_Ability02 = m_Gameplay.FindAction("Ability02", throwIfNotFound: true);
+            m_Gameplay_Run = m_Gameplay.FindAction("Run", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -229,6 +250,7 @@ namespace InputsMaps
         private readonly InputAction m_Gameplay_Attack;
         private readonly InputAction m_Gameplay_Ability01;
         private readonly InputAction m_Gameplay_Ability02;
+        private readonly InputAction m_Gameplay_Run;
         public struct GameplayActions
         {
             private @BossInputs m_Wrapper;
@@ -237,6 +259,7 @@ namespace InputsMaps
             public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
             public InputAction @Ability01 => m_Wrapper.m_Gameplay_Ability01;
             public InputAction @Ability02 => m_Wrapper.m_Gameplay_Ability02;
+            public InputAction @Run => m_Wrapper.m_Gameplay_Run;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -258,6 +281,9 @@ namespace InputsMaps
                     @Ability02.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
                     @Ability02.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
                     @Ability02.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAbility02;
+                    @Run.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
+                    @Run.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
+                    @Run.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
                 }
                 m_Wrapper.m_GameplayActionsCallbackInterface = instance;
                 if (instance != null)
@@ -274,6 +300,9 @@ namespace InputsMaps
                     @Ability02.started += instance.OnAbility02;
                     @Ability02.performed += instance.OnAbility02;
                     @Ability02.canceled += instance.OnAbility02;
+                    @Run.started += instance.OnRun;
+                    @Run.performed += instance.OnRun;
+                    @Run.canceled += instance.OnRun;
                 }
             }
         }
@@ -284,6 +313,7 @@ namespace InputsMaps
             void OnAttack(InputAction.CallbackContext context);
             void OnAbility01(InputAction.CallbackContext context);
             void OnAbility02(InputAction.CallbackContext context);
+            void OnRun(InputAction.CallbackContext context);
         }
     }
 }

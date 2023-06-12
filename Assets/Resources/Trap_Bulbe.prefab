@@ -169,7 +169,7 @@ PrefabInstance:
     - target: {fileID: 2301279585273074818, guid: 46793f8c0f7c2e9449c0f7a74dfb6c6c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2301279585273074818, guid: 46793f8c0f7c2e9449c0f7a74dfb6c6c,
         type: 3}
@@ -269,11 +269,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 4740567257758889611}
   animator: {fileID: 3598279859538269943}
-  defaultLayer: Default
+  defaultLayer: Traps
   topLayer: RenderedOnTop
   trapParts:
   - {fileID: 1571800633637505069}
   - {fileID: 6181826709514003085}
+  trapMaterial: {fileID: 2100000, guid: 127c0ddcad4c07e41ae706269d13394e, type: 2}
+  dissolveSpeed: 0.04
   hitbox: {fileID: 730641118705850189}
   detectionBox: {fileID: 8801453884847968439}
   particles: {fileID: 5401899621015628221}

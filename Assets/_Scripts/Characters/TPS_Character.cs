@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using static _Scripts.Characters.StateMachines.GroundStateMachine;
-using UnityEngine.InputSystem.LowLevel;
 using _Scripts.Managers;
 
 namespace _Scripts.Characters

@@ -6,7 +6,7 @@ using _ScriptableObjects.Traps;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
-    public class FlameThrowerBehaviour : DamagingTrap
+    public class FlameThrowerBehaviour : DefusableTrap
     {
         #region Variables
         [FoldoutGroup("References")]
@@ -23,6 +23,12 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
+        protected override void Awake()
+        {
+            base.Awake();
+            DefuseDuration = datas.defuseDuration;
+        }
+
         private void Start()
         {
             StartCoroutine("FlamesRoutine");
@@ -34,6 +40,25 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.InitializeTrap();
             SetHitboxDamages(datas.damages);
+        }
+
+        protected override IEnumerator DefusedTrapRoutine()
+        {
+            HighlightTrap(false);
+
+            //Stop the flammes
+            StopCoroutine("FlamesRoutine");
+            fx.Stop();
+
+            //Base routine
+            hitbox.EnableCollider(false);
+            IsDisabled = true;
+            yield return new WaitForSecondsRealtime(DefuseDuration);
+            IsDisabled = false;
+            hitbox.EnableCollider(true);
+
+            //Restart the flames
+            StartCoroutine("FlamesRoutine");
         }
         #endregion
 
