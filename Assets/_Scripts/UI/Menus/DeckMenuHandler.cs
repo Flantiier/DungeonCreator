@@ -23,6 +23,7 @@ namespace _Scripts.UI.Menus
         [TitleGroup("Datas")]
         [SerializeField] private DeckDatabase deckDatabase;
 
+        #region GUI
         [FoldoutGroup("GUI")]
         [SerializeField] private DeckMenuGUI GUI;
         [FoldoutGroup("GUI")]
@@ -38,17 +39,21 @@ namespace _Scripts.UI.Menus
         [FoldoutGroup("GUI")]
         [SerializeField] private GameObject selectButton;
         [FoldoutGroup("GUI")]
-        [SerializeField] private Button[] deckButtons;
+        [SerializeField] private DeckPresetButton[] deckButtons;
+        #endregion
 
+        #region Slots
         [FoldoutGroup("Slots")]
         [SerializeField] private CardSlot slotPrefab;
         [FoldoutGroup("Slots")]
         [SerializeField] private Transform slotsPool;
         [FoldoutGroup("Slots")]
         [SerializeField] private Transform deckPool;
+        #endregion
 
         private DeckProflieSO _currentDeck;
         private int _lastDeckSelected;
+        private DeckPresetButton _lastButton;
 
         private readonly HashSet<CardSlot> _cardsPool = new HashSet<CardSlot>();
         private readonly HashSet<CardSlot> _deckSlots = new HashSet<CardSlot>();
@@ -72,7 +77,11 @@ namespace _Scripts.UI.Menus
 
             selectButton.SetActive(false);
             _lastDeckSelected = deckDatabase.DeckIndex;
-            deckButtons[_lastDeckSelected].interactable = false;
+            
+            //Button interactibility
+            deckButtons[_lastDeckSelected].Button.interactable = false;
+            deckButtons[_lastDeckSelected].IsSelected(true);
+            _lastButton = deckButtons[_lastDeckSelected];
         }
 
         private IEnumerator Start()
@@ -132,6 +141,8 @@ namespace _Scripts.UI.Menus
             index = Mathf.Clamp(index, 0, deckDatabase.decks.Length);
             _currentDeck = deckDatabase.decks[index];
             ArrangeAllSlots(_currentDeck);
+
+            EnableDeckButtons(index);
         }
 
         /// <summary>
@@ -156,8 +167,14 @@ namespace _Scripts.UI.Menus
         /// </summary>
         public void SelectDeck()
         {
+            if (_lastButton)
+                _lastButton.IsSelected(false);
+
             deckDatabase.DeckIndex = _lastDeckSelected;
             selectButton.SetActive(false);
+
+            deckButtons[_lastDeckSelected].IsSelected(true);
+            _lastButton = deckButtons[_lastDeckSelected];
         }
         #endregion
 
@@ -366,10 +383,10 @@ namespace _Scripts.UI.Menus
             GUI.tiling.SetText($"Tiling : {reference.xAmount}x{reference.yAmount}");
         }
 
-        public void EnableDeckButton(int index)
+        public void EnableDeckButtons(int index)
         {
-            deckButtons[_lastDeckSelected].interactable = true;
-            deckButtons[index].interactable = false;
+            deckButtons[_lastDeckSelected].Button.interactable = true;
+            deckButtons[index].Button.interactable = false;
             _lastDeckSelected = index;
         }
         #endregion

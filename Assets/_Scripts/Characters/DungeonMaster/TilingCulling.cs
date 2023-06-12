@@ -39,7 +39,6 @@ namespace _Scripts.Characters.DungeonMaster
                     ShowLayer(wallLayer);
                     break;
                 case Tile.TilingType.Ground:
-                    Debug.Log("Ground");
                     ShowLayer(groundLayer);
                     break;
                 case Tile.TilingType.Wall:

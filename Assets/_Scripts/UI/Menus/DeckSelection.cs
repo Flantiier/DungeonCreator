@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using _ScriptableObjects.GameManagement;
 using _ScriptableObjects.Traps;
+using Unity.VisualScripting;
 
 namespace _Scripts.UI.Menus
 {
@@ -13,10 +14,11 @@ namespace _Scripts.UI.Menus
         [SerializeField] private CardGUI slotPrefab;
         [SerializeField] private Transform slotParent;
         [SerializeField] private GameObject selectButton;
-        [SerializeField] private Button[] deckButtons;
+        [SerializeField] private DeckPresetButton[] deckButtons;
 
         private CardGUI[] _slots;
 		private int _deckIndex;
+		private DeckPresetButton _lastButton;
         #endregion
 
         #region Builts_In
@@ -66,7 +68,9 @@ namespace _Scripts.UI.Menus
 
 			//Display current deck
 			DisplayDeck(deckDatabase.DeckIndex);
-		}
+			_lastButton = deckButtons[deckDatabase.DeckIndex];
+            _lastButton.IsSelected(true);
+        }
 
 		/// <summary>
 		/// Update card slots tp display a selected deck
@@ -93,7 +97,12 @@ namespace _Scripts.UI.Menus
 		/// </summary>
 		public void SelectDeck()
 		{
+			if (_lastButton)
+				_lastButton.IsSelected(false);
+
 			deckDatabase.DeckIndex = _deckIndex;
+			_lastButton = deckButtons[_deckIndex];
+			_lastButton.IsSelected(true);
 			selectButton.SetActive(false);
 		}
 
@@ -102,10 +111,10 @@ namespace _Scripts.UI.Menus
 		/// </summary>
         public void EnableDeckButton(int index)
         {
-            deckButtons[_deckIndex].interactable = true;
-            deckButtons[index].interactable = false;
-            _deckIndex = index;
+            deckButtons[_deckIndex].Button.interactable = true;
+            deckButtons[index].Button.interactable = false;
 
+            _deckIndex = index;
 			selectButton.SetActive(index != deckDatabase.DeckIndex);
         }
         #endregion

@@ -17,14 +17,14 @@ namespace _Scripts.UI.Menus
         private void Awake()
         {
             PhotonNetwork.ConnectUsingSettings();
-            textField.SetBaseText("Connection to Photon Servers");
+            textField.SetBaseText("connection aux serveurs");
         }
         #endregion
 
         #region Methods
         public IEnumerator LoadMenu()
         {
-            textField.SetBaseText("Loading main screen");
+            textField.SetBaseText("chargement du menu");
             AsyncOperation operation = SceneManager.LoadSceneAsync(mainScreenScene);
 
             while (!operation.isDone) { yield return null; }

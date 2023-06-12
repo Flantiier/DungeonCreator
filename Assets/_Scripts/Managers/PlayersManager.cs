@@ -10,9 +10,6 @@ namespace _Scripts.Managers
     public class PlayersManager : MonoBehaviourPunCallbacks
     {
         #region Variables
-        [TitleGroup("Off Connexion Role")]
-        [SerializeField] private Role backUpRole;
-
         [TitleGroup("Spawn Properties")]
         [SerializeField] private GameProperties properties;
         [TitleGroup("Spawn Properties")]
@@ -35,15 +32,17 @@ namespace _Scripts.Managers
         #region Builts_In
         private void Awake()
         {
+            Role = properties.role;
+
             //Not connected to network
             if (PhotonNetwork.IsConnectedAndReady)
-                InstantiateCharacter(true);
+                InstantiateCharacter();
         }
 
         public override void OnJoinedRoom()
         {
             //Spawn character
-            InstantiateCharacter(false);
+            InstantiateCharacter();
         }
         #endregion
 
@@ -51,21 +50,9 @@ namespace _Scripts.Managers
         /// <summary>
         /// Instantiates any character based on the selected role
         /// </summary>
-        private void InstantiateCharacter(bool awake)
+        private void InstantiateCharacter()
         {
-            Role role;
-
-            if (awake)
-                role = properties.role;
-            else
-            {
-                role = backUpRole;
-                properties.role = backUpRole;
-            }
-
-            Role = role;
-
-            switch (role)
+            switch (Role)
             {
                 case Role.Master:
                     Instantiate(characters.dungeonMaster.prefab, masterSpawn.position, masterSpawn.rotation);

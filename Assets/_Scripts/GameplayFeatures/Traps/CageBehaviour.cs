@@ -25,12 +25,13 @@ namespace _Scripts.GameplayFeatures.Traps
         public override void OnEnable()
         {
             base.OnEnable();
-            EnableCage(false);
 
-            if (ViewIsMine())
+            if(!ViewIsMine())
+                EnableCage(false);
+            else
             {
-                meshRenderer.sharedMaterial = inactiveMaterial;
                 meshRenderer.enabled = true;
+                meshRenderer.sharedMaterial = inactiveMaterial;
             }
         }
 
@@ -38,6 +39,10 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.Update();
             HandleCageBehaviour();
+
+            if (ViewIsMine())
+                return;
+
             HideCage();
         }
         #endregion
@@ -61,8 +66,8 @@ namespace _Scripts.GameplayFeatures.Traps
             if (!triggerBox || !triggerBox.IsDetecting())
                 return;
 
-            if (ViewIsMine())
-                meshRenderer.sharedMaterial = trapMaterial;
+            if (ViewIsMine() && meshRenderer.sharedMaterial != _sharedMaterial)
+                meshRenderer.sharedMaterial = _sharedMaterial;
 
             if (!meshRenderer.enabled)
                 EnableCage(true);

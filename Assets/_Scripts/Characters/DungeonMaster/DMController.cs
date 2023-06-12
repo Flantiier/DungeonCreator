@@ -342,8 +342,6 @@ namespace _Scripts.Characters.DungeonMaster
                 if (Utils.Utilities.Layers.LayerMaskContains(collisionMask, hit.transform.gameObject.layer))
                     return;
 
-                Debug.Log("Layer OK");
-
                 //Hitting the same tile that the last one
                 //Check if the tiling type is correct
                 if (_hittedTransform == hit.transform || !GetTileType(hit.collider.GetComponent<Tile>()))
@@ -351,8 +349,6 @@ namespace _Scripts.Characters.DungeonMaster
 
                 //Update tiling on new tile selected
                 _hittedTransform = hit.transform;
-
-                Debug.Log("Tiles OK");
 
                 //Update tiling
                 SetProjectionPosition();

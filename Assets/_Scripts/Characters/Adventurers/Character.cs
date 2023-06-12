@@ -235,7 +235,6 @@ namespace _Scripts.Characters
             HandleEntityDeath();
         }
 
-        [ContextMenu("Death")]
         protected override void HandleEntityDeath()
         {
             base.HandleEntityDeath();
@@ -257,10 +256,12 @@ namespace _Scripts.Characters
             while (CurrentHealth < characterDatas.health)
             {
                 CurrentHealth += overallDatas.healthRecup * Time.deltaTime;
+                RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
                 yield return null;
             }
 
             CurrentHealth = ClampedHealth(0f, 0f, characterDatas.health);
+            RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
             _healthRecupRoutine = null;
         }
 

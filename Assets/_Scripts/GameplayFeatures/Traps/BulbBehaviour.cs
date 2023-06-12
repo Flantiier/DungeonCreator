@@ -24,8 +24,10 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             hitbox.affliction = datas.affliction;
             particles.Stop();
         }

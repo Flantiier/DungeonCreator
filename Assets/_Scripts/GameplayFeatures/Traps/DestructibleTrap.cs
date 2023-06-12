@@ -21,7 +21,7 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.OnEnable();
 
-            if (!_sharedMaterial.HasFloat(DISSOLVE_PARAM))
+            if (ViewIsMine() || !_sharedMaterial.HasFloat(DISSOLVE_PARAM))
                 return;
 
             _sharedMaterial.SetFloat(DISSOLVE_PARAM, 0f);
@@ -29,6 +29,9 @@ namespace _Scripts.GameplayFeatures.Traps
 
         protected virtual void Update()
         {
+            if (ViewIsMine())
+                return;
+
             SetDissolveAmount();
         }
         #endregion
