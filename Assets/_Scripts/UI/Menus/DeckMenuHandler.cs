@@ -288,7 +288,7 @@ namespace _Scripts.UI.Menus
         /// </summary>
         private void SwappingCards(CardSlot from, CardSlot to)
         {
-            if (from.IsPoolSlot && to.IsPoolSlot)
+            if ((!from.IsPoolSlot && !to.IsPoolSlot) || (from.IsPoolSlot && to.IsPoolSlot))
                 return;
 
             // 1 => Trouver qui est le slot deck et qui est le slot pool

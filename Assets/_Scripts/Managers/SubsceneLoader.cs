@@ -30,12 +30,10 @@ namespace _Scripts.Managers
         private void Start()
         {
             if (PlayersManager.Role == Role.Master || loadOverrite)
-            {
                 LoadAll();
-                return;
-            }
+            else
+                LoadMapStart();
 
-            LoadMapStart();
         }
         #endregion
 
@@ -103,7 +101,7 @@ namespace _Scripts.Managers
             UnloadAll();
             for (int i = 0; i < mapEnd.Length; i++)
             {
-                SubSceneData data = subScenes[mapStart[i]];
+                SubSceneData data = subScenes[mapEnd[i]];
                 LoadSubscene(data.SubScene);
             }
         }

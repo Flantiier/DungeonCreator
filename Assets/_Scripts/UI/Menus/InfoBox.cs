@@ -57,8 +57,6 @@ namespace _Scripts.UI.Menus
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Debug.Log("Enter");
-
             if (!_currentPanel)
                 return;
 
@@ -67,8 +65,6 @@ namespace _Scripts.UI.Menus
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Debug.Log("Exit");
-
             if (!_currentPanel)
                 return;
 
