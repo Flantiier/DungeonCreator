@@ -121,7 +121,7 @@ MeshCollider:
   m_GameObject: {fileID: 3773856583452564764}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -169,11 +169,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 7142128784793543715}
   animator: {fileID: 0}
+  trapMaterial: {fileID: 2100000, guid: 158b85868d9fca4428900387728da1d7, type: 2}
   defaultLayer: Traps
   topLayer: RenderedOnTop
   trapParts:
   - {fileID: 5414701423915646680}
-  trapMaterial: {fileID: 2100000, guid: 158b85868d9fca4428900387728da1d7, type: 2}
   dissolveSpeed: 0.02
   triggerBox: {fileID: 6110328302638666897}
   meshRenderer: {fileID: 2256561658037207805}

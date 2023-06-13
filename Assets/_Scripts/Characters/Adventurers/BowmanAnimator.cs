@@ -1,5 +1,3 @@
-using System.Collections;
-using UnityEngine;
 using _Scripts.Characters.Adventurers;
 
 namespace _Scripts.Characters.Animations

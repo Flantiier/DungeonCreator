@@ -39,11 +39,7 @@ namespace _Scripts.UI.Interfaces
         private void HandleSlider(SkillSlider slider, float max, float current)
         {
             float amount = current / max;
-            slider.skillImage.fillAmount = 1 - amount;
-            Color color = slider.skillImage.color;
-            color.a = current > 0 ? slider.alphaValue : 1f;
-            slider.skillImage.color = color;
-
+            slider.skillImage.fillAmount = amount;
             slider.skillText.gameObject.SetActive(current > 0);
             slider.skillText.text = Mathf.Ceil(current).ToString();
         }

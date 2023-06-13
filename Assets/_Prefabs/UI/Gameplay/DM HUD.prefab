@@ -162,7 +162,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7030659629167949640}
   - component: {fileID: 8845385917172208176}
-  - component: {fileID: 1758809365945149950}
   m_Layer: 5
   m_Name: ManaSlider
   m_TagString: Untagged
@@ -243,20 +242,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1758809365945149950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2563562201129102733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 366342c024703a244afdfa59df48e504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slider: {fileID: 8845385917172208176}
-  variable: {fileID: 11400000, guid: 842ecbe32b7488246a2169f9d15e7ab4, type: 2}
 --- !u!1 &3005724541088713801
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,7 +710,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2812294818920330411}
   - component: {fileID: 7760603867111747983}
-  - component: {fileID: 1735144396214048935}
+  - component: {fileID: 2201683919523635522}
   m_Layer: 5
   m_Name: ManaSlider_1
   m_TagString: Untagged
@@ -805,7 +790,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1735144396214048935
+--- !u!114 &2201683919523635522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -814,11 +799,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7713168223381500610}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 366342c024703a244afdfa59df48e504, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f33a3c94cc52dd41827ccf580facbf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 7760603867111747983}
   variable: {fileID: 11400000, guid: 842ecbe32b7488246a2169f9d15e7ab4, type: 2}
+  slider: {fileID: 7760603867111747983}
+  slicedSlider: {fileID: 8845385917172208176}
 --- !u!1 &8256706482944535496
 GameObject:
   m_ObjectHideFlags: 0

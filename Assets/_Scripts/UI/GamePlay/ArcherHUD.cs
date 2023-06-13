@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters.Adventurers;
 
@@ -8,15 +9,19 @@ namespace _Scripts.UI.Gameplay
 	public class ArcherHUD : PlayerHUD
 	{
         #region Variables
+        [FoldoutGroup("Skill GUI")]
         [SerializeField] private GameObject defuseField;
+        [FoldoutGroup("Skill GUI")]
         [SerializeField] private TextMeshProUGUI textField;
 
-		private Bowman _bowman;
+        private Bowman _bowman;
         #endregion
 
         #region Builts_In
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
             _bowman = Character.GetComponent<Bowman>();
             defuseField.SetActive(false);
         }

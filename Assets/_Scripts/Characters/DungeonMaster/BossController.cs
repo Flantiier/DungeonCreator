@@ -146,7 +146,7 @@ namespace _Scripts.Characters.DungeonMaster
         #region Inputs
         protected override void EnableInputs(bool state)
         {
-            if (!ViewIsMine())
+            if (!ViewIsMine() || !_isEnabled)
                 return;
 
             if (state)
