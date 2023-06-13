@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
@@ -16,8 +17,11 @@ namespace _Scripts.GameplayFeatures.Projectiles
         [SerializeField] protected float damages = 10f;
         [SerializeField] protected float speed = 10f;
         [SerializeField] protected bool enabledOnStart = false;
+        [SerializeField] protected float destructTime = 10f;
+        [SerializeField] protected bool autoEnableTrail = false;
 
         protected Rigidbody _rb;
+        protected TrailRenderer _trail;
         #endregion
 
         #region Properties
@@ -35,25 +39,42 @@ namespace _Scripts.GameplayFeatures.Projectiles
         protected virtual void Awake()
         {
             _rb = GetComponent<Rigidbody>();
+            _trail = GetComponentInChildren<TrailRenderer>();
 
             if (!projCollider)
             {
                 if (TryGetComponent(out Collider collider))
                     projCollider = collider;
-                else
-                    Debug.LogError($"Missing collider reference on {gameObject}");
             }
+        }
+
+        protected virtual IEnumerator Start()
+        {
+            yield return new WaitForSecondsRealtime(destructTime);
+            Destroy(gameObject);
         }
 
         public override void OnEnable()
         {
             base.OnEnable();
             projCollider.enabled = enabledOnStart;
+            EnableTrail(autoEnableTrail);
+        }
+
+        protected virtual void LateUpdate()
+        {
+            if (!ViewIsMine())
+                return;
+
+            RPCCall("SyncTransform", RpcTarget.Others, transform.position, transform.rotation);
         }
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            Destroy(gameObject);
+            if (!ViewIsMine())
+                return;
+
+            DestroyObject(View);
         }
         #endregion
 
@@ -67,6 +88,8 @@ namespace _Scripts.GameplayFeatures.Projectiles
             projCollider.enabled = true;
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
             _rb.AddForce(direction * speed, ForceMode.Impulse);
+
+            EnableTrail(true);
         }
 
         /// <summary>
@@ -78,6 +101,8 @@ namespace _Scripts.GameplayFeatures.Projectiles
             projCollider.enabled = true;
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
             _rb.AddForce(direction * force, ForceMode.Impulse);
+
+            EnableTrail(true);
         }
 
         /// <summary>
@@ -87,6 +112,27 @@ namespace _Scripts.GameplayFeatures.Projectiles
         public void OverrideProjectileDamages(float newDamages)
         {
             damages = newDamages;
+        }
+
+        /// <summary>
+        /// Enable projectile trail
+        /// </summary>
+        /// <param name="enabled"></param>
+        private void EnableTrail(bool enabled)
+        {
+            if (!_trail)
+                return;
+
+            _trail.enabled = enabled;
+        }
+        #endregion
+
+        #region RPC Methods
+        [PunRPC]
+        public void SyncTransform(Vector3 position, Quaternion rotation)
+        {
+            transform.position = position;
+            transform.rotation = rotation;
         }
         #endregion
     }

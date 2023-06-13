@@ -95,6 +95,10 @@ namespace _Scripts.NetworkScript
             PhotonNetwork.Destroy(PhotonView.Find(viewID).gameObject);
         }
 
+        public void DestroyObject(PhotonView view)
+        {
+            PhotonNetwork.Destroy(view);
+        }
         #endregion
 
         #endregion

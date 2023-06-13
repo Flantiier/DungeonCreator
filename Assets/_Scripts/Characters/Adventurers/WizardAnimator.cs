@@ -23,6 +23,9 @@ namespace _Scripts.Characters.Animations
         #region Methods
         public void EnableScan()
         {
+            if (!ViewIsMine())
+                return;
+
             Wizard.InstantiateScanArea();
         }
         #endregion

@@ -19,7 +19,7 @@ namespace _Scripts.UI.Gameplay
         #region Builts_In
         private void LateUpdate()
         {
-			if (!_character)
+			if (!_character) 
 			{
 				gameObject.SetActive(false);
 				return;

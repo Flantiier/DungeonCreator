@@ -11,18 +11,24 @@ namespace _Scripts.UI.Menus
 {
     public class LoadingMenu : MonoBehaviour
     {
+        #region Variables
         [SerializeField] private PhotonView view;
         [SerializeField] private string sceneName;
         [SerializeField] private Slider slider;
         [SerializeField] private AnimatedTextField textField;
-        [ShowInInspector] private List<LoadingState> _loadings = new List<LoadingState>();
-        [ShowInInspector] private bool _localReady;
+        [SerializeField] private float additionalTime = 10f;
 
+        [Header("Multiplayer loading")]
+        [ShowInInspector] private List<PlayerLoading> _loadings = new List<PlayerLoading>();
+        [ShowInInspector] private bool _localReady;
+        #endregion
+
+        #region Builts_In
         private void Awake()
         {
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                LoadingState instance = new LoadingState(player);
+                PlayerLoading instance = new PlayerLoading(player);
                 _loadings.Add(instance);
             }
         }
@@ -31,7 +37,9 @@ namespace _Scripts.UI.Menus
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
             operation.allowSceneActivation = false;
-            textField.SetBaseText("Loading Scene");
+            textField.SetBaseText("chargement de la partie");
+
+            yield return new WaitForSecondsRealtime(additionalTime);
 
             while (!operation.isDone)
             {
@@ -41,14 +49,14 @@ namespace _Scripts.UI.Menus
                     if (!_localReady)
                     {
                         view.RPC("LoadingRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
-                        textField.SetBaseText("Waiting other players");
+                        textField.SetBaseText("en attente des autres joueurs");
                         _localReady = true;
                     }
 
                     while (!AllPlayersReady())
                         yield return null;
 
-                    textField.SetBaseText("Game Starting");
+                    textField.SetBaseText("debut de la partie");
                     yield return new WaitForSecondsRealtime(5f);
 
                     operation.allowSceneActivation = true;
@@ -57,13 +65,15 @@ namespace _Scripts.UI.Menus
                 yield return null;
             }
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Indicates if all players in the room have loaded the game scene
         /// </summary>
         private bool AllPlayersReady()
         {
-            foreach (LoadingState player in _loadings)
+            foreach (PlayerLoading player in _loadings)
             {
                 if (!player.sceneReady)
                     return false;
@@ -77,22 +87,24 @@ namespace _Scripts.UI.Menus
         [PunRPC]
         public void LoadingRPC(Player player)
         {
-            Debug.Log($"{player} is ready to play");
-            LoadingState target = _loadings.Find(x => x.player == player);
+            PlayerLoading target = _loadings.Find(x => x.player == player);
             target.sceneReady = true;
         }
+        #endregion
     }
 }
 
+#region PlayerLoading class
 [System.Serializable]
-public class LoadingState
+public class PlayerLoading
 {
     public Player player;
     public bool sceneReady;
 
-    public LoadingState(Player m_player)
+    public PlayerLoading(Player m_player)
     {
         player = m_player;
         sceneReady = false;
     }
 }
+#endregion

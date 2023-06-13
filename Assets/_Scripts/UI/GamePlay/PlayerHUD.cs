@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using _Scripts.UI.Gameplay;
 using _Scripts.Characters;
 
 namespace _Scripts.UI.Interfaces
@@ -17,7 +18,7 @@ namespace _Scripts.UI.Interfaces
         [FoldoutGroup("Players panel")]
         [SerializeField] private Transform content;
         [FoldoutGroup("Players panel")]
-        [SerializeField] private GameObject playerUI;
+        [SerializeField] private CharacterUI playerUI;
 
         [FoldoutGroup("Skill GUI")]
         [SerializeField] private FloatVariable skillCooldown;
@@ -89,8 +90,8 @@ namespace _Scripts.UI.Interfaces
                 if (!character || character.ViewIsMine())
                     continue;
 
-                GameObject instance = Instantiate(playerUI, content);
-                //Set instance character
+                CharacterUI instance = Instantiate(playerUI, content);
+                instance.SetCharacter(character);
             }
         }
         #endregion

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,6 +39,11 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         #region Motion
+        [TitleGroup("Motion")]
+        [SerializeField] private Vector2 horizontalLimit;
+        [TitleGroup("Motion")]
+        [SerializeField] private Vector2 verticalLimit;
+
         private Vector2 _inputsVector;
         private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
@@ -190,7 +194,14 @@ namespace _Scripts.Characters.DungeonMaster
             //Motion
             Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
             _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, dmProperties.smoothingMotion);
-            transform.Translate(_currentMovement * dmProperties.motionSpeed * UnityEngine.Time.deltaTime);
+
+            //Clamped position
+            Vector3 finalMovement = transform.position + (dmProperties.motionSpeed * Time.deltaTime * _currentMovement);
+            finalMovement.x = Mathf.Clamp(finalMovement.x, horizontalLimit.x, horizontalLimit.y);
+            finalMovement.z = Mathf.Clamp(finalMovement.z, verticalLimit.x, verticalLimit.y);
+
+            //Apply movement
+            transform.position = finalMovement;
         }
         #endregion
 

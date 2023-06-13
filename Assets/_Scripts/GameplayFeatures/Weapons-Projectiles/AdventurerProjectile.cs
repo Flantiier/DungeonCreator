@@ -11,7 +11,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
             if (other.TryGetComponent(out IDamageable damageable))
                 damageable.Damage(damages);
 
-            Destroy(gameObject);
+            DestroyObject(View);
         }
         #endregion
     }

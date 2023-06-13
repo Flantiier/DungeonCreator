@@ -84,10 +84,13 @@ namespace _Scripts.Managers
             }
 
             //Set text
-            objectifText.text = "objectif : \r\n ouverture de la porte.";
+            if(PlayersManager.Role == Role.Master)
+                SetObjectifText("preparez vos pieges");
+            else
+                SetObjectifText("attendre l'ouverture de la porte");
 
-            //Disable Cursor
-            EnableCursor(PlayersManager.Role == Role.Master);
+                //Disable Cursor
+                EnableCursor(PlayersManager.Role == Role.Master);
             EnableTiling(PlayersManager.Role == Role.Master);
         }
 
@@ -101,6 +104,8 @@ namespace _Scripts.Managers
         #endregion
 
         #region Methods
+
+        #region Customs
         /// <summary>
         /// Enable or disable the mouse cursor
         /// </summary>
@@ -119,6 +124,18 @@ namespace _Scripts.Managers
 
             tiling.SetActive(enabled);
         }
+
+        /// <summary>
+        /// Set objectif text on the screen
+        /// </summary>
+        private void SetObjectifText(string text)
+        {
+            if (!objectifText)
+                return;
+
+            objectifText.text = "objectif : \r\n" + text;
+        }
+        #endregion
 
         #region GameSteps
         /// <summary>
@@ -140,7 +157,7 @@ namespace _Scripts.Managers
 
             //Reset value and call step event
             timeVariable.value = 0;
-            RPCCall("StartPhaseEventRPC", RpcTarget.AllBuffered);
+            RPCCall("EndStartPhaseRPC", RpcTarget.AllBuffered);
         }
 
         /// <summary>
@@ -161,33 +178,6 @@ namespace _Scripts.Managers
             }
 
             RPCCall("EndGameRPC", RpcTarget.All, EndGameReason.TimeLeft);
-        }
-
-        [PunRPC]
-        public void SetGameTimeRPC(float value)
-        {
-            timeVariable.value = value;
-        }
-
-        [PunRPC]
-        public void StartPhaseEventRPC()
-        {
-            gameProperties.startPhase.gameEvent.Raise();
-
-            //Set text
-            if (PlayersManager.Role == Role.Master)
-                objectifText.text = "objectif : \r\n defendez votre donjon.";
-            else
-                objectifText.text = "objectif : \r\n aller jusqu'a la salle du dongeon master.";
-
-            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
-                StartCoroutine(GameRoutine(gameProperties.game));
-        }
-
-        [PunRPC]
-        public void GameEventRPC()
-        {
-            gameProperties.game.gameEvent.Raise();
         }
         #endregion
 
@@ -300,7 +290,10 @@ namespace _Scripts.Managers
         public void StartBossFight()
         {
             //Set text
-            objectifText.text = "objectif : \r\n combattez !";
+            if(PlayersManager.Role == Role.Master)
+                SetObjectifText("repousser les aventuriers !");
+            else
+                SetObjectifText("combattre le dongeon master !");
 
             //Fight manager
             Role role = PlayersManager.Role;
@@ -447,6 +440,36 @@ namespace _Scripts.Managers
             return true;
         }
         #endregion
+
+        #endregion
+
+        #region RPCs
+        [PunRPC]
+        public void SetGameTimeRPC(float value)
+        {
+            timeVariable.value = value;
+        }
+
+        [PunRPC]
+        public void EndStartPhaseRPC()
+        {
+            gameProperties.startPhase.gameEvent.Raise();
+
+            //Set text
+            if (PlayersManager.Role == Role.Master)
+                SetObjectifText("defendez votre donjon.");
+            else
+                SetObjectifText("atteignez le dongeon master.");
+
+            if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+                StartCoroutine(GameRoutine(gameProperties.game));
+        }
+
+        [PunRPC]
+        public void GameEventRPC()
+        {
+            gameProperties.game.gameEvent.Raise();
+        }
 
         #endregion
 
