@@ -86,6 +86,9 @@ namespace _Scripts.Managers
                 UnloadSubscene(subscene.SubScene);
         }
 
+        /// <summary>
+        /// Load the start of the map
+        /// </summary>
         public void LoadMapStart()
         {
             UnloadAll();
@@ -96,6 +99,9 @@ namespace _Scripts.Managers
             }
         }
 
+        /// <summary>
+        /// Load the end of the map
+        /// </summary>
         public void LoadMapEnd()
         {
             UnloadAll();
@@ -103,6 +109,21 @@ namespace _Scripts.Managers
             {
                 SubSceneData data = subScenes[mapEnd[i]];
                 LoadSubscene(data.SubScene);
+            }
+        }
+
+        /// <summary>
+        /// Load a list of subscenes
+        /// </summary>
+        public void LoadFromList(SubScene[] scenes)
+        {
+            foreach (SubScene scene in scenes)
+            {
+                if (!scene)
+                    return;
+
+                SubSceneData sceneData = Array.Find(subScenes, x => x.SubScene == scene);
+                LoadSubscene(scene);
             }
         }
         #endregion
