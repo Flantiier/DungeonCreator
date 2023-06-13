@@ -20,7 +20,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
 
         protected Rigidbody _rb;
         protected TrailRenderer _trail;
-        private bool _isThrowed;
         #endregion
 
         #region Properties
@@ -52,18 +51,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
             base.OnEnable();
             projCollider.enabled = enabledOnStart;
             EnableTrail(autoEnableTrail);
-        }
-
-        protected virtual void LateUpdate()
-        {
-            if (_isThrowed)
-                return;
-
-            if (_rb.velocity.magnitude != 0)
-            {
-                _isThrowed = true;
-                Destroy(gameObject, destructTime);
-            }
         }
 
         protected virtual void FixedUpdate()
@@ -135,12 +122,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
         {
             transform.position = position;
             transform.rotation = rotation;
-        }
-
-        [PunRPC]
-        private void DelayedDestroy()
-        {
-            Destroy(gameObject, destructTime);
         }
         #endregion
     }
