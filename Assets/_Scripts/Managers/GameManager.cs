@@ -101,6 +101,11 @@ namespace _Scripts.Managers
 
             CheckCharactersLeft();
         }
+
+        private void OnDestroy()
+        {
+            Cursor.visible = true;
+        }
         #endregion
 
         #region Methods
@@ -219,9 +224,8 @@ namespace _Scripts.Managers
         private IEnumerator EndGameRoutine()
         {
             yield return new WaitForSecondsRealtime(5f);
-
-            PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene(menuScene);
+            PhotonNetwork.LeaveRoom();
         }
 
         /// <summary>

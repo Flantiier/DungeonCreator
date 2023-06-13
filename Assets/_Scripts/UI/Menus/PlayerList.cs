@@ -54,6 +54,7 @@ namespace _Scripts.UI.Menus
 
         [FoldoutGroup("Events")]
         [SerializeField] private GameEvent loadGameEvent;
+        public static System.Action<Role> OnLocalRoleChanged;
         public static System.Action<Role> OnRoleChanged;
         public static System.Action<Player, bool> OnPlayerReady;
 
@@ -112,6 +113,7 @@ namespace _Scripts.UI.Menus
         {
             value = Mathf.Clamp(value, 0, sizeof(Role));
             Role role = (Role)System.Enum.ToObject(typeof(Role), value);
+            OnLocalRoleChanged?.Invoke(role);
 
             //Undefined role
             if (value <= 0)
@@ -175,10 +177,7 @@ namespace _Scripts.UI.Menus
         private void CharacterAvailable(Player player)
         {
             if (player == PhotonNetwork.LocalPlayer)
-            {
-                Debug.LogWarning("Local player");
                 return;
-            }
 
             PlayerProperties other = _players.Find(x => x.player == player);
             PlayerProperties localPlayer = _players.Find(x => x.player == PhotonNetwork.LocalPlayer);
@@ -187,7 +186,6 @@ namespace _Scripts.UI.Menus
             if (localPlayer.role != other.role)
                 return;
 
-            Debug.LogWarning("Ready test : " + !other.isReady);
             readyButton.interactable = !other.isReady;
         }
 

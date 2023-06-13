@@ -44,6 +44,9 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
         /// </summary>
         private void TriggerBossFight()
         {
+            if (_isTriggered)
+                return;
+
             //Get players
             HandlePlayerList();
             int playerCount = PhotonNetwork.PlayerList.Length - 1;
@@ -62,6 +65,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             //all player are here, then trigger boss fight
             GameManager.Instance.StartBossFight();
             textMesh.gameObject.SetActive(false);
+            _isTriggered = true;
         }
 
         /// <summary>

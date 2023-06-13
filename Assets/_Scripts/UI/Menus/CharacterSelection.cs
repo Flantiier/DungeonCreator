@@ -12,12 +12,12 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void OnEnable()
         {
-            PlayerList.OnRoleChanged += SetCharacterInfos;
+            PlayerList.OnLocalRoleChanged += SetCharacterInfos;
         }
 
         private void OnDisable()
         {
-            PlayerList.OnRoleChanged -= SetCharacterInfos;
+            PlayerList.OnLocalRoleChanged -= SetCharacterInfos;
         }
         #endregion
 
@@ -33,7 +33,7 @@ namespace _Scripts.UI.Menus
                 return;
 
             _lastPanel = panels[index];
-            _lastPanel.SetActive(false);
+            _lastPanel.SetActive(true);
         }
 		#endregion
 	}
