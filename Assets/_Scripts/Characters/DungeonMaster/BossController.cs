@@ -92,9 +92,13 @@ namespace _Scripts.Characters.DungeonMaster
         #region Methods
         public void EnableBoss()
         {
-            _isEnabled = true;
             _camera.gameObject.SetActive(true);
             _inputs.Enable();
+        }
+
+        public void EnableBossDamage(bool enabled)
+        {
+            _isEnabled = enabled;
         }
 
         #region Health
@@ -301,7 +305,7 @@ namespace _Scripts.Characters.DungeonMaster
             else
                 StartCoroutine(SecondAbility.AbilityRoutine(datas.secondAbilityRecovery));
         }
-        #endregion
+        #endregion*
 
         #endregion
     }

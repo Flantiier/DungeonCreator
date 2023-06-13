@@ -28,6 +28,8 @@ namespace _Scripts.Managers
         #region References
         [TitleGroup("References")]
         [SerializeField] private GameObject tiling;
+        [TitleGroup("References")]
+        [SerializeField] private TextMeshProUGUI objectifText;
         #endregion
 
         #region Game Steps
@@ -80,6 +82,9 @@ namespace _Scripts.Managers
                 if (PhotonNetwork.IsMasterClient)
                     StartCoroutine(StartPhaseRoutine(gameProperties.startPhase));
             }
+
+            //Set text
+            objectifText.text = "objectif : \r\n ouverture de la porte.";
 
             //Disable Cursor
             EnableCursor(PlayersManager.Role == Role.Master);
@@ -168,6 +173,12 @@ namespace _Scripts.Managers
         public void StartPhaseEventRPC()
         {
             gameProperties.startPhase.gameEvent.Raise();
+
+            //Set text
+            if (PlayersManager.Role == Role.Master)
+                objectifText.text = "objectif : \r\n defendez votre donjon.";
+            else
+                objectifText.text = "objectif : \r\n aller jusqu'a la salle du dongeon master.";
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
                 StartCoroutine(GameRoutine(gameProperties.game));
@@ -288,6 +299,10 @@ namespace _Scripts.Managers
         [ContextMenu("Start Boss Fight")]
         public void StartBossFight()
         {
+            //Set text
+            objectifText.text = "objectif : \r\n combattez !";
+
+            //Fight manager
             Role role = PlayersManager.Role;
 
             switch (role)

@@ -1,15 +1,23 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using System.Collections.Generic;
+using UnityEngine;
 using Photon.Pun;
-using TMPro;
 using _Scripts.Characters;
 using _Scripts.Managers;
+using _Scripts.NetworkScript;
+using System.Linq;
 
 namespace _Scripts.Hitboxs_Triggers.Triggers
 {
-    public class BossTrigger : ListingTrigger<Character>
+    public class BossTrigger : NetworkMonoBehaviour
     {
         #region Variables
         [SerializeField] private TextMeshProUGUI textMesh;
+        [SerializeField] private Vector3 size = Vector3.one;
+        [SerializeField] private LayerMask mask;
+
+        private List<Character> _characters = new List<Character>();
+        private bool _isTriggered;
         #endregion
 
         #region Builts_In
@@ -18,50 +26,72 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             textMesh.gameObject.SetActive(false);
         }
 
-        public override void OnTriggerEnter(Collider other)
+        private void Update()
         {
-            if (!other.TryGetComponent(out Character character))
-                return;
-
-            AddItem(character);
-            textMesh.gameObject.SetActive(true);
-
-            //Trigger boss fight if possible
             TriggerBossFight();
         }
 
-        public override void OnTriggerExit(Collider other)
+        private void OnDrawGizmosSelected()
         {
-            if (!other.TryGetComponent(out Character character))
-                return;
-
-            RemoveItem(character);
-            textMesh.gameObject.SetActive(false);
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(transform.position, size);
         }
         #endregion
 
         #region Methods
-        [ContextMenu("Trigger boss fight")]
+        /// <summary>
+        /// Detect player and trigger the boss fight
+        /// </summary>
         private void TriggerBossFight()
         {
+            //Get players
+            HandlePlayerList();
             int playerCount = PhotonNetwork.PlayerList.Length - 1;
+            textMesh.gameObject.SetActive(_characters.Count > 0);
 
-            if (List.Count < playerCount)
+            if (_characters.Count <= 0)
+                return;
+
+            //Not all player in trigger
+            if (_characters.Count < playerCount)
             {
-                textMesh.text = $"En attente des autres aventuriers... {List.Count}/{playerCount}";
+                textMesh.text = $"En attente des autres aventuriers... {_characters.Count}/{playerCount}";
                 return;
             }
 
+            //all player are here, then trigger boss fight
+            GameManager.Instance.StartBossFight();
             textMesh.gameObject.SetActive(false);
-
-            if (PhotonNetwork.IsMasterClient)
-                View.RPC("TriggerBossFightRPC", RpcTarget.All);
         }
 
-        [PunRPC]
-        public void TriggerBossFightRPC()
+        /// <summary>
+        /// Create a player list currently in trigger
+        /// </summary>
+        private void HandlePlayerList()
         {
-            GameManager.Instance.StartBossFight();
+            Collider[] colliders = Physics.OverlapBox(transform.position, size / 2, Quaternion.identity, mask);
+            List<Character> characters = new List<Character>();
+
+            //Get character list
+            if (colliders.Length > 0)
+            {
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    Collider collider = colliders[i];
+
+                    if (!collider || !collider.TryGetComponent(out Character character))
+                        continue;
+                    else
+                    {
+                        if (character.CurrentHealth <= 0)
+                            characters.RemoveAt(i);
+                        else
+                            characters.Add(character);
+                    }
+                }
+            }
+
+            _characters = characters;
         }
         #endregion
     }

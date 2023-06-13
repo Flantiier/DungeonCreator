@@ -147,8 +147,6 @@ GameObject:
   - component: {fileID: 2242982441036443748}
   - component: {fileID: 2242982441036443744}
   - component: {fileID: 2242982441036443745}
-  - component: {fileID: 2242982441036443750}
-  - component: {fileID: 2242982441036443751}
   m_Layer: 0
   m_Name: BossTrigger
   m_TagString: Untagged
@@ -163,7 +161,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2242982441036443749}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -112.43, y: -11.07, z: 207.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -208,35 +206,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 2242982441036443744}
   textMesh: {fileID: 2242982440054134133}
---- !u!54 &2242982441036443750
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2242982441036443749}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &2242982441036443751
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2242982441036443749}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3.29, y: 1.12, z: 8.22}
-  m_Center: {x: 0, y: 0, z: 0}
+  size: {x: 4, y: 2.5, z: 7.5}
+  mask:
+    serializedVersion: 2
+    m_Bits: 33554432
 --- !u!1 &2242982441063935557
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +247,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -1.39, y: 2.9}
+  m_AnchoredPosition: {x: -1.39, y: 2}
   m_SizeDelta: {x: 10, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2242982441063935553
