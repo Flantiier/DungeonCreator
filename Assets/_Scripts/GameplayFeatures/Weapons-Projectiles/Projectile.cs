@@ -1,9 +1,7 @@
-using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.NetworkScript;
-
 namespace _Scripts.GameplayFeatures.Projectiles
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -22,6 +20,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
 
         protected Rigidbody _rb;
         protected TrailRenderer _trail;
+        private bool _isThrowed;
         #endregion
 
         #region Properties
@@ -48,12 +47,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
             }
         }
 
-        protected virtual IEnumerator Start()
-        {
-            yield return new WaitForSecondsRealtime(destructTime);
-            Destroy(gameObject);
-        }
-
         public override void OnEnable()
         {
             base.OnEnable();
@@ -63,6 +56,18 @@ namespace _Scripts.GameplayFeatures.Projectiles
 
         protected virtual void LateUpdate()
         {
+            if (_isThrowed)
+                return;
+
+            if (_rb.velocity.magnitude != 0)
+            {
+                _isThrowed = true;
+                Destroy(gameObject, destructTime);
+            }
+        }
+
+        protected virtual void FixedUpdate()
+        {
             if (!ViewIsMine())
                 return;
 
@@ -71,10 +76,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (!ViewIsMine())
-                return;
-
-            DestroyObject(View);
+            Destroy(gameObject);
         }
         #endregion
 
@@ -133,6 +135,12 @@ namespace _Scripts.GameplayFeatures.Projectiles
         {
             transform.position = position;
             transform.rotation = rotation;
+        }
+
+        [PunRPC]
+        private void DelayedDestroy()
+        {
+            Destroy(gameObject, destructTime);
         }
         #endregion
     }

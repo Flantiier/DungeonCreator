@@ -10,7 +10,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
             if (other.TryGetComponent(out IPlayerDamageable damageable))
                 damageable.DealDamage(damages);
 
-            DestroyObject(View);
+            base.OnTriggerEnter(other);
         }
     }
 }
