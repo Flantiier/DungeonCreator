@@ -412,7 +412,6 @@ namespace _Scripts.UI.Menus
             loadGameEvent.Raise();
             yield return new WaitForSecondsRealtime(timeBeforeStarting);
 
-            Debug.Log("Load Screen");
             PhotonNetwork.LoadLevel(sceneName);
         }
         #endregion
