@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8135111213450752194}
   - component: {fileID: 5137027285069102951}
   - component: {fileID: 6966668747760765869}
+  - component: {fileID: 4491830729821618646}
+  - component: {fileID: 225207606550891810}
   m_Layer: 0
   m_Name: Trone_squellette
   m_TagString: Untagged
@@ -83,3 +85,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4491830729821618646
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8912175201890282104}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.91902924, y: 0.84456885, z: 1.075}
+  m_Center: {x: -0.0045142174, y: 0.4222843, z: -0.012500048}
+--- !u!65 &225207606550891810
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8912175201890282104}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.91902924, y: 1.6560737, z: 0.2976517}
+  m_Center: {x: -0.0045142174, y: 0.8280367, z: -0.40117422}

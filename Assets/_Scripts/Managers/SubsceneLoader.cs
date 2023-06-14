@@ -25,7 +25,10 @@ namespace _Scripts.Managers
 
             //Unload map
             UnloadAll();
+        }
 
+        private void Start()
+        {
             if (PlayersManager.Role == Role.Master || loadOverrite)
                 LoadAll();
             else

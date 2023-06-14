@@ -12,12 +12,19 @@ namespace _Scripts.UI.Gameplay
         private void Awake()
         {
             _boss = FindObjectOfType<BossController>();
+
+            if (!_boss)
+                return;
+
             _slider = GetComponent<Slider>();
             _slider.maxValue = _boss.Datas.health;
         }
 
         private void LateUpdate()
         {
+            if (!_boss)
+                return;
+
             _slider.value = _boss.CurrentHealth; 
         }
     }
