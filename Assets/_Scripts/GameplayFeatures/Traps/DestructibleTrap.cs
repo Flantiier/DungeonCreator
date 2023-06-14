@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
+using UnityEngine.UIElements;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -12,6 +14,7 @@ namespace _Scripts.GameplayFeatures.Traps
         [SerializeField] protected float dissolveSpeed = 0.04f;
         private const string DISSOLVE_PARAM = "_dissolve";
         protected bool _isVisible = false;
+        private bool _castingShadows = true;
 
         public float CurrentHealth { get; protected set; }
         #endregion
@@ -33,13 +36,13 @@ namespace _Scripts.GameplayFeatures.Traps
                 return;
 
             SetDissolveAmount();
+            CastShadows();
         }
         #endregion
 
         #region Interfaces Implementation
         public void Damage(float damages)
         {
-            Debug.Log($"{gameObject} got damaged by {damages} damages");
             HandleDamages(damages);
         }
         #endregion
@@ -61,6 +64,26 @@ namespace _Scripts.GameplayFeatures.Traps
                 amount = Mathf.Lerp(amount, 0f, dissolveSpeed);
 
             _sharedMaterial.SetFloat(DISSOLVE_PARAM, amount);
+        }
+
+        /// <summary>
+        /// Cast or don't cast mesh shadows
+        /// </summary>
+        protected void CastShadows()
+        {
+            if (_castingShadows == _isVisible)
+                return;
+
+            ShadowCastingMode mode = _isVisible ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            foreach (GameObject part in trapParts)
+            {
+                if (part.TryGetComponent(out MeshRenderer renderer))
+                    renderer.shadowCastingMode = mode;
+                else if(part.TryGetComponent(out SkinnedMeshRenderer skinnedd))
+                    skinnedd.shadowCastingMode = mode;
+            }
+
+            _castingShadows = _isVisible;
         }
 
         /// <summary>

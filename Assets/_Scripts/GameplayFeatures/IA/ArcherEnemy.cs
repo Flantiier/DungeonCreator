@@ -24,7 +24,6 @@ namespace _Scripts.GameplayFeatures.IA
         }
         #endregion
 
-        #region Methods
         protected override void Awake()
         {
             base.Awake();
@@ -34,6 +33,8 @@ namespace _Scripts.GameplayFeatures.IA
 
             GetProperties();
         }
+
+        #region Methods
 
         protected override void UpdateAnimations()
         {
@@ -131,10 +132,10 @@ namespace _Scripts.GameplayFeatures.IA
 
             //Calculates the direction of the projectile
             Vector3 direction = CurrentTarget.position - transform.position;
-            Quaternion rotation = Quaternion.LookRotation(direction);
+            Quaternion rotation = Quaternion.LookRotation(direction.normalized);
 
             //Launch
-            EnemiesProjectile instance = Instantiate(classProperties.projectile, shootPosition.position, rotation).GetComponent<EnemiesProjectile>();
+            EnemiesProjectile instance = Instantiate(classProperties.projectile, shootPosition.position, Quaternion.identity).GetComponent<EnemiesProjectile>();
             instance.Damages = classProperties.damages;
             instance.OverrideThrowForce(direction, classProperties.throwForce);
         }

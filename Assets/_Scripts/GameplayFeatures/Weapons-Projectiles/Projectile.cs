@@ -53,14 +53,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
             EnableTrail(autoEnableTrail);
         }
 
-        protected virtual void FixedUpdate()
-        {
-            if (!ViewIsMine())
-                return;
-
-            RPCCall("SyncTransform", RpcTarget.Others, transform.position, transform.rotation);
-        }
-
         protected virtual void OnTriggerEnter(Collider other)
         {
             Destroy(gameObject);
@@ -113,15 +105,6 @@ namespace _Scripts.GameplayFeatures.Projectiles
                 return;
 
             _trail.enabled = enabled;
-        }
-        #endregion
-
-        #region RPC Methods
-        [PunRPC]
-        public void SyncTransform(Vector3 position, Quaternion rotation)
-        {
-            transform.position = position;
-            transform.rotation = rotation;
         }
         #endregion
     }

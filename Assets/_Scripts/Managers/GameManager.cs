@@ -224,7 +224,6 @@ namespace _Scripts.Managers
         private IEnumerator EndGameRoutine()
         {
             yield return new WaitForSecondsRealtime(5f);
-            SceneManager.LoadScene(menuScene);
             PhotonNetwork.LeaveRoom();
         }
 

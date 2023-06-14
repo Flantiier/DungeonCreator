@@ -113,6 +113,9 @@ namespace _Scripts.Characters.DungeonMaster
         [ContextMenu("Death")]
         protected override void HandleEntityDeath()
         {
+            if (!ViewIsMine())
+                return;
+
             _inputs.Disable();
             RPCAnimatorTrigger(RpcTarget.AllBuffered, "Death", true); ;
         }

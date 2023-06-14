@@ -41,7 +41,7 @@ namespace _Scripts.Managers
         private void Start()
         {
             _timeField = respawnCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            _nameField = respawnCanvas.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            _nameField = respawnCanvas.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         }
 
         private void OnEnable()
@@ -66,6 +66,7 @@ namespace _Scripts.Managers
             //Spectateur
             EnableRespawnCanvas(true);
             GetPlayersList();
+            GameManager.Instance.EnableCursor(true);
             //Set camera on player
             _currentIndex = Array.FindIndex(_players, p => p == _myPlayer);
             _cam.LookAt = _myPlayer.LookAt;
@@ -87,6 +88,7 @@ namespace _Scripts.Managers
                 return;
 
             EnableRespawnCanvas(false);
+            GameManager.Instance.EnableCursor(false);
             ResetCameraOnPlayer();
             character.TeleportPlayer(respawnPosition.value);
         }

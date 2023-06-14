@@ -52,6 +52,8 @@ namespace _Scripts.GameplayFeatures.IA
             ShowPlayerInFOV();
 #endif
 
+            LookForTarget();
+
             if (!ViewIsMine())
                 return;
 
@@ -67,6 +69,8 @@ namespace _Scripts.GameplayFeatures.IA
         #endregion
 
         #region Methods
+
+        #region Behaviours
         protected virtual void InitializeEnemy()
         {
             if (!ViewIsMine())
@@ -90,7 +94,6 @@ namespace _Scripts.GameplayFeatures.IA
         protected virtual void HandleEnemyBehaviour()
         {
             //Find Target & Get the distance with him
-            LookForTarget();
             CalculateTargetDistance();
             HandleStoppingDistance();
 
@@ -137,6 +140,7 @@ namespace _Scripts.GameplayFeatures.IA
             ragdoll.EnableRagdoll();
             gameObject.SetActive(false);
         }
+        #endregion
 
         #region AI Methods
         /// <summary>
