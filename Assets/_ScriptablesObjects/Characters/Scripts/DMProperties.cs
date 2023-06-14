@@ -16,7 +16,7 @@ namespace _ScriptableObjects.Characters
 
         [BoxGroup("Mana properties", CenterLabel = true), LabelWidth(120), Range(0, 100), GUIColor(2, 0.5f, 2)]
         public int manaAmount = 10;
-        [BoxGroup("Mana properties"), LabelWidth(120), Range(1f, 20f), GUIColor(2, 0.5f, 2)]
+        [BoxGroup("Mana properties"), LabelWidth(120), Range(0f, 20f), GUIColor(2, 0.5f, 2)]
         public float manaRecovery = 10f;
 
         [BoxGroup("Camera Properties", CenterLabel = true), HideLabel]

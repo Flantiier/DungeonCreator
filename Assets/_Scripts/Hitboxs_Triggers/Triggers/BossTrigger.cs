@@ -1,11 +1,11 @@
 ﻿using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.Characters;
 using _Scripts.Managers;
 using _Scripts.NetworkScript;
-using System.Linq;
 
 namespace _Scripts.Hitboxs_Triggers.Triggers
 {
@@ -63,9 +63,15 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             }
 
             //all player are here, then trigger boss fight
-            GameManager.Instance.StartBossFight();
-            textMesh.gameObject.SetActive(false);
+            StartCoroutine("StartRoutine");
+        }
+
+        private IEnumerator StartRoutine()
+        {
             _isTriggered = true;
+            textMesh.gameObject.SetActive(false);
+            yield return new WaitForSecondsRealtime(0.4f);
+            GameManager.Instance.StartBossFight();
         }
 
         /// <summary>

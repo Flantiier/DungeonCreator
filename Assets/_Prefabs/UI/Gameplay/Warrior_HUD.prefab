@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: -8999326808795453283}
   - component: {fileID: 8006018937470758177}
   - component: {fileID: 3031013019297729703}
+  - component: {fileID: 6765879038338947918}
   m_Layer: 5
   m_Name: Warrior_HUD
   m_TagString: Untagged
@@ -258,6 +259,34 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+--- !u!114 &6765879038338947918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3111648633903626147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3723be13823284a9f544d04ff11967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: e1798e7c5ed6e52449b1e06084222fd2, type: 2}
+  responses:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2146834178459902531}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &3111648634060129068
 GameObject:
@@ -791,6 +820,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84131370feeb36444bfeece479e37a1a, type: 3}
+--- !u!1 &2146834178459902531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6504176080680785285, guid: 84131370feeb36444bfeece479e37a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5154492785068816326}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7306327604097597677 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2516709402544273195, guid: 84131370feeb36444bfeece479e37a1a,

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.Projectiles;
 using _ScriptableObjects.Traps;
@@ -18,12 +17,14 @@ namespace _Scripts.GameplayFeatures.IA
 
         private bool _targetInRange;
         private bool _canReachTarget;
+
         private void GetProperties()
         {
             properties = classProperties;
         }
         #endregion
 
+        #region Builts_In
         protected override void Awake()
         {
             base.Awake();
@@ -33,9 +34,9 @@ namespace _Scripts.GameplayFeatures.IA
 
             GetProperties();
         }
+        #endregion
 
         #region Methods
-
         protected override void UpdateAnimations()
         {
             base.UpdateAnimations();
@@ -132,7 +133,6 @@ namespace _Scripts.GameplayFeatures.IA
 
             //Calculates the direction of the projectile
             Vector3 direction = CurrentTarget.position - transform.position;
-            Quaternion rotation = Quaternion.LookRotation(direction.normalized);
 
             //Launch
             EnemiesProjectile instance = Instantiate(classProperties.projectile, shootPosition.position, Quaternion.identity).GetComponent<EnemiesProjectile>();

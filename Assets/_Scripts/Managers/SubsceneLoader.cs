@@ -68,7 +68,6 @@ namespace _Scripts.Managers
         /// <summary>
         /// Load the entire map
         /// </summary>
-        [ContextMenu("Load All")]
         public void LoadAll()
         {
             foreach (SubSceneData subscene in subScenes)
@@ -78,7 +77,6 @@ namespace _Scripts.Managers
         /// <summary>
         /// Unload the entire map
         /// </summary>
-        [ContextMenu("Unload All")]
         public void UnloadAll()
         {
             foreach (SubSceneData subscene in subScenes)

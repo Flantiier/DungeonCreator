@@ -12,7 +12,7 @@ using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Managers
 {
-    public class RespawnManager : MonoBehaviour
+    public class RespawnManager : MonoBehaviourSingleton<RespawnManager>
     {
         #region Variables
         [TitleGroup("References")]
@@ -37,9 +37,14 @@ namespace _Scripts.Managers
         private int _currentIndex;
         #endregion
 
+        #region Properties
+        public bool _respawnEnabled { get; set; } = true;
+        #endregion
+
         #region Builts_In
         private void Start()
         {
+            EnableRespawn(true);
             _timeField = respawnCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             _nameField = respawnCanvas.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         }
@@ -61,22 +66,27 @@ namespace _Scripts.Managers
         /// </summary>
         public void StartRespawn(Character character)
         {
-            respawnStart.Raise();
-
             //Spectateur
             EnableRespawnCanvas(true);
             GetPlayersList();
             GameManager.Instance.EnableCursor(true);
-            //Set camera on player
             _currentIndex = Array.FindIndex(_players, p => p == _myPlayer);
             _cam.LookAt = _myPlayer.LookAt;
             _cam.Follow = _myPlayer.LookAt;
 
+            //Respawn delay
+            if (!_respawnEnabled)
+            {
+                Debug.Log("Respawn impossible");
+                return;
+            }
+
+            respawnStart.Raise();
+            StartCoroutine(RespawnRoutine(character));
+
             //Load map
             if (SubsceneLoader.Instance)
                 SubsceneLoader.Instance.LoadAll();
-
-            StartCoroutine(RespawnRoutine(character));
         }
 
         /// <summary>
@@ -113,6 +123,8 @@ namespace _Scripts.Managers
             if (SubsceneLoader.Instance)
                 SubsceneLoader.Instance.LoadMapStart();
 
+            yield return new WaitForSecondsRealtime(0.5f);
+
             //Reset respawn
             respawnTime.value = 0;
             RespawnPlayer(character);
@@ -140,6 +152,11 @@ namespace _Scripts.Managers
             }
 
             return time;
+        }
+
+        public void EnableRespawn(bool enabled)
+        {
+            _respawnEnabled = enabled;
         }
         #endregion
 

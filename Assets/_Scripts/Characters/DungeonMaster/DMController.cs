@@ -196,12 +196,13 @@ namespace _Scripts.Characters.DungeonMaster
             _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, dmProperties.smoothingMotion);
 
             //Clamped position
-            Vector3 finalMovement = transform.position + (dmProperties.motionSpeed * Time.deltaTime * _currentMovement);
-            finalMovement.x = Mathf.Clamp(finalMovement.x, horizontalLimit.x, horizontalLimit.y);
-            finalMovement.z = Mathf.Clamp(finalMovement.z, verticalLimit.x, verticalLimit.y);
+            Vector3 finalMovement = dmProperties.motionSpeed * Time.deltaTime * _currentMovement;
+            Vector3 finalPosition = transform.position + transform.forward * finalMovement.z + transform.right * finalMovement.x;
+            finalPosition.x = Mathf.Clamp(finalPosition.x, horizontalLimit.x, horizontalLimit.y);
+            finalPosition.z = Mathf.Clamp(finalPosition.z, verticalLimit.x, verticalLimit.y);
 
             //Apply movement
-            transform.position = finalMovement;
+            transform.position = finalPosition;
         }
         #endregion
 

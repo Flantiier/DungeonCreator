@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.PhysicsAdds;
 using _Scripts.GameplayFeatures.Projectiles;
 using _ScriptableObjects.Traps;
+using System.Collections;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -26,6 +27,7 @@ namespace _Scripts.GameplayFeatures.Traps
 
 		private Projectile _lastProjectile;
 		private bool _isReloaded;
+		private bool _shootWait;
 		#endregion
 
 		#region Builts_In
@@ -88,11 +90,13 @@ namespace _Scripts.GameplayFeatures.Traps
 		/// </summary>
 		private void HandleShootingBehaviour()
 		{
-			if (!_isReloaded || !fov.IsDetecting())
+			if (!_isReloaded || !fov.IsDetecting() || _shootWait)
 				return;
 
+			Debug.Log("shoot");
+            StartCoroutine(ShootWaitRoutine());
 			Animator.SetTrigger("Shoot");
-			_isReloaded = false;
+            _isReloaded = false;
 		}
 
 		/// <summary>
@@ -137,8 +141,15 @@ namespace _Scripts.GameplayFeatures.Traps
 		{
 			SetVisbility(fov.IsDetecting());
 
-			if (_lastProjectile)
+			if (_lastProjectile && !ViewIsMine())
 				_lastProjectile.gameObject.SetActive(false);
+		}
+
+		private IEnumerator ShootWaitRoutine()
+		{
+			_shootWait = true;
+			yield return new WaitForSecondsRealtime(datas.fireRate);
+			_shootWait = false;
 		}
         #endregion
     }

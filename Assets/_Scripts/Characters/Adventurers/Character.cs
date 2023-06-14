@@ -204,7 +204,6 @@ namespace _Scripts.Characters
             StartCoroutine("AfflictionRoutine");
         }
 
-        [PunRPC]
         public void StunPlayer(float duration)
         {
             if (!ViewIsMine())
@@ -325,9 +324,6 @@ namespace _Scripts.Characters
 
         private void StunMethod(float duration)
         {
-            if (!GroundSM.IsStateOf(GroundStateMachine.GroundStatements.Grounded))
-                return;
-
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
                 return;
 

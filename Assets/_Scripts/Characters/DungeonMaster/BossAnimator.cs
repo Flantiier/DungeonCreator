@@ -111,7 +111,7 @@ namespace _Scripts.Characters.DungeonMaster
                     continue;
 
                 Character character = col.GetComponent<Character>();
-                character.RPCCall("StunPlayer", RpcTarget.Others, stunDuration);
+                character.StunPlayer(stunDuration);
             }
         }
 

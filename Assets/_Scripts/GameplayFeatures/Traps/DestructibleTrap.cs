@@ -3,7 +3,6 @@ using UnityEngine.Rendering;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
-using UnityEngine.UIElements;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -12,7 +11,7 @@ namespace _Scripts.GameplayFeatures.Traps
         #region Variables/Properties
         [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected float dissolveSpeed = 0.04f;
-        private const string DISSOLVE_PARAM = "_dissolve";
+        protected const string DISSOLVE_PARAM = "_dissolve";
         protected bool _isVisible = false;
         private bool _castingShadows = true;
 

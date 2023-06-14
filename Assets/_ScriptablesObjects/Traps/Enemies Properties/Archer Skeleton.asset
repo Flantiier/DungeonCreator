@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Archer Skeleton
   m_EditorClassIdentifier: 
   health: 100
-  damages: 35
+  damages: 25
   smoothRotation: 0.1
   chaseSpeed: 3
   stoppingDistance: 1.5
@@ -27,13 +27,13 @@ MonoBehaviour:
   angle: 360
   targetMask:
     serializedVersion: 2
-    m_Bits: 33554432
+    m_Bits: 0
   obstructionMask:
     serializedVersion: 2
     m_Bits: 67109056
   projectile: {fileID: 5898861913459071214, guid: 5d98a7519abc18647b42526e522f0e82,
     type: 3}
-  throwForce: 3
+  throwForce: 2
   shootingDistance: 20
   shootObstruction:
     serializedVersion: 2

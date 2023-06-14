@@ -42,7 +42,6 @@ namespace _Scripts.GameplayFeatures.IA
         public override void OnEnable()
         {
             base.OnEnable();
-
             InitializeEnemy();
         }
 

@@ -25,14 +25,16 @@ namespace _Scripts.GameplayFeatures.Traps
         public override void OnEnable()
         {
             base.OnEnable();
+            meshRenderer.enabled = true;
 
-            if(!ViewIsMine())
-                EnableCage(false);
-            else
+            if (!ViewIsMine())
             {
-                meshRenderer.enabled = true;
-                meshRenderer.sharedMaterial = inactiveMaterial;
+                EnableCage(false);
+                meshRenderer.sharedMaterial = _sharedMaterial;
+                _sharedMaterial.SetFloat(DISSOLVE_PARAM, 0f);
             }
+            else
+                meshRenderer.sharedMaterial = inactiveMaterial;
         }
 
         protected override void Update()
@@ -78,7 +80,6 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         private void EnableCage(bool enabled)
         {
-            meshRenderer.enabled = enabled;
             meshCollider.enabled = enabled;
             triggerBox.Enabled = !enabled;
         }

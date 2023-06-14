@@ -301,7 +301,6 @@ namespace _Scripts.Managers
 
             //Fight manager
             Role role = PlayersManager.Role;
-
             switch (role)
             {
                 case Role.Master:
@@ -319,10 +318,8 @@ namespace _Scripts.Managers
             _adventurers = FindObjectsOfType<Character>();
             _boss = FindObjectOfType<BossController>();
 
-            //Disable respawn
-            GetComponent<RespawnManager>().enabled = false;
-
-            //Unload map and disable all the traps
+            RespawnManager.Instance.EnableRespawn(false);
+            StopCoroutine("GameRoutine");
             UnloadMap();
 
             //Start boss fight
