@@ -77,7 +77,7 @@ namespace _Scripts.Managers
             //Respawn delay
             if (!_respawnEnabled)
             {
-                Debug.Log("Respawn impossible");
+                _timeField.text = "reapparition impossible.";
                 return;
             }
 
