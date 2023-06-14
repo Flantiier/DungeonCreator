@@ -29,6 +29,8 @@ namespace _Scripts.Managers
         [TitleGroup("References")]
         [SerializeField] private GameObject tiling;
         [TitleGroup("References")]
+        [SerializeField] private GameObject mappingSystem;
+        [TitleGroup("References")]
         [SerializeField] private TextMeshProUGUI objectifText;
         #endregion
 
@@ -84,14 +86,15 @@ namespace _Scripts.Managers
             }
 
             //Set text
-            if(PlayersManager.Role == Role.Master)
+            if (PlayersManager.Role == Role.Master)
                 SetObjectifText("preparez vos pieges");
             else
                 SetObjectifText("attendre l'ouverture de la porte");
 
-                //Disable Cursor
-                EnableCursor(PlayersManager.Role == Role.Master);
+            //Disable Cursor
+            EnableCursor(PlayersManager.Role == Role.Master);
             EnableTiling(PlayersManager.Role == Role.Master);
+            EnableMappingSystem(PlayersManager.Role != Role.Master);
         }
 
         private void LateUpdate()
@@ -128,6 +131,17 @@ namespace _Scripts.Managers
                 return;
 
             tiling.SetActive(enabled);
+        }
+
+        /// <summary>
+        /// Enable or disable the tiling
+        /// </summary>
+        private void EnableMappingSystem(bool enabled)
+        {
+            if (!mappingSystem)
+                return;
+
+            mappingSystem.SetActive(enabled);
         }
 
         /// <summary>
@@ -294,7 +308,7 @@ namespace _Scripts.Managers
         public void StartBossFight()
         {
             //Set text
-            if(PlayersManager.Role == Role.Master)
+            if (PlayersManager.Role == Role.Master)
                 SetObjectifText("repousser les aventuriers !");
             else
                 SetObjectifText("combattre le dongeon master !");

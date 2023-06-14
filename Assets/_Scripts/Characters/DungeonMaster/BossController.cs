@@ -117,7 +117,7 @@ namespace _Scripts.Characters.DungeonMaster
                 return;
 
             _inputs.Disable();
-            RPCAnimatorTrigger(RpcTarget.AllBuffered, "Death", true); ;
+            RPCAnimatorTrigger(RpcTarget.All, "Death", true); ;
         }
 
         /// <summary>

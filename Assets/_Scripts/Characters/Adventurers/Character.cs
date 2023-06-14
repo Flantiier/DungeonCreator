@@ -222,6 +222,9 @@ namespace _Scripts.Characters
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 
+            if (PlayerSM.CurrentState == PlayerStateMachine.PlayerStates.Stunned)
+                RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
+
             if (CurrentHealth > 0)
             {
                 if (_healthRecupRoutine != null)
