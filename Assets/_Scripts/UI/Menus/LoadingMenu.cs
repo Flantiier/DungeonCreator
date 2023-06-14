@@ -38,6 +38,7 @@ namespace _Scripts.UI.Menus
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
             operation.allowSceneActivation = false;
             textField.SetBaseText("chargement de la partie");
+            slider.value = 0f;
 
             yield return new WaitForSecondsRealtime(additionalTime);
 

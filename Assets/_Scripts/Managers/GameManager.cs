@@ -194,6 +194,7 @@ namespace _Scripts.Managers
         public void EndGameRPC(EndGameReason reason)
         {
             StopAllCoroutines();
+            objectifText.gameObject.SetActive(false);
 
             if (!endPanel)
                 return;
