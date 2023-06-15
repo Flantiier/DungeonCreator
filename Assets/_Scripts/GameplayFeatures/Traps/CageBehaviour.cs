@@ -71,7 +71,7 @@ namespace _Scripts.GameplayFeatures.Traps
             if (ViewIsMine() && meshRenderer.sharedMaterial != _sharedMaterial)
                 meshRenderer.sharedMaterial = _sharedMaterial;
 
-            if (!meshRenderer.enabled)
+            if(!meshCollider.enabled)
                 EnableCage(true);
         }
 

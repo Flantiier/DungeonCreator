@@ -93,7 +93,9 @@ namespace _Scripts.GameplayFeatures.Traps
 			if (!_isReloaded || !fov.IsDetecting() || _shootWait)
 				return;
 
-			Debug.Log("shoot");
+            if (!fov.GetTargetInFOV())
+                return;
+
             StartCoroutine(ShootWaitRoutine());
 			Animator.SetTrigger("Shoot");
             _isReloaded = false;

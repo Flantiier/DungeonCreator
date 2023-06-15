@@ -139,7 +139,7 @@ MonoBehaviour:
     passTag: RenderedOnTop
     Event: 500
     filterSettings:
-      RenderQueueType: 1
+      RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
         m_Bits: 1024
@@ -147,7 +147,7 @@ MonoBehaviour:
     overrideMaterial: {fileID: 2100000, guid: e3557646ff7a7ff44851401e7aa7373d, type: 2}
     overrideMaterialPassIndex: 0
     overrideDepthState: 1
-    depthCompareFunction: 8
+    depthCompareFunction: 7
     enableWrite: 0
     stencilSettings:
       overrideStencilState: 0
