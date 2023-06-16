@@ -1,24 +1,13 @@
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using Unity.Transforms;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using static Utils.Utilities;
 
 namespace Utils
 {
     public static class Utilities
     {
-        #region Others
-        /// <summary>
-        /// Return a random value between a mininmum and a maximum
-        /// </summary>
-        public static float RandomValue(float min, float max)
-        {
-            return Random.Range(min, max);
-        }
-        #endregion
-
+        //CUSTOM EDITOR METHODS
 #if UNITY_EDITOR
         #region Editor
         public static void DestroyAllChildren(Transform parent)
@@ -53,6 +42,7 @@ namespace Utils
         #endregion
 #endif
 
+        //CUSTOM METHODS ABOUT MATH METHODS
         #region Math Class
         public abstract class Math
         {
@@ -66,9 +56,18 @@ namespace Utils
             {
                 return (Mathf.Abs(a - b) < tolerance);
             }
+
+            /// <summary>
+            /// Return a random value between a mininmum and a maximum
+            /// </summary>
+            public static float RandomValue(float min, float max)
+            {
+                return Random.Range(min, max);
+            }
         }
         #endregion
 
+        //CUSTOM METHODS ABOUT OBJECT LAYERS
         #region Layers Class
         public abstract class Layers
         {
@@ -111,6 +110,7 @@ namespace Utils
         }
         #endregion
 
+        //CUSTOM METHODS ABOUT TIME AND TIME CONVERSION
         #region Time Class
         public abstract class Time
         {
@@ -169,44 +169,48 @@ namespace Utils
         }
         #endregion
 
+        //CUSTOM METHODS ABOUT COLORS
         #region Colors Class
         public abstract class ColorProperties
         {
             public static Color RandomColor(float min, float max)
             {
-                float r = RandomValue(min, max);
-                float g = RandomValue(min, max);
-                float b = RandomValue(min, max);
+                float r = Math.RandomValue(min, max);
+                float g = Math.RandomValue(min, max);
+                float b = Math.RandomValue(min, max);
                 return new Color(r, g, b, 1);
             }
         }
         #endregion
 
-        #region Byte Serialization
-        public abstract class ByteSerialization
+        //CUSTOM METHODS ABOUT INPUTS (NEW INPUT SYSTEM)
+        #region Inputs Class
+        public abstract class Inputs
         {
-            // Convert an object to a byte array
-            public static byte[] ObjectToByteArray<T>(T obj)
+            /// <summary>
+            /// Enable or disable a given input action
+            /// </summary>
+            /// <param name="inputActions"> Actions to enable/disable </param>
+            /// <param name="enable"> Enable or disable </param>
+            public static void EnableInputMap(InputAction inputActions, bool enable)
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                using (var ms = new MemoryStream())
-                {
-                    bf.Serialize(ms, obj);
-                    return ms.ToArray();
-                }
+                if (enable)
+                    inputActions.Enable();
+                else
+                    inputActions.Disable();
             }
 
-            // Convert a byte array to an Object
-            public static T ByteArrayToObject<T>(byte[] arrBytes)
+            /// <summary>
+            /// Enable or disable a given input action map
+            /// </summary>
+            /// <param name="inputMap"> Input map to enable/disable </param>
+            /// <param name="enable"> Enable or disable </param>
+            public static void EnableInputMap(InputActionMap inputMap, bool enable)
             {
-                using (var memStream = new MemoryStream())
-                {
-                    var binForm = new BinaryFormatter();
-                    memStream.Write(arrBytes, 0, arrBytes.Length);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    var obj = binForm.Deserialize(memStream);
-                    return (T)obj;
-                }
+                if (enable)
+                    inputMap.Enable();
+                else
+                    inputMap.Disable();
             }
         }
         #endregion

@@ -141,13 +141,12 @@ namespace _Scripts.Characters.Adventurers
             Vector3 position = MainCamera.position;
             Vector3 direction = MainCamera.forward;
             float distance = cameraProperties.framingTranposer.m_CameraDistance + defuseDistance;
-            bool detect = Physics.Raycast(position, direction, out _hit, distance, defuseLayer);
-            TrapDetected = detect;
+            TrapDetected = Physics.Raycast(position, direction, out _hit, distance, defuseLayer);
 
             if (IsDefusing)
                 return;
 
-            HighlightingTrap(detect);
+            HighlightingTrap(TrapDetected);
         }
 
         /// <summary>
@@ -177,6 +176,7 @@ namespace _Scripts.Characters.Adventurers
 
                     trap.HighlightTrap(true);
                     _hitTrap = trap;
+                    Debug.Log(_hitTrap);
                 }
             }
         }

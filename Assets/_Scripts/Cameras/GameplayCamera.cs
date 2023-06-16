@@ -7,17 +7,22 @@ namespace _Scripts.Cameras
     [ExecuteInEditMode]
     public class GameplayCamera : MonoBehaviour
     {
+        #region Variables
         [TitleGroup("References")]
         [SerializeField] protected Camera cam;
         [TitleGroup("References")]
         [SerializeField] protected CinemachineVirtualCamera vCam;
         [TitleGroup("Edit properties")]
-        [SerializeField] private bool updateInEditMode = false;
+        [SerializeField] protected bool updateInEditMode = false;
+        #endregion
 
+        #region Properties
         public Transform CameraTransform => cam.transform;
         public CinemachineVirtualCamera VCam => vCam;
+        #endregion
 
-        private void Update()
+        #region Builts_In
+        protected virtual void Update()
         {
 #if UNITY_EDITOR
             if (!updateInEditMode || !vCam)
@@ -26,7 +31,9 @@ namespace _Scripts.Cameras
             SetCameraProperties();
 #endif
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Set the lookAt target of the virtual camera
         /// </summary>
@@ -42,4 +49,5 @@ namespace _Scripts.Cameras
         /// </summary>
         protected virtual void SetCameraProperties() { }
     }
+    #endregion
 }

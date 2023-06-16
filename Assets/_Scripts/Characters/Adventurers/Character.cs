@@ -6,10 +6,10 @@ using InputsMaps;
 using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.Interfaces;
+using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using _Scripts.Cameras;
 
 namespace _Scripts.Characters
 {
@@ -43,7 +43,7 @@ namespace _Scripts.Characters
         #region Properties
         public CharactersProperties OverallDatas => overallDatas;
         public AdventurerProperties CharacterDatas => characterDatas;
-        public PlayerStateMachine PlayerSM { get; private set; }
+        public PlayerStateMachine PlayerSM { get; private set; } = new PlayerStateMachine();
         public AfflictionStatus CurrentAffliction { get; set; }
         public Transform LookAt => lookAt;
         public TpsCamera Camera => _camera;
@@ -237,6 +237,7 @@ namespace _Scripts.Characters
             HandleEntityDeath();
         }
 
+        [ContextMenu("Invoke Death")]
         protected override void HandleEntityDeath()
         {
             base.HandleEntityDeath();

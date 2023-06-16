@@ -247,6 +247,7 @@ namespace _Scripts.Characters
         {
             _currentInputs = Vector2.zero;
             _movement = new Vector3(0f, _movement.y, 0f);
+            _cc.SimpleMove(_movement);
         }
         #endregion
 

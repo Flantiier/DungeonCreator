@@ -3,10 +3,12 @@ using System;
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Photon.Pun;
 using Photon.Realtime;
-using Utils;
 using Sirenix.OdinInspector;
+//
+using Utils;
 using _Scripts.Characters;
 using _ScriptableObjects.GameManagement;
 
@@ -27,6 +29,9 @@ namespace _Scripts.Managers
         [FoldoutGroup("Variables")]
         [SerializeField] private Vector3Variable respawnPosition;
 
+        [FoldoutGroup("Inputs")]
+        [SerializeField] private InputActionMap inputMap;
+
         //Players
         private Character[] _players;
         private Character _myPlayer;
@@ -45,6 +50,8 @@ namespace _Scripts.Managers
         private void Start()
         {
             EnableRespawn(true);
+            EnableInputs(false);
+
             _timeField = respawnCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             _nameField = respawnCanvas.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         }
@@ -52,21 +59,34 @@ namespace _Scripts.Managers
         private void OnEnable()
         {
             Character.OnCharacterDeath += StartRespawn;
+            inputMap.FindAction("Next").started += OnNextAction;
+            inputMap.FindAction("Previous").started += OnPreviousAction;
         }
 
         private void OnDisable()
         {
             Character.OnCharacterDeath -= StartRespawn;
+            inputMap.FindAction("Next").started += OnNextAction;
+            inputMap.FindAction("Previous").started += OnPreviousAction;
         }
         #endregion
 
         #region Respawn methods
+        /// <summary>
+        /// Indicates if players can respawn or not
+        /// </summary>
+        public void EnableRespawn(bool enabled)
+        {
+            _respawnEnabled = enabled;
+        }
+
         /// <summary>
         /// Start a coroutine to respawn the player
         /// </summary>
         public void StartRespawn(Character character)
         {
             //Spectateur
+            EnableInputs(true);
             EnableRespawnCanvas(true);
             GetPlayersList();
             GameManager.Instance.EnableCursor(true);
@@ -74,13 +94,14 @@ namespace _Scripts.Managers
             _cam.LookAt = _myPlayer.LookAt;
             _cam.Follow = _myPlayer.LookAt;
 
-            //Respawn delay
+            //Blocking respawn if disabled
             if (!_respawnEnabled)
             {
                 _timeField.text = "reapparition impossible.";
                 return;
             }
 
+            //Start the respawn coldoown and raise an event
             respawnStart.Raise();
             StartCoroutine(RespawnRoutine(character));
 
@@ -97,8 +118,11 @@ namespace _Scripts.Managers
             if (!character)
                 return;
 
+            EnableInputs(false);
             EnableRespawnCanvas(false);
             GameManager.Instance.EnableCursor(false);
+
+            //Respawn player
             ResetCameraOnPlayer();
             character.TeleportPlayer(respawnPosition.value);
         }
@@ -153,11 +177,6 @@ namespace _Scripts.Managers
 
             return time;
         }
-
-        public void EnableRespawn(bool enabled)
-        {
-            _respawnEnabled = enabled;
-        }
         #endregion
 
         #region GUI Methods
@@ -203,7 +222,7 @@ namespace _Scripts.Managers
         /// <summary>
         /// Look at another player
         /// </summary>
-        public void SwicthPlayer(int value)
+        public void SwitchPlayer(int value)
         {
             if (_players.Length <= 0)
                 return;
@@ -235,6 +254,23 @@ namespace _Scripts.Managers
             }
 
             return "Player";
+        }
+        #endregion
+
+        #region Callback Events
+        private void EnableInputs(bool enable)
+        {
+            Utilities.Inputs.EnableInputMap(inputMap, enable);
+        }
+
+        private void OnNextAction(InputAction.CallbackContext ctx)
+        {
+            SwitchPlayer(1);
+        }
+
+        private void OnPreviousAction(InputAction.CallbackContext ctx)
+        {
+            SwitchPlayer(-1);
         }
         #endregion
     }

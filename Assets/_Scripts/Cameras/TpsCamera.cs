@@ -2,7 +2,6 @@ using UnityEngine;
 using Cinemachine;
 using Sirenix.OdinInspector;
 using _ScriptableObjects.Cinemachine;
-using _Scripts.Managers;
 using _ScriptableObjects.GameManagement;
 
 namespace _Scripts.Cameras
@@ -11,8 +10,8 @@ namespace _Scripts.Cameras
     {
         #region Variables
         [TitleGroup("References")]
-        [TitleGroup("Edit properties")]
         [SerializeField] private TpsCameraProperties cameraProperties;
+        [TitleGroup("References")]
         [SerializeField] private GeneralSettings settings;
         
         private CinemachineInputProvider _inputProvider;
@@ -25,8 +24,9 @@ namespace _Scripts.Cameras
             SetCameraProperties();
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             UpdateSensivity();
         }
         #endregion
