@@ -10,7 +10,6 @@ using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
-using Unity.VisualScripting;
 
 namespace _Scripts.Characters
 {
@@ -18,13 +17,18 @@ namespace _Scripts.Characters
     {
         #region Variables
 
+        #region Afflictions References
+        [FoldoutGroup("Afflictions References")]
+        [SerializeField] private ParticleSystem[] afflictionsVFX;
+        #endregion
+
         #region References
         [FoldoutGroup("Stats")]
         [Required, SerializeField] protected CharactersProperties overallDatas;
         [FoldoutGroup("Stats")]
         [Required, SerializeField] protected AdventurerProperties characterDatas;
 
-        [TitleGroup("Variables")]
+        [FoldoutGroup("Variables")]
         [SerializeField] protected FloatVariable skillCooldown;
 
         protected AdventurerInputs _inputs;
@@ -201,8 +205,8 @@ namespace _Scripts.Characters
                 return;
 
             //Status
-            Debug.LogWarning($"Affected by : {status}");
             CurrentAffliction = status;
+            CurrentAffliction.EnableEffect(this, true);
             StartCoroutine("AfflictionRoutine");
         }
 
@@ -249,7 +253,10 @@ namespace _Scripts.Characters
             StopAllCoroutines();
 
             if (CurrentAffliction != null)
+            {
+                CurrentAffliction.EnableEffect(this, false);
                 CurrentAffliction = null;
+            }
         }
 
         /// <summary>
@@ -329,6 +336,25 @@ namespace _Scripts.Characters
             CurrentAffliction = null;
         }
 
+        /// <summary>
+        /// Enable particles to show an afflictions
+        /// </summary>
+        /// <param name="index"></param>
+        public void ShowAfflictionVFX(string name, bool enable)
+        {
+            int index = Array.FindIndex(afflictionsVFX, x => x.name == name);
+            if (index <= -1)
+                return;
+
+            if (enable)
+                afflictionsVFX[index].Play();
+            else
+                afflictionsVFX[index].Stop();
+        }
+
+        /// <summary>
+        /// Stun the player, he can't move during a short period
+        /// </summary>
         private void StunMethod(float duration)
         {
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
@@ -337,6 +363,9 @@ namespace _Scripts.Characters
             StartCoroutine(StunRoutine(duration));
         }
 
+        /// <summary>
+        /// Stun routine method
+        /// </summary>
         private IEnumerator StunRoutine(float duration)
         {
             PlayerSM.EnableLayers = false;
