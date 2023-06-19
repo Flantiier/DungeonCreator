@@ -88,7 +88,11 @@ namespace _Scripts.Managers
         /// <param name="character"> Character reference </param>
         private void InstantiateCharacterHUD(GameObject ui, Character character)
         {
-            Instantiate(ui).GetComponent<PlayerHUD>().SetTargetCharacter(character);
+            GameObject instance = Instantiate(ui);
+            PlayerHUD hud = instance.GetComponent<PlayerHUD>();
+            instance.SetActive(false);
+            hud.SetTargetCharacter(character);
+            instance.SetActive(true);
         }
         #endregion
     }

@@ -21,5 +21,13 @@ namespace _ScriptableObjects.Characters
 
         [BoxGroup("Camera Properties", CenterLabel = true), HideLabel]
         public TopCameraProperties cameraProperties;
+        [BoxGroup("Camera Properties"), Range(0f, 100f)]
+        public float minCameraHeight = 20f;
+        [BoxGroup("Camera Properties"), SerializeField, Range(0f, 100f)]
+        public float maxCameraHeight = 50f;
+        [BoxGroup("Camera Properties"), Range(0f, 50f)]
+        public float scrollSpeed = 5f; 
+        [BoxGroup("Camera Properties"), Range(0f, 0.1f)]
+        public float scrollSmooth = 0.05f;
     }
 }

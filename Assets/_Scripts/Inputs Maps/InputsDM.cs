@@ -87,7 +87,7 @@ namespace InputsMaps
                     ""name"": ""Scrolling"",
                     ""type"": ""Value"",
                     ""id"": ""4f8445f8-e805-43a7-914c-41d0a9c08936"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true

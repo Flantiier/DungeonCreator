@@ -48,6 +48,7 @@ namespace _Scripts.Characters.DungeonMaster
         private Vector3 _currentMovement;
         private Vector2 _rotationInputs;
         private Coroutine _manaRoutine;
+        private float _targetCameraHeight;
         #endregion
 
         #region Raycast & Traps
@@ -62,13 +63,13 @@ namespace _Scripts.Characters.DungeonMaster
         #endregion
 
         [LabelText("DM Properties")]
-        [Required, SerializeField] private DMProperties dmProperties;
+        [Required, SerializeField] private DMProperties properties;
         #endregion
 
         #region Properties
         public static bool IsDragging { get; set; }
         public static DraggableCard SelectedCard { get; set; }
-        public GameObject MyCamera { get; private set; }
+        public TopCamera Camera { get; private set; }
         #endregion
 
         #region Builts_In
@@ -92,42 +93,10 @@ namespace _Scripts.Characters.DungeonMaster
         private void Update()
         {
             HandleMovements();
+            UpdateCameraHieght();
             ShootingRaycast();
         }
         #endregion
-
-        #region Methods
-        public void DisableCharacter()
-        {
-            MyCamera.SetActive(false);
-            transform.root.gameObject.SetActive(false);
-        }
-
-        /// <summary>
-        /// Create the inputs, the camera and sets variables
-        /// </summary>
-        private void InitializeCharacter()
-        {
-            _inputs = new InputsDM();
-            InstantiateCamera();
-            mana.value = dmProperties.manaAmount;
-        }
-
-        /// <summary>
-        /// Instantiate sky camera
-        /// </summary>
-        private void InstantiateCamera()
-        {
-            if (!cameraPrefab)
-            {
-                Debug.LogWarning("Missing camera prefab");
-                return;
-            }
-
-            TopCamera camera = Instantiate(cameraPrefab);
-            camera.SetLookAt(transform);
-            MyCamera = camera.gameObject;
-        }
 
         #region Inputs
         /// <summary>
@@ -150,6 +119,7 @@ namespace _Scripts.Characters.DungeonMaster
             //Movements
             _inputs.Gameplay.Move.performed += ctx => _inputsVector = ctx.ReadValue<Vector2>();
             _inputs.Gameplay.Move.canceled += ctx => _inputsVector = Vector2.zero;
+            _inputs.Gameplay.Scrolling.performed += OnScrollAction;
 
             //Rotations
             _inputs.Gameplay.CamRotate_CW.performed += ctx => _rotationInputs.x = ctx.ReadValue<float>();
@@ -169,6 +139,7 @@ namespace _Scripts.Characters.DungeonMaster
             //Movements
             _inputs.Gameplay.Move.performed -= ctx => _inputsVector = ctx.ReadValue<Vector2>();
             _inputs.Gameplay.Move.canceled -= ctx => _inputsVector = Vector2.zero;
+            _inputs.Gameplay.Scrolling.performed += OnScrollAction;
 
             //Rotations
             _inputs.Gameplay.CamRotate_CW.performed -= ctx => _rotationInputs.x = ctx.ReadValue<float>();
@@ -179,7 +150,46 @@ namespace _Scripts.Characters.DungeonMaster
             //Trap Inputs
             _inputs.Gameplay.RotateTrap.started -= RotateTrapClockwise;
         }
+
+        private void OnScrollAction(InputAction.CallbackContext ctx)
+        {
+            _targetCameraHeight += ctx.ReadValue<float>() * properties.scrollSpeed;
+            _targetCameraHeight = Mathf.Clamp(_targetCameraHeight, properties.minCameraHeight, properties.maxCameraHeight);
+        }
         #endregion
+
+        #region Methods
+        public void DisableCharacter()
+        {
+            Camera.gameObject. SetActive(false);
+            transform.root.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Create the inputs, the camera and sets variables
+        /// </summary>
+        private void InitializeCharacter()
+        {
+            _inputs = new InputsDM();
+            InstantiateCamera();
+            mana.value = properties.manaAmount;
+            _targetCameraHeight = Camera.CameraHeight;
+        }
+
+        /// <summary>
+        /// Instantiate sky camera
+        /// </summary>
+        private void InstantiateCamera()
+        {
+            if (!cameraPrefab)
+            {
+                Debug.LogWarning("Missing camera prefab");
+                return;
+            }
+
+            Camera = Instantiate(cameraPrefab);
+            Camera.SetLookAt(transform);
+        }
 
         #region Movements
         /// <summary>
@@ -188,21 +198,30 @@ namespace _Scripts.Characters.DungeonMaster
         private void HandleMovements()
         {
             //Rotation
-            float rotation = (_rotationInputs.x - _rotationInputs.y) * dmProperties.rotationSpeed * Time.deltaTime;
+            float rotation = (_rotationInputs.x - _rotationInputs.y) * properties.rotationSpeed * Time.deltaTime;
             transform.rotation *= Quaternion.Euler(0f, rotation, 0f);
 
             //Motion
             Vector3 movement = Quaternion.Euler(0f, -transform.eulerAngles.y, 0f) * (transform.forward * _inputsVector.y + transform.right * _inputsVector.x);
-            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, dmProperties.smoothingMotion);
+            _currentMovement = Vector3.Lerp(_currentMovement, movement.normalized, properties.smoothingMotion);
 
             //Clamped position
-            Vector3 finalMovement = dmProperties.motionSpeed * Time.deltaTime * _currentMovement;
+            Vector3 finalMovement = properties.motionSpeed * Time.deltaTime * _currentMovement;
             Vector3 finalPosition = transform.position + transform.forward * finalMovement.z + transform.right * finalMovement.x;
             finalPosition.x = Mathf.Clamp(finalPosition.x, horizontalLimit.x, horizontalLimit.y);
             finalPosition.z = Mathf.Clamp(finalPosition.z, verticalLimit.x, verticalLimit.y);
 
             //Apply movement
             transform.position = finalPosition;
+        }
+
+        /// <summary>
+        /// Modify the height of the camera when using mouse scroll
+        /// </summary>
+        private void UpdateCameraHieght()
+        {
+            float value = Mathf.Lerp(Camera.CameraHeight, _targetCameraHeight, properties.scrollSmooth);
+            Camera.SetCameraHeight(value);
         }
         #endregion
 
@@ -236,13 +255,13 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private IEnumerator ManaRecoveryRoutine()
         {
-            while (mana.value < dmProperties.manaAmount)
+            while (mana.value < properties.manaAmount)
             {
-                mana.value += dmProperties.manaRecovery * Time.deltaTime;
+                mana.value += properties.manaRecovery * Time.deltaTime;
                 yield return null;
             }
 
-            mana.value = dmProperties.manaAmount;
+            mana.value = properties.manaAmount;
             _manaRoutine = null;
         }
         #endregion
@@ -373,7 +392,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         private Ray GetRayFromScreenPoint()
         {
-            return Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            return UnityEngine.Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         }
 
         /// <summary>

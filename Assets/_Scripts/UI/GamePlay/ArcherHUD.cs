@@ -3,6 +3,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters.Adventurers;
+using System.Collections;
 
 namespace _Scripts.UI.Gameplay
 {
@@ -18,12 +19,15 @@ namespace _Scripts.UI.Gameplay
         #endregion
 
         #region Builts_In
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
-
-            _bowman = Character.GetComponent<Bowman>();
             defuseField.SetActive(false);
+        }
+
+        protected override IEnumerator Start()
+        {
+            _bowman = Character.GetComponent<Bowman>();
+            return base.Start();
         }
 
         private void Update()

@@ -10,6 +10,7 @@ using _Scripts.Cameras;
 using _Scripts.Characters.StateMachines;
 using _ScriptableObjects.Characters;
 using _ScriptableObjects.Afflictions;
+using Unity.VisualScripting;
 
 namespace _Scripts.Characters
 {
@@ -31,6 +32,7 @@ namespace _Scripts.Characters
 
         #region Character
         public static event Action<Character> OnCharacterDeath;
+        public event Action OnCharacterDamaged;
 
         private Coroutine _healthRecupRoutine;
         protected Coroutine _skillRoutine;
@@ -219,6 +221,7 @@ namespace _Scripts.Characters
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
+            OnCharacterDamaged?.Invoke();
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 

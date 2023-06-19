@@ -34,16 +34,17 @@ namespace _Scripts.UI.Gameplay
 		{
 			_character = character;
 			nameField.text = character.View.Controller.NickName;
+			healthSlider.maxValue = _character.CharacterDatas.health;
 
 			switch (character.GetType().ToString())
 			{
-				case "Warrior":
+				case "_Scripts.Characters.Adventurers.Warrior":
 					image.sprite = icons[0];
 					break;
-                case "Bowman":
+                case "_Scripts.Characters.Adventurers.Bowman":
 					image.sprite = icons[1];
                     break;
-                case "Wizard":
+                case "_Scripts.Characters.Adventurers.Wizard":
 					image.sprite = icons[2];
                     break;
             }
