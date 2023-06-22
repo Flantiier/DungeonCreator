@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.NetworkScript;
-using _Scripts.Hitboxs_Triggers;
 using _Scripts.GameplayFeatures.Projectiles;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using Photon.Pun;
@@ -21,6 +20,8 @@ namespace _Scripts.Characters.DungeonMaster
         [TitleGroup("Projectiles")]
         [SerializeField] private Transform throwPoint;
 
+        [TitleGroup("Stun ability")]
+        [SerializeField] private GameObject vfx;
         [TitleGroup("Stun ability")]
         [SerializeField] private float stunRange = 10f;
         [TitleGroup("Stun ability")]
@@ -110,6 +111,7 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         public void CreateImpactZone()
         {
+            GameObject fx = Instantiate(vfx, transform.position, transform.rotation);
             Collider[] colliders = Physics.OverlapSphere(Boss.transform.position, stunRange, stunMask);
             foreach (Collider col in colliders)
             {
