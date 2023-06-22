@@ -6,6 +6,7 @@ using _Scripts.GameplayFeatures.Projectiles;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using Photon.Pun;
 using _Scripts.Interfaces;
+using _Scripts.Cameras;
 
 namespace _Scripts.Characters.DungeonMaster
 {
@@ -26,6 +27,12 @@ namespace _Scripts.Characters.DungeonMaster
         [SerializeField] private float stunDuration = 4f;
         [TitleGroup("Stun ability")]
         [SerializeField] private LayerMask stunMask;
+        [TitleGroup("Stun ability")]
+        [SerializeField] private float shakingRadius = 15f;
+        [TitleGroup("Stun ability")]
+        [SerializeField] private float shakingIntensity = 5f;
+        [TitleGroup("Stun ability")]
+        [SerializeField] private float shakingDuration = 3f;
         #endregion
 
         #region Properties
@@ -104,15 +111,17 @@ namespace _Scripts.Characters.DungeonMaster
         public void CreateImpactZone()
         {
             Collider[] colliders = Physics.OverlapSphere(Boss.transform.position, stunRange, stunMask);
-
             foreach (Collider col in colliders)
             {
                 if (!col || !col.TryGetComponent(out IPlayerStunable player))
                     continue;
 
-                Character character = col.GetComponent<Character>();
-                character.StunPlayer(stunDuration);
+                player.StunPlayer(stunDuration);
             }
+
+            Camera cam = Camera.main;
+            if (Vector3.Distance(cam.transform.position, transform.position) <= shakingRadius)
+                cam.transform.parent.GetComponentInChildren<CinemachineShaker>().ShakeCamera(shakingIntensity, shakingDuration);
         }
 
         /// <summary>

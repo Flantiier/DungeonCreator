@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 4033566327195716055}
   - component: {fileID: 95361467721035795}
   - component: {fileID: 4242583749028639219}
+  - component: {fileID: 5488301044441111637}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -170,6 +171,18 @@ MonoBehaviour:
   AutoEnableInputs: 1
   XYAxis: {fileID: -5050081099424316190, guid: 7371a20f8b86e234ab3b3ef6ddc88b30, type: 3}
   ZAxis: {fileID: 0}
+--- !u!114 &5488301044441111637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776652066361137809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06f9a6b9ed2c0b4fb45257066760eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6977679989862162228
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,6 +348,7 @@ GameObject:
   - component: {fileID: 8905075102637165980}
   - component: {fileID: 8595944020235387033}
   - component: {fileID: 7289484086212802170}
+  - component: {fileID: 4501603318124311117}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -474,3 +488,20 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
+--- !u!114 &4501603318124311117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7982924926921713872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 1
+  mNoiseOffsets: {x: 0, y: 0, z: 0}

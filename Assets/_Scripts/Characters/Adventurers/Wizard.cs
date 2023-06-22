@@ -35,7 +35,7 @@ namespace _Scripts.Characters.Adventurers
         protected override void UpdateAnimations()
         {
             base.UpdateAnimations();
-            //UpdateAnimationLayers();
+            UpdateAnimationLayers();
         }
         #endregion
 
