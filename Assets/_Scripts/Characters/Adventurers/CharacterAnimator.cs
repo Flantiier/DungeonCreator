@@ -3,7 +3,6 @@ using Photon.Pun;
 using _Scripts.NetworkScript;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
 using _Scripts.GameplayFeatures.Projectiles;
-using Cinemachine.Utility;
 
 namespace _Scripts.Characters.Animations
 {
@@ -13,7 +12,8 @@ namespace _Scripts.Characters.Animations
     public class CharacterAnimator : NetworkMonoBehaviour
     {
         #region Variables
-        [Header("Hitboxs")]
+        [Header("References")]
+        [SerializeField] protected CharacterAudio audioSource;
         [SerializeField] protected CharacterHitbox[] hitboxs;
 
         [Header("Projectile properties")]
@@ -63,6 +63,22 @@ namespace _Scripts.Characters.Animations
                 return;
 
             hitboxs[index].Collider.enabled = false;
+        }
+
+        /// <summary>
+        /// Play an audio clip
+        /// </summary>
+        public void PlaySound(int index)
+        {
+            audioSource.PlayClip(index);
+        }
+
+        /// <summary>
+        /// Play an audio clip over the network
+        /// </summary>
+        public void PlaySyncSound(int index)
+        {
+            audioSource.PlaySyncClip(index);
         }
         #endregion
 
