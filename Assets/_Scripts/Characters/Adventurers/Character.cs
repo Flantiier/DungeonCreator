@@ -333,6 +333,7 @@ namespace _Scripts.Characters
                 yield return null;
             }
 
+            CurrentAffliction.EnableEffect(this, false);
             CurrentAffliction = null;
         }
 

@@ -67,6 +67,28 @@ namespace Utils
         }
         #endregion
 
+        #region String Class
+        public abstract class String
+        {
+            public enum RoundingType { F0, F1, F2, F3 }
+
+            public string RoundValueInString(float value, RoundingType rounding)
+            {
+                switch (rounding)
+                {
+                    case RoundingType.F1:
+                        return value.ToString("F1");
+                    case RoundingType.F2:
+                        return value.ToString("F2");
+                    case RoundingType.F3:
+                        return value.ToString("F3");
+                    default:
+                        return value.ToString("F0");
+                }
+            }
+        }
+        #endregion
+
         //CUSTOM METHODS ABOUT OBJECT LAYERS
         #region Layers Class
         public abstract class Layers

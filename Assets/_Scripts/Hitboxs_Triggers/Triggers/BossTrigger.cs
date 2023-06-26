@@ -13,6 +13,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
     {
         #region Variables
         [SerializeField] private TextMeshProUGUI textMesh;
+        [SerializeField] private TextMeshProUGUI infoText;
         [SerializeField] private Vector3 size = Vector3.one;
         [SerializeField] private LayerMask mask;
 
@@ -52,6 +53,12 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
             int playerCount = PhotonNetwork.PlayerList.Length - 1;
             textMesh.gameObject.SetActive(_characters.Count > 0);
 
+            //Info text
+            infoText.gameObject.SetActive(_characters.Count > 0);
+            string infos = _characters.Count == 1 ? $"{_characters.Count} aventurier est arrivé à la salle finale." 
+                                                        : $"{_characters.Count} aventuriers sont arrivés à la salle finale.";
+            infoText.text = infos;
+
             if (_characters.Count <= 0)
                 return;
 
@@ -70,6 +77,7 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
         {
             _isTriggered = true;
             textMesh.gameObject.SetActive(false);
+            infoText.gameObject.SetActive(false);
             yield return new WaitForSecondsRealtime(0.4f);
             GameManager.Instance.StartBossFight();
         }

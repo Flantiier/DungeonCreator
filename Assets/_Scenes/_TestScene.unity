@@ -1884,40 +1884,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 696852353, guid: a84eb1823e435b74893f51eb67c354ca, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 44980880}
-    - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SwicthPlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: _Scripts.Managers.RespawnManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1038471604791888317, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 2195928803806139597, guid: a84eb1823e435b74893f51eb67c354ca,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2028,11 +1999,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameHUD
       objectReference: {fileID: 0}
-    - target: {fileID: 2195928803806139633, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2981027740749821332, guid: a84eb1823e435b74893f51eb67c354ca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2040,29 +2006,9 @@ PrefabInstance:
       objectReference: {fileID: 1700788020}
     - target: {fileID: 4447686305324374185, guid: a84eb1823e435b74893f51eb67c354ca,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4447686305324374185, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 44980880}
-    - target: {fileID: 4447686305324374185, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SwicthPlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 4447686305324374185, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: _Scripts.Managers.RespawnManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 4447686305324374185, guid: a84eb1823e435b74893f51eb67c354ca,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9195198912472280111, guid: a84eb1823e435b74893f51eb67c354ca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2094,6 +2040,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 164467187}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &164467192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4498202472748554507, guid: a84eb1823e435b74893f51eb67c354ca,
+    type: 3}
+  m_PrefabInstance: {fileID: 164467187}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &176941867 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8538802302355691994, guid: 4c097a708d60c8e489a375a892cbab45,
@@ -8513,6 +8471,11 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2242982441036443745, guid: 52f75516a2a33ae4daa77ab6b4cb9e6b,
+        type: 3}
+      propertyPath: infoText
+      value: 
+      objectReference: {fileID: 164467192}
     - target: {fileID: 2242982441036443748, guid: 52f75516a2a33ae4daa77ab6b4cb9e6b,
         type: 3}
       propertyPath: m_RootOrder
@@ -17013,7 +16976,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968012928}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 2.220446e-18}
+  m_LocalPosition: {x: 0, y: 1.54, z: -6.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

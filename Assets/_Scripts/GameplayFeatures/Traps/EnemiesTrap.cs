@@ -14,7 +14,7 @@ namespace _Scripts.GameplayFeatures.Traps
         #endregion
 
         #region Builts_In
-        protected void Awake() { }
+        protected override void Awake() { }
 
         public override void OnDisable()
         {

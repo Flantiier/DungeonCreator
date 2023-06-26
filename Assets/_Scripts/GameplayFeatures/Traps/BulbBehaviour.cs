@@ -17,10 +17,14 @@ namespace _Scripts.GameplayFeatures.Traps
         [FoldoutGroup("References")]
         [SerializeField] private ParticleSystem particles;
 
+        [FoldoutGroup("Dissolve properties")]
+        [SerializeField] private float visibleTime = 10f;
+
         [BoxGroup("Stats")]
         [Required, SerializeField] private BulbProperties datas;
 
         private bool _IsAttacking;
+        private float _invisibilityCooldown;
         #endregion
 
         #region Builts_In
@@ -89,13 +93,20 @@ namespace _Scripts.GameplayFeatures.Traps
             yield return new WaitForSecondsRealtime(datas.waitTime);
             _IsAttacking = false;
         }
-        
+
         /// <summary>
         /// Hides the bulbe when nothing is detected
         /// </summary>
         private void HideBulbe()
         {
-            SetVisbility(detectionBox.IsDetecting());
+            if (_invisibilityCooldown <= 0f && detectionBox.IsDetecting())
+                _invisibilityCooldown = visibleTime;
+
+            if (_invisibilityCooldown > 0){
+                _invisibilityCooldown -= Time.deltaTime;
+            }
+
+            SetVisbility(detectionBox.IsDetecting() || _invisibilityCooldown > 0f);
         }
         #endregion
     }
