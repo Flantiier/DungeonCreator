@@ -49,6 +49,10 @@ namespace _Scripts.Editor
                         SphereCollider sphere = obj.AddComponent<SphereCollider>();
                         SetSphereCollider(ref sphere, colliders[i] as SphereCollider);
                         break;
+                    case "UnityEngine.CapsuleCollider":
+                        CapsuleCollider capsule = obj.AddComponent<CapsuleCollider>();
+                        SetCapsuleCollider(ref capsule, colliders[i] as CapsuleCollider);
+                        break;
                     case "UnityEngine.MeshCollider":
                         MeshCollider mesh = obj.AddComponent<MeshCollider>();
                         SetMeshCollider(ref mesh, colliders[i] as MeshCollider);
@@ -88,6 +92,14 @@ namespace _Scripts.Editor
         private void SetMeshCollider(ref MeshCollider instance, MeshCollider collider)
         {
             instance.sharedMesh = collider.sharedMesh;
+        }
+
+        private void SetCapsuleCollider(ref CapsuleCollider instance, CapsuleCollider collider)
+        {
+            instance.height = collider.height;
+            instance.radius = collider.radius;
+            instance.center = collider.center;
+            instance.direction = collider.direction;
         }
     }
 }
