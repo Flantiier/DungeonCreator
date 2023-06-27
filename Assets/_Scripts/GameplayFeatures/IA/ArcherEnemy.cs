@@ -8,7 +8,7 @@ namespace _Scripts.GameplayFeatures.IA
     public class ArcherEnemy : ChasingEnemy
     {
         #region Variables
-        [TitleGroup("References")]
+        [FoldoutGroup("References")]
         [SerializeField] private Transform shootPosition;
 
         [TitleGroup("Properties")]
