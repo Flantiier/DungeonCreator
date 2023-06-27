@@ -4,6 +4,7 @@ using UnityEngine;
 namespace _Scripts.Characters
 {
     [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(PhotonView))]
 	public class CharacterAudio : MonoBehaviour
 	{
         #region Variables
@@ -17,7 +18,7 @@ namespace _Scripts.Characters
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
-            _view = GetComponentInParent<PhotonView>();
+            _view = GetComponent<PhotonView>();
         }
         #endregion
 
