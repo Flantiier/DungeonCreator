@@ -224,7 +224,10 @@ namespace _Scripts.Characters
         {
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
+            //play audio
+            PlayHitSound();
 
+            //Take damage
             OnCharacterDamaged?.Invoke();
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);

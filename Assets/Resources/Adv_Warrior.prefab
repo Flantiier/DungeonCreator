@@ -96,6 +96,8 @@ MonoBehaviour:
   maxGroundDistance: 1
   appliedGravity: 5
   fallSmoothing: 0.07
+  hitIndex: 1
+  hitDelay: 0.8
   afflictionsVFX:
   - {fileID: 4256047100536615128}
   overallDatas: {fileID: 11400000, guid: 1e946d1353b3a0e45b06dd3719301e69, type: 2}
@@ -203,6 +205,7 @@ GameObject:
   - component: {fileID: 3240968224449063928}
   - component: {fileID: 1552105942328379871}
   - component: {fileID: 2188498508682933979}
+  - component: {fileID: 6336966593345609317}
   m_Layer: 25
   m_Name: AudioSource
   m_TagString: Untagged
@@ -238,7 +241,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.777
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -339,6 +342,28 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 174dd391ba1f70241806a80d85d1a683, type: 3}
   - {fileID: 8300000, guid: c1d16f5ad3593da418ee853b0c4ad846, type: 3}
   - {fileID: 8300000, guid: 0107a97266a25cb4ea233dca4e2a23eb, type: 3}
+--- !u!114 &6336966593345609317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832177681152110208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7236986692817865321
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +497,7 @@ PrefabInstance:
         type: 3}
       propertyPath: audioSource
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2188498508682933979}
     - target: {fileID: -1197422444906566852, guid: 7563bf4ac0f075843899dbcc0d0df8f6,
         type: 3}
       propertyPath: showHelpers

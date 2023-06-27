@@ -28,7 +28,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void PlayClip(int index)
 		{
-			if (index <= 0 || index >= clips.Length)
+			if (index < 0 || index >= clips.Length)
 				return;
 
             PlaySoundRPC(index);
@@ -39,7 +39,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void PlaySyncClip(int index)
 		{
-            if (index <= 0 || index >= clips.Length)
+            if (index < 0 || index >= clips.Length)
                 return;
 
             _view.RPC("PlaySoundRPC", RpcTarget.All, index);
