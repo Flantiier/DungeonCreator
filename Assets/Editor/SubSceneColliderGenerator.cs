@@ -92,6 +92,7 @@ namespace _Scripts.Editor
         private void SetMeshCollider(ref MeshCollider instance, MeshCollider collider)
         {
             instance.sharedMesh = collider.sharedMesh;
+            instance.convex = collider.convex;
         }
 
         private void SetCapsuleCollider(ref CapsuleCollider instance, CapsuleCollider collider)
