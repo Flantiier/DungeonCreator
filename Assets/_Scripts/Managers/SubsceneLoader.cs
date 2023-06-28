@@ -22,9 +22,6 @@ namespace _Scripts.Managers
         {
             base.Awake();
             _sceneSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<SceneSystem>();
-
-            //Unload map
-            UnloadAll();
         }
 
         private void Start()

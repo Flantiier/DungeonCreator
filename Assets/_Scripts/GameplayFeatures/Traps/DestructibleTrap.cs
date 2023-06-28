@@ -9,6 +9,9 @@ namespace _Scripts.GameplayFeatures.Traps
     public class DestructibleTrap : TrapClass1, IDamageable
     {
         #region Variables/Properties
+        [FoldoutGroup("Audio")]
+        [SerializeField] private AudioClip hitClip;
+
         [FoldoutGroup("Dissolve properties")]
         [SerializeField] protected float dissolveSpeed = 0.04f;
         protected const string DISSOLVE_PARAM = "_dissolve";
@@ -39,7 +42,7 @@ namespace _Scripts.GameplayFeatures.Traps
         }
         #endregion
 
-        #region Interfaces Implementation
+        #region Methods
         public void Damage(float damages)
         {
             HandleDamages(damages);
@@ -120,6 +123,7 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         protected virtual void HandleDamages(float damages)
         {
+            _audioSource.PlayOneShot(hitClip);
             CurrentHealth = CurrentHealth - damages <= 0 ? 0f : CurrentHealth - damages;
             SetTrapHealth(CurrentHealth);
         }

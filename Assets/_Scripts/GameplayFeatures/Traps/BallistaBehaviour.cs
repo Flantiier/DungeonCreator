@@ -1,9 +1,9 @@
+using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.GameplayFeatures.PhysicsAdds;
 using _Scripts.GameplayFeatures.Projectiles;
 using _ScriptableObjects.Traps;
-using System.Collections;
 
 namespace _Scripts.GameplayFeatures.Traps
 {
@@ -19,7 +19,7 @@ namespace _Scripts.GameplayFeatures.Traps
 		[FoldoutGroup("References")]
 		[SerializeField] private Transform projectileParent;
 
-		[FoldoutGroup("Audios")]
+		[FoldoutGroup("Audio")]
 		[SerializeField] private AudioClip[] clips;
 
         [BoxGroup("Stats")]
@@ -135,6 +135,7 @@ namespace _Scripts.GameplayFeatures.Traps
 				_lastProjectile.gameObject.SetActive(true);
 
 			_lastProjectile.transform.SetParent(null);
+			_lastProjectile.Damages = datas.damages;
 			_lastProjectile.OverrideThrowForce(_lastProjectile.transform.forward, datas.throwForce);
 			_lastProjectile = null;
 		}

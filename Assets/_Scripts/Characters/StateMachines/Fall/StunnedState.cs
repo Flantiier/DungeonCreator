@@ -6,8 +6,8 @@ namespace _Scripts.Characters.Animations.StateMachines
     {
         protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Character.ResetCharacterVelocity();
             Character.PlayerSM.CurrentState = Characters.StateMachines.PlayerStateMachine.PlayerStates.Stunned;
+            Character.ResetCharacterVelocity();
         }
     }
 }

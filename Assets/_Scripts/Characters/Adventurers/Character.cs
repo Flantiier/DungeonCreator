@@ -40,6 +40,7 @@ namespace _Scripts.Characters
 
         private Coroutine _healthRecupRoutine;
         protected Coroutine _skillRoutine;
+        private Coroutine _stunRoutine;
         public event Action OnSkillUsed;
         public event Action OnSkillRecovered;
         #endregion
@@ -239,8 +240,10 @@ namespace _Scripts.Characters
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
 
-            if (PlayerSM.CurrentState == PlayerStateMachine.PlayerStates.Stunned)
+            if (_stunRoutine != null)
                 RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
+            else
+                StopCoroutine(_stunRoutine);
 
             if (CurrentHealth > 0)
             {
@@ -368,10 +371,10 @@ namespace _Scripts.Characters
         /// </summary>
         private void StunMethod(float duration)
         {
-            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked))
+            if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
-            StartCoroutine(StunRoutine(duration));
+            _stunRoutine = StartCoroutine(StunRoutine(duration));
         }
 
         /// <summary>
@@ -383,6 +386,8 @@ namespace _Scripts.Characters
             RPCAnimatorTrigger(RpcTarget.All, "stunned", true);
             yield return new WaitForSecondsRealtime(duration);
             RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
+
+            _stunRoutine = null;
         }
         #endregion
 

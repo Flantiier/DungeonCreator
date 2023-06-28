@@ -23,7 +23,7 @@ namespace _Scripts.Characters.Animations.StateMachines.Boss
             Boss.CanAttack = false;
             //Set the curve & rotations
             SetAttackCurve();
-            Boss.SetMeshOrientation(Boss.Orientation.forward);
+            //Boss.SetMeshOrientation(Boss.Orientation.forward);
         }
 
         protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

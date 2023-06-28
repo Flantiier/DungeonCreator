@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 using Sirenix.OdinInspector;
 using _Scripts.NetworkScript;
 using _Scripts.GameplayFeatures.Projectiles;
 using _Scripts.Hitboxs_Triggers.Hitboxs;
-using Photon.Pun;
 using _Scripts.Interfaces;
 using _Scripts.Cameras;
 
@@ -12,7 +12,9 @@ namespace _Scripts.Characters.DungeonMaster
     public class BossAnimator : NetworkMonoBehaviour
     {
         #region Variables
-        [TitleGroup("Hitboxs")]
+        [FoldoutGroup("References")]
+        [SerializeField] private CharacterAudio audioSource;
+        [FoldoutGroup("References")]
         [SerializeField] protected EnemyHitbox[] hitboxs;
 
         [TitleGroup("Projectiles")]
@@ -111,7 +113,8 @@ namespace _Scripts.Characters.DungeonMaster
         /// </summary>
         public void CreateImpactZone()
         {
-            GameObject fx = Instantiate(vfx, transform.position, transform.rotation);
+            Instantiate(vfx, transform.position, transform.rotation);
+
             Collider[] colliders = Physics.OverlapSphere(Boss.transform.position, stunRange, stunMask);
             foreach (Collider col in colliders)
             {
@@ -150,6 +153,8 @@ namespace _Scripts.Characters.DungeonMaster
                 EnemiesProjectile proj = instance.GetComponent<EnemiesProjectile>();
                 proj.ThrowProjectile(direction + Vector3.up);
             }
+
+            audioSource.PlaySyncClip(0);
         }
         #endregion
     }

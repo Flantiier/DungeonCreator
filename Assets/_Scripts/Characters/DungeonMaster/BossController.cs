@@ -65,6 +65,7 @@ namespace _Scripts.Characters.DungeonMaster
 
             SubscribeInputActions();
             GameUIManager.OnMenuOpen += EnableInputs;
+            GameUIManager.OnMenuOpen += _camera.EnableInputProvider;
         }
 
         public override void OnDisable()
@@ -72,9 +73,11 @@ namespace _Scripts.Characters.DungeonMaster
             if (!ViewIsMine())
                 return;
 
-            GameUIManager.OnMenuOpen -= EnableInputs;
             UnsubscribeInputActions();
             _inputs.Disable();
+
+            GameUIManager.OnMenuOpen -= EnableInputs; 
+            GameUIManager.OnMenuOpen -= _camera.EnableInputProvider;
         }
 
         protected override void Update()
