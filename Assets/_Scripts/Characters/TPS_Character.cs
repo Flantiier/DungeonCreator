@@ -26,6 +26,7 @@ namespace _Scripts.Characters
         [SerializeField] private TpsCamera tpsCameraPrefab;
 
         protected CharacterController _cc;
+        protected CharacterAudio _audioSource;
         protected TpsCamera _camera;
         #endregion
 
@@ -43,6 +44,15 @@ namespace _Scripts.Characters
         [SerializeField] private float fallSmoothing = 0.05f;
 
         protected float _airTime;
+        #endregion
+
+        #region Variables
+        [FoldoutGroup("Feedback")]
+        [SerializeField] private int hitIndex = 1;
+        [FoldoutGroup("Feedback")]
+        [SerializeField] private float hitDelay = 0.8f;
+
+        private float _lastHitFeedback;
         #endregion
 
         protected Vector2 _currentInputs;
@@ -65,6 +75,7 @@ namespace _Scripts.Characters
         {
             _cc = GetComponent<CharacterController>();
             GroundSM = new GroundStateMachine();
+            _audioSource = GetComponentInChildren<CharacterAudio>();
 
             if (!ViewIsMine())
                 return;
@@ -320,6 +331,17 @@ namespace _Scripts.Characters
                 return true;
 
             return false;
+        }
+        #endregion
+
+        #region Audio Methods
+        protected void PlayHitSound()
+        {
+            if (Time.time >= _lastHitFeedback + hitDelay)
+            {
+                _audioSource.PlayClip(hitIndex);
+                _lastHitFeedback = Time.time;
+            }
         }
         #endregion
 

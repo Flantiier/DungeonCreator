@@ -4,10 +4,14 @@ using UnityEngine;
 namespace _Scripts.Characters
 {
     [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(PhotonView))]
 	public class CharacterAudio : MonoBehaviour
 	{
         #region Variables
         [SerializeField] private AudioClip[] clips;
+        [SerializeField] private bool networkAudio = false;
+        [SerializeField] private float localVolume = 0.25f;
+        [SerializeField] private float othersVolume = 0.1f;
 
         private AudioSource _audioSource;
 		private PhotonView _view;
@@ -17,7 +21,14 @@ namespace _Scripts.Characters
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
-            _view = GetComponentInParent<PhotonView>();
+            _view = GetComponent<PhotonView>();
+
+            if (!networkAudio)
+                return;
+
+            bool isLocal = _view.IsMine;
+            _audioSource.spatialBlend = isLocal ? 0f : 1f; 
+            _audioSource.volume = isLocal ? localVolume : othersVolume;
         }
         #endregion
 
@@ -27,7 +38,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void PlayClip(int index)
 		{
-			if (index <= 0 || index >= clips.Length)
+			if (index < 0 || index >= clips.Length)
 				return;
 
             PlaySoundRPC(index);
@@ -38,7 +49,7 @@ namespace _Scripts.Characters
         /// </summary>
         public void PlaySyncClip(int index)
 		{
-            if (index <= 0 || index >= clips.Length)
+            if (index < 0 || index >= clips.Length)
                 return;
 
             _view.RPC("PlaySoundRPC", RpcTarget.All, index);

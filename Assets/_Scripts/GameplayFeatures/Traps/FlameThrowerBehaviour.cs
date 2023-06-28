@@ -14,6 +14,11 @@ namespace _Scripts.GameplayFeatures.Traps
         [FoldoutGroup("References")]
         [SerializeField] private VisualEffect fx;
 
+        [FoldoutGroup("Audio")]
+        [SerializeField] private AudioClip fireClip;
+        [FoldoutGroup("Audio")]
+        [SerializeField] private AudioClip fireEffect;
+
         [BoxGroup("Properties")]
         [SerializeField] private LayerMask rayMask;
         [BoxGroup("Properties")]
@@ -27,6 +32,7 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.Awake();
             DefuseDuration = datas.defuseDuration;
+            _audioSource.clip = fireClip;
         }
 
         private void Start()
@@ -64,25 +70,6 @@ namespace _Scripts.GameplayFeatures.Traps
 
         #region Methods
         /// <summary>
-        /// Shoot a ray and detect is smth is colliding towards the flame point
-        /// </summary>
-        private void ShootRayTowards()
-        {
-            float radius = datas.sprayRadius;
-            Vector3 start = rayStart.position - rayStart.forward * radius;
-            float finalDistance = datas.sprayDistance + radius;
-
-            Ray ray = new Ray(start, rayStart.forward);
-            Debug.DrawRay(rayStart.position, ray.direction * finalDistance, Color.cyan);
-
-            if (Physics.SphereCast(ray, radius, out RaycastHit hit, finalDistance, rayMask, QueryTriggerInteraction.Collide))
-            {
-                _currentRayLength = Vector3.Distance(rayStart.position, hit.point);
-                Debug.DrawRay(rayStart.position, ray.direction * _currentRayLength, Color.red);
-            }
-        }
-
-        /// <summary>
         /// Throwing flames routine
         /// </summary>
         private IEnumerator FlamesRoutine()
@@ -102,6 +89,7 @@ namespace _Scripts.GameplayFeatures.Traps
         private void ThrowFlames(bool state)
         {
             hitbox.EnableCollider(state);
+            HandleAudio(state);
 
             //False
             if (!state)
@@ -112,6 +100,20 @@ namespace _Scripts.GameplayFeatures.Traps
 
             //True
             fx.Play();
+        }
+
+        /// <summary>
+        /// Play a fire audio effect
+        /// </summary>
+        private void HandleAudio(bool state)
+        {
+            if (state)
+            {
+                _audioSource.PlayOneShot(fireEffect);
+                _audioSource.Play();
+            }
+            else
+                _audioSource.Stop();
         }
         #endregion
     }

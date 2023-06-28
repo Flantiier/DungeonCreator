@@ -10,16 +10,19 @@ namespace _Scripts.GameplayFeatures.Traps
 	public class BallistaBehaviour : DestructibleTrap
 	{
 		#region Variables
-        [FoldoutGroup("References")]
-        [SerializeField] private Transform horizontalPart;
 		[FoldoutGroup("References")]
-        [SerializeField] private Transform verticalPart;
+		[SerializeField] private Transform horizontalPart;
+		[FoldoutGroup("References")]
+		[SerializeField] private Transform verticalPart;
 		[FoldoutGroup("References")]
 		[SerializeField] private SphericalFOV fov;
 		[FoldoutGroup("References")]
 		[SerializeField] private Transform projectileParent;
 
-		[BoxGroup("Stats")]
+		[FoldoutGroup("Audios")]
+		[SerializeField] private AudioClip[] clips;
+
+        [BoxGroup("Stats")]
 		[SerializeField, Range(0.2f, 1.5f)] 
 		private float Yoffset = 1f;
 		[BoxGroup("Stats")]
@@ -152,6 +155,14 @@ namespace _Scripts.GameplayFeatures.Traps
 			_shootWait = true;
 			yield return new WaitForSecondsRealtime(datas.fireRate);
 			_shootWait = false;
+		}
+
+		public void PlaySoundEffect(int index)
+		{
+			if (index < 0 || index >= clips.Length)
+				return;
+
+			_audioSource.PlayOneShot(clips[index]);
 		}
         #endregion
     }

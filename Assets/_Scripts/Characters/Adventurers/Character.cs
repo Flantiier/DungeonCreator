@@ -178,6 +178,15 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            PlayHitSound();
+            HandleEntityHealth(damages);
+        }
+
+        public void DealAfflictionDamage(float damages)
+        {
+            if (!ViewIsMine())
+                return;
+
             HandleEntityHealth(damages);
         }
 
@@ -225,6 +234,7 @@ namespace _Scripts.Characters
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
 
+            //Take damage
             OnCharacterDamaged?.Invoke();
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);

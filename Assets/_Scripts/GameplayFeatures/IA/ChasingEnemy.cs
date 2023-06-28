@@ -17,10 +17,13 @@ namespace _Scripts.GameplayFeatures.IA
 
         [FoldoutGroup("References")]
         [SerializeField] private DestructibleRagdollHandler ragdoll;
+        [FoldoutGroup("References")]
+        [SerializeField] private CharacterAudio audioSource;
+
         [TitleGroup("Properties")]
         public EnemyProperties properties;
-        protected NavMeshAgent _navMesh;
 
+        protected NavMeshAgent _navMesh;
         private PatrolState _patrolState;
         private Vector3 _patrolPoint;
         private bool _patrolWait;
@@ -68,6 +71,11 @@ namespace _Scripts.GameplayFeatures.IA
         #endregion
 
         #region Methods
+        protected override void HandleEntityHealth(float damages)
+        {
+            audioSource.PlayClip(0);
+            base.HandleEntityHealth(damages);
+        }
 
         #region Behaviours
         protected virtual void InitializeEnemy()
