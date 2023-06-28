@@ -400,6 +400,7 @@ namespace _Scripts.UI.Menus
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.CurrentRoom.IsOpen = false;
 
+            PersistentAudioSource.Instance.DisableAudioSource();
             StartCoroutine("StartGameRoutine");
         }
 

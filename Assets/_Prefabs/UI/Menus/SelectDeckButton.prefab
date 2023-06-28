@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 9022922310366286110}
   - component: {fileID: 9022922310366286111}
   - component: {fileID: 9022922310366286104}
+  - component: {fileID: 2066318263814591649}
   m_Layer: 5
   m_Name: SelectDeckButton
   m_TagString: Untagged
@@ -224,6 +225,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2066318263814591649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9022922310366286106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36207085eb23dd04ea65e5cd5b25a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverClip: {fileID: 8300000, guid: 7c722a1e6526bdd40b814b86ab7059e7, type: 3}
+  mouseClickClip: {fileID: 8300000, guid: 3dfa9364532adc448a4c761e526025fa, type: 3}
 --- !u!1 &9022922310484940395
 GameObject:
   m_ObjectHideFlags: 0

@@ -2669,7 +2669,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Starting...
+  m_text: 'Debut de
+
+    la partie'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34a93b7c036f5774582ae5e668c8e01a, type: 2}
   m_sharedMaterial: {fileID: -3715838253209002205, guid: 34a93b7c036f5774582ae5e668c8e01a,
@@ -5456,6 +5458,7 @@ GameObject:
   - component: {fileID: 1605959740}
   - component: {fileID: 1605959739}
   - component: {fileID: 1605959738}
+  - component: {fileID: 1605959741}
   m_Layer: 5
   m_Name: DeckBox
   m_TagString: Untagged
@@ -5578,6 +5581,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605959736}
   m_CullTransparentMesh: 1
+--- !u!114 &1605959741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605959736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36207085eb23dd04ea65e5cd5b25a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverClip: {fileID: 8300000, guid: 7c722a1e6526bdd40b814b86ab7059e7, type: 3}
+  mouseClickClip: {fileID: 8300000, guid: 3dfa9364532adc448a4c761e526025fa, type: 3}
 --- !u!1 &1642203662
 GameObject:
   m_ObjectHideFlags: 0
@@ -5591,6 +5608,7 @@ GameObject:
   - component: {fileID: 1642203665}
   - component: {fileID: 1642203664}
   - component: {fileID: 1642203667}
+  - component: {fileID: 1642203668}
   m_Layer: 5
   m_Name: Readybutton
   m_TagString: Untagged
@@ -5727,6 +5745,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1642203668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1642203662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36207085eb23dd04ea65e5cd5b25a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverClip: {fileID: 8300000, guid: 7c722a1e6526bdd40b814b86ab7059e7, type: 3}
+  mouseClickClip: {fileID: 8300000, guid: 3dfa9364532adc448a4c761e526025fa, type: 3}
 --- !u!1 &1663777393
 GameObject:
   m_ObjectHideFlags: 0

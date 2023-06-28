@@ -26,8 +26,6 @@ namespace _Scripts.UI.Menus
         #region Builts_In
         private void Awake()
         {
-            MenuAudio.Instance.DestroyInstance();
-
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 PlayerLoading instance = new PlayerLoading(player);

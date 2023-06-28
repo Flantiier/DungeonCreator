@@ -13,9 +13,8 @@ namespace _Scripts.Managers
         #endregion
 
         #region Builts_In
-        public override void Awake()
+        public void Start()
         {
-            base.Awake();
             SetAudioProperties();
         }
         #endregion
