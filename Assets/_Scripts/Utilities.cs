@@ -64,6 +64,14 @@ namespace Utils
             {
                 return Random.Range(min, max);
             }
+
+            /// <summary>
+            /// Convert a value in decibels
+            /// </summary>
+            public static float ValueToVolume(float value)
+            {
+                return Mathf.Log10(value) * 20;
+            }
         }
         #endregion
 

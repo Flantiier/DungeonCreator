@@ -7,11 +7,15 @@ namespace _ScriptableObjects.GameManagement
     [CreateAssetMenu(menuName = "SO/Game Management/General Settings")]
     public class GeneralSettings : ScriptableObject
     {
+        #region Variables
         public float sensitivity = 10f;
-        public float maxSensitivity = 100f;
         public float globalVolume = 0.5f;
         public float effectsVolume = 0.5f;
+        public float musicVolume = 0.5f;
+        public float ambientVolume = 0.5f;
+        #endregion
 
+        #region Methods
         [Button("Save")]
         public void SaveSettings()
         {
@@ -23,7 +27,6 @@ namespace _ScriptableObjects.GameManagement
         {
             SettingsDatas datas = new SettingsDatas();
             datas.sensitivity = 50;
-            datas.maxSensitivity = 100;
             datas.globalVolume = 0.5f;
             datas.effectsVolume = 0.5f;
 
@@ -41,27 +44,31 @@ namespace _ScriptableObjects.GameManagement
             SaveSystem.Load(ref datas, "_settings");
 
             sensitivity = datas.sensitivity;
-            maxSensitivity = datas.maxSensitivity;
             globalVolume = datas.globalVolume;
             effectsVolume = datas.effectsVolume;
         }
+        #endregion
     }
 }
 
+#region SettingsData class
 public class SettingsDatas
 {
     public float sensitivity;
-    public float maxSensitivity;
     public float globalVolume;
     public float effectsVolume;
+    public float musicVolume;
+    public float ambientVolume;
 
     public SettingsDatas() { }
 
     public SettingsDatas(GeneralSettings settings)
     {
         sensitivity = settings.sensitivity;
-        maxSensitivity = settings.maxSensitivity;
         globalVolume = settings.globalVolume;
         effectsVolume = settings.effectsVolume;
+        musicVolume = settings.musicVolume;
+        ambientVolume = settings.ambientVolume;
     }
 }
+#endregion

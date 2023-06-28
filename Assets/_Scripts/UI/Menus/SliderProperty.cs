@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,60 +8,32 @@ namespace _Scripts.UI.Menus
     {
         #region Variables/Properties
         [SerializeField] private Slider slider;
-        [SerializeField] private TMP_InputField inputField;
-        private float _value;
+        [SerializeField] private TextMeshProUGUI textMesh;
+        [SerializeField] private float minValue = 0f, maxValue = 1f;
+        [SerializeField] private float multiplicator = 1f;
 
-        public float Value
-        {
-            get => _value;
-            private set
-            {
-                _value = value;
-                inputField.text = value.ToString();
-                slider.value = value;
-            }
-        }
-        public float MaxValue { get; private set; }
         public Slider Slider => slider;
+        public float Value => Slider.value;
+        #endregion
+
+        #region Builts_In
+        private void Awake()
+        {
+            slider.minValue = minValue;
+            slider.maxValue = maxValue;
+        }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Set slider and inputField value
-        /// </summary>
-        public void SetValue(float value, float maxValue)
+        public void SetValue(float value)
         {
-            slider.maxValue = maxValue;
-            Value = value;
+            slider.value = value;
+            UpdateText();
         }
 
-        /// <summary>
-        /// Set value by using a slider
-        /// </summary>
-        public void SetValueBySlider()
+        public void UpdateText()
         {
-            float value = (float)Math.Round(slider.value, 2);
-            Value = value;
-        }
-
-        /// <summary>
-        /// Set value by using a input field 
-        /// </summary>
-        public void SetValueByField()
-        {
-            try
-            {
-                float value = float.Parse(inputField.text);
-                value = Mathf.Clamp(value, slider.minValue, slider.maxValue);
-                Math.Round(value, 2);
-                Value = value;
-            }
-            catch
-            {
-                Debug.LogWarning("Counldn't convert string from inputField to a float");
-                inputField.text = Value.ToString("0.##");
-                slider.value = Value;
-            }
+            textMesh.text = ((int)(slider.value * multiplicator)).ToString();
         }
         #endregion
     }

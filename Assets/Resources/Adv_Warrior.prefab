@@ -241,7 +241,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.777
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -338,10 +338,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 9ae8d63d10b785d4a9c66250b6360855, type: 3}
+  - {fileID: 8300000, guid: f3ee218a795767844aeb9ac7362392b3, type: 3}
   - {fileID: 8300000, guid: 174dd391ba1f70241806a80d85d1a683, type: 3}
   - {fileID: 8300000, guid: c1d16f5ad3593da418ee853b0c4ad846, type: 3}
   - {fileID: 8300000, guid: 0107a97266a25cb4ea233dca4e2a23eb, type: 3}
+  networkAudio: 1
+  localVolume: 0.25
+  othersVolume: 0.1
 --- !u!114 &6336966593345609317
 MonoBehaviour:
   m_ObjectHideFlags: 0

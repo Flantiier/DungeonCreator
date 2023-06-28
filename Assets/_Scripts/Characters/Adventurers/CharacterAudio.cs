@@ -9,6 +9,9 @@ namespace _Scripts.Characters
 	{
         #region Variables
         [SerializeField] private AudioClip[] clips;
+        [SerializeField] private bool networkAudio = false;
+        [SerializeField] private float localVolume = 0.25f;
+        [SerializeField] private float othersVolume = 0.1f;
 
         private AudioSource _audioSource;
 		private PhotonView _view;
@@ -19,6 +22,13 @@ namespace _Scripts.Characters
         {
             _audioSource = GetComponent<AudioSource>();
             _view = GetComponent<PhotonView>();
+
+            if (!networkAudio)
+                return;
+
+            bool isLocal = _view.IsMine;
+            _audioSource.spatialBlend = isLocal ? 0f : 1f; 
+            _audioSource.volume = isLocal ? localVolume : othersVolume;
         }
         #endregion
 
