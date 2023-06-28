@@ -15,7 +15,7 @@ namespace _ScriptableObjects.Afflictions
         #region Methods
         public override void UpdateEffect(Character target)
 		{
-            target.DealDamage(strength * Time.deltaTime);
+            target.DealAfflictionDamage(strength * Time.deltaTime);
 		}
         #endregion
     }

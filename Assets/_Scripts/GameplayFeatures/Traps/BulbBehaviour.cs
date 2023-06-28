@@ -17,6 +17,9 @@ namespace _Scripts.GameplayFeatures.Traps
         [FoldoutGroup("References")]
         [SerializeField] private ParticleSystem particles;
 
+        [FoldoutGroup("Audio")]
+        [SerializeField] private AudioClip smokeClip;
+
         [FoldoutGroup("Dissolve properties")]
         [SerializeField] private float visibleTime = 10f;
 
@@ -84,6 +87,7 @@ namespace _Scripts.GameplayFeatures.Traps
         /// </summary>
         private IEnumerator SporesRoutine()
         {
+            PlayAudio();
             particles.Play();
             hitbox.EnableCollider(true);
             yield return new WaitForSecondsRealtime(datas.sporesDuration);
@@ -107,6 +111,14 @@ namespace _Scripts.GameplayFeatures.Traps
             }
 
             SetVisbility(detectionBox.IsDetecting() || _invisibilityCooldown > 0f);
+        }
+
+        /// <summary>
+        /// Add an audio effect with the smoke
+        /// </summary>
+        private void PlayAudio()
+        {
+            _audioSource.PlayOneShot(smokeClip);
         }
         #endregion
     }

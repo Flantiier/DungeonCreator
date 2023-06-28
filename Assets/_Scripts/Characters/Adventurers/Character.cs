@@ -178,6 +178,15 @@ namespace _Scripts.Characters
             if (!ViewIsMine())
                 return;
 
+            PlayHitSound();
+            HandleEntityHealth(damages);
+        }
+
+        public void DealAfflictionDamage(float damages)
+        {
+            if (!ViewIsMine())
+                return;
+
             HandleEntityHealth(damages);
         }
 
@@ -224,8 +233,6 @@ namespace _Scripts.Characters
         {
             if (PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Knocked) || PlayerSM.IsStateOf(PlayerStateMachine.PlayerStates.Dead))
                 return;
-            //play audio
-            PlayHitSound();
 
             //Take damage
             OnCharacterDamaged?.Invoke();

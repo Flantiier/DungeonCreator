@@ -20,6 +20,8 @@ namespace _Scripts.GameplayFeatures.Traps
         [SerializeField] protected GameObject[] trapParts;
 
         protected Material _sharedMaterial;
+        protected AudioSource _audioSource;
+
         public Tile[] OccupedTiles { get; set; }
         #endregion
 
@@ -27,6 +29,7 @@ namespace _Scripts.GameplayFeatures.Traps
         protected virtual void Awake()
         {
             InitalizeMaterial();
+            _audioSource = GetComponentInChildren<AudioSource>();
         }
 
         public override void OnEnable()
