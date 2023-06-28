@@ -3,8 +3,6 @@ using Sirenix.OdinInspector;
 using _Scripts.Managers;
 using _Scripts.UI.Menus;
 using _ScriptableObjects.GameManagement;
-using Unity.VisualScripting;
-using System.Collections;
 
 namespace _Scripts.UI.Interfaces
 {
@@ -20,16 +18,14 @@ namespace _Scripts.UI.Interfaces
         [SerializeField] private SliderProperty effectsSlider;
         [SerializeField] private SliderProperty musicSlider;
         [SerializeField] private SliderProperty ambientSlider;
+
+        private bool _initialized = false;
         #endregion
 
         #region Builts_In
         private void Awake()
         {
             settings.LoadSettings();
-        }
-
-        private void Start()
-        {
             InitializeSettings();
         }
 
@@ -45,11 +41,15 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         private void InitializeSettings()
         {
-            sensitivitySlider.SetValue(settings.sensitivity);
-            masterSlider.SetValue(settings.globalVolume);
-            effectsSlider.SetValue(settings.effectsVolume);
-            musicSlider.SetValue(settings.musicVolume);
-            ambientSlider.SetValue(settings.ambientVolume);
+            _initialized = false;
+
+            sensitivitySlider.InitializeValue(settings.sensitivity);
+            masterSlider.InitializeValue(settings.globalVolume);
+            effectsSlider.InitializeValue(settings.effectsVolume);
+            musicSlider.InitializeValue(settings.musicVolume);
+            ambientSlider.InitializeValue(settings.ambientVolume);
+
+            _initialized = true;
         }
 
         /// <summary>
@@ -57,6 +57,9 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         public void UpdateVolumeSettings()
         {
+            if (!_initialized)
+                return;
+
             settings.globalVolume = masterSlider.Value;
             settings.effectsVolume = effectsSlider.Value;
             settings.musicVolume= musicSlider.Value;
@@ -70,6 +73,9 @@ namespace _Scripts.UI.Interfaces
         /// </summary>
         public void UpdateInputSettings()
         {
+            if (!_initialized)
+                return;
+
             settings.sensitivity = sensitivitySlider.Value;
         }
 

@@ -16,19 +16,16 @@ namespace _Scripts.UI.Menus
         public float Value => Slider.value;
         #endregion
 
-        #region Builts_In
-        private void Awake()
+        #region Methods
+        public void InitializeValue(float value)
         {
+            slider.enabled = false;
             slider.minValue = minValue;
             slider.maxValue = maxValue;
-        }
-        #endregion
-
-        #region Methods
-        public void SetValue(float value)
-        {
             slider.value = value;
             UpdateText();
+
+            slider.enabled = true;
         }
 
         public void UpdateText()

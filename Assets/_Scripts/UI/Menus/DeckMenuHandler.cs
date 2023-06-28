@@ -371,7 +371,7 @@ namespace _Scripts.UI.Menus
             GUI.design.nameField.SetText(reference.trapName);
             GUI.description.SetText(reference.description);
             GUI.design.manaField.SetText("Cout de mana : " + reference.manaCost.ToString());
-            GUI.design.damageField.SetText("Degats :" + reference.damages.ToString());
+            GUI.design.damageField.SetText("Degats : " + reference.damages.ToString());
 
             string type = "Sol";
             if (reference.type == TrapSystem.Tile.TilingType.Wall)

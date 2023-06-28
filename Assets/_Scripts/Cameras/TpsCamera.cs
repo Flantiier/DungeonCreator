@@ -61,6 +61,7 @@ namespace _Scripts.Cameras
         {
             CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
             pov.m_HorizontalAxis.m_MaxSpeed = settings.sensitivity / 100f;
+            pov.m_VerticalAxis.m_MaxSpeed = settings.sensitivity / 100f;
         }
         #endregion
     }

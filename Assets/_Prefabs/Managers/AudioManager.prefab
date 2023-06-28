@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8756629302865127127}
   - component: {fileID: 8082213735177760288}
+  - component: {fileID: 2602492928967028404}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -24,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6867876274520230549}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46,3 +47,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: f8a96ba27221b6446b93d492b7c0df3f, type: 2}
   masterMixerGroup: {fileID: 24100000, guid: 12c0f3e4bc5a3aa42ba9307909b1f209, type: 2}
+--- !u!114 &2602492928967028404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6867876274520230549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787a479b99dee2d409fba9797718b31a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: f8a96ba27221b6446b93d492b7c0df3f, type: 2}
+  sensitivitySlider: {fileID: 0}
+  masterSlider: {fileID: 0}
+  effectsSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  ambientSlider: {fileID: 0}

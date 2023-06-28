@@ -70,6 +70,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 6275719617054909552}
+  tiling: {fileID: 0}
+  mappingSystem: {fileID: 0}
+  objectifText: {fileID: 0}
   gameProperties: {fileID: 11400000, guid: 3c1d256d0ba855145995996f9dd27dac, type: 2}
   timeVariable: {fileID: 11400000, guid: 696c1de6e103cfe4e8c6cb1c25bf3167, type: 2}
   bossUI: {fileID: 3663393386578726475, guid: adfbea3290c20ee4bb07c8e9ddb721b9, type: 3}
@@ -100,10 +103,47 @@ MonoBehaviour:
   respawnCanvas: {fileID: 0}
   respawnStart: {fileID: 11400000, guid: 2ad91f6a3ef8e5348bdcb73dd8ea2b83, type: 2}
   respawnEnd: {fileID: 11400000, guid: c05f7ffe5dfa1d64caac0e96190bf409, type: 2}
-  properties: {fileID: 11400000, guid: 3c1d256d0ba855145995996f9dd27dac, type: 2}
   timeVariable: {fileID: 11400000, guid: 696c1de6e103cfe4e8c6cb1c25bf3167, type: 2}
   respawnTime: {fileID: 11400000, guid: 35ae6af2d0a2ce84192d29e0a947f9da, type: 2}
   respawnPosition: {fileID: 11400000, guid: a15718e54c1ca3645a57221ae8406785, type: 2}
+  inputMap:
+    m_Name: Input Map
+    m_Id: 6098bb35-1054-4e59-ba00-45ae307eeed8
+    m_Asset: {fileID: 0}
+    m_Actions:
+    - m_Name: Next
+      m_Type: 1
+      m_ExpectedControlType: Button
+      m_Id: 01ff617e-d42b-4cb2-97b8-54b0fba73acd
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    - m_Name: Previous
+      m_Type: 1
+      m_ExpectedControlType: Button
+      m_Id: a17968ae-1e11-491a-ac70-6fbccca1c544
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Bindings:
+    - m_Name: 
+      m_Id: a78223a0-9a92-415f-ad42-bc79c794c815
+      m_Path: <Keyboard>/rightArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Next
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 78b21183-a128-4952-b630-1633fb408175
+      m_Path: <Keyboard>/leftArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Previous
+      m_Flags: 0
 --- !u!114 &207250245147309982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,5 +157,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 6275719617054909552}
+  menuInput:
+    m_Name: Menu Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: fe1119cd-0058-4f68-ba4b-3fc90e90b33c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 26afa57b-310f-4237-a0a2-21a6741e667a
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Menu Input
+      m_Flags: 0
+    m_Flags: 0
   gameHUD: {fileID: 0}
   optionsMenuHUD: {fileID: 0}

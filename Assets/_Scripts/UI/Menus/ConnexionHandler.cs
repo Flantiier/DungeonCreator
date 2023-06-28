@@ -17,7 +17,7 @@ namespace _Scripts.UI.Menus
         private void Awake()
         {
             PhotonNetwork.ConnectUsingSettings();
-            textField.SetBaseText("connection aux serveurs");
+            textField.SetBaseText("connexion aux serveurs");
         }
         #endregion
 

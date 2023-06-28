@@ -28,7 +28,7 @@ namespace _Scripts.UI.Menus
 
             //Name
             string name = Infos.player.NickName != "*Player" ? Infos.player.NickName : $"Player{Random.Range(0, 1000)}";
-            name = Infos.player.IsLocal ? name + " (Me)" : name;
+            name = Infos.player.IsLocal ? name + " (Moi)" : name;
             nameField.text = name;
             //Role
             SetRoleInfos(Infos.role);

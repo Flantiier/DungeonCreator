@@ -27,8 +27,10 @@ namespace _ScriptableObjects.GameManagement
         {
             SettingsDatas datas = new SettingsDatas();
             datas.sensitivity = 50;
-            datas.globalVolume = 0.5f;
-            datas.effectsVolume = 0.5f;
+            datas.globalVolume = 1;
+            datas.effectsVolume = 1;
+            datas.musicVolume = 1;
+            datas.ambientVolume = 1;
 
             SaveSystem.Save(datas, "_settings");
         }
