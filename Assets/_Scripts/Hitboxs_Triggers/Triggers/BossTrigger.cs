@@ -55,8 +55,8 @@ namespace _Scripts.Hitboxs_Triggers.Triggers
 
             //Info text
             infoText.gameObject.SetActive(_characters.Count > 0);
-            string infos = _characters.Count == 1 ? $"{_characters.Count} aventurier est arrivé à la salle finale." 
-                                                        : $"{_characters.Count} aventuriers sont arrivés à la salle finale.";
+            string infos = _characters.Count == 1 ? $"{_characters.Count} aventurier est arrive a la salle finale." 
+                                                        : $"{_characters.Count} aventuriers sont arrives a la salle finale.";
             infoText.text = infos;
 
             if (_characters.Count <= 0)

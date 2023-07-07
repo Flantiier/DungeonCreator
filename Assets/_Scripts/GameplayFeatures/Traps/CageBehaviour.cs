@@ -26,11 +26,12 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.OnEnable();
             meshRenderer.enabled = true;
+            meshRenderer.sharedMaterial = ViewIsMine() ? inactiveMaterial : _sharedMaterial;
+            SetVisbility(false);
 
             if (!ViewIsMine())
             {
-                EnableCage(false);
-                meshRenderer.sharedMaterial = _sharedMaterial;
+                EnableCageCollider(false);
                 _sharedMaterial.SetFloat(DISSOLVE_PARAM, 0f);
             }
             else
@@ -41,10 +42,6 @@ namespace _Scripts.GameplayFeatures.Traps
         {
             base.Update();
             HandleCageBehaviour();
-
-            if (ViewIsMine())
-                return;
-
             HideCage();
         }
         #endregion
@@ -71,14 +68,14 @@ namespace _Scripts.GameplayFeatures.Traps
             if (ViewIsMine() && meshRenderer.sharedMaterial != _sharedMaterial)
                 meshRenderer.sharedMaterial = _sharedMaterial;
 
-            if(!meshCollider.enabled)
-                EnableCage(true);
+            if (!meshCollider.enabled)
+                EnableCageCollider(true);
         }
 
         /// <summary>
         /// Handle mesh, collider and trigger enabled state
         /// </summary>
-        private void EnableCage(bool enabled)
+        private void EnableCageCollider(bool enabled)
         {
             meshCollider.enabled = enabled;
             triggerBox.Enabled = !enabled;
@@ -92,7 +89,7 @@ namespace _Scripts.GameplayFeatures.Traps
             if (ViewIsMine())
                 SetVisbility(meshRenderer.sharedMaterial == trapMaterial);
             else
-                SetVisbility(meshRenderer.enabled);
+                SetVisbility(meshCollider.enabled);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 using _Scripts.Interfaces;
 
 namespace _Scripts.GameplayFeatures.Projectiles
@@ -11,7 +12,7 @@ namespace _Scripts.GameplayFeatures.Projectiles
             if (other.TryGetComponent(out IPlayerDamageable damageable))
                 damageable.DealDamage(damages);
 
-            base.OnTriggerEnter(other);
+            Destroy(gameObject);
         }
         #endregion
 
@@ -19,13 +20,13 @@ namespace _Scripts.GameplayFeatures.Projectiles
         public override void ThrowProjectile(Vector3 direction)
         {
             base.ThrowProjectile(direction);
-            Destroy(gameObject, destructTime);
+            StartCoroutine(DelayedDestroy());
         }
 
         public override void OverrideThrowForce(Vector3 direction, float force)
         {
+            StartCoroutine(DelayedDestroy());
             base.OverrideThrowForce(direction, force);
-            Destroy(gameObject, destructTime);
         }
         #endregion
     }

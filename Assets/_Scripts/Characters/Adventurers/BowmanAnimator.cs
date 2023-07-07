@@ -18,5 +18,18 @@ namespace _Scripts.Characters.Animations
             MyBowman = GetComponentInParent<Bowman>();
         }
         #endregion
+
+        #region Methods
+        public override void LaunchProjectile()
+        {
+            if (!ViewIsMine() || !_lastProjectile)
+                return;
+
+            _lastProjectile.transform.SetParent(null);
+            _lastProjectile.OverrideProjectileDamages(Character.CharacterDatas.GetAttackDamages(projectileMainAttack));
+            _lastProjectile.ThrowProjectile(Character.MainCamera.forward);
+            _lastProjectile = null;
+        }
+        #endregion
     }
 }

@@ -103,6 +103,7 @@ namespace _Scripts.Managers
 
             //Start the respawn coldoown and raise an event
             respawnStart.Raise();
+            SwitchPlayer(0);
             StartCoroutine(RespawnRoutine(character));
 
             //Load map

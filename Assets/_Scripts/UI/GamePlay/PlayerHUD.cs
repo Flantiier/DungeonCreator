@@ -41,7 +41,7 @@ namespace _Scripts.UI.Interfaces
         #region Builts-In
         protected virtual IEnumerator Start()
         {
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.25f);
             InstantiatePlayersHUD();
         }
 

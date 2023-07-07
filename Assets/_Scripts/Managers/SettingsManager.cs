@@ -33,6 +33,11 @@ namespace _Scripts.UI.Interfaces
         {
             SaveSettings();
         }
+
+        private void OnDestroy()
+        {
+            SaveSettings();
+        }
         #endregion
 
         #region Methods
@@ -48,7 +53,6 @@ namespace _Scripts.UI.Interfaces
             effectsSlider.InitializeValue(settings.effectsVolume);
             musicSlider.InitializeValue(settings.musicVolume);
             ambientSlider.InitializeValue(settings.ambientVolume);
-
             _initialized = true;
         }
 

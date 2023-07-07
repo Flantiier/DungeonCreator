@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using _Scripts.Interfaces;
@@ -13,7 +12,8 @@ namespace _Scripts.GameplayFeatures.Projectiles
             if (other.TryGetComponent(out IDamageable damageable))
                 damageable.Damage(damages);
 
-            PhotonNetwork.Destroy(View);
+            if(ViewIsMine())
+                PhotonNetwork.Destroy(View);
         }
         #endregion
 
@@ -21,19 +21,13 @@ namespace _Scripts.GameplayFeatures.Projectiles
         public override void ThrowProjectile(Vector3 direction)
         {
             base.ThrowProjectile(direction);
-            StartCoroutine("DelayedDestroy");
+            StartCoroutine(DelayedDestroy());
         }
 
         public override void OverrideThrowForce(Vector3 direction, float force)
         {
             base.OverrideThrowForce(direction, force);
-            StartCoroutine("DelayedDestroy");
-        }
-
-        private IEnumerator DelayedDestroy()
-        {
-            yield return new WaitForSecondsRealtime(destructTime);
-            PhotonNetwork.Destroy(View);
+            StartCoroutine(DelayedDestroy());
         }
         #endregion
     }

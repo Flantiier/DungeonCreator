@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 using System.Collections;
 using _Scripts.Interfaces;
 
@@ -8,6 +9,7 @@ namespace _Scripts.GameplayFeatures.Traps
     {
         #region Variables/Properties
         private const string HIGHLIGHT_PROP = "_highlight";
+        private float _baseSpeed;
 
         public float DefuseDuration { get; set; }
         public bool IsDisabled { get; set; }
@@ -28,16 +30,27 @@ namespace _Scripts.GameplayFeatures.Traps
         /// <returns></returns>
         protected virtual IEnumerator DefusedTrapRoutine()
         {
-            float baseSpeed = Animator.speed;
+            RPCCall("DisableTrap", RpcTarget.All);
+            yield return new WaitForSecondsRealtime(DefuseDuration);
+            RPCCall("EnableTrap", RpcTarget.All);
+        }
+
+        [PunRPC]
+        protected void DisableTrap()
+        {
+            _baseSpeed = Animator.speed;
             HighlightTrap(false);
 
             IsDisabled = true;
             Animator.speed = 0f;
             hitbox.EnableCollider(false);
-            yield return new WaitForSecondsRealtime(DefuseDuration);
+        }
 
+        [PunRPC]
+        protected void EnableTrap()
+        {
             IsDisabled = false;
-            Animator.speed = baseSpeed;
+            Animator.speed = _baseSpeed;
             hitbox.EnableCollider(true);
         }
 

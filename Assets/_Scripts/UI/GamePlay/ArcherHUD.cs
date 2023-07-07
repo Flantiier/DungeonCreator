@@ -1,9 +1,9 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using _Scripts.UI.Interfaces;
 using _Scripts.Characters.Adventurers;
-using System.Collections;
 
 namespace _Scripts.UI.Gameplay
 {

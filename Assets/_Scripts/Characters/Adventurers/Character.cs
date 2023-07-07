@@ -56,6 +56,7 @@ namespace _Scripts.Characters
         public TpsCamera Camera => _camera;
         public float CurrentStamina { get; set; }
         public float AirTime => _airTime;
+        public Vector3 Velocity => _cc.velocity;
         #endregion
 
         #region Builts_In
@@ -191,6 +192,15 @@ namespace _Scripts.Characters
             HandleEntityHealth(damages);
         }
 
+        public void TrapDamages(float damages)
+        {
+            if (!ViewIsMine())
+                return;
+
+            PlayHitSound();
+            HandleEntityHealth(damages);
+        }
+
         public void KnockbackDamages(float damages, Vector3 hitPoint)
         {
             if (!ViewIsMine())
@@ -198,14 +208,6 @@ namespace _Scripts.Characters
 
             HandleEntityHealth(damages);
             HardHit(hitPoint);
-        }
-
-        public void TrapDamages(float damages)
-        {
-            if (!ViewIsMine())
-                return;
-
-            HandleEntityHealth(damages);
         }
 
         public void TouchedByAffliction(AfflictionStatus status)
@@ -236,15 +238,19 @@ namespace _Scripts.Characters
                 return;
 
             //Take damage
-            OnCharacterDamaged?.Invoke();
             CurrentHealth = ClampedHealth(damages, 0f, Mathf.Infinity);
             RPCCall("HealthRPC", RpcTarget.Others, CurrentHealth);
+            OnCharacterDamaged?.Invoke();
 
+            //Reset stun coroutine
             if (_stunRoutine != null)
+            {
                 RPCAnimatorTrigger(RpcTarget.All, "resetStun", true);
-            else
                 StopCoroutine(_stunRoutine);
+                _stunRoutine = null;
+            }
 
+            //Check health recup
             if (CurrentHealth > 0)
             {
                 if (_healthRecupRoutine != null)
@@ -254,6 +260,7 @@ namespace _Scripts.Characters
                 return;
             }
 
+            //INvoke death
             HandleEntityDeath();
         }
 
@@ -682,6 +689,16 @@ namespace _Scripts.Characters
         public void ResetAirTime()
         {
             _airTime = 0f;
+        }
+        #endregion
+
+        #region Audio Methods
+        protected override void PlayHitSound()
+        {
+            if (PlayerSM.CurrentState == PlayerStateMachine.PlayerStates.Dead)
+                return;
+
+            base.PlayHitSound();
         }
         #endregion
 

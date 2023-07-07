@@ -335,13 +335,13 @@ namespace _Scripts.Characters
         #endregion
 
         #region Audio Methods
-        protected void PlayHitSound()
+        protected virtual void PlayHitSound()
         {
-            if (Time.time >= _lastHitFeedback + hitDelay)
-            {
-                _audioSource.PlayClip(hitIndex);
-                _lastHitFeedback = Time.time;
-            }
+            if (Time.time <= _lastHitFeedback + hitDelay)
+                return;
+
+            _audioSource.PlayClip(hitIndex);
+            _lastHitFeedback = Time.time;
         }
         #endregion
 

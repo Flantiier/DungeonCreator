@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 8295609347038727238}
   - component: {fileID: 7774520191474430307}
   - component: {fileID: 7725064232748598433}
-  - component: {fileID: 2684495387098602}
-  - component: {fileID: 3343062663793323916}
+  - component: {fileID: -315947720665525579}
+  - component: {fileID: -4674927760614892312}
   m_Layer: 8
   m_Name: Proj_BossMagicBall
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 2165399046345725755}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3077580194961199018}
@@ -53,7 +53,7 @@ MonoBehaviour:
   view: {fileID: 7725064232748598433}
   projCollider: {fileID: 7774520191474430307}
   damages: 30
-  speed: 5
+  speed: 3
   enabledOnStart: 1
   destructTime: 7
   autoEnableTrail: 0
@@ -105,12 +105,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 2684495387098602}
-  - {fileID: 3343062663793323916}
+  - {fileID: -315947720665525579}
+  - {fileID: -4674927760614892312}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2684495387098602
+--- !u!114 &-315947720665525579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &3343062663793323916
+--- !u!114 &-4674927760614892312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,8 +140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 1
-  m_TeleportIfDistanceGreaterThan: 20
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1001 &5344404097474823105
 PrefabInstance:
   m_ObjectHideFlags: 0

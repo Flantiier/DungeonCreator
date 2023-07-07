@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Sirenix.OdinInspector;
@@ -105,6 +106,11 @@ namespace _Scripts.GameplayFeatures.Projectiles
                 return;
 
             _trail.enabled = enabled;
+        }
+        protected virtual IEnumerator DelayedDestroy()
+        {
+            yield return new WaitForSecondsRealtime(destructTime);
+            PhotonNetwork.Destroy(View);
         }
         #endregion
     }

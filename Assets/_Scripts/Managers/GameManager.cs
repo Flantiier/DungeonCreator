@@ -39,6 +39,8 @@ namespace _Scripts.Managers
         [SerializeField] private GameProperties gameProperties;
         [FoldoutGroup("Global Properties")]
         [SerializeField] private FloatVariable timeVariable;
+
+        private Coroutine _gameRoutine;
         #endregion
 
         #region Boss Fight
@@ -307,6 +309,9 @@ namespace _Scripts.Managers
         [ContextMenu("Start Boss Fight")]
         public void StartBossFight()
         {
+            if (PhotonNetwork.IsMasterClient && _gameRoutine != null)
+                StopCoroutine(_gameRoutine);
+
             //Set text
             if (PlayersManager.Role == Role.Master)
                 SetObjectifText("repousser les aventuriers !");
@@ -477,7 +482,7 @@ namespace _Scripts.Managers
                 SetObjectifText("atteignez le dongeon master.");
 
             if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
-                StartCoroutine(GameRoutine(gameProperties.game));
+                _gameRoutine = StartCoroutine(GameRoutine(gameProperties.game));
         }
 
         [PunRPC]

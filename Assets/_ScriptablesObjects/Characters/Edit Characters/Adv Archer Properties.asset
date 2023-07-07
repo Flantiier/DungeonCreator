@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   stamina: 100
+  damageAbsorber: 25
   skillCooldown: 10
   mainAttack:
-    damages: 35
-    critRate: 0.25
-    critBoost: 5
+    damages: 30
+    critRate: 0
+    critBoost: 1
   secondaryAttack:
-    damages: 15
+    damages: 20
     critRate: 0.25
     critBoost: 5
-  defense: 25
